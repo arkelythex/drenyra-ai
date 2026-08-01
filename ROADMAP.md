@@ -21,7 +21,7 @@
 
 Extracted via vertical PRs and versioned releases, **not** a bulk move:
 
-- [ ] Slice 1: receipt verification + ledger CLI (`drenyra-ai receipt verify`, `drenyra-ai ledger validate`)
+- [x] Slice 1: receipt verification + ledger CLI (`drenyra-ai receipt verify`, `drenyra-ai ledger validate`)
 - [ ] Slice 2: mission protocol + `MissionRuntime`
 - [ ] Slice 3: candidate identity + review lenses
 - [ ] Slice 4: recovery contracts + gates
