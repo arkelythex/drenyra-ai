@@ -1,0 +1,30 @@
+{
+  "contract": "receipt-schema",
+  "version": "v1",
+  "schemaDraft": "draft-07",
+  "source": "arkelythex/Drenyra contracts/receipt-schema/v1",
+  "description": "Signed mission receipt contract — canonical JSON schemas and conformance fixtures shared across TypeScript, Go, and Python surfaces.",
+  "schemas": [
+    {
+      "name": "receipt-content",
+      "path": "schemas/receipt-content.schema.json",
+      "targetType": "ReceiptContent"
+    },
+    {
+      "name": "signed-receipt",
+      "path": "schemas/signed-receipt.schema.json",
+      "targetType": "SignedReceipt"
+    },
+    {
+      "name": "signing-key-info",
+      "path": "schemas/signing-key-info.schema.json",
+      "targetType": "SigningKeyInfo"
+    }
+  ],
+  "fixtures": {
+    "conformanceVectors": "fixtures/conformance-vectors.v1.json",
+    "devKeys": "fixtures/dev-keys.test-only.json"
+  },
+  "generator": "scripts/conformance/generate-receipt-vectors.ts",
+  "legacyFixture": "fixtures/receipts/receipt-signed-valid.v1.json"
+}

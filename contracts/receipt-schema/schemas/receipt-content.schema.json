@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://drenyra.dev/contracts/receipt-schema/v1/schemas/receipt-content.schema.json",
+  "title": "ReceiptContent",
+  "description": "Content that goes into a receipt hash — the canonical payload signed and hashed across TypeScript, Go, and Python (spec §2.3).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "missionId",
+    "companyId",
+    "actorId",
+    "decision",
+    "proposalVersion",
+    "evidenceHash",
+    "previousStatus",
+    "newStatus",
+    "payloadHash",
+    "timestamp"
+  ],
+  "properties": {
+    "missionId": { "type": "string" },
+    "companyId": { "type": "string" },
+    "actorId": { "type": "string" },
+    "decision": { "type": "string", "enum": ["APPROVE", "REJECT"] },
+    "proposalVersion": { "type": "integer", "minimum": 0 },
+    "evidenceHash": { "type": "string" },
+    "previousStatus": { "type": "string" },
+    "newStatus": { "type": "string" },
+    "payloadHash": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" }
+  }
+}

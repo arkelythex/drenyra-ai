@@ -36,6 +36,16 @@ Receipts verify from **canonical vectors**, not from ambient state:
 
 Canonical vectors ship with the reference implementation and must reproduce byte-for-byte on every supported runtime.
 
+## Schema contract
+
+The normative shape of a receipt lives in [`contracts/receipt-schema/`](./receipt-schema/) (source: arkelythex/Drenyra `contracts/receipt-schema/v1`):
+
+- `schemas/` — draft-07 JSON schemas for `ReceiptContent`, `SignedReceipt`, and `SigningKeyInfo`.
+- `fixtures/conformance-vectors.v1.json` — the **frozen conformance vectors** (8). They are the source of truth for correctness: every runtime MUST reproduce them byte-for-byte, and tests MUST pass against them.
+- `fixtures/dev-keys.test-only.json` — fixed dev key pairs used only to generate the vectors. TEST-ONLY, never operational.
+
+The reference implementation in `receipts/` is the TS port of the canonical `mission-receipt.ts`; any drift from the frozen vectors fails CI (drift-guard).
+
 ## Ledger
 
 Receipts chain into an **append-only audit ledger**:

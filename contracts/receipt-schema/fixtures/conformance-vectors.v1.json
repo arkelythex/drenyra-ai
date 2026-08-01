@@ -1,0 +1,291 @@
+{
+  "contract": "receipt-schema",
+  "version": "v1",
+  "vectors": [
+    {
+      "name": "receipt-valid-approval",
+      "description": "Valid signed receipt, trusted signer key present",
+      "receipt": {
+        "protocolVersion": "1.0",
+        "receiptType": "APPROVAL",
+        "algorithm": "Ed25519",
+        "content": {
+          "missionId": "mis_123",
+          "companyId": "cmp_123",
+          "actorId": "user_456",
+          "decision": "APPROVE",
+          "proposalVersion": 3,
+          "evidenceHash": "a1b2c3d4e5",
+          "previousStatus": "AWAITING_APPROVAL",
+          "newStatus": "APPROVED",
+          "payloadHash": "f6e7d8c9b0",
+          "timestamp": "2026-07-30T12:00:00Z"
+        },
+        "receiptHash": "250df62bbfcf3f1b6b54641b45da81ca50fbf679e93ee50f75939e75c7eaee59",
+        "signerKeyId": "key_test_001",
+        "signerPublicKey": "MCowBQYDK2VwAyEApchx2rhjdQOzCK7+pSUpFamiAp1/7rWz2uuk3KI8B2o=",
+        "signature": "6qJNe5ABgid13vr3tRceW6/YgYB6BCF8UyMSS2rbk9Z8neD3DmpcKCYy7PiMdjX0wuhVAVi8HDmbKJ8nNBaBCw==",
+        "issuedAt": "2026-07-31T03:18:11.140Z"
+      },
+      "vectors": {
+        "receiptHash": "250df62bbfcf3f1b6b54641b45da81ca50fbf679e93ee50f75939e75c7eaee59",
+        "signatureValid": true,
+        "status": "SIGNER_TRUSTED"
+      },
+      "trustedKeys": [
+        {
+          "keyId": "key_test_001",
+          "publicKey": "MCowBQYDK2VwAyEApchx2rhjdQOzCK7+pSUpFamiAp1/7rWz2uuk3KI8B2o=",
+          "issuedAt": "2026-01-01T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "name": "receipt-valid-completion",
+      "description": "receiptType COMPLETION changes nothing in the hash — metadata excluded from hashing",
+      "receipt": {
+        "protocolVersion": "1.0",
+        "receiptType": "COMPLETION",
+        "algorithm": "Ed25519",
+        "content": {
+          "missionId": "mis_123",
+          "companyId": "cmp_123",
+          "actorId": "user_456",
+          "decision": "APPROVE",
+          "proposalVersion": 3,
+          "evidenceHash": "a1b2c3d4e5",
+          "previousStatus": "AWAITING_APPROVAL",
+          "newStatus": "APPROVED",
+          "payloadHash": "f6e7d8c9b0",
+          "timestamp": "2026-07-30T12:00:00Z"
+        },
+        "receiptHash": "250df62bbfcf3f1b6b54641b45da81ca50fbf679e93ee50f75939e75c7eaee59",
+        "signerKeyId": "key_test_001",
+        "signerPublicKey": "MCowBQYDK2VwAyEApchx2rhjdQOzCK7+pSUpFamiAp1/7rWz2uuk3KI8B2o=",
+        "signature": "6qJNe5ABgid13vr3tRceW6/YgYB6BCF8UyMSS2rbk9Z8neD3DmpcKCYy7PiMdjX0wuhVAVi8HDmbKJ8nNBaBCw==",
+        "issuedAt": "2026-07-31T03:18:11.140Z"
+      },
+      "vectors": {
+        "receiptHash": "250df62bbfcf3f1b6b54641b45da81ca50fbf679e93ee50f75939e75c7eaee59",
+        "signatureValid": true,
+        "status": "SIGNER_TRUSTED"
+      },
+      "trustedKeys": [
+        {
+          "keyId": "key_test_001",
+          "publicKey": "MCowBQYDK2VwAyEApchx2rhjdQOzCK7+pSUpFamiAp1/7rWz2uuk3KI8B2o=",
+          "issuedAt": "2026-01-01T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "name": "receipt-tampered-hash",
+      "description": "Content mutated after signing (evidenceHash), stale receiptHash",
+      "receipt": {
+        "protocolVersion": "1.0",
+        "receiptType": "APPROVAL",
+        "algorithm": "Ed25519",
+        "content": {
+          "missionId": "mis_123",
+          "companyId": "cmp_123",
+          "actorId": "user_456",
+          "decision": "APPROVE",
+          "proposalVersion": 3,
+          "evidenceHash": "b1b2b3b4b5",
+          "previousStatus": "AWAITING_APPROVAL",
+          "newStatus": "APPROVED",
+          "payloadHash": "f6e7d8c9b0",
+          "timestamp": "2026-07-30T12:00:00Z"
+        },
+        "receiptHash": "250df62bbfcf3f1b6b54641b45da81ca50fbf679e93ee50f75939e75c7eaee59",
+        "signerKeyId": "key_test_001",
+        "signerPublicKey": "MCowBQYDK2VwAyEApchx2rhjdQOzCK7+pSUpFamiAp1/7rWz2uuk3KI8B2o=",
+        "signature": "6qJNe5ABgid13vr3tRceW6/YgYB6BCF8UyMSS2rbk9Z8neD3DmpcKCYy7PiMdjX0wuhVAVi8HDmbKJ8nNBaBCw==",
+        "issuedAt": "2026-07-31T03:18:11.140Z"
+      },
+      "vectors": {
+        "receiptHash": "250df62bbfcf3f1b6b54641b45da81ca50fbf679e93ee50f75939e75c7eaee59",
+        "signatureValid": false,
+        "status": "PAYLOAD_TAMPERED"
+      }
+    },
+    {
+      "name": "receipt-invalid-signature",
+      "description": "Content/hash intact, signature bytes garbled",
+      "receipt": {
+        "protocolVersion": "1.0",
+        "receiptType": "APPROVAL",
+        "algorithm": "Ed25519",
+        "content": {
+          "missionId": "mis_123",
+          "companyId": "cmp_123",
+          "actorId": "user_456",
+          "decision": "APPROVE",
+          "proposalVersion": 3,
+          "evidenceHash": "a1b2c3d4e5",
+          "previousStatus": "AWAITING_APPROVAL",
+          "newStatus": "APPROVED",
+          "payloadHash": "f6e7d8c9b0",
+          "timestamp": "2026-07-30T12:00:00Z"
+        },
+        "receiptHash": "250df62bbfcf3f1b6b54641b45da81ca50fbf679e93ee50f75939e75c7eaee59",
+        "signerKeyId": "key_test_001",
+        "signerPublicKey": "MCowBQYDK2VwAyEApchx2rhjdQOzCK7+pSUpFamiAp1/7rWz2uuk3KI8B2o=",
+        "signature": "6qJNe5ABgid13vr3tRceW6/YgYB6BCF8UyMSS2rbk9Z8neD3DmpcKCYy7PiMdjX0wuhVAVi8HDmbKJ8nNBaBCg==",
+        "issuedAt": "2026-07-31T03:18:11.140Z"
+      },
+      "vectors": {
+        "receiptHash": "250df62bbfcf3f1b6b54641b45da81ca50fbf679e93ee50f75939e75c7eaee59",
+        "signatureValid": false,
+        "status": "CONTENT_VALID"
+      }
+    },
+    {
+      "name": "receipt-wrong-signer",
+      "description": "Hash intact, signature fails against replaced public key",
+      "receipt": {
+        "protocolVersion": "1.0",
+        "receiptType": "APPROVAL",
+        "algorithm": "Ed25519",
+        "content": {
+          "missionId": "mis_123",
+          "companyId": "cmp_123",
+          "actorId": "user_456",
+          "decision": "APPROVE",
+          "proposalVersion": 3,
+          "evidenceHash": "a1b2c3d4e5",
+          "previousStatus": "AWAITING_APPROVAL",
+          "newStatus": "APPROVED",
+          "payloadHash": "f6e7d8c9b0",
+          "timestamp": "2026-07-30T12:00:00Z"
+        },
+        "receiptHash": "250df62bbfcf3f1b6b54641b45da81ca50fbf679e93ee50f75939e75c7eaee59",
+        "signerKeyId": "key_dev_001",
+        "signerPublicKey": "MCowBQYDK2VwAyEADlgQ+UP6YGM0S9qBq7tO7YGSznnfpYR+H5psGtv4p04=",
+        "signature": "6qJNe5ABgid13vr3tRceW6/YgYB6BCF8UyMSS2rbk9Z8neD3DmpcKCYy7PiMdjX0wuhVAVi8HDmbKJ8nNBaBCw==",
+        "issuedAt": "2026-07-31T03:18:11.140Z"
+      },
+      "vectors": {
+        "receiptHash": "250df62bbfcf3f1b6b54641b45da81ca50fbf679e93ee50f75939e75c7eaee59",
+        "signatureValid": false,
+        "status": "CONTENT_VALID"
+      }
+    },
+    {
+      "name": "receipt-unknown-signer",
+      "description": "Hash+sig valid; trustedKeys does not contain the signer",
+      "receipt": {
+        "protocolVersion": "1.0",
+        "receiptType": "APPROVAL",
+        "algorithm": "Ed25519",
+        "content": {
+          "missionId": "mis_vec_unknown_signer",
+          "companyId": "cmp_dev_001",
+          "actorId": "user_dev_001",
+          "decision": "APPROVE",
+          "proposalVersion": 3,
+          "evidenceHash": "c0ffee01",
+          "previousStatus": "AWAITING_APPROVAL",
+          "newStatus": "APPROVED",
+          "payloadHash": "c0ffee02",
+          "timestamp": "2026-08-01T00:00:00Z"
+        },
+        "receiptHash": "85f0d015b04d695b010d902e3da4c315ec41fee156062d58a77c46cb39e1451a",
+        "signerKeyId": "key_dev_001",
+        "signerPublicKey": "MCowBQYDK2VwAyEADlgQ+UP6YGM0S9qBq7tO7YGSznnfpYR+H5psGtv4p04=",
+        "signature": "Tl2309ENVB/3wjlN/NoOxp2qMvKYBMfvHZdWZvsQz8AETaFt73VJxdJ/qSGY9RUhEhrKrqyTzHID26Ig3EFBAQ==",
+        "issuedAt": "2026-08-01T00:00:00Z"
+      },
+      "vectors": {
+        "receiptHash": "85f0d015b04d695b010d902e3da4c315ec41fee156062d58a77c46cb39e1451a",
+        "signatureValid": true,
+        "status": "UNKNOWN_SIGNER"
+      },
+      "trustedKeys": [
+        {
+          "keyId": "key_test_001",
+          "publicKey": "MCowBQYDK2VwAyEApchx2rhjdQOzCK7+pSUpFamiAp1/7rWz2uuk3KI8B2o=",
+          "issuedAt": "2026-01-01T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "name": "receipt-key-expired",
+      "description": "Trusted key lifecycle expiry",
+      "receipt": {
+        "protocolVersion": "1.0",
+        "receiptType": "APPROVAL",
+        "algorithm": "Ed25519",
+        "content": {
+          "missionId": "mis_vec_key_expired",
+          "companyId": "cmp_dev_001",
+          "actorId": "user_dev_001",
+          "decision": "APPROVE",
+          "proposalVersion": 3,
+          "evidenceHash": "c0ffee01",
+          "previousStatus": "AWAITING_APPROVAL",
+          "newStatus": "APPROVED",
+          "payloadHash": "c0ffee02",
+          "timestamp": "2026-08-01T00:00:00Z"
+        },
+        "receiptHash": "dc87cfd05719a09d3121778bc3e331296d990751e855249a830643d2e8403a75",
+        "signerKeyId": "key_dev_002",
+        "signerPublicKey": "MCowBQYDK2VwAyEAKpI9Uu8RhkRjOGx8g621QGk9PS6bCwuwaOnF+BuqlIs=",
+        "signature": "5LmSXgmLbzOvhp4bHPgV0dhsicZ8JD39O3/aqSAnnGn7lpq1uqJ0wmwrcOkyMvKJZ4fYmFZ1nnHw2kZHukf8DQ==",
+        "issuedAt": "2026-08-01T00:00:00Z"
+      },
+      "vectors": {
+        "receiptHash": "dc87cfd05719a09d3121778bc3e331296d990751e855249a830643d2e8403a75",
+        "signatureValid": true,
+        "status": "KEY_EXPIRED"
+      },
+      "trustedKeys": [
+        {
+          "keyId": "key_dev_002",
+          "publicKey": "MCowBQYDK2VwAyEAKpI9Uu8RhkRjOGx8g621QGk9PS6bCwuwaOnF+BuqlIs=",
+          "issuedAt": "2026-01-01T00:00:00Z",
+          "expiresAt": "2026-06-01T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "name": "receipt-key-revoked",
+      "description": "Trusted key revocation",
+      "receipt": {
+        "protocolVersion": "1.0",
+        "receiptType": "APPROVAL",
+        "algorithm": "Ed25519",
+        "content": {
+          "missionId": "mis_vec_key_revoked",
+          "companyId": "cmp_dev_001",
+          "actorId": "user_dev_001",
+          "decision": "APPROVE",
+          "proposalVersion": 3,
+          "evidenceHash": "c0ffee01",
+          "previousStatus": "AWAITING_APPROVAL",
+          "newStatus": "APPROVED",
+          "payloadHash": "c0ffee02",
+          "timestamp": "2026-08-01T00:00:00Z"
+        },
+        "receiptHash": "967a9e6854e23ae15087ddd6161cfe813a6cac61be03dcebfc2184d914476d8c",
+        "signerKeyId": "key_dev_003",
+        "signerPublicKey": "MCowBQYDK2VwAyEAz6gUcIVAN3ZRKYrHHqt2PAyTPFHu3iLlKiX+I8odZ9A=",
+        "signature": "ycjdEOtaVsw4bQsegdz4PJn1N34N6yxrobVMJ9d2aW0Onh+6WyRkiy0ZLNtKkQKtLUI/eLBYKvB8wVEaPpZIDw==",
+        "issuedAt": "2026-08-01T00:00:00Z"
+      },
+      "vectors": {
+        "receiptHash": "967a9e6854e23ae15087ddd6161cfe813a6cac61be03dcebfc2184d914476d8c",
+        "signatureValid": true,
+        "status": "KEY_REVOKED"
+      },
+      "trustedKeys": [
+        {
+          "keyId": "key_dev_003",
+          "publicKey": "MCowBQYDK2VwAyEAz6gUcIVAN3ZRKYrHHqt2PAyTPFHu3iLlKiX+I8odZ9A=",
+          "issuedAt": "2026-01-01T00:00:00Z",
+          "revokedAt": "2026-06-01T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

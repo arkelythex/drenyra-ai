@@ -1,0 +1,26 @@
+{
+  "classification": "TEST-ONLY",
+  "warning": "Fixed Ed25519 development key pairs used ONLY to generate the committed conformance vectors. These are NOT operational credentials: never load them in production code and never use them to sign real receipts. The key_test_001 private key is intentionally not present in this repository; the positive vectors reuse the frozen legacy signature byte-for-byte.",
+  "keys": [
+    {
+      "keyId": "key_dev_001",
+      "publicKey": "MCowBQYDK2VwAyEADlgQ+UP6YGM0S9qBq7tO7YGSznnfpYR+H5psGtv4p04=",
+      "privateKey": "MC4CAQAwBQYDK2VwBCIEIG6OVhKzo6JP7CC21BL5CszxuCeq+hO3BqZlup/rItgt",
+      "issuedAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "keyId": "key_dev_002",
+      "publicKey": "MCowBQYDK2VwAyEAKpI9Uu8RhkRjOGx8g621QGk9PS6bCwuwaOnF+BuqlIs=",
+      "privateKey": "MC4CAQAwBQYDK2VwBCIEIIZV/MjvrwIURGJaaoUhGaDgHwYnGge67rj1b1t8pev0",
+      "issuedAt": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-06-01T00:00:00Z"
+    },
+    {
+      "keyId": "key_dev_003",
+      "publicKey": "MCowBQYDK2VwAyEAz6gUcIVAN3ZRKYrHHqt2PAyTPFHu3iLlKiX+I8odZ9A=",
+      "privateKey": "MC4CAQAwBQYDK2VwBCIEIJQTcnOTuReIOTuPg2ZjnU2OgEBm6Td93yyST3Y1vVn3",
+      "issuedAt": "2026-01-01T00:00:00Z",
+      "revokedAt": "2026-06-01T00:00:00Z"
+    }
+  ]
+}

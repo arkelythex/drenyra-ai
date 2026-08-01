@@ -1,0 +1,27 @@
+{
+  "name": "drenyra-ai",
+  "version": "0.1.0",
+  "description": "Standalone RED (Receipt-Driven Accounting) core — receipt verification against frozen conformance vectors, and append-only audit ledger validation. Zero runtime dependencies (node:crypto only).",
+  "type": "module",
+  "bin": {
+    "drenyra-ai": "./cmd/cli.ts"
+  },
+  "files": [
+    "receipts",
+    "ledger",
+    "contracts",
+    "cmd"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
