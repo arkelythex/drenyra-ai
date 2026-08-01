@@ -1,0 +1,30 @@
+# Drenyra AI — Contracts
+
+> **Status: draft (pre-alpha).** These contracts are being extracted from `@drenyra/mission-protocol` and related Drenyra packages. Nothing is frozen until Phase 1 of the [ROADMAP](../ROADMAP.md) completes.
+
+Contracts are the **public surface** of Drenyra AI. They are transport-agnostic, versioned, and consumed by Drenyra, Drenyra Pi, ERPs, other SaaS, and agent hosts. Changing a contract is a public contract change: bump the version, document the migration path, and get explicit approval.
+
+## Index
+
+| Contract            | Version | Status | Consumed by                                      |
+| ------------------- | ------- | ------ | ------------------------------------------------ |
+| [mission-protocol](mission-protocol.md) | 0.1-draft | Draft | Drenyra, Drenyra Pi, CLI |
+| [candidate](candidate.md) | 0.1-draft | Draft | Drenyra, Drenyra Pi, review tooling |
+| [receipt](receipt.md) | 0.1-draft | Draft | All consumers, ERPs, auditors |
+| [gate](gate.md) | 0.1-draft | Draft | Drenyra, Drenyra Pi, CI/CD |
+
+## Contract requirements
+
+1. **Versioned.** Every contract declares `version` and a compatibility policy (major = breaking).
+2. **Verifiable.** Anything cryptographic ships with canonical vectors and a conformance test suite.
+3. **Scope-safe.** Every artifact carries RUC/company/period scope where fiscal context applies.
+4. **Transport-agnostic.** No HTTP, CLI, or framework bindings inside contract types.
+5. **Backward-compatible by default.** Breaking changes require a major bump and a migration path.
+
+## How to change a contract
+
+1. Open a change proposal against the affected contract doc.
+2. Update the doc, bump the version, and add the migration section.
+3. Update conformance vectors in lockstep.
+4. Review with proportional risk review (contracts are high-materiality).
+5. Publish a release; consumers upgrade on their own cadence.
