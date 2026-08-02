@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 /**
- * drenyra-ai CLI — receipt verification, ledger validation, and missions.
+ * drenyra-ai CLI — receipt verification, ledger validation, missions, and
+ * candidate identity + proportional review.
  *
  * Commands:
  *   drenyra-ai receipt verify <receipt.json> [--keys <keys.json>]
@@ -8,6 +9,14 @@
  *   drenyra-ai mission start <create-command.json> [--store <file>]
  *   drenyra-ai mission apply <command.json> [--store <file>]
  *   drenyra-ai mission status <missionId> [--store <file>]
+ *   drenyra-ai candidate inspect <candidate.json>
+ *   drenyra-ai candidate verify <candidate.json> --subject <subject-file>
+ *
+ * Candidate inspect file: { subjectB64, scope: { ruc, period }, valueCents,
+ * reversibility, jurisdiction } — valueCents is a decimal string parsed to
+ * BigInt (floats and negatives are rejected). Candidate verify revalidates
+ * identity by hashing the exact bytes of --subject and comparing to the
+ * candidate.subjectHash field.
  *
  * Exit codes: 0 valid, 1 invalid/business error, 2 usage/IO error. JSON goes
  * to stdout; the human-readable one-line summary goes to stderr.
@@ -58,6 +67,12 @@ import {
   InMemoryMissionStore,
   IntentRegistryImpl,
 } from "../missions/index.js";
+import { CandidateLifecycle } from "../candidates/lifecycle.js";
+import { isCandidateError } from "../candidates/errors.js";
+import { computeSubjectHash } from "../candidates/identity.js";
+import type { Reversibility } from "../candidates/types.js";
+import { selectReviewLenses } from "../review/lenses.js";
+import { forecastReviewWorkload } from "../review/workload.js";
 
 /** Embedded-key trust root: an epoch issue date so the key is always current. */
 const EPOCH_ISSUED_AT = "1970-01-01T00:00:00.000Z";
@@ -763,28 +778,193 @@ function ledgerValidate(args: string[]): number {
       }
     }
 
-    async function main(argv: string[]): Promise<number> {
-      const command = argv[0];
-      const subcommand = argv[1];
-      if (command === "receipt" && subcommand === "verify") {
-        return receiptVerify(argv.slice(2));
-      }
-      if (command === "ledger" && subcommand === "validate") {
-        return ledgerValidate(argv.slice(2));
-      }
-      if (command === "mission" && subcommand === "start") {
-        return missionStart(argv.slice(2));
-      }
-      if (command === "mission" && subcommand === "apply") {
-        return missionApply(argv.slice(2));
-      }
-      if (command === "mission" && subcommand === "status") {
-        return missionStatus(argv.slice(2));
-      }
-      return usageError(
-        `unknown command "${command ?? ""} ${subcommand ?? ""}"; expected "receipt verify", "ledger validate", or "mission start|apply|status"`,
-      );
-    }
+        // ─── candidates ────────────────────────────────────────────────────────────
+        //
+        // Candidate identity + proportional review (contracts/candidate.md).
+        // valueCents is parsed as BigInt from a decimal string — floats and
+        // negatives are rejected. Fiscal convention: monetary values in the
+        // Drenyra ecosystem are BigInt cents; no float is ever used for money;
+        // exit codes are plain integers (0/1/2).
+
+        const BASE64_RE = /^[A-Za-z0-9+/]*={0,2}$/;
+        const DECIMAL_CENTS_RE = /^\d+$/;
+        const REVERSIBILITY_VALUES = new Set<Reversibility>([
+          "reversible",
+          "partially-reversible",
+          "irreversible",
+        ]);
+
+        interface CandidateInspectFile {
+          subjectB64: string;
+          scope: { ruc: string; period: string };
+          valueCents: string;
+          reversibility: Reversibility;
+          jurisdiction: string;
+        }
+
+        function isCandidateInspectFile(input: unknown): input is CandidateInspectFile {
+          if (typeof input !== "object" || input === null) {
+            return false;
+          }
+          const record = input as Record<string, unknown>;
+          const scope = record.scope as Record<string, unknown> | undefined;
+          return (
+            typeof record.subjectB64 === "string" &&
+            BASE64_RE.test(record.subjectB64) &&
+            record.subjectB64.length % 4 === 0 &&
+            scope !== undefined &&
+            typeof scope.ruc === "string" &&
+            typeof scope.period === "string" &&
+            typeof record.valueCents === "string" &&
+            DECIMAL_CENTS_RE.test(record.valueCents) &&
+            typeof record.reversibility === "string" &&
+            REVERSIBILITY_VALUES.has(record.reversibility as Reversibility) &&
+            typeof record.jurisdiction === "string" &&
+            record.jurisdiction.length > 0
+          );
+        }
+
+        function candidateInspect(args: string[]): number {
+          const candidatePath = args[0];
+          if (candidatePath === undefined) {
+            return usageError("usage: drenyra-ai candidate inspect <candidate.json>");
+          }
+          if (args.length > 1) {
+            return usageError(`unknown option "${args[1]}"`);
+          }
+          try {
+            const raw = loadJson(candidatePath);
+            if (!isCandidateInspectFile(raw)) {
+              return usageError(
+                `${candidatePath} must be { subjectB64, scope: { ruc, period }, valueCents, reversibility, jurisdiction }`,
+              );
+            }
+            const subject = Buffer.from(raw.subjectB64, "base64");
+            const valueCents = BigInt(raw.valueCents);
+            const lifecycle = new CandidateLifecycle();
+            const candidate = lifecycle.propose({
+              subject,
+              scope: raw.scope,
+              materialityInput: {
+                value: valueCents,
+                reversibility: raw.reversibility,
+                jurisdiction: raw.jurisdiction,
+              },
+            });
+            const recommendedLenses = selectReviewLenses({
+              filePaths: [],
+              changedLines: 1,
+              isPreCommit: false,
+              isPrePR: true,
+              isPostSDDPhase: false,
+            });
+            const workload = forecastReviewWorkload({
+              estimatedLines: 1,
+              estimatedFiles: 1,
+              affectedSubsystems: ["candidates"],
+              isMechanicalRefactor: false,
+              isFiscalChange: false,
+              reviewerContext: "fresh",
+            });
+            const output = {
+              id: candidate.id,
+              subjectHash: candidate.subjectHash,
+              scope: candidate.scope,
+              materiality: candidate.materiality,
+              status: candidate.status,
+              recommendedLenses,
+              workload,
+            };
+            console.log(JSON.stringify(output, null, 2));
+            console.error(
+              `candidate inspect: id=${candidate.id} materiality=${candidate.materiality} status=${candidate.status}`,
+            );
+            return 0;
+          } catch (error) {
+            if (isCandidateError(error)) {
+              console.error(`candidate inspect: ${error.code}: ${error.message}`);
+            } else {
+              console.error(`candidate inspect: IO/parse error: ${errorMessage(error)}`);
+            }
+            return 2;
+          }
+        }
+
+        function candidateVerify(args: string[]): number {
+          let subjectPath: string | undefined;
+          const rest: string[] = [];
+          for (let i = 0; i < args.length; i++) {
+            const arg = args[i];
+            if (arg === "--subject") {
+              const next = args[i + 1];
+              if (next === undefined) {
+                return usageError("--subject requires a file path");
+              }
+              if (subjectPath !== undefined) {
+                return usageError("--subject given more than once");
+              }
+              subjectPath = next;
+              i += 1;
+            } else {
+              rest.push(arg);
+            }
+          }
+          const candidatePath = rest[0];
+          if (candidatePath === undefined || rest.length > 1 || subjectPath === undefined) {
+            return usageError(
+              "usage: drenyra-ai candidate verify <candidate.json> --subject <subject-file>",
+            );
+          }
+          try {
+            const raw = loadJson(candidatePath);
+            if (typeof raw !== "object" || raw === null) {
+              return usageError(`${candidatePath} must be an object with a subjectHash field`);
+            }
+            const expectedHash = (raw as Record<string, unknown>).subjectHash;
+            if (typeof expectedHash !== "string" || expectedHash.length === 0) {
+              return usageError(`${candidatePath} must contain a subjectHash string`);
+            }
+            const subjectBytes = readFileSync(subjectPath);
+            const subjectHash = computeSubjectHash(subjectBytes);
+            const valid = subjectHash === expectedHash;
+            const output = { valid, subjectHash, expectedHash };
+            console.log(JSON.stringify(output, null, 2));
+            console.error(`candidate verify: valid=${valid}`);
+            return valid ? 0 : 1;
+          } catch (error) {
+            console.error(`candidate verify: IO/parse error: ${errorMessage(error)}`);
+            return 2;
+          }
+        }
+
+        async function main(argv: string[]): Promise<number> {
+          const command = argv[0];
+          const subcommand = argv[1];
+          if (command === "receipt" && subcommand === "verify") {
+            return receiptVerify(argv.slice(2));
+          }
+          if (command === "ledger" && subcommand === "validate") {
+            return ledgerValidate(argv.slice(2));
+          }
+          if (command === "mission" && subcommand === "start") {
+            return missionStart(argv.slice(2));
+          }
+          if (command === "mission" && subcommand === "apply") {
+            return missionApply(argv.slice(2));
+          }
+          if (command === "mission" && subcommand === "status") {
+            return missionStatus(argv.slice(2));
+          }
+          if (command === "candidate" && subcommand === "inspect") {
+            return candidateInspect(argv.slice(2));
+          }
+          if (command === "candidate" && subcommand === "verify") {
+            return candidateVerify(argv.slice(2));
+          }
+          return usageError(
+            `unknown command "${command ?? ""} ${subcommand ?? ""}"; expected "receipt verify", "ledger validate", "mission start|apply|status", or "candidate inspect|verify"`,
+          );
+        }
 
 const exitCode = await main(process.argv.slice(2));
 process.exit(exitCode);

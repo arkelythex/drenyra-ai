@@ -41,6 +41,23 @@ Materiality is computed from **value (BigInt cents), reversibility, and jurisdic
 | R2   | Monthly close, batch mutations                               | Explicit review + approval |
 | R3   | Irreversible operations (declarations, payments, deletion)   | Explicit dual approval    |
 
+## Materiality policy (draft)
+
+Materiality is derived deterministically from the `MaterialityInput` — value (BigInt cents), reversibility, and jurisdiction — never from agent claims. Rules are evaluated in this exact order:
+
+1. `value === 0n` AND `reversibility === "reversible"` → **R0** (read-only / non-material)
+2. `reversibility === "irreversible"` → **R3**
+3. `reversibility === "partially-reversible"` → **R2**
+4. `value >= 100_000_00n` (S/100,000.00 in cents) → **R3**
+5. `value >= 10_000_00n` (S/10,000.00 in cents) → **R2**
+6. otherwise → **R1**
+
+Jurisdiction rule (fail-closed): any `jurisdiction !== "PE"` escalates one tier (R0→R1, R1→R2, R2→R3) until a country-pack exists for that jurisdiction; **R3 stays R3**.
+
+Jurisdiction-specific thresholds and reversibility mappings will live in country-packs (`country-packs/<ISO-3166-1-alpha-2>.json`) once defined. Until then the PE rule above is the only policy, and every other jurisdiction fails closed into a higher tier.
+
+Values are whole-number cents as BigInt — no float is ever used for money. Threshold constants: `HIGH_VALUE_CENTS = 100_000_00n`, `MEDIUM_VALUE_CENTS = 10_000_00n`.
+
 ## Review
 
 - Review depth follows materiality; reviewers never skip tiers.

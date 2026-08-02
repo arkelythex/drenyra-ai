@@ -19,6 +19,6 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["receipts", "ledger", "missions", "cmd", "vitest.config.ts"],
+  "include": ["receipts", "ledger", "missions", "candidates", "review", "cmd", "vitest.config.ts"],
   "exclude": ["node_modules", "dist", "coverage"]
 }
