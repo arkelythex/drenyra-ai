@@ -1,0 +1,11 @@
+{
+  "success": false,
+  "error": {
+    "code": "VERSION_CONFLICT",
+    "message": "Stale version: expected 2, got 1",
+    "details": {
+      "currentVersion": 1,
+      "expectedVersion": 2
+    }
+  }
+}

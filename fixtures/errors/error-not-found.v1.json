@@ -1,0 +1,7 @@
+{
+  "success": false,
+  "error": {
+    "code": "MISSION_NOT_FOUND",
+    "message": "Mission mis_nonexistent not found"
+  }
+}

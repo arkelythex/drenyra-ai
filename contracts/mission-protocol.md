@@ -69,3 +69,23 @@ Errors are structured: `code` (machine), `message` (human), `retryable`, `scope`
 ## Conformance
 
 Conformance vectors cover: legal state transitions, illegal transitions (must reject), command validation, event ordering, and recovery-after-crash. These vectors ship with the reference implementation.
+
+## Reference implementation
+
+The TypeScript reference implementation of this contract lives in `missions/` in this repository (a port of `@drenyra/mission-protocol` plus the state-machine enforcement from `@drenyra/mission-domain`), with zero runtime dependencies (node:crypto built-in only):
+
+| Module | Contents |
+| ------ | -------- |
+| `missions/status.ts` | 14-state `AccountingMissionStatus`, `VALID_TRANSITIONS`, terminal/extended state sets, predicates, `STATUS_LABELS` |
+| `missions/commands.ts` | Command payloads and the `MissionCommand` discriminated union |
+| `missions/events.ts` | `MissionEvent`, SSE parse/keepalive/format helpers |
+| `missions/errors.ts` | 31 canonical `MissionErrorCode`s, `MissionError`, `isMissionError` |
+| `missions/versioning.ts` | `PROTOCOL_VERSION`, capability list, compatibility negotiation |
+| `missions/idempotency.ts` | Idempotency key factory and validation |
+| `missions/types.ts` | Snapshot/proposal/evidence/blocker types (`ReceiptType` re-exported from `receipts/types.ts` — single definition) |
+| `missions/transitions.ts` | `transition`, `validateTransition`, `guardTerminal`, `reconcileTransition`, `isValidRecoveryPath` |
+| `missions/store.ts` | Store ports plus in-memory implementations |
+| `missions/intents.ts` | `IntentHandler` and `IntentRegistry` |
+| `missions/runtime.ts` | `MissionRuntime` — durable state machine with idempotency replay, optimistic concurrency, recovery |
+
+The protocol modules are ported verbatim (byte-identical except the fiscal header comment); `types.ts` adapts `ReceiptType` to the single definition in `receipts/types.ts`. The CLI (`cmd/cli.ts`) exposes `mission start|apply|status` as an executable reference surface over a JSON store file.
