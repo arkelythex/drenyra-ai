@@ -10,6 +10,6 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": ["receipts", "ledger", "missions", "candidates", "review", "cmd", "index.ts"],
+  "include": ["receipts", "ledger", "missions", "candidates", "review", "gates", "recovery", "cmd", "index.ts"],
   "exclude": ["node_modules", "dist", "coverage", "**/__tests__/**", "vitest.config.ts"]
 }

@@ -47,3 +47,12 @@ Approval is a first-class event:
 ## Conformance
 
 Vectors cover: allowed/blocked transitions per gate, authority derivation, receipt requirement, dual-approval enforcement at R3, and fail-closed behavior on unknown states.
+
+## Reference implementation
+
+`drenyra-ai` ships a zero-dependency TypeScript reference implementation under `gates/`:
+
+- `gates/approval.ts` — `ApprovalGate`: materiality-proportional approval (R0/R1 none, R2 single, R3 dual distinct approvers; `needs_input` carries the approval envelope).
+- `gates/receipt.ts` — `ReceiptGate`: signed-receipt authenticity + trusted signer lifecycle (allow-list keys, embedded-key self-trust fallback documented as weak).
+- `gates/mission.ts` — `MissionStateGate`: validates a target status against the canonical mission transition table; illegal or terminal transitions are blocked.
+- `gates/runner.ts` — `GateRunner`: deterministic fail-closed pipeline — the first non-allowed verdict stops the run and is returned with its envelope.

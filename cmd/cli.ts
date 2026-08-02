@@ -16,8 +16,10 @@
  *   drenyra-ai mission start <create-command.json> [--store <file>] [--demo]
  *   drenyra-ai mission apply <command.json> [--store <file>] [--demo]
  *   drenyra-ai mission status <missionId> [--store <file>]
+ *   drenyra-ai mission recover [--store <file>]
  *   drenyra-ai candidate inspect <candidate.json>
  *   drenyra-ai candidate verify <candidate.json> --subject <subject-file>
+ *   drenyra-ai gate check <gate-input.json>
  *
  * Mission note: the default CLI path registers NO intent handlers, so
  * `mission apply` with a type "execute" command fails with
@@ -30,8 +32,10 @@ import { ledgerValidateCommand } from "./commands/ledger-validate.js";
 import { missionStartCommand } from "./commands/mission-start.js";
 import { missionApplyCommand } from "./commands/mission-apply.js";
 import { missionStatusCommand } from "./commands/mission-status.js";
+import { missionRecoverCommand } from "./commands/mission-recover.js";
 import { candidateInspectCommand } from "./commands/candidate-inspect.js";
 import { candidateVerifyCommand } from "./commands/candidate-verify.js";
+import { gateCheckCommand } from "./commands/gate-check.js";
 import { usageError } from "./output/errors.js";
 
 /** Command handler signature: raw args, resolved exit code (0/1/2). */
@@ -44,10 +48,14 @@ const COMMANDS: Readonly<Record<string, Readonly<Record<string, CommandHandler>>
     start: missionStartCommand,
     apply: missionApplyCommand,
     status: missionStatusCommand,
+    recover: missionRecoverCommand,
   },
   candidate: {
     inspect: candidateInspectCommand,
     verify: candidateVerifyCommand,
+  },
+  gate: {
+    check: gateCheckCommand,
   },
 };
 
@@ -69,10 +77,14 @@ function helpText(): string {
     "    Apply an execute/approve/reject/reconcile command.",
     "  mission status <missionId> [--store <file>]",
     "    Show a mission snapshot and its event log.",
+    "  mission recover [--store <file>]",
+    "    Crash-safe recovery: mark in-flight RUNNING missions UNKNOWN (idempotent).",
     "  candidate inspect <candidate.json>",
     "    Derive candidate identity + materiality from an inspect file.",
     "  candidate verify <candidate.json> --subject <subject-file>",
     "    Revalidate candidate identity against the exact subject bytes.",
+    "  gate check <gate-input.json>",
+    "    Run the standard gates [mission, receipt, approval] over a gate input.",
     "",
     "Exit codes: 0 success, 1 business error (JSON error to stdout), 2 usage/IO.",
     "",
@@ -97,7 +109,7 @@ async function main(argv: string[]): Promise<number> {
   const handler = COMMANDS[command ?? ""]?.[subcommand ?? ""];
   if (handler === undefined) {
     return usageError(
-      `unknown command "${command ?? ""} ${subcommand ?? ""}"; expected "receipt verify", "ledger validate", "mission start|apply|status", or "candidate inspect|verify"`,
+      `unknown command "${command ?? ""} ${subcommand ?? ""}"; expected "receipt verify", "ledger validate", "mission start|apply|status|recover", "candidate inspect|verify", or "gate check"`,
     );
   }
   return handler(argv.slice(2));
