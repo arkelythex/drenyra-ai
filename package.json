@@ -29,7 +29,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "verify:package": "node scripts/build.mjs && bun run test && node scripts/verify-package-files.mjs",
-    "prepack": "node scripts/build.mjs"
+    "prepack": "bun run verify:package",
+    "prepublishOnly": "bun run typecheck && bun run verify:package && node scripts/verify-packed-install.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",

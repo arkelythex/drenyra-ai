@@ -19,6 +19,20 @@ Every release must pass, in order:
 3. **Conformance vectors** — canonical vectors for receipt verification, ledger hashing, and any other deterministic behavior pass against the exact release candidate. Vectors are updated in lockstep with contract changes.
 4. **Package build + pack verification** — build the package and verify the packed artifact contains exactly the intended files (`package.json` `files` list).
 5. **Packed-install test** — install the packed tarball in a clean consumer and run a smoke command (e.g. `drenyra-ai receipt verify` on a canonical vector) to prove the release works outside the checkout.
+6. **Publish gates** — `npm publish` runs `prepack` (`verify:package`) and `prepublishOnly` (typecheck + `verify:package` + `verify-packed-install`) automatically, so the protection does not depend on CI alone.
+
+## Release provenance
+
+For a fiscal runtime, distribution provenance matters at least as much as the code. A release should ship (or link) each of:
+
+- **GitHub Release** — tag `v<version>` (signed tag) with release notes from the CHANGELOG.
+- **npm provenance** — `npm publish --provenance` when the registry + CI support it.
+- **SHA-256 manifest** — checksums of every published artifact (tarball, SBOM) so consumers can verify what they installed.
+- **SBOM** — software bill of materials (generated at release; tooling to be wired into CI).
+- **Changelog + migration note** — what changed and how consumers migrate.
+- **Contract compatibility report** — which contracts are unchanged vs. bumped (major = breaking), so consumers know their compatibility window.
+
+Pre-alpha note: provenance items beyond the signed tag and changelog are documented as the target; the SBOM/manifest tooling lands with the first real release.
 
 ## Commit and release discipline
 
