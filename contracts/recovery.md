@@ -1,6 +1,6 @@
 # Contract: recovery
 
-> Version: 0.1-draft · Status: draft · Transport-agnostic.
+> Version: 0.1 · Status: FROZEN · Transport-agnostic.
 >
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents;
 > no float is ever used for money; version/sequence/verdict values are JSON
@@ -35,8 +35,8 @@ The event log is the single source of truth for what actually happened.
 | `RUNNING`              | recover-to-unknown   | In-flight when the crash hit; must be marked UNKNOWN first  |
 | `RETRYING`             | recover-to-unknown   | In-flight (automatic retry); same handling as RUNNING       |
 | `UNKNOWN`              | decide-by-evidence   | Resolve from the event log, never by guessing               |
-| `WAITING_FOR_EVIDENCE` | leave                | Human-wait state; NEVER auto-recovered                      |
-| `BLOCKED_BY_GATE`      | leave                | Human-wait state; NEVER auto-recovered                      |
+| `WAITING_FOR_EVIDENCE` | leave                | Human-wait state; NEVER auto-recovered by the default policy (`DEFAULT_RECOVERABLE = [RUNNING]`) |
+| `BLOCKED_BY_GATE`      | leave                | Human-wait state; NEVER auto-recovered by the default policy |
 | `FAILED`               | terminal             | Terminal; never touched                                     |
 | `COMPLETED`            | terminal             | Terminal; never touched                                     |
 | any other state        | leave                | Not in-flight; nothing to resume                            |
@@ -73,3 +73,10 @@ two processes never recover the same mission.
 Vectors cover: per-state action mapping, decide-by-evidence on the last UNKNOWN
 marker, replay reconstruction of a full lifecycle (start + execute x3 + approve
 → APPROVED v5), and idempotent recovery (a second pass changes nothing).
+
+## Freeze record
+
+- **Freeze date:** 2026-08-02
+- **Frozen by release:** **0.2.0** — the release that freezes this contract.
+- **Normative surface pinned by:** [`contracts/__tests__/recovery-conformance.test.ts`](./__tests__/recovery-conformance.test.ts) — runs in CI (`bun run test`) and fails on drift: the per-state recovery-action table (RUNNING/RETRYING → recover-to-unknown, UNKNOWN → decide-by-evidence, human-wait → leave, terminal → terminal), decide-by-evidence on the last UNKNOWN marker, event-log replay where the last persisted event wins (with empty, malformed, and cross-mission logs rejected), and idempotent recovery via `recoverIncomplete` (a second pass yields no new events).
+- **Migration note:** any change to the normative surface (per-state actions, decide-by-evidence semantics, replay semantics, idempotency guarantees) requires a **major** version bump of the recovery contract. The migration path for a future major is documented in the release notes of that major.

@@ -7,6 +7,18 @@ All notable changes to Drenyra AI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
+## 0.2.0 — 2026-08-02
+
+### Added — all six contracts FROZEN
+
+- **`ledger` frozen at v0.1** — pinned by `contracts/__tests__/ledger-conformance.test.ts` (29 tests): all 9 validation rules (positive + negative), validation-result shape with first-divergence, manifest shape, append-only guarantee, and fail-closed on missing signer material (undefined signature now yields a violation, never a TypeError).
+- **`recovery` frozen at v0.1** — pinned by `contracts/__tests__/recovery-conformance.test.ts` (26 tests): per-state recovery actions, decide-by-evidence, event-log replay, idempotent recovery. Doc scoped: human-wait states are never auto-recovered **by the default policy** (`DEFAULT_RECOVERABLE = [RUNNING]`); explicit caller policies may include other states.
+
+### Notes
+
+- `0.2.0` is a backward-compatible MINOR: the frozen surface grows (ledger + recovery become normative); nothing existing breaks. Changes to a frozen contract now require a major version bump.
+- `dist/cmd/cli.js` checksum unchanged from 0.1.0 (`e4e81914…`) — deterministic build.
+
 ## 0.1.0 — 2026-08-02
 
 ### Added — first FROZEN contracts

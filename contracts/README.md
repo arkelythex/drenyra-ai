@@ -1,6 +1,6 @@
 # Drenyra AI — Contracts
 
-> **Status: mission-protocol, candidate, receipt, and gate are FROZEN at v0.1 (release 0.1.0); ledger and recovery remain draft (0.1-draft).** Freezing means the normative surface of each frozen contract is pinned by a conformance suite that runs in CI and fails on drift.
+> **Status: all six contracts are FROZEN at v0.1 (release 0.2.0).** Freezing means the normative surface of each frozen contract is pinned by a conformance suite that runs in CI and fails on drift.
 >
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents
 > (no float is ever used for money); sequence and version values are JSON
@@ -16,8 +16,8 @@ Contracts are the **public surface** of Drenyra AI. They are transport-agnostic,
 | [candidate](candidate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, review tooling |
 | [receipt](receipt.md) | 0.1 | FROZEN | All consumers, ERPs, auditors |
 | [gate](gate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, CI/CD |
-| [ledger](ledger.md) | 0.1-draft | Draft | Auditors, ERPs, Drenyra Pi |
-| [recovery](recovery.md) | 0.1-draft | Draft | Drenyra Pi, CLI |
+| [ledger](ledger.md) | 0.1 | FROZEN | Auditors, ERPs, Drenyra Pi |
+| [recovery](recovery.md) | 0.1 | FROZEN | Drenyra Pi, CLI |
 
 ## Contract requirements
 

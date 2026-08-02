@@ -125,10 +125,12 @@ export function validateLedger(
         fail(i, "hash-only entry must not carry signature or signerPublicKey");
       }
     } else {
-      if (entry.signature.length === 0) {
+      // Fail closed on missing signer material too: treat undefined as empty
+      // so a malformed signed entry produces a violation, never a TypeError.
+      if ((entry.signature ?? "").length === 0) {
         fail(i, "signed entry must carry a non-empty signature");
       }
-      if (entry.signerPublicKey.length === 0) {
+      if ((entry.signerPublicKey ?? "").length === 0) {
         fail(i, "signed entry must carry a non-empty signerPublicKey");
       }
     }

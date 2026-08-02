@@ -17,6 +17,9 @@
 - [x] Freeze `gate` v0.1 (authority, validation, delivery) — `gate-conformance.test.ts`
 - [x] Contract conformance test suite (golden files) — 77 conformance tests, run in CI, fail on drift
 - [x] Released as **0.1.0** (first frozen-contract release)
+- [x] Freeze `ledger` v0.1 — `ledger-conformance.test.ts` (29 tests)
+- [x] Freeze `recovery` v0.1 — `recovery-conformance.test.ts` (26 tests)
+- [x] Released as **0.2.0** — **all six contracts FROZEN** (Phase 1 COMPLETE)
 
 ## Phase 2 — Vertical slices from Drenyra
 

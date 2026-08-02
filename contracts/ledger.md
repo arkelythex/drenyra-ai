@@ -1,6 +1,6 @@
 # Contract: ledger
 
-> Version: 0.1-draft · Status: draft · Transport-agnostic.
+> Version: 0.1 · Status: FROZEN · Transport-agnostic.
 >
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents
 > (no float is ever used for money); ledger sequence numbers and divergence
@@ -82,3 +82,10 @@ interface LedgerValidationResult {
 ## Conformance
 
 Vectors cover: valid chain passes; broken continuity fails at the exact index; non-GENESIS first entry fails; wrong GENESIS hash fails; sequence gaps fail; tampered `receiptHash` fails; hash-only entry with signature fails; mixed `ledgerId` fails. These vectors ship with the reference implementation in `ledger/__tests__`.
+
+## Freeze record
+
+- **Freeze date:** 2026-08-02
+- **Frozen by release:** **0.2.0** — the release that freezes this contract.
+- **Normative surface pinned by:** [`contracts/__tests__/ledger-conformance.test.ts`](./__tests__/ledger-conformance.test.ts) — runs in CI (`bun run test`) and fails on drift: all 9 validation rules with positive and negative cases (non-empty chain, GENESIS anchoring at the canonical `sha256("")` hash with sequence 1, continuity, strict sequence, 64-lowercase-hex hash formats, hash-only vs signed entries, single-chain scope, receipt-backed `RECEIPT_RECORDED`, consistent `schemaVersion`), the `LedgerValidationResult` shape (`valid` / `firstDivergence` at the lowest failing index / `reasons` in chain order), the manifest shape, and the append-only no-repair guarantee.
+- **Migration note:** any change to the normative surface (entry shape, manifest shape, validation rules, result shape, hash algorithm) requires a **major** version bump of the ledger contract. Auditors and ERPs must declare the ledger protocol version they speak and reject unknown majors; the migration path for a future major is documented in the release notes of that major.
