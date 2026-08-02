@@ -1,6 +1,10 @@
 # Contract: candidate
 
-> Version: 0.1-draft · Status: draft · Transport-agnostic.
+> Version: 0.1 · Status: FROZEN · Transport-agnostic.
+>
+> Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents
+> (no float is ever used for money); sequence and version values are JSON
+> integers, never floats.
 
 A **candidate** is an agent's proposal for a material accounting action, made first-class and reviewable. Candidates are the unit of **human-supervised AI execution**: the agent proposes, the candidate carries identity and materiality, and risk-proportional review decides.
 
@@ -77,3 +81,10 @@ A correction must be:
 ## Conformance
 
 Vectors cover: identity derivation (same bytes → same id), materiality derivation per jurisdiction, review-tier escalation, correction budget enforcement, and rejection of mutated subjects.
+
+## Freeze record
+
+- **Freeze date:** 2026-08-02
+- **Frozen by release:** **0.1.0** — the first release that freezes this contract.
+- **Normative surface pinned by:** [`contracts/__tests__/candidate-conformance.test.ts`](./__tests__/candidate-conformance.test.ts) — runs in CI (`bun run test`) and fails on drift: content-derived identity, the full materiality policy matrix (rules in the documented order, jurisdiction fail-closed escalation, R3 ceiling, threshold constants as BigInt cents), the lifecycle `proposed → inspected → reviewing → accepted | corrected | rejected`, the one-correction budget, and mutated-subject rejection.
+- **Migration note:** any change to the normative surface (identity derivation, materiality policy, lifecycle, correction budget, error codes) requires a **major** version bump of the candidate contract. The migration path for a future major is documented in the release notes of that major; consumer review tooling must declare the candidate version it speaks and reject unknown majors.

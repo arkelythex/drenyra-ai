@@ -9,13 +9,14 @@
 - [ ] Contract review and freeze: mission-protocol, candidate, receipt, gate
 - [ ] Public roadmap and architecture published
 
-## Phase 1 — Contracts (v0.1)
+## Phase 1 — Contracts (v0.1) — COMPLETE
 
-- [ ] Freeze `mission-protocol` v0.1 (states, commands, events, errors, versioning)
-- [ ] Freeze `candidate` v0.1 (identity, materiality, review proportionality)
-- [ ] Freeze `receipt` v0.1 (schema, Ed25519 verification, canonical vectors)
-- [ ] Freeze `gate` v0.1 (authority, validation, delivery)
-- [ ] Contract conformance test suite (golden files)
+- [x] Freeze `mission-protocol` v0.1 (states, commands, events, errors, versioning) — conformance suite `contracts/__tests__/mission-protocol-conformance.test.ts`
+- [x] Freeze `candidate` v0.1 (identity, materiality, review proportionality) — `candidate-conformance.test.ts`
+- [x] Freeze `receipt` v0.1 (schema, Ed25519 verification, canonical vectors) — frozen vectors + `receipt-conformance.test.ts`
+- [x] Freeze `gate` v0.1 (authority, validation, delivery) — `gate-conformance.test.ts`
+- [x] Contract conformance test suite (golden files) — 77 conformance tests, run in CI, fail on drift
+- [x] Released as **0.1.0** (first frozen-contract release)
 
 ## Phase 2 — Vertical slices from Drenyra
 

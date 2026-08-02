@@ -1,6 +1,10 @@
 # Contract: receipt
 
-> Version: 0.1-draft · Status: draft · Transport-agnostic.
+> Version: 0.1 · Status: FROZEN · Transport-agnostic.
+>
+> Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents
+> (no float is ever used for money); proposalVersion and sequence/version values
+> serialize as JSON integers, never floats.
 
 The **receipt** is the RDA (Receipt-Driven Accounting) primitive: an immutable, verifiable record of a material accounting action. **Nothing material happens without a receipt.**
 
@@ -66,3 +70,12 @@ Each receipt's `before_state` commits the ledger head it was written against, so
 ## Conformance
 
 Vectors cover: canonical serialization, signature verification, chain continuity, tamper detection, scope checks, and schema-version rejection.
+
+## Freeze record
+
+- **Freeze date:** 2026-08-02
+- **Frozen by release:** **0.1.0** — the first release that freezes this contract.
+- **Normative surface pinned by:**
+  - [`contracts/receipt-schema/fixtures/conformance-vectors.v1.json`](./receipt-schema/fixtures/conformance-vectors.v1.json) — the frozen byte vectors, verified byte-for-byte by `receipts/__tests__/conformance-vectors.test.ts` (drift-guard);
+  - [`contracts/__tests__/receipt-conformance.test.ts`](./__tests__/receipt-conformance.test.ts) — runs in CI (`bun run test`) and fails on drift: the verification status chain (`PAYLOAD_TAMPERED → CONTENT_VALID → UNKNOWN_SIGNER → KEY_EXPIRED → KEY_REVOKED → SIGNER_TRUSTED`), the `verifySignedReceipt` result shape, the canonical key-sorted-shallow serialization rule, and mutated-content-byte tamper detection.
+- **Migration note:** any change to the normative surface (schema shape, canonical serialization, verification status chain, hash/signature algorithms, version semantics) requires a **major** version bump of the receipt contract — and a new frozen vector set under `contracts/receipt-schema/` that all runtimes must reproduce byte-for-byte. Unknown receipt schema versions fail closed; the migration path for a future major is documented in the release notes of that major.

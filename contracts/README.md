@@ -1,6 +1,10 @@
 # Drenyra AI — Contracts
 
-> **Status: draft (pre-alpha).** These contracts are being extracted from `@drenyra/mission-protocol` and related Drenyra packages. Nothing is frozen until Phase 1 of the [ROADMAP](../ROADMAP.md) completes.
+> **Status: mission-protocol, candidate, receipt, and gate are FROZEN at v0.1 (release 0.1.0); ledger and recovery remain draft (0.1-draft).** Freezing means the normative surface of each frozen contract is pinned by a conformance suite that runs in CI and fails on drift.
+>
+> Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents
+> (no float is ever used for money); sequence and version values are JSON
+> integers, never floats.
 
 Contracts are the **public surface** of Drenyra AI. They are transport-agnostic, versioned, and consumed by Drenyra, Drenyra Pi, ERPs, other SaaS, and agent hosts. Changing a contract is a public contract change: bump the version, document the migration path, and get explicit approval.
 
@@ -8,10 +12,12 @@ Contracts are the **public surface** of Drenyra AI. They are transport-agnostic,
 
 | Contract            | Version | Status | Consumed by                                      |
 | ------------------- | ------- | ------ | ------------------------------------------------ |
-| [mission-protocol](mission-protocol.md) | 0.1-draft | Draft | Drenyra, Drenyra Pi, CLI |
-| [candidate](candidate.md) | 0.1-draft | Draft | Drenyra, Drenyra Pi, review tooling |
-| [receipt](receipt.md) | 0.1-draft | Draft | All consumers, ERPs, auditors |
-| [gate](gate.md) | 0.1-draft | Draft | Drenyra, Drenyra Pi, CI/CD |
+| [mission-protocol](mission-protocol.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, CLI |
+| [candidate](candidate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, review tooling |
+| [receipt](receipt.md) | 0.1 | FROZEN | All consumers, ERPs, auditors |
+| [gate](gate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, CI/CD |
+| [ledger](ledger.md) | 0.1-draft | Draft | Auditors, ERPs, Drenyra Pi |
+| [recovery](recovery.md) | 0.1-draft | Draft | Drenyra Pi, CLI |
 
 ## Contract requirements
 

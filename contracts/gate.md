@@ -1,6 +1,10 @@
 # Contract: gate
 
-> Version: 0.1-draft · Status: draft · Transport-agnostic.
+> Version: 0.1 · Status: FROZEN · Transport-agnostic.
+>
+> Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents
+> (no float is ever used for money); sequence and version values are JSON
+> integers, never floats.
 
 A **gate** is a lifecycle checkpoint that validates authority, scope, and receipts before an action is allowed. Gates replace trust with verification: a transition that fails a gate is rejected, never ignored.
 
@@ -56,3 +60,10 @@ Vectors cover: allowed/blocked transitions per gate, authority derivation, recei
 - `gates/receipt.ts` — `ReceiptGate`: signed-receipt authenticity + trusted signer lifecycle (allow-list keys, embedded-key self-trust fallback documented as weak).
 - `gates/mission.ts` — `MissionStateGate`: validates a target status against the canonical mission transition table; illegal or terminal transitions are blocked.
 - `gates/runner.ts` — `GateRunner`: deterministic fail-closed pipeline — the first non-allowed verdict stops the run and is returned with its envelope.
+
+## Freeze record
+
+- **Freeze date:** 2026-08-02
+- **Frozen by release:** **0.1.0** — the first release that freezes this contract.
+- **Normative surface pinned by:** [`contracts/__tests__/gate-conformance.test.ts`](./__tests__/gate-conformance.test.ts) — runs in CI (`bun run test`) and fails on drift: ApprovalGate tiers (R0/R1 no approval, R2 single, R3 dual distinct approvers), ReceiptGate fail-closed authenticity (only `SIGNER_TRUSTED` allowed; revoked/expired/tampered/unknown/missing blocked), MissionStateGate legal-vs-illegal transitions with the terminal guard, and GateRunner fail-closed ordering with the `needs_input` envelope.
+- **Migration note:** any change to the normative surface (tier thresholds, verdict vocabulary, fail-closed ordering, gate names, envelope shape) requires a **major** version bump of the gate contract. Gates are deterministic and testable; every gate ships with pass/fail vectors, and the migration path for a future major is documented in the release notes of that major.

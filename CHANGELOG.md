@@ -7,6 +7,22 @@ All notable changes to Drenyra AI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
+## 0.1.0 — 2026-08-02
+
+### Added — first FROZEN contracts
+
+- **Contracts frozen at v0.1**: `mission-protocol`, `candidate`, `receipt`, `gate` — normative surface pinned by four conformance suites under `contracts/__tests__/` (77 tests) that run in CI and fail on drift.
+  - `mission-protocol-conformance` (25): 15 canonical states, full `VALID_TRANSITIONS` table, command union, 5 intents, 12 event types, versioning, idempotency, 30-code error taxonomy.
+  - `candidate-conformance` (16): content-derived identity, full materiality policy matrix (BigInt thresholds, jurisdiction escalation, R3 ceiling), lifecycle + one-correction budget, mutated-subject rejection.
+  - `receipt-conformance` (16): verification status chain precedence, result shape, canonical serialization, tamper detection (complements the frozen-vector drift-guard).
+  - `gate-conformance` (20): approval tiers (R2 single / R3 dual distinct), receipt fail-closed, mission-state legality, runner fail-closed ordering.
+- Corrected the `mission-protocol` contract prose to the real protocol surface (15 states incl. `RECOVERING`, 30 error codes, canonical commands/events/intents).
+
+### Notes
+
+- This is the first release that freezes contracts: `0.1.0`. Changes to the frozen normative surface require a major version bump.
+- `ledger` and `recovery` contracts remain `0.1-draft`; they freeze in a future minor.
+
 ## 0.0.1-prealpha.1 — 2026-08-01
 
 ### Added
