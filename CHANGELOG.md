@@ -24,7 +24,12 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
   - Accounting candidates as first-class artifacts with identity, scope, and materiality.
   - Proportional review lenses and evidence.
   - CLI: `drenyra-ai candidate inspect|verify`.
-- **Release hardening:**
+    - **Slice 4 — Recovery + gates:**
+      - `recovery/` — per-state recovery policy (RUNNING/RETRYING → recover; UNKNOWN → decide-by-evidence; WAITING_FOR_EVIDENCE/BLOCKED_BY_GATE → human-wait, never auto-recovered; terminal untouched) + event-log replay (resume from last persisted event, never transcript) + idempotent recovery.
+      - `gates/` — ApprovalGate (R2 single, R3 dual distinct approvers), ReceiptGate (SIGNER_TRUSTED only, fail-closed), MissionStateGate (legal transitions + terminal guard), GateRunner (fail-closed, needs_input envelopes).
+      - CLI: `drenyra-ai gate check` + `drenyra-ai mission recover`.
+      - Contract: `contracts/recovery.md` (new) + `contracts/gate.md` reference section.
+    - **Release hardening:**
   - Package integrity: `tsc` build to `dist/`, Node >= 22 ESM artifact, complete `files` manifest (dist + contracts + fixtures), `engines`, subpath `exports`, `prepack` verification.
   - Packed-artifact verification: `verify-package-files.mjs` (dist tree + shebang + declarations) and `verify-packed-install.mjs` (npm pack → install .tgz → run bin under plain Node → resolve library entry).
   - CLI boundaries: split `cmd/cli.ts` into `cmd/commands/*`, `cmd/output/*`, `cmd/adapters/*`; ajv schema validation for `receipt verify` (schemas load from the package-root `contracts/`); atomic JSON-file mission store (temp + fsync + rename, `storeSchemaVersion: 1`, marked as a development adapter).
