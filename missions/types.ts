@@ -44,11 +44,11 @@ export interface MissionStep {
 
 // ─── Evidence Item ───────────────────────────────────────────────────
 
-export interface EvidenceItem {
-  id: string;
-  label: string;
-  type: string;
-}
+// Single definition: EvidenceItem lives in receipts/types.ts (ported from
+// mission-contracts.ts); missions imports + re-exports it so the type is
+// usable in this file and exported without a duplicate definition.
+import type { EvidenceItem } from "../receipts/types.js";
+export type { EvidenceItem };
 
 // ─── Proposal ─────────────────────────────────────────────────────────
 
