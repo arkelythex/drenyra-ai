@@ -24,10 +24,17 @@ Extracted via vertical PRs and versioned releases, **not** a bulk move:
 - [x] Slice 1: receipt verification + ledger CLI (`drenyra-ai receipt verify`, `drenyra-ai ledger validate`)
 - [x] Slice 2: mission protocol + MissionRuntime (`missions/` port + in-process runtime, CLI `mission start|apply|status`)
 - [x] Slice 3: candidate identity + review lenses (`candidates/` + `review/`, CLI `candidate inspect|verify`)
-- [ ] Slice 2: mission protocol + `MissionRuntime`
-- [ ] Slice 3: candidate identity + review lenses
-- [ ] Slice 4: recovery contracts + gates
+- [x] Slice 4: recovery contracts + gates
 - [ ] Drenyra consumes the first released version instead of its internal implementation
+
+## Phase 2b — Release hardening (completed)
+
+- [x] Package integrity: build to `dist/`, Node >= 22 ESM artifact, complete `files` manifest, subpath `exports`, `prepack` verification
+- [x] Packed-artifact test: npm pack → install .tgz → run bin under plain Node → resolve library entry
+- [x] CLI boundaries: split commands/output/adapters, ajv schema validation, atomic JSON-file store (development adapter)
+- [x] Intent-handler policy: default CLI fails with `INTENT_HANDLER_NOT_CONFIGURED`; `--demo` opts in
+- [x] RDA terminology unified; roadmap deduplicated; version policy `0.0.1-prealpha.x`
+- [x] CI (typecheck + test + packed-package) and governance docs in all three technical repos
 
 ## Phase 3 — Ecosystem maturity (alpha → beta)
 

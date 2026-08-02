@@ -2,7 +2,7 @@
 
 > Version: 0.1-draft · Status: draft · Transport-agnostic.
 
-The **receipt** is the RED (Receipt-Driven Accounting) primitive: an immutable, verifiable record of a material accounting action. **Nothing material happens without a receipt.**
+The **receipt** is the RDA (Receipt-Driven Accounting) primitive: an immutable, verifiable record of a material accounting action. **Nothing material happens without a receipt.**
 
 ## Purpose
 

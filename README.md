@@ -8,7 +8,7 @@ Drenyra AI is the direct counterpart of `gentle-ai` for the accounting domain: a
 
 ## What it provides
 
-- **Receipt-Driven Accounting (RED)** — every material action produces an immutable receipt; nothing material happens without one.
+- **Receipt-Driven Accounting (RDA)** — every material action produces an immutable receipt; nothing material happens without one.
 - **Accounting Candidates** — agent proposals as first-class, reviewable artifacts with identity and materiality.
 - **Proportional review** — review depth scales with risk (R0 high autonomy → R3 explicit dual approval).
 - **Missions** — protocol-driven, resumable work units with lifecycle, commands, and events.

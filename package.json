@@ -1,26 +1,42 @@
 {
   "name": "drenyra-ai",
-  "version": "0.1.0",
-  "description": "Standalone RED (Receipt-Driven Accounting) core — receipt verification against frozen conformance vectors, and append-only audit ledger validation. Zero runtime dependencies (node:crypto only).",
+  "version": "0.0.1-prealpha.1",
+  "description": "Standalone RDA (Receipt-Driven Accounting) core — receipt verification against frozen conformance vectors, append-only audit ledger validation, mission protocol + runtime, candidate identity/materiality, and proportional review lenses. Library modules use node:crypto only; the CLI adds ajv for schema validation.",
   "type": "module",
   "bin": {
-    "drenyra-ai": "./cmd/cli.ts"
+    "drenyra-ai": "./dist/cmd/cli.js"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "files": [
-    "receipts",
-    "ledger",
+    "dist",
     "contracts",
-    "cmd"
+    "fixtures",
+    "README.md",
+    "LICENSE"
   ],
-  "scripts": {
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+  "exports": {
+    ".": "./dist/index.js",
+    "./receipts": "./dist/receipts/index.js",
+    "./ledger": "./dist/ledger/index.js",
+    "./missions": "./dist/missions/index.js",
+    "./candidates": "./dist/candidates/index.js",
+    "./review": "./dist/review/index.js"
   },
-  "dependencies": {},
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "verify:package": "node scripts/build.mjs && bun run test && node scripts/verify-package-files.mjs",
+    "prepack": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }
