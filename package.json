@@ -26,10 +26,11 @@
     "./gates": "./dist/gates/index.js",
     "./recovery": "./dist/recovery/index.js"
   },
-  "scripts": {
+    "scripts": {
     "build": "node scripts/build.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "prepare": "node scripts/build.mjs",
     "verify:package": "node scripts/build.mjs && bun run test && node scripts/verify-package-files.mjs",
     "prepack": "bun run verify:package",
     "prepublishOnly": "bun run typecheck && bun run verify:package && node scripts/verify-packed-install.mjs"
