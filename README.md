@@ -1,5 +1,7 @@
 # Drenyra AI
 
+> **Private commercial product** — this repository is **private**; distribution is contractual, never public. See the Drenyra [Private Product Policy](https://github.com/arkelythex/Drenyra/blob/main/docs/products/private-product-policy.md).
+
 > **Verifiable Accounting Agent Ecosystem** — the agent runtime behind Drenyra's evidence-driven financial operations.
 
 > **Status: pre-alpha.** Contracts are being stabilized; the runtime is extracted from `arkelythex/Drenyra` through vertical slices. Nothing here is production-ready yet.
