@@ -1,10 +1,26 @@
-# Drenyra AI
+<div align="center">
 
-> **Private commercial product** — this repository is **private**; distribution is contractual, never public. See the Drenyra [Private Product Policy](https://github.com/arkelythex/Drenyra/blob/main/docs/products/private-product-policy.md).
+<h1>Drenyra AI</h1>
 
-> **Verifiable Accounting Agent Ecosystem** — the agent runtime behind Drenyra's evidence-driven financial operations.
+<p><strong>Verifiable Accounting Agent Ecosystem</strong> — the agent runtime behind Drenyra's evidence-driven financial operations.</p>
 
-> **Status: pre-alpha.** Contracts are being stabilized; the runtime is extracted from `arkelythex/Drenyra` through vertical slices. Nothing here is production-ready yet.
+<p>
+<a href="https://github.com/arkelythex/drenyra-ai/releases"><img src="https://img.shields.io/github/v/release/arkelythex/drenyra-ai" alt="Release"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+<img src="https://img.shields.io/badge/tests-454-green" alt="Tests">
+</p>
+
+</div>
+
+---
+
+> [!IMPORTANT]
+> **Private commercial product** — this repository is **private**; distribution
+> is contractual, never public. See the Drenyra
+> [Private Product Policy](https://github.com/arkelythex/Drenyra/blob/main/docs/products/private-product-policy.md).
+
+> [!IMPORTANT]
+> **v0.2.0 released** (2026-08-02) — all six contracts frozen (memory, scope, lifecycle, provenance, ledger, recovery). The frozen surface is normative: changes to a frozen contract require a major version bump. See the [release](https://github.com/arkelythex/drenyra-ai/releases/tag/v0.2.0) and the [CHANGELOG](CHANGELOG.md).
 
 Drenyra AI is the direct counterpart of `gentle-ai` for the accounting domain: a runtime and CLI that makes AI execution **verifiable, receipted, and risk-proportional** for fiscal work. It works standalone — no Drenyra dependency — so ERPs, other accounting SaaS, and agent hosts (Codex, Claude Code, OpenCode) can adopt it.
 
