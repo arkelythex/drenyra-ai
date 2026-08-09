@@ -24,7 +24,8 @@
     "./candidates": "./dist/candidates/index.js",
     "./review": "./dist/review/index.js",
     "./gates": "./dist/gates/index.js",
-    "./recovery": "./dist/recovery/index.js"
+    "./recovery": "./dist/recovery/index.js",
+    "./tenant": "./dist/tenant-core/index.js"
   },
     "scripts": {
     "build": "node scripts/build.mjs",

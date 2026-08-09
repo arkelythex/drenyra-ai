@@ -17,3 +17,4 @@ export * from "./candidates/index.js";
 export * from "./review/index.js";
 export * from "./gates/index.js";
 export * from "./recovery/index.js";
+export * from "./tenant-core/index.js";

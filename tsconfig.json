@@ -19,6 +19,6 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["receipts", "ledger", "missions", "candidates", "review", "gates", "recovery", "cmd", "contracts/__tests__", "vitest.config.ts"],
+  "include": ["receipts", "ledger", "missions", "candidates", "review", "gates", "recovery", "tenant-core", "cmd", "contracts/__tests__", "vitest.config.ts"],
   "exclude": ["node_modules", "dist", "coverage"]
 }
