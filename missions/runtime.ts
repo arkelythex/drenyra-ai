@@ -40,6 +40,12 @@ import type {
 } from "./store.js";
 import type { IntentRegistry } from "./intents.js";
 import { assertFence, type FenceStore } from "./fencing.js";
+import {
+    reconcileExternalCall,
+    type ExternalCall,
+    type ExternalSystemResolver,
+    type ReconciliationResult,
+} from "./reconciliation.js";
 
 /** Idempotency records are retained for 24 hours. */
 const IDEMPOTENCY_TTL_MS = 24 * 60 * 60 * 1000;
@@ -447,6 +453,51 @@ export class MissionRuntime {
     }
     return recovered;
   }
+
+    /**
+     * Reconciles an interrupted external call (Design 04 "Unknown states").
+     *
+     * Requires the mission to be UNKNOWN; calls reconcileExternalCall and:
+     *   record  -> UNKNOWN -> RUNNING, evidence recorded as a RECONCILED event
+     *   retry   -> UNKNOWN -> RUNNING (idempotent retry is safe)
+     *   human   -> stays UNKNOWN; the professional decides
+     *
+     * Never re-executes on its own and never records external execution
+     * without verifiable evidence (reconcileExternalCall enforces this).
+     */
+    async reconcile(
+        missionId: string,
+        call: ExternalCall,
+        resolver: ExternalSystemResolver | undefined,
+    ): Promise<{ result: ReconciliationResult; snapshot: MissionSnapshot }> {
+        const mission = await this.store.findById(missionId);
+        if (mission === undefined) {
+            throw new MissionError(
+                MissionErrorCode.MISSION_NOT_FOUND,
+                404,
+                `MISSION_NOT_FOUND: Mission ${missionId} not found`,
+                { missionId },
+            );
+        }
+        if (mission.status !== AccountingMissionStatus.UNKNOWN) {
+            throw new MissionError(
+                MissionErrorCode.INVALID_INPUT,
+                400,
+                `reconcile requires UNKNOWN status, got ${mission.status}`,
+                { missionId, status: mission.status },
+            );
+        }
+        const result = await reconcileExternalCall(resolver, call);
+        if (result.decision === "human-intervention") {
+            // Stays UNKNOWN: the professional decides. No transition.
+            return { result, snapshot: mission };
+        }
+        const next = this.nextSnapshot(mission, AccountingMissionStatus.RUNNING, mission);
+        const event = this.buildEvent(next, MissionEventType.RECONCILED);
+        await this.store.save(next);
+        await this.events.append(event);
+        return { result, snapshot: next };
+    }
 
   private replay(record: IdempotencyRecord): MissionApplyResult | null {
     if (record.result === undefined) {

@@ -41,7 +41,8 @@
     "skills",
     "security",
     "guardian",
-    "adapters"
+    "adapters",
+    "flow"
   ],
   "exclude": [
     "node_modules",

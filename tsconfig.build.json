@@ -28,7 +28,8 @@
     "security",
     "guardian",
     "mcp",
-    "adapters"
+    "adapters",
+    "flow"
   ],
   "exclude": [
     "node_modules",
