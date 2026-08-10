@@ -13,7 +13,7 @@
 
 ## Summary
 
-> **Drenyra AI has a contract-complete, verifiable RDA core with a growing ecosystem surface.** As of 2026-08-10 the versioned-skill registry, Guardian Angel, fencing/outbox, prompt-injection defenses, MCP server, `capabilities`/`doctor`/`install`/`sync`, the formal SDK surface, the PostgreSQL adapter, external reconciliation, secret resolvers, the adversarial suite, and the monthly-close E2E are implemented and tested (601 tests). Still pending: KMS adapters for real vaults, ERP/SUNAT/bank connectors, pilots, and the license change.
+> **Drenyra AI has a contract-complete, verifiable RDA core with a growing ecosystem surface.** As of 2026-08-10 the versioned-skill registry, Guardian Angel, fencing/outbox, prompt-injection defenses, MCP server, `capabilities`/`doctor`/`install`/`sync`, the formal SDK surface, the PostgreSQL adapter, external reconciliation, secret resolvers, the adversarial suite, and the monthly-close E2E are implemented and tested (601 tests). Still pending: KMS adapters for real vaults, ERP/SUNAT/bank connectors, pilots, and the license decision. npm publication is deferred by business decision (the repo is private again).
 
 | Layer | Status |
 | --- | --- |
@@ -70,7 +70,7 @@ Legend: ✅ implemented · ⚠️ partial · ❌ planned. Each row records exact
 | Adversarial test layer | ✅ | `security/__tests__/adversarial.test.ts` — prompt injection, receipt tampering, forged R3 approval, cross-tenant scope, expired skill, ledger reordering (6 scenarios) | Prompt injection, tampering, replay, forged approvals | Extended to live adapter/reconciliation flows | v0.4 |
 | Prompt-injection defenses | ✅ | `security/` — `sanitizeDocumentText` (detect + neutralize + inert delimiters); 10 tests | Untrusted documents can instruct agents | Wired into evidence ingestion | v0.4 |
 | Monthly-close E2E + vertical | ✅ | `flow/close.ts` — deterministic close orchestrator (preflight → evidence via adapters → candidates → guardian audit → receipts → ledger → ClosePackage); 11 tests + E2E | Flagship flow unproven end-to-end | Real SIRE/conciliation connectors on the adapter framework | v0.5 |
-| Drenyra consumes the published package | ❌ | Duplicate internal authority must be removed | Drenyra repo | Drenyra consumes released artifact; internal copy removed | v1.0 |
+| Drenyra consumes drenyra-ai (no duplicate authority) | ✅ | Drenyra consumes drenyra-ai v0.2.0 as a vendored tarball; mission-domain/protocol/orchestrator are adapter shims; zero duplicated core functions (see Drenyra ADR-013) | Duplicate internal authority | npm publication (deferred — private until the business justifies it) | v1.0 |
 | Professional pilots | ❌ | Blocks and evidence requests must be understandable | Drenyra Command Center | 3 pilot firms confirm | v1.0 |
 | Apache 2.0 license | ❌ | Open-core adoption; **requires separate explicit change + legal review** | Legal review | License PR merged | v1.0 |
 
@@ -80,7 +80,7 @@ The design series is the **target specification**; it does not claim every capab
 
 ## Closing order (recommended)
 
-1. Drenyra consumes the published package and removes the duplicate authority. *(external repo)*
+1. Drenyra consumes drenyra-ai (vendored tarball) — **done** (Drenyra ADR-013); npm publication deferred by business decision (private until revenue).
 2. Formal SDK for the Command Center.
 3. PostgreSQL production adapter.
 4. MCP and `capabilities`.
