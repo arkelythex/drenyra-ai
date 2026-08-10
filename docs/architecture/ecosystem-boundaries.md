@@ -54,7 +54,6 @@ Drenyra AI is **not**:
 - **Memory storage and search** — integrated from `drenyra-engram` when used; memory never authorizes here either.
 - **Skill marketplace / registry** — deferred to `arkelythex/drenyra-skills` when it outgrows this repo.
 
-
 ## Ecosystem authority contract (Design 1 — approved boundary)
 
 ```mermaid
