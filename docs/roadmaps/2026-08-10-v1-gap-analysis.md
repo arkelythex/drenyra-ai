@@ -49,7 +49,7 @@ Legend: ✅ implemented · ⚠️ partial · ❌ planned. Each row records exact
 | --- | --- | --- | --- | --- |
 | SDK/API surface | ✅ | 14 subpath `exports` in `package.json` (incl. skills, security, guardian, mcp) + root `index.ts`; dist build smoke-tested | Consumers need a documented public API | Documented SDK guide + typed public surface + integration test |
 | Specialized agent roles | ⚠️ | 5 intent handlers exist; the Design 03 roles (Close Coordinator, Evidence Agent, Invoice/SIRE Agent, Reconciliation Agent, Journal Candidate Agent, Compliance Agent, Guardian Angel) are not separate agents | Undefined agent boundaries | Roles exposed as bounded agents with schema-typed outputs |
-| Evidence adapters | ⚠️ | Evidence authority exists; **no ERP/SUNAT/bank connectors** | External execution claims unverifiable | Adapter framework + at least one connector contract |
+| Evidence adapters | ✅ | `adapters/` — EvidenceAdapter framework (capability, registry, hash+provenance items, missing-required => WAITING_FOR_EVIDENCE) + LocalFileAdapter (test-only); 5 tests. Real ERP/SUNAT/bank connectors pending | External execution claims unverifiable | Real connectors built on the framework |
 
 ### 3. Planned layer (v1.0 gaps)
 
@@ -63,6 +63,8 @@ Legend: ✅ implemented · ⚠️ partial · ❌ planned. Each row records exact
 | Guardian Angel | ✅ | `guardian/` — read-only adversarial findings over frozen candidates (scope, R3 dual approval, never approves); 9 tests | Independent adversarial review | Wired into the close flow after candidate freeze | v0.4 |
 | Fencing tokens + inbox/outbox | ✅ | `missions/fencing.ts` + `missions/outbox.ts`; fencing integrated into `MissionRuntime.apply` (stale tokens rejected); 10 tests | Parallel workers can double-confirm | PostgreSQL-backed stores + leader election | v0.3 |
 | KMS/Key Vault integration | ⚠️ | `security/keys.ts` — SecretResolver contract + EnvResolver (dev) + FileResolver (test-only) + KMS_GUIDANCE; real vault adapter pending | Connector secrets and keys need managed storage | AWS/Azure/GCP KMS adapter implementing SecretResolver | v0.5 |
+| Release integrity (checksums + SBOM) | ✅ | `scripts/checksums.mjs` (SHA-256 manifest over the published artifact) + `scripts/sbom.mjs` (CycloneDX from the manifest) | Unverifiable release artifacts | Signing wired into the release pipeline | v0.3 |
+| Operational runbooks | ✅ | `docs/runbooks/` — 01 incidents, 02 key rotation, 03 schema migration, 04 recovery (v1.0 criterion 13) | Unrunbooked production failures | Reviewed with pilot firms | v1.0 |
 | External reconciliation (UNKNOWN states) | ✅ | `missions/reconciliation.ts` — `reconcileExternalCall`: executed requires verifiable evidence, not-executed → idempotent retry, indeterminate → human; fail-closed resolver; 8 tests | Blind retries duplicate postings | Wired into adapter calls (UNKNOWN mission state) | v0.5 |
 | Adversarial test layer | ✅ | `security/__tests__/adversarial.test.ts` — prompt injection, receipt tampering, forged R3 approval, cross-tenant scope, expired skill, ledger reordering (6 scenarios) | Prompt injection, tampering, replay, forged approvals | Extended to live adapter/reconciliation flows | v0.4 |
 | Prompt-injection defenses | ✅ | `security/` — `sanitizeDocumentText` (detect + neutralize + inert delimiters); 10 tests | Untrusted documents can instruct agents | Wired into evidence ingestion | v0.4 |
