@@ -8,6 +8,10 @@
 > [!IMPORTANT]
 > **The frontier:** Drenyra AI is not "an agent that does accounting." It is the infrastructure that lets any agent participate in accounting processes without becoming the fiscal authority. See [Intended Usage](docs/intended-usage.md).
 
+<!-- -->
+
+> **Live gap analysis:** what is built vs. what remains for v1.0 → [2026-08-10 v1 Gap Analysis](docs/roadmaps/2026-08-10-v1-gap-analysis.md)
+
 ## At a glance
 
 | Phase | Focus | Status |
