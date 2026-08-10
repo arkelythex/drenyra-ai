@@ -26,9 +26,13 @@
     "./review": "./dist/review/index.js",
     "./gates": "./dist/gates/index.js",
     "./recovery": "./dist/recovery/index.js",
-    "./tenant": "./dist/tenant-core/index.js"
+    "./tenant": "./dist/tenant-core/index.js",
+    "./skills": "./dist/skills/index.js",
+    "./security": "./dist/security/index.js",
+    "./guardian": "./dist/guardian/index.js",
+    "./mcp": "./dist/mcp/index.js"
   },
-    "scripts": {
+  "scripts": {
     "build": "node scripts/build.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
@@ -39,10 +43,12 @@
   },
   "dependencies": {
     "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1"
+    "ajv-formats": "^3.0.1",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
     "@types/node": "^26.1.2",
+    "@types/pg": "^8.21.0",
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"
   }

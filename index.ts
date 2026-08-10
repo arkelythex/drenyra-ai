@@ -19,3 +19,7 @@ export * from "./review/index.js";
 export * from "./gates/index.js";
 export * from "./recovery/index.js";
 export * from "./tenant-core/index.js";
+export * from "./skills/index.js";
+export * from "./security/index.js";
+export * from "./guardian/index.js";
+export * from "./mcp/index.js";

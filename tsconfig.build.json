@@ -10,6 +10,30 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": ["receipts", "ledger", "missions", "candidates", "review", "gates", "recovery", "tenant-core", "agents", "cmd", "index.ts", "evidence"],
-  "exclude": ["node_modules", "dist", "coverage", "**/__tests__/**", "vitest.config.ts"]
+  "include": [
+    "receipts",
+    "ledger",
+    "missions",
+    "candidates",
+    "review",
+    "gates",
+    "recovery",
+    "tenant-core",
+    "tenant-isolation",
+    "agents",
+    "cmd",
+    "index.ts",
+    "evidence",
+    "skills",
+    "security",
+    "guardian",
+    "mcp"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "**/__tests__/**",
+    "vitest.config.ts"
+  ]
 }
