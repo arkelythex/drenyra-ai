@@ -13,7 +13,11 @@
  */
 
 import { createInterface } from "node:readline";
-import { McpServer, capabilitiesTool, ledgerValidateTool } from "../../mcp/index.js";
+import {
+	McpServer,
+	capabilitiesTool,
+	ledgerValidateTool,
+} from "../../mcp/index.js";
 import { nodeStdioLines, runMcpStdio } from "../../mcp/index.js";
 
 export function mcpServeCommand(): Promise<number> {

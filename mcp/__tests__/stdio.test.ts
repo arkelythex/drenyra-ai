@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { McpServer, runMcpStdio, capabilitiesTool, type LineReader, type LineWriter } from "../index.js";
+import {
+	McpServer,
+	runMcpStdio,
+	capabilitiesTool,
+	type LineReader,
+	type LineWriter,
+} from "../index.js";
 
 function makeServer(): McpServer {
 	const server = new McpServer({ name: "drenyra-ai", version: "0.2.0" });
@@ -7,7 +13,11 @@ function makeServer(): McpServer {
 	return server;
 }
 
-function feed(lines: string[]): { readLine: LineReader; writeLine: LineWriter; out: string[] } {
+function feed(lines: string[]): {
+	readLine: LineReader;
+	writeLine: LineWriter;
+	out: string[];
+} {
 	const queue = [...lines];
 	const out: string[] = [];
 	return {
@@ -35,7 +45,12 @@ describe("runMcpStdio", () => {
 	it("emits one response per line (protocol shape)", async () => {
 		const server = makeServer();
 		const { readLine, writeLine, out } = feed([
-			JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "capabilities", arguments: {} } }),
+			JSON.stringify({
+				jsonrpc: "2.0",
+				id: 1,
+				method: "tools/call",
+				params: { name: "capabilities", arguments: {} },
+			}),
 		]);
 		await runMcpStdio(server, readLine, writeLine);
 		expect(out).toHaveLength(1);
@@ -55,6 +70,8 @@ describe("runMcpStdio", () => {
 			JSON.stringify({ jsonrpc: "2.0", id: 2, method: "ping" }),
 			JSON.stringify({ jsonrpc: "2.0", id: 3, method: "ping" }),
 		]);
-		expect(await runMcpStdio(server, readLine, writeLine, { maxMessages: 2 })).toBe(2);
+		expect(
+			await runMcpStdio(server, readLine, writeLine, { maxMessages: 2 }),
+		).toBe(2);
 	});
 });

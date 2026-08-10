@@ -55,7 +55,10 @@ export function nodeStdioLines(
 	readline: { createInterface: typeof import("node:readline").createInterface },
 	stream: { stdin: NodeJS.ReadableStream; stdout: NodeJS.WritableStream },
 ): { readLine: LineReader; writeLine: LineWriter; close: () => void } {
-	const rl = readline.createInterface({ input: stream.stdin, crlfDelay: Infinity });
+	const rl = readline.createInterface({
+		input: stream.stdin,
+		crlfDelay: Infinity,
+	});
 	const pending: string[] = [];
 	let waiting: ((value: string | null) => void) | undefined;
 	let done = false;
