@@ -36,6 +36,8 @@ import { missionRecoverCommand } from "./commands/mission-recover.js";
 import { candidateInspectCommand } from "./commands/candidate-inspect.js";
 import { candidateVerifyCommand } from "./commands/candidate-verify.js";
 import { gateCheckCommand } from "./commands/gate-check.js";
+import { capabilitiesCommand } from "./commands/capabilities.js";
+import { doctorCommand } from "./commands/doctor.js";
 import { usageError } from "./output/errors.js";
 
 /** Command handler signature: raw args, resolved exit code (0/1/2). */
@@ -57,6 +59,12 @@ const COMMANDS: Readonly<Record<string, Readonly<Record<string, CommandHandler>>
   gate: {
     check: gateCheckCommand,
   },
+      capabilities: {
+        show: capabilitiesCommand,
+      },
+      doctor: {
+        run: doctorCommand,
+      },
 };
 
 function helpText(): string {
@@ -85,6 +93,10 @@ function helpText(): string {
     "    Revalidate candidate identity against the exact subject bytes.",
     "  gate check <gate-input.json>",
     "    Run the standard gates [mission, receipt, approval] over a gate input.",
+    "  capabilities show",
+    "    Declare available contracts, skills, jurisdictions, and adapters.",
+    "  doctor run",
+    "    Read-only ecosystem health check.",
     "",
     "Exit codes: 0 success, 1 business error (JSON error to stdout), 2 usage/IO.",
     "",
