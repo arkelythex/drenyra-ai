@@ -1,12 +1,21 @@
 # Security Policy
 
+## At a glance
+
+- [Scope](#scope)
+- [Reporting a vulnerability](#reporting-a-vulnerability)
+- [Out of scope](#out-of-scope)
+- [Handling](#handling)
+- [Responsible use](#responsible-use)
+
 ## Scope
 
 This repository covers the Drenyra AI runtime: mission protocol, receipts, candidates, gates, ledger, recovery, and the CLI/MCP surfaces. It processes **fiscal operations** — treat confidentiality, integrity, and auditability as product safety requirements.
 
 ## Reporting a vulnerability
 
-Use **GitHub Private Vulnerability Reporting**: open the **Security** tab of this repository → **Report a vulnerability**. Do not open a public issue for security defects.
+> [!IMPORTANT]
+> Use **GitHub Private Vulnerability Reporting**: open the **Security** tab of this repository → **Report a vulnerability**. Do not open a public issue for security defects.
 
 When reporting, include:
 
@@ -28,3 +37,9 @@ Reports are acknowledged within 5 business days. A fix, workaround, or risk acce
 ## Responsible use
 
 This software is proprietary and confidential (see [LICENSE](LICENSE)). Reporting a vulnerability does not grant any right to copy, modify, or distribute the software.
+
+## Next steps
+
+- Read the contribution guidelines → [CONTRIBUTING.md](CONTRIBUTING.md)
+- Follow the ecosystem's conduct rules → [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- Track fixes and releases → [CHANGELOG.md](CHANGELOG.md)

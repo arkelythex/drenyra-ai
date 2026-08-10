@@ -20,10 +20,13 @@ _Where should review start, and in what order? What is the riskiest decision in 
 
 ## Workload forecast
 
-- Estimated changed lines: `N`
-- Estimated review time: `N minutes`
-- Risk tier: `R0 | R1 | R2 | R3`
+| Field | Value |
+| --- | --- |
+| Estimated changed lines | `N` |
+| Estimated review time | `N minutes` |
+| Risk tier | `R0 \| R1 \| R2 \| R3` |
 
+> [!IMPORTANT]
 > **Chained-PR note:** if this PR exceeds ~400 changed lines, it should be split into a **chained PR sequence** (stacked-to-main or feature-branch chain) so each review stays focused and each diff is reviewable. Ask before merging a single oversized PR.
 
 ## Tests

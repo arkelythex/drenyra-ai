@@ -1,10 +1,21 @@
 # Contributing to Drenyra AI
 
-**Status: pre-alpha.** Drenyra AI is extracted from `arkelythex/Drenyra` through vertical slices. The maintainer (Arkelythex) drives the extraction; external contributions are welcome only after the contracts in `contracts/` stabilize.
+> **Status: pre-alpha.** Drenyra AI is extracted from `arkelythex/Drenyra` through vertical slices. The maintainer (Arkelythex) drives the extraction; external contributions are welcome only after the contracts in `contracts/` stabilize.
+
+<!-- -->
+
+> [!IMPORTANT]
+> **Fiscal correctness is a product safety requirement.** Never break receipts, ledger integrity, gates, or audit trails — and never use floats for money.
+
+## At a glance
+
+- [Ground rules](#ground-rules)
+- [Workflow](#workflow)
+- [Contract changes](#contract-changes)
+- [Getting help](#getting-help)
 
 ## Ground rules
 
-- **Fiscal correctness is a product safety requirement.** Never break receipts, ledger integrity, gates, or audit trails.
 - **No floats for money.** Money is whole-number cents (BigInt) or the Drenyra `Money` model.
 - **Tenant/RUC scope is mandatory.** Every query and mutation verifies company/RUC isolation.
 - **Every material action produces a receipt.** No receipt, no mutation.
@@ -33,3 +44,10 @@ Any change to `contracts/` is a **public contract change**:
 ## Getting help
 
 Open an issue with a clear description. For security issues, use Private Vulnerability Reporting — see [SECURITY.md](SECURITY.md).
+
+## Next steps
+
+- Report a vulnerability → [SECURITY.md](SECURITY.md)
+- Read the release process → [RELEASING.md](RELEASING.md)
+- See what is planned and what shipped → [ROADMAP.md](ROADMAP.md) and [CHANGELOG.md](CHANGELOG.md)
+- Follow the ecosystem's conduct rules → [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)

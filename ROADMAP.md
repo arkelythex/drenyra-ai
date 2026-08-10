@@ -1,6 +1,18 @@
 # Drenyra AI — Roadmap
 
+> [!NOTE]
 > **Last updated:** 2026-08-08. Status: released (all contracts frozen).
+
+## At a glance
+
+| Phase | Focus | Status |
+| --- | --- | --- |
+| Phase 0 — Identity | Repository identity scaffolding + contract draft | Current |
+| Phase 1 — Contracts (v0.1) | Freeze all six contracts | COMPLETE |
+| Phase 2 — Vertical slices from Drenyra | Slice-by-slice extraction via vertical PRs | In progress |
+| Phase 2b — Release hardening | Package integrity, CLI boundaries, CI | Completed |
+| Phase 2c — Hybrid orchestration layer | Deterministic agent orchestration (`agents/`) | Current |
+| Phase 3 — Ecosystem maturity | Alpha → beta | Not started |
 
 ## Phase 0 — Identity (current)
 
@@ -23,7 +35,8 @@
 
 ## Phase 2 — Vertical slices from Drenyra
 
-Extracted via vertical PRs and versioned releases, **not** a bulk move:
+> [!NOTE]
+> Extracted via vertical PRs and versioned releases — **not** a bulk move.
 
 - [x] Slice 1: receipt verification + ledger CLI (`drenyra-ai receipt verify`, `drenyra-ai ledger validate`)
 - [x] Slice 2: mission protocol + MissionRuntime (`missions/` port + in-process runtime, CLI `mission start|apply|status`)
@@ -60,3 +73,10 @@ Extracted via vertical PRs and versioned releases, **not** a bulk move:
 
 - Marketplace or skill registry (deferred to `arkelythex/drenyra-skills` when >20 skills and independent consumers exist)
 - Cloud offering (deferred to `arkelythex/drenyra-cloud`)
+
+## Next steps
+
+- See what shipped in each release → [CHANGELOG.md](CHANGELOG.md)
+- Understand the release process → [RELEASING.md](RELEASING.md)
+- Contribute → [CONTRIBUTING.md](CONTRIBUTING.md)
+- Read the full project overview → [README.md](README.md)

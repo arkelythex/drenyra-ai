@@ -2,7 +2,19 @@
 
 > **Last updated:** 2026-08-01.
 
+<!-- -->
+
+> [!NOTE]
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; version/sequence numbers are JSON integers, never floats.
+
+## At a glance
+
+- [Our Pledge](#our-pledge)
+- [Our Standards](#our-standards)
+- [Enforcement Responsibilities](#enforcement-responsibilities)
+- [Scope](#scope)
+- [Enforcement](#enforcement)
+- [Attribution](#attribution)
 
 ## Our Pledge
 
@@ -46,3 +58,8 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org), version 2.1, available at <https://www.contributor-covenant.org/version/2/1/code_of_conduct.html>.
 
 Community Impact Guidelines were inspired by [Mozilla's code of conduct enforcement ladder](https://github.com/mozilla/diversity).
+
+## Next steps
+
+- Learn how to contribute → [CONTRIBUTING.md](CONTRIBUTING.md)
+- Report a security issue → [SECURITY.md](SECURITY.md)

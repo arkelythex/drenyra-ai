@@ -1,5 +1,8 @@
 # Changelog
 
+<!-- markdownlint-disable MD024 -->
+
+> [!NOTE]
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; version/sequence numbers are JSON integers, never floats.
 
 All notable changes to Drenyra AI will be documented in this file.
@@ -11,8 +14,10 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ### Added — all six contracts FROZEN
 
-- **`ledger` frozen at v0.1** — pinned by `contracts/__tests__/ledger-conformance.test.ts` (29 tests): all 9 validation rules (positive + negative), validation-result shape with first-divergence, manifest shape, append-only guarantee, and fail-closed on missing signer material (undefined signature now yields a violation, never a TypeError).
-- **`recovery` frozen at v0.1** — pinned by `contracts/__tests__/recovery-conformance.test.ts` (26 tests): per-state recovery actions, decide-by-evidence, event-log replay, idempotent recovery. Doc scoped: human-wait states are never auto-recovered **by the default policy** (`DEFAULT_RECOVERABLE = [RUNNING]`); explicit caller policies may include other states.
+| Contract | Pinned by | Coverage |
+| --- | --- | --- |
+| `ledger` frozen at v0.1 | `contracts/__tests__/ledger-conformance.test.ts` (29 tests) | all 9 validation rules (positive + negative), validation-result shape with first-divergence, manifest shape, append-only guarantee, and fail-closed on missing signer material (undefined signature now yields a violation, never a TypeError) |
+| `recovery` frozen at v0.1 | `contracts/__tests__/recovery-conformance.test.ts` (26 tests) | per-state recovery actions, decide-by-evidence, event-log replay, idempotent recovery. Doc scoped: human-wait states are never auto-recovered **by the default policy** (`DEFAULT_RECOVERABLE = [RUNNING]`); explicit caller policies may include other states |
 
 ### Notes
 
@@ -24,10 +29,14 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 ### Added — first FROZEN contracts
 
 - **Contracts frozen at v0.1**: `mission-protocol`, `candidate`, `receipt`, `gate` — normative surface pinned by four conformance suites under `contracts/__tests__/` (77 tests) that run in CI and fail on drift.
-  - `mission-protocol-conformance` (25): 15 canonical states, full `VALID_TRANSITIONS` table, command union, 5 intents, 12 event types, versioning, idempotency, 30-code error taxonomy.
-  - `candidate-conformance` (16): content-derived identity, full materiality policy matrix (BigInt thresholds, jurisdiction escalation, R3 ceiling), lifecycle + one-correction budget, mutated-subject rejection.
-  - `receipt-conformance` (16): verification status chain precedence, result shape, canonical serialization, tamper detection (complements the frozen-vector drift-guard).
-  - `gate-conformance` (20): approval tiers (R2 single / R3 dual distinct), receipt fail-closed, mission-state legality, runner fail-closed ordering.
+
+| Conformance suite | Tests | Coverage |
+| --- | --- | --- |
+| `mission-protocol-conformance` | 25 | 15 canonical states, full `VALID_TRANSITIONS` table, command union, 5 intents, 12 event types, versioning, idempotency, 30-code error taxonomy |
+| `candidate-conformance` | 16 | content-derived identity, full materiality policy matrix (BigInt thresholds, jurisdiction escalation, R3 ceiling), lifecycle + one-correction budget, mutated-subject rejection |
+| `receipt-conformance` | 16 | verification status chain precedence, result shape, canonical serialization, tamper detection (complements the frozen-vector drift-guard) |
+| `gate-conformance` | 20 | approval tiers (R2 single / R3 dual distinct), receipt fail-closed, mission-state legality, runner fail-closed ordering |
+
 - Corrected the `mission-protocol` contract prose to the real protocol surface (15 states incl. `RECOVERING`, 30 error codes, canonical commands/events/intents).
 
 ### Notes
@@ -52,12 +61,12 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
   - Accounting candidates as first-class artifacts with identity, scope, and materiality.
   - Proportional review lenses and evidence.
   - CLI: `drenyra-ai candidate inspect|verify`.
-    - **Slice 4 — Recovery + gates:**
-      - `recovery/` — per-state recovery policy (RUNNING/RETRYING → recover; UNKNOWN → decide-by-evidence; WAITING_FOR_EVIDENCE/BLOCKED_BY_GATE → human-wait, never auto-recovered; terminal untouched) + event-log replay (resume from last persisted event, never transcript) + idempotent recovery.
-      - `gates/` — ApprovalGate (R2 single, R3 dual distinct approvers), ReceiptGate (SIGNER_TRUSTED only, fail-closed), MissionStateGate (legal transitions + terminal guard), GateRunner (fail-closed, needs_input envelopes).
-      - CLI: `drenyra-ai gate check` + `drenyra-ai mission recover`.
-      - Contract: `contracts/recovery.md` (new) + `contracts/gate.md` reference section.
-    - **Release hardening:**
+- **Slice 4 — Recovery + gates:**
+  - `recovery/` — per-state recovery policy (RUNNING/RETRYING → recover; UNKNOWN → decide-by-evidence; WAITING_FOR_EVIDENCE/BLOCKED_BY_GATE → human-wait, never auto-recovered; terminal untouched) + event-log replay (resume from last persisted event, never transcript) + idempotent recovery.
+  - `gates/` — ApprovalGate (R2 single, R3 dual distinct approvers), ReceiptGate (SIGNER_TRUSTED only, fail-closed), MissionStateGate (legal transitions + terminal guard), GateRunner (fail-closed, needs_input envelopes).
+  - CLI: `drenyra-ai gate check` + `drenyra-ai mission recover`.
+  - Contract: `contracts/recovery.md` (new) + `contracts/gate.md` reference section.
+- **Release hardening:**
   - Package integrity: `tsc` build to `dist/`, Node >= 22 ESM artifact, complete `files` manifest (dist + contracts + fixtures), `engines`, subpath `exports`, `prepack` verification.
   - Packed-artifact verification: `verify-package-files.mjs` (dist tree + shebang + declarations) and `verify-packed-install.mjs` (npm pack → install .tgz → run bin under plain Node → resolve library entry).
   - CLI boundaries: split `cmd/cli.ts` into `cmd/commands/*`, `cmd/output/*`, `cmd/adapters/*`; ajv schema validation for `receipt verify` (schemas load from the package-root `contracts/`); atomic JSON-file mission store (temp + fsync + rename, `storeSchemaVersion: 1`, marked as a development adapter).
