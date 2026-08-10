@@ -140,4 +140,4 @@ This flow is the flagship instance of the [Design 01 chain of authority](design-
 
 ---
 
-**Read next:** [Architecture](../architecture.md) — back to the index · [Design 01](design-01-ecosystem-frontier-and-authority.md) — the frontier and authority model
+**Read next:** [Design 03 — Agents, Skills, and Integrations](design-03-agents-skills-integrations.md) · [Architecture](../architecture.md) — back to the index · [Design 01](design-01-ecosystem-frontier-and-authority.md) — the frontier and authority model

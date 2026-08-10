@@ -18,6 +18,7 @@
 | [Storage Model](architecture/storage-model.md) | Dev adapter vs. canonical storage requirements | Persistence and recovery questions |
 | [Design 01 — Ecosystem Frontier](design/design-01-ecosystem-frontier-and-authority.md) | Approved frontier: responsibilities, never-musts, chain of authority | Understanding who owns what and how authority flows |
 | [Design 02 — Monthly Close](design/design-02-monthly-close.md) | The v1.0 flagship flow: preflight → evidence → reconciliation → candidates → review → external confirmation → close package | Building the monthly accounting and tax close |
+| [Design 03 — Agents, Skills, Integrations](design/design-03-agents-skills-integrations.md) | AI proposes, deterministic code decides: orchestrator, initial agents, skill layers, integration order, provider agnosticism | Building the agent and integration layer |
 
 ## Position in the ecosystem
 
