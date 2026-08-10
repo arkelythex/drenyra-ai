@@ -14,6 +14,7 @@ export * from "./receipts/index.js";
 export * from "./ledger/index.js";
 export * from "./missions/index.js";
 export * from "./candidates/index.js";
+export * from "./evidence/index.js";
 export * from "./review/index.js";
 export * from "./gates/index.js";
 export * from "./recovery/index.js";
