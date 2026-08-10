@@ -3,17 +3,71 @@
 > [!IMPORTANT]
 > **The frontier:** Drenyra AI is not "an agent that does accounting." It is the infrastructure that lets any agent participate in accounting processes without becoming the fiscal authority.
 
-## The thesis in one line
+<!-- -->
 
-Drenyra AI occupies the accounting-domain position that Gentle-AI holds in software engineering — **equivalent discipline, stricter controls**. Gentle-AI turns generic coding agents into a disciplined engineering system; Drenyra AI turns generic agents into a verifiable accounting and fiscal system. The added strictness is deliberate: fiscal risk is not a merge conflict.
+> **The institutional thesis:** The AI proposes. The system validates. The professional decides. The evidence remains.
 
-## What Drenyra AI is
+## Definition
 
-A **configurator, runtime, and control plane** for accounting and fiscal agents:
+**Drenyra AI is the configurator and runtime ecosystem that equips AI agents with memory, knowledge, workflows, controls, and evidence to perform verifiable accounting and fiscal work.**
 
-- **Configurator** — `drenyra-ai install` / `doctor` / `sync` / `upgrade` equip the agent runtime(s) you already use (Codex, Claude Code, OpenCode) with accounting memory, skills, missions, materiality controls, approvals, and verifiable evidence.
+It is a **configurator, runtime, and control plane** for accounting and fiscal agents:
+
+- **Configurator** — `drenyra-ai install` / `doctor` / `sync` / `upgrade` equip the agent host(s) you already use (Codex, Claude Code, OpenCode, Pi) with accounting memory, skills, missions, materiality controls, approvals, and verifiable evidence.
 - **Runtime** — missions with a frozen 15-state lifecycle, deterministic intent handlers that stage work, crash-safe recovery.
 - **Control plane** — candidates, proportional review (R0–R3), gates, Ed25519 receipts, and an append-only audit ledger. The Core determines what may happen; agents never self-authorize.
+
+## The philosophy, translated
+
+Drenyra AI follows Gentle-AI's philosophy — it is not a sectorial copy of its code:
+
+| Gentle-AI philosophy | Drenyra AI translation |
+| --- | --- |
+| Adapts existing agents | Adapts Pi and other hosts |
+| The user asks for results, not phases | The professional asks for closes, reconciliations, or reviews |
+| Small work stays direct | R0/R1 operations run with controlled autonomy |
+| Complex work gets structured | Material fiscal operations become missions |
+| SDD is optional and organic | Formal planning appears when complexity requires it |
+| RDD converges on a frozen candidate | RDA converges on an identified accounting candidate |
+| Engram keeps context | Drenyra Engram keeps institutional memory |
+| Skills specialize the agent | Drenyra Skills provides accounting and jurisdictional knowledge |
+| Receipts authorize delivery | Receipts prove what was proposed, approved, and executed |
+| The system derives authority | Gates and approvals determine authority |
+| doctor, sync, update, recovery | The ecosystem maintains itself automatically |
+| After install it "disappears" | The accountant works normally; Drenyra controls underneath |
+
+## The golden rule
+
+> [!IMPORTANT]
+> **The professional should never have to learn to operate an agent orchestration.** They ask for an accounting result and receive reviewable candidates, evidence, explicit decisions, and verifiable receipts.
+
+## Stricter than Gentle-AI — the additional controls
+
+Fiscal risk demands guarantees that software engineering does not:
+
+1. **Memory never authorizes.** No observation is approval, permission, or authorization.
+2. **Agents never approve themselves.** Approval is explicit, recorded, human.
+3. **A signed XML is not an accepted CPE.** Acceptance by SUNAT is proven by external evidence, never by the document's own signature.
+4. **No agent narration proves execution.** A story about SUNAT, a bank, or an ERP executing something proves nothing; only external evidence does.
+5. **Autonomy derives from materiality, reversibility, and jurisdiction** — never from agent claims.
+6. **Critical actions require external evidence and professional approval.**
+7. **Mission recovery depends on persisted state, not transcript.** The event log is replayed from the last event; narration is never trusted.
+8. **Without receipt, scope, or provable authority, the system fails closed.** Ambiguity is surfaced, never guessed through.
+
+## The conceptual architecture
+
+```mermaid
+flowchart TD
+    U["Professional requests a result"] --> H["AI host"]
+    H --> A["Drenyra AI"]
+    A --> C["Accounting candidate"]
+    C --> G{"Materiality and gates"}
+    G -->|"R0–R1"| X["Controlled execution"]
+    G -->|"R2–R3"| P["Professional approval"]
+    P --> X
+    X --> R["Signed receipt"]
+    R --> L["Verifiable ledger"]
+```
 
 ## What Drenyra AI is not
 

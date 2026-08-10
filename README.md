@@ -64,6 +64,10 @@ Drenyra AI occupies the accounting-domain position that Gentle-AI holds in softw
 > [!IMPORTANT]
 > **Drenyra AI is not "an agent that does accounting."** It is the infrastructure that lets any agent participate in accounting processes without becoming the fiscal authority: a configurator, runtime, and control plane for accounting/fiscal agents — never the ERP, and never the primary interface. Agents propose; the deterministic Core and human approval decide.
 
+<!-- -->
+
+> **The institutional thesis: the AI proposes, the system validates, the professional decides, the evidence remains.** The professional never learns to operate an agent orchestration — they ask for an accounting result and receive reviewable candidates, evidence, explicit decisions, and verifiable receipts. See [Intended Usage](docs/intended-usage.md) for the full philosophy.
+
 | Gentle-AI | Equivalent in Drenyra AI |
 | --- | --- |
 | Configures agent runtimes | Configures accounting/fiscal agent runtimes (`drenyra-ai install`) |
