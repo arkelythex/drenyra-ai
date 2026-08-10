@@ -28,3 +28,8 @@ coverage/
 # Local state
 .local/
 *.log
+# Local Pi runtime state
+.atl/
+
+# Local CodeGraph index
+.codegraph/
