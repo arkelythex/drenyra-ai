@@ -149,7 +149,9 @@ export function isWaitState(status: AccountingMissionStatus): boolean {
  * Returns the reason associated with a wait state, or null for states that do
  * not wait.
  */
-export function waitReasonFor(status: AccountingMissionStatus): WaitReason | null {
+export function waitReasonFor(
+	status: AccountingMissionStatus,
+): WaitReason | null {
 	switch (status) {
 		case S.WAITING_FOR_EVIDENCE:
 			return WaitReason.EVIDENCE;
