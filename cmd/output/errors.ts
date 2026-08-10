@@ -4,32 +4,13 @@
 /**
  * CLI error helpers — exit-code mapping for usage/IO errors (2), business
  * errors (1, JSON error object to stdout), and shared error-message rendering.
+ *
+ * Intent errors are rendered through the missions Core taxonomy; the former
+ * CLI-local INTENT_HANDLER_NOT_CONFIGURED gate was removed together with the
+ * demo handler (real agent handlers are registered by default).
  */
 
 import { isMissionError, IdempotencyConflict } from "../../missions/index.js";
-
-/**
- * Raised by `mission apply` when an execute command targets a mission whose
- * intent has no registered handler in the current invocation. The default CLI
- * path registers NO intent handlers, so executing always fails with this code
- * unless the invocation passed `--demo` (which registers the demo handler).
- *
- * This is a cmd-layer error: the missions library's canonical error taxonomy
- * (missions/errors.ts) is read-only and has no INTENT_HANDLER_NOT_CONFIGURED
- * code, so the CLI defines its own error type and renders it with
- * businessErrorOutput().
- */
-export class IntentHandlerNotConfiguredError extends Error {
-  public readonly intent: string;
-
-  constructor(intent: string) {
-    super(
-      `INTENT_HANDLER_NOT_CONFIGURED: no intent handler is registered for intent "${intent}"; rerun with --demo to register the demo handler`,
-    );
-    this.name = "IntentHandlerNotConfiguredError";
-    this.intent = intent;
-  }
-}
 
 /** Human-readable message for any thrown value. */
 export function errorMessage(error: unknown): string {
@@ -51,20 +32,6 @@ export function usageError(message: string): number {
  * anything unexpected becomes INTERNAL_ERROR.
  */
 export function businessErrorOutput(error: unknown): string {
-  if (error instanceof IntentHandlerNotConfiguredError) {
-    return JSON.stringify(
-      {
-        error: {
-          code: "INTENT_HANDLER_NOT_CONFIGURED",
-          message: error.message,
-          statusCode: 500,
-          details: { intent: error.intent },
-        },
-      },
-      null,
-      2,
-    );
-  }
   if (isMissionError(error)) {
     return JSON.stringify(
       {

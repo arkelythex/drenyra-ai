@@ -21,10 +21,10 @@
  *   drenyra-ai candidate verify <candidate.json> --subject <subject-file>
  *   drenyra-ai gate check <gate-input.json>
  *
- * Mission note: the default CLI path registers NO intent handlers, so
- * `mission apply` with a type "execute" command fails with
- * INTENT_HANDLER_NOT_CONFIGURED unless the invocation passed `--demo` (which
- * registers the demo auto-advance handler for that invocation only).
+ * Mission note: real deterministic intent handlers for every frozen mission
+ * intent (see agents/) are registered by default, so `mission apply` execute
+ * commands stage work and pause at the evidence or approval gate. `--demo`
+ * is accepted for compatibility and has no effect.
  */
 
 import { receiptVerifyCommand } from "./commands/receipt-verify.js";
@@ -74,7 +74,7 @@ function helpText(): string {
     "  mission start <create-command.json> [--store <file>] [--demo]",
     "    Create a new mission (DRAFT).",
     "  mission apply <command.json> [--store <file>] [--demo]",
-    "    Apply an execute/approve/reject/reconcile command.",
+    "    Apply an execute/approve/reject/reconcile command (real intent handlers by default).",
     "  mission status <missionId> [--store <file>]",
     "    Show a mission snapshot and its event log.",
     "  mission recover [--store <file>]",
@@ -91,10 +91,10 @@ function helpText(): string {
     "Mission store file (default ./drenyra-missions.json):",
     "  { storeSchemaVersion, missions, events, idempotency }",
     "",
-    "Without --demo, `mission apply` execute commands fail with",
-    "INTENT_HANDLER_NOT_CONFIGURED: the default CLI path registers no intent",
-    "handlers. --demo registers the demo auto-advance handler for that",
-    "invocation so the full lifecycle can be driven from the shell.",
+    "Real deterministic intent handlers for every mission intent (monthly-close,",
+    "correction, reconciliation, invoice-review, compliance-check) are registered",
+    "by default: execute commands stage work and pause at the evidence or",
+    "approval gate. --demo is accepted for compatibility and has no effect.",
     "",
   ].join("\n");
 }

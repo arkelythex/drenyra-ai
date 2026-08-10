@@ -2,18 +2,16 @@
  * Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; sequence/version/index numbers are JSON integers, never floats.
  */
 /**
- * Mission CLI wiring — shared flag parsing for the mission commands plus the
- * demo auto-advance intent handler.
+ * Mission CLI wiring — shared flag parsing for the mission commands.
  *
- * The demo handler advances a mission one legal status per execute command so
- * the full lifecycle can be driven from the shell (start -> execute x3 ->
- * approve). It is NOT registered by default: `mission start`/`mission apply`
- * only register it when the invocation passes `--demo`. All transitions below
- * are protocol-legal (they come from the canonical status machine's
- * transition table).
+ * `--store <path>` and `--demo` are parsed here so `mission start`/`mission
+ * apply`/`mission status`/`mission recover` share one contract. `--demo` is
+ * accepted for compatibility with earlier CLIs and has no effect: real
+ * deterministic intent handlers are registered by default (see agents/).
+ * The former demo auto-advance handler was removed when the real agent
+ * handlers replaced the demo-only CLI gate.
  */
 
-import { IntentRegistryImpl, type MissionSnapshot, AccountingMissionStatus } from "../../missions/index.js";
 import { DEFAULT_STORE_PATH } from "../adapters/file-mission-store.js";
 
 /** Intents accepted by `mission start` create commands. */
@@ -57,58 +55,4 @@ export function parseMissionFlags(args: string[]): MissionFlags {
     }
   }
   return { storePath: storePath ?? DEFAULT_STORE_PATH, demo, rest };
-}
-
-/** Next single legal status for the demo auto-advance intent handler. */
-export function demoNextStatus(
-  status: AccountingMissionStatus,
-): AccountingMissionStatus | null {
-  switch (status) {
-    case AccountingMissionStatus.DRAFT:
-      return AccountingMissionStatus.QUEUED;
-    case AccountingMissionStatus.QUEUED:
-      return AccountingMissionStatus.RUNNING;
-    case AccountingMissionStatus.RUNNING:
-      return AccountingMissionStatus.AWAITING_APPROVAL;
-    case AccountingMissionStatus.APPROVED:
-      return AccountingMissionStatus.COMPLETED;
-    case AccountingMissionStatus.REVISION_REQUESTED:
-      return AccountingMissionStatus.QUEUED;
-    case AccountingMissionStatus.BLOCKED:
-    case AccountingMissionStatus.WAITING_FOR_EVIDENCE:
-    case AccountingMissionStatus.BLOCKED_BY_GATE:
-    case AccountingMissionStatus.RETRYING:
-    case AccountingMissionStatus.RECOVERING:
-    case AccountingMissionStatus.UNKNOWN:
-      return AccountingMissionStatus.RUNNING;
-    case AccountingMissionStatus.REJECTED:
-      return AccountingMissionStatus.REVISION_REQUESTED;
-    case AccountingMissionStatus.AWAITING_APPROVAL:
-    case AccountingMissionStatus.COMPLETED:
-    case AccountingMissionStatus.FAILED:
-      return null;
-  }
-}
-
-/**
- * Registers the demo auto-advance intent handler for every intent. Only called
- * when the invoking mission command passed `--demo`; the default CLI path
- * registers no intent handlers.
- */
-export function registerDemoIntentHandlers(registry: IntentRegistryImpl): void {
-  const advance = async (
-    mission: MissionSnapshot,
-  ): Promise<MissionSnapshot | null> => {
-    const next = demoNextStatus(mission.status);
-    if (next === null) {
-      return null;
-    }
-    return { ...mission, status: next };
-  };
-  for (const intent of VALID_MISSION_INTENTS) {
-    registry.register({
-      intent: intent as MissionSnapshot["intent"],
-      execute: advance,
-    });
-  }
 }

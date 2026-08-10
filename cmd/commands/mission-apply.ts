@@ -5,27 +5,26 @@
  * `drenyra-ai mission apply <command.json> [--store <file>] [--demo]`
  *
  * Applies one mission command (execute/approve/reject/reconcile) with
- * idempotency replay and optimistic concurrency. The default CLI path
- * registers NO intent handlers: an execute command whose mission intent has no
- * registered handler fails with INTENT_HANDLER_NOT_CONFIGURED (exit 1, JSON
- * error object to stdout). `--demo` registers the demo auto-advance handler for
- * this invocation only.
+ * idempotency replay and optimistic concurrency. Real deterministic intent
+ * handlers for every frozen mission intent (see agents/) are registered by
+ * default: execute commands stage work and pause at the evidence or approval
+ * gate. The Core lifecycle, gates, and approval remain authoritative.
+ * `--demo` is accepted for compatibility and has no effect.
  */
-
+    
 import {
   MissionRuntime,
-  IntentRegistryImpl,
   IdempotencyConflict,
   isMissionError,
   type BoundMissionCommand,
 } from "../../missions/index.js";
+import { createAgentRegistry } from "../../agents/index.js";
 import { MissionFileStore } from "../adapters/file-mission-store.js";
-import { parseMissionFlags, registerDemoIntentHandlers } from "./mission-demo-handler.js";
+import { parseMissionFlags } from "./mission-demo-handler.js";
 import { readJsonFile, emitJson, emitSummary } from "../output/json.js";
 import {
   businessErrorOutput,
   errorMessage,
-  IntentHandlerNotConfiguredError,
   usageError,
 } from "../output/errors.js";
 
@@ -95,21 +94,9 @@ export async function missionApplyCommand(args: string[]): Promise<number> {
     }
     const fileStore = new MissionFileStore(flags.storePath);
     const stores = await fileStore.hydrate();
-    const registry = new IntentRegistryImpl();
-    if (flags.demo) {
-      registerDemoIntentHandlers(registry);
-    }
-    // Default CLI path registers NO intent handlers: executing a mission
-    // without one is a business error, not a silent default RUNNING transition.
-    if (parsed.command.type === "execute") {
-      const mission = await stores.missions.findById(parsed.command.missionId);
-      if (
-        mission !== undefined &&
-        registry.resolve(mission.intent) === undefined
-      ) {
-        throw new IntentHandlerNotConfiguredError(mission.intent);
-      }
-    }
+    // Real deterministic intent handlers cover every frozen mission intent:
+    // execute commands stage work and pause at the evidence/approval gate.
+    const registry = createAgentRegistry();
     const runtime = new MissionRuntime({
       store: stores.missions,
       events: stores.events,
@@ -132,7 +119,6 @@ export async function missionApplyCommand(args: string[]): Promise<number> {
     return 0;
   } catch (error) {
     if (
-      error instanceof IntentHandlerNotConfiguredError ||
       isMissionError(error) ||
       error instanceof IdempotencyConflict
     ) {
