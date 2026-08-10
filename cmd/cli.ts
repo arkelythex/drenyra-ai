@@ -35,6 +35,7 @@ import { missionStatusCommand } from "./commands/mission-status.js";
 import { missionRecoverCommand } from "./commands/mission-recover.js";
 import { candidateInspectCommand } from "./commands/candidate-inspect.js";
 import { candidateVerifyCommand } from "./commands/candidate-verify.js";
+import { candidateAuditCommand } from "./commands/candidate-audit.js";
 import { gateCheckCommand } from "./commands/gate-check.js";
 import { capabilitiesCommand } from "./commands/capabilities.js";
 import { doctorCommand } from "./commands/doctor.js";
@@ -57,6 +58,7 @@ const COMMANDS: Readonly<Record<string, Readonly<Record<string, CommandHandler>>
   candidate: {
     inspect: candidateInspectCommand,
     verify: candidateVerifyCommand,
+    audit: candidateAuditCommand,
   },
   gate: {
     check: gateCheckCommand,
@@ -99,6 +101,8 @@ function helpText(): string {
     "    Derive candidate identity + materiality from an inspect file.",
     "  candidate verify <candidate.json> --subject <subject-file>",
     "    Revalidate candidate identity against the exact subject bytes.",
+    "  candidate audit <candidate.json>",
+    "    Guardian Angel read-only adversarial review (findings only).",
     "  gate check <gate-input.json>",
     "    Run the standard gates [mission, receipt, approval] over a gate input.",
     "  capabilities show",
