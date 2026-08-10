@@ -39,6 +39,7 @@ import type {
   MissionStore,
 } from "./store.js";
 import type { IntentRegistry } from "./intents.js";
+import { assertFence, type FenceStore } from "./fencing.js";
 
 /** Idempotency records are retained for 24 hours. */
 const IDEMPOTENCY_TTL_MS = 24 * 60 * 60 * 1000;
@@ -202,17 +203,20 @@ export class MissionRuntime {
   private readonly events: MissionEventStore;
   private readonly idempotency: IdempotencyStore;
   private readonly registry: IntentRegistry | undefined;
+  private readonly fenceStore: FenceStore | undefined;
 
   constructor(options: {
     store: MissionStore;
     events: MissionEventStore;
     idempotency: IdempotencyStore;
     registry?: IntentRegistry;
+    fenceStore?: FenceStore;
   }) {
     this.store = options.store;
     this.events = options.events;
     this.idempotency = options.idempotency;
     this.registry = options.registry;
+    this.fenceStore = options.fenceStore;
   }
 
   /**
@@ -272,7 +276,11 @@ export class MissionRuntime {
    */
   async apply(
     command: BoundMissionCommand,
-    ctx: { idempotencyKey?: string; expectedMissionVersion?: number } = {},
+    ctx: {
+    idempotencyKey?: string;
+    expectedMissionVersion?: number;
+    fenceToken?: number;
+  } = {},
   ): Promise<MissionApplyResult> {
     if (command.type === "create") {
       throw new MissionError(
@@ -355,6 +363,11 @@ export class MissionRuntime {
           `VERSION_CONFLICT: expected ${expected}, got ${mission.version}`,
           { expected, current: mission.version },
         );
+      }
+
+      // 3b. Fencing: a stale worker token is rejected before any mutation.
+      if (this.fenceStore !== undefined && ctx.fenceToken !== undefined) {
+        await assertFence(this.fenceStore, command.missionId, ctx.fenceToken);
       }
 
       // 4. Terminal guard.
