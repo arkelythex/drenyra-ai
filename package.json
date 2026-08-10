@@ -1,7 +1,7 @@
 {
   "name": "drenyra-ai",
   "version": "0.2.0",
-  "description": "Standalone RDA (Receipt-Driven Accounting) core — receipt verification against frozen conformance vectors, append-only audit ledger validation, mission protocol + runtime, candidate identity/materiality, and proportional review lenses. Library modules use node:crypto only; the CLI adds ajv for schema validation.",
+  "description": "Standalone RDA (Receipt-Driven Accounting) core \u2014 receipt verification against frozen conformance vectors, append-only audit ledger validation, mission protocol + runtime, candidate identity/materiality, and proportional review lenses. Library modules use node:crypto only; the CLI adds ajv for schema validation.",
   "type": "module",
   "bin": {
     "drenyra-ai": "./dist/cmd/cli.js"
@@ -30,7 +30,8 @@
     "./skills": "./dist/skills/index.js",
     "./security": "./dist/security/index.js",
     "./guardian": "./dist/guardian/index.js",
-    "./mcp": "./dist/mcp/index.js"
+    "./mcp": "./dist/mcp/index.js",
+    "./adapters": "./dist/adapters/index.js"
   },
   "scripts": {
     "build": "node scripts/build.mjs",

@@ -27,7 +27,8 @@
     "skills",
     "security",
     "guardian",
-    "mcp"
+    "mcp",
+    "adapters"
   ],
   "exclude": [
     "node_modules",
