@@ -148,4 +148,4 @@ There are **no silent errors and no states converted into success for interface 
 
 ---
 
-**Read next:** [Architecture](../architecture.md) — back to the index · [Design 03](design-03-agents-skills-integrations.md) — agents, skills, and integrations
+**Read next:** [Design 05 — Testing, Releases, and the v1.0 Definition](design-05-testing-releases-v1.md) · [Architecture](../architecture.md) — back to the index · [Design 03](design-03-agents-skills-integrations.md) — agents, skills, and integrations

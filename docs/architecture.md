@@ -20,6 +20,7 @@
 | [Design 02 — Monthly Close](design/design-02-monthly-close.md) | The v1.0 flagship flow: preflight → evidence → reconciliation → candidates → review → external confirmation → close package | Building the monthly accounting and tax close |
 | [Design 03 — Agents, Skills, Integrations](design/design-03-agents-skills-integrations.md) | AI proposes, deterministic code decides: orchestrator, initial agents, skill layers, integration order, provider agnosticism | Building the agent and integration layer |
 | [Design 04 — Persistence, Security, Recovery](design/design-04-persistence-security-recovery.md) | Authoritative state in persisted events/evidence/receipts: storage model, data model, evidence, approvals, idempotency, error classes, security controls | Building durable persistence and security |
+| [Design 05 — Testing, Releases, v1.0](design/design-05-testing-releases-v1.md) | Test strategy, mandatory scenarios, release pipeline, versioning, maturity stages, v1.0 criteria, measurable invariants | Defining when the product is production-ready |
 
 ## Position in the ecosystem
 
