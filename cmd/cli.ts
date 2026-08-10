@@ -38,6 +38,8 @@ import { candidateVerifyCommand } from "./commands/candidate-verify.js";
 import { gateCheckCommand } from "./commands/gate-check.js";
 import { capabilitiesCommand } from "./commands/capabilities.js";
 import { doctorCommand } from "./commands/doctor.js";
+import { installCommand } from "./commands/install.js";
+import { syncCommand } from "./commands/sync.js";
 import { usageError } from "./output/errors.js";
 
 /** Command handler signature: raw args, resolved exit code (0/1/2). */
@@ -64,6 +66,12 @@ const COMMANDS: Readonly<Record<string, Readonly<Record<string, CommandHandler>>
       },
       doctor: {
         run: doctorCommand,
+      },
+      install: {
+        run: installCommand,
+      },
+      sync: {
+        run: syncCommand,
       },
 };
 
@@ -97,6 +105,10 @@ function helpText(): string {
     "    Declare available contracts, skills, jurisdictions, and adapters.",
     "  doctor run",
     "    Read-only ecosystem health check.",
+    "  install run [--home <dir>]",
+    "    Detect and configure existing agent hosts (never installs a host).",
+    "  sync run [--home <dir>]",
+    "    Refresh managed assets without overwriting foreign changes.",
     "",
     "Exit codes: 0 success, 1 business error (JSON error to stdout), 2 usage/IO.",
     "",
