@@ -42,7 +42,10 @@ describe("candidate audit", () => {
 			});
 			const { code, stdout } = capture(() => candidateAuditCommand([file]));
 			expect(code).toBe(0);
-			const parsed = JSON.parse(stdout) as { verdict: string; findings: unknown[] };
+			const parsed = JSON.parse(stdout) as {
+				verdict: string;
+				findings: unknown[];
+			};
 			expect(parsed.verdict).toBe("none");
 			expect(parsed.findings).toHaveLength(0);
 		} finally {
@@ -59,14 +62,23 @@ describe("candidate audit", () => {
 				scope: { ruc: "20123456789", period: "202607" },
 				materiality: "R3",
 				status: "reviewing",
-				reviews: [{ id: "r1", verdict: "accept", reviewer: "alicia", reviewedAt: "2026-07-10T00:00:00.000Z" }],
+				reviews: [
+					{
+						id: "r1",
+						verdict: "accept",
+						reviewer: "alicia",
+						reviewedAt: "2026-07-10T00:00:00.000Z",
+					},
+				],
 				corrections: [],
 				createdAt: "2026-07-01T00:00:00.000Z",
 				version: 1,
 			});
 			const { code, stdout } = capture(() => candidateAuditCommand([file]));
 			expect(code).toBe(1);
-			const parsed = JSON.parse(stdout) as { findings: Array<{ severity: string }> };
+			const parsed = JSON.parse(stdout) as {
+				findings: Array<{ severity: string }>;
+			};
 			expect(parsed.findings.some((f) => f.severity === "blocker")).toBe(true);
 		} finally {
 			rmSync(dir, { recursive: true, force: true });

@@ -37,7 +37,9 @@ describe("evidenceItem", () => {
 describe("missingTypes", () => {
 	it("reports required types that are absent (absence is never zero)", () => {
 		const items = [evidenceItem("A", "voucher", "s", "t")];
-		expect(missingTypes(items, ["voucher", "statement"])).toEqual(["statement"]);
+		expect(missingTypes(items, ["voucher", "statement"])).toEqual([
+			"statement",
+		]);
 		expect(missingTypes(items, ["voucher"])).toEqual([]);
 	});
 });
@@ -49,7 +51,9 @@ describe("AdapterRegistry", () => {
 		registry.register(adapter);
 		expect(registry.resolve("local-files", "PE")?.name).toBe("local-file");
 		expect(registry.resolve("sunat", "PE")).toBeUndefined();
-		expect(() => registry.register(new LocalFileAdapter("/tmp/other"))).toThrow(/already registered/i);
+		expect(() => registry.register(new LocalFileAdapter("/tmp/other"))).toThrow(
+			/already registered/i,
+		);
 	});
 });
 
@@ -57,8 +61,14 @@ describe("LocalFileAdapter", () => {
 	it("reads, hashes, and reports missing required evidence", async () => {
 		const dir = mkdtempSync(join(tmpdir(), "drenyra-adapters-"));
 		try {
-			writeFileSync(join(dir, "voucher-1.json"), JSON.stringify({ invoice: "F001-000123" }));
-			writeFileSync(join(dir, "voucher-2.json"), JSON.stringify({ invoice: "F001-000124" }));
+			writeFileSync(
+				join(dir, "voucher-1.json"),
+				JSON.stringify({ invoice: "F001-000123" }),
+			);
+			writeFileSync(
+				join(dir, "voucher-2.json"),
+				JSON.stringify({ invoice: "F001-000124" }),
+			);
 			const adapter = new LocalFileAdapter(dir);
 			const result = await adapter.fetch(input);
 			expect(result.items.length).toBeGreaterThanOrEqual(2);

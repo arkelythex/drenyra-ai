@@ -11,7 +11,10 @@
  * rejects; the professional and gates decide. Input: a candidate snapshot.
  */
 
-import { runGuardianReview, type GuardianReport } from "../../guardian/index.js";
+import {
+	runGuardianReview,
+	type GuardianReport,
+} from "../../guardian/index.js";
 import type { Candidate } from "../../candidates/types.js";
 import { readJsonFile, emitJson } from "../output/json.js";
 import { usageError } from "../output/errors.js";
@@ -34,7 +37,9 @@ function isCandidate(input: unknown): input is Candidate {
 export function candidateAuditCommand(args: string[]): number {
 	const file = args[0];
 	if (file === undefined) {
-		return usageError('missing candidate file: drenyra-ai candidate audit <candidate.json>');
+		return usageError(
+			"missing candidate file: drenyra-ai candidate audit <candidate.json>",
+		);
 	}
 	let candidate: unknown;
 	try {

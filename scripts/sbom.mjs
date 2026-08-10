@@ -16,18 +16,24 @@ import { join } from "node:path";
 
 let manifest;
 try {
-	manifest = JSON.parse(readFileSync(join(process.cwd(), "package.json"), "utf8"));
+	manifest = JSON.parse(
+		readFileSync(join(process.cwd(), "package.json"), "utf8"),
+	);
 } catch (error) {
-	console.error(`sbom: cannot read package.json: ${error instanceof Error ? error.message : String(error)}`);
+	console.error(
+		`sbom: cannot read package.json: ${error instanceof Error ? error.message : String(error)}`,
+	);
 	process.exit(1);
 }
 
-const components = Object.entries(manifest.dependencies ?? {}).map(([name, version]) => ({
-	type: "library",
-	name,
-	version,
-	scope: "required",
-}));
+const components = Object.entries(manifest.dependencies ?? {}).map(
+	([name, version]) => ({
+		type: "library",
+		name,
+		version,
+		scope: "required",
+	}),
+);
 
 const sbom = {
 	bomFormat: "CycloneDX",
