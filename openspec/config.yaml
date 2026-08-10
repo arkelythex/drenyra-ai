@@ -1,0 +1,64 @@
+schema: spec-driven
+
+context: |
+  Stack: TypeScript 5.7 ESM (Node >= 22), Bun package manager (bun.lock, CI uses bun), Vitest 2.1.
+  Architecture: Drenyra-AI is the AI advisory orchestration layer; Drenyra Core retains deterministic
+  authority over accounting decisions. Layered verifiable-accounting runtime — contracts/ (normative,
+  versioned) -> library modules (receipts, ledger [audit-only], missions, candidates, review, gates,
+  recovery; node:crypto only) -> agents/ (deterministic intent orchestration, staging only) -> cmd/
+  (thin CLI adapters). No reverse imports; never depends on Drenyra, Drenyra Pi, or Drenyra Engram.
+  Target 16-program Peru v1 roadmap adds modules tenant/, evidence/, ingest/, policy/, and journal/ over
+  phased slices; ledger/ remains audit-only. SUNAT-facing capabilities are in scope per slice.
+  Testing: Vitest — 463 tests across 25 files; frozen conformance vectors under contracts/__tests__;
+  packed-artifact and install verification via scripts.
+  Style: strict TS (no any, const-object types, flat interfaces); commands/output/adapters separated;
+  money as BigInt cents; version/sequence numbers as JSON integers; fail-closed gates; English artifacts.
+
+session:
+  execution_mode: automatic
+  delivery_strategy: auto-forecast
+  review_budget_lines: 400
+
+strict_tdd: true
+
+testing:
+  runner: vitest
+  test_command: bun run test
+  typecheck_command: bun run typecheck
+  build_command: bun run build
+  coverage:
+    available: false
+    command: ""
+  layers:
+    unit: true
+    integration: true
+    e2e: false
+  quality:
+    linter: none
+    typechecker: tsc --noEmit (strict, wired in tsconfig.json)
+    formatter: none
+
+rules:
+  proposal:
+    - Map each change to the 16-program Peru v1 roadmap and to an approved architecture section (AI advisory vs deterministic authority; audit ledger vs accounting journal; evidence vs memory)
+    - State the current-state gap, first-slice scope, non-goals, and product tradeoffs
+  specs:
+    - Use Given/When/Then scenarios and RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+    - Keep contract language transport-agnostic. Approved target (16-program Peru v1) adds tenant, evidence, journal, policy, and ingest capabilities plus SUNAT-facing flows over phased slices; integrations are deferred unless explicitly scoped in the change — they are not permanently prohibited
+  design:
+    - Respect the layer model: contracts -> library modules -> agents -> cmd; no reverse imports; library modules stay node:crypto-only
+    - Money values are BigInt cents; version/sequence numbers are JSON integers; no floats
+    - Make fail-closed behavior explicit; document decisions with rationale
+  tasks:
+    - Group by phase with hierarchical numbering; keep tasks completable in one session
+    - Stay inside the 400 changed-line review budget; forecast when chained PRs may be needed
+  apply:
+    tdd: true
+    test_command: bun run test
+  verify:
+    test_command: bun run test
+    build_command: bun run build
+    typecheck_command: bun run typecheck
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas; archived changes are an audit trail and are never modified
