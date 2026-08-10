@@ -1,8 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { mkdtempSync, rmSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
+import {
+	mkdtempSync,
+	rmSync,
+	mkdirSync,
+	writeFileSync,
+	readFileSync,
+	existsSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { detectHosts, installIntegrations, readInstallManifest } from "../commands/install.js";
+import {
+	detectHosts,
+	installIntegrations,
+	readInstallManifest,
+} from "../commands/install.js";
 import { syncManaged } from "../commands/sync.js";
 
 function tempHome(): { dir: string; cleanup: () => void } {
@@ -16,7 +27,9 @@ describe("install", () => {
 		try {
 			mkdirSync(join(dir, ".claude"), { recursive: true });
 			const detected = detectHosts(dir);
-			expect(detected.find((h) => h.name === "claude-code")?.present).toBe(true);
+			expect(detected.find((h) => h.name === "claude-code")?.present).toBe(
+				true,
+			);
 			expect(detected.find((h) => h.name === "codex")?.present).toBe(false);
 
 			const manifest = installIntegrations(dir);
@@ -35,9 +48,14 @@ describe("install", () => {
 		const { dir, cleanup } = tempHome();
 		try {
 			mkdirSync(join(dir, ".claude"), { recursive: true });
-			writeFileSync(join(dir, ".claude", ".drenyra-managed"), "foreign content");
+			writeFileSync(
+				join(dir, ".claude", ".drenyra-managed"),
+				"foreign content",
+			);
 			const manifest = installIntegrations(dir);
-			expect(readFileSync(join(dir, ".claude", ".drenyra-managed"), "utf8")).toBe("foreign content");
+			expect(
+				readFileSync(join(dir, ".claude", ".drenyra-managed"), "utf8"),
+			).toBe("foreign content");
 			expect(manifest.hosts.filter((h) => h.present)).toHaveLength(1);
 		} finally {
 			cleanup();
@@ -63,14 +81,19 @@ describe("sync", () => {
 			mkdirSync(join(dir, ".config/opencode"), { recursive: true });
 			const manifest = installIntegrations(dir);
 			// Foreign change on the opencode marker after install.
-			writeFileSync(join(dir, ".config/opencode", ".drenyra-managed"), "someone edited this");
+			writeFileSync(
+				join(dir, ".config/opencode", ".drenyra-managed"),
+				"someone edited this",
+			);
 			const results = syncManaged(dir);
 			const claude = results.find((r) => r.host === "claude-code");
 			const opencode = results.find((r) => r.host === "opencode");
 			expect(claude?.action).toBe("synced");
 			expect(opencode?.action).toBe("preserved");
 			// Foreign content untouched.
-			expect(readFileSync(join(dir, ".config/opencode", ".drenyra-managed"), "utf8")).toBe("someone edited this");
+			expect(
+				readFileSync(join(dir, ".config/opencode", ".drenyra-managed"), "utf8"),
+			).toBe("someone edited this");
 			expect(manifest.version).toBeTruthy();
 		} finally {
 			cleanup();

@@ -2,7 +2,12 @@ import { describe, expect, it, vi } from "vitest";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { EnvSecretResolver, FileSecretResolver, NullSecretResolver, KMS_GUIDANCE } from "../index.js";
+import {
+	EnvSecretResolver,
+	FileSecretResolver,
+	NullSecretResolver,
+	KMS_GUIDANCE,
+} from "../index.js";
 
 describe("EnvSecretResolver", () => {
 	it("resolves a prefixed environment variable", async () => {

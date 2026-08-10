@@ -80,15 +80,23 @@ export function installIntegrations(
 	for (const host of hosts.filter((h) => h.present)) {
 		const marker = join(host.configDir, ".drenyra-managed");
 		if (!existsSync(marker)) {
-			writeFileSync(marker, JSON.stringify({ manager: "drenyra-ai", installedAt: now }, null, 2));
+			writeFileSync(
+				marker,
+				JSON.stringify({ manager: "drenyra-ai", installedAt: now }, null, 2),
+			);
 		}
 	}
-	writeFileSync(join(managedDir, MANAGED_FILE), JSON.stringify(manifest, null, 2));
+	writeFileSync(
+		join(managedDir, MANAGED_FILE),
+		JSON.stringify(manifest, null, 2),
+	);
 	return manifest;
 }
 
 /** Read the managed manifest, or undefined when not installed or unreadable. */
-export function readInstallManifest(homeDir: string): InstallManifest | undefined {
+export function readInstallManifest(
+	homeDir: string,
+): InstallManifest | undefined {
 	const path = join(homeDir, MANAGED_DIR, MANAGED_FILE);
 	if (!existsSync(path)) return undefined;
 	try {
@@ -102,7 +110,9 @@ export function readInstallManifest(homeDir: string): InstallManifest | undefine
 export function installCommand(args: string[]): number {
 	const home = homeFromArgs(args);
 	const manifest = installIntegrations(home);
-	const present = manifest.hosts.flatMap((host) => (host.present ? [host.name] : []));
+	const present = manifest.hosts.flatMap((host) =>
+		host.present ? [host.name] : [],
+	);
 	console.log(
 		JSON.stringify(
 			{
@@ -128,4 +138,3 @@ export function homeFromArgs(args: string[]): string {
 	}
 	return process.env.HOME ?? process.cwd();
 }
-

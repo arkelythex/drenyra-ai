@@ -68,7 +68,10 @@ export interface ReconciliationResult {
 export class ReconciliationError extends Error {
 	constructor(
 		message: string,
-		readonly code: "NO_RESOLVER" | "EXECUTED_WITHOUT_EVIDENCE" | "RESOLVER_FAILED",
+		readonly code:
+			| "NO_RESOLVER"
+			| "EXECUTED_WITHOUT_EVIDENCE"
+			| "RESOLVER_FAILED",
 	) {
 		super(message);
 		this.name = "ReconciliationError";
@@ -127,12 +130,14 @@ export async function reconcileExternalCall(
 		case "not-executed":
 			return {
 				decision: "retry",
-				reason: "external system confirms the action did not execute; idempotent retry is safe",
+				reason:
+					"external system confirms the action did not execute; idempotent retry is safe",
 			};
 		case "indeterminate":
 			return {
 				decision: "human-intervention",
-				reason: "external system cannot determine the outcome; a professional must decide",
+				reason:
+					"external system cannot determine the outcome; a professional must decide",
 			};
 	}
 }

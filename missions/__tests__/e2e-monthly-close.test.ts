@@ -8,10 +8,21 @@ import {
 import { IntentRegistryImpl, type IntentHandler } from "../intents.js";
 import { AccountingMissionStatus } from "../status.js";
 import { InMemoryFenceStore, acquireFence } from "../fencing.js";
-import { InMemoryOutboxStore, enqueueMessage, deliverMessage } from "../outbox.js";
-import { reconcileExternalCall, type ExternalSystemResolver } from "../reconciliation.js";
+import {
+	InMemoryOutboxStore,
+	enqueueMessage,
+	deliverMessage,
+} from "../outbox.js";
+import {
+	reconcileExternalCall,
+	type ExternalSystemResolver,
+} from "../reconciliation.js";
 import { CandidateLifecycle } from "../../candidates/lifecycle.js";
-import { buildSignedReceipt, generateReceiptKeyPair, signReceipt } from "../../receipts/index.js";
+import {
+	buildSignedReceipt,
+	generateReceiptKeyPair,
+	signReceipt,
+} from "../../receipts/index.js";
 import { validateLedger, GENESIS_EMPTY_HASH } from "../../ledger/index.js";
 import type { CreateMissionCommand, MissionIntent } from "../commands.js";
 import type { MissionSnapshot } from "../types.js";
@@ -26,7 +37,9 @@ const S = AccountingMissionStatus;
 const SYNTHETIC_RUC = "20123456789";
 const PERIOD = "202607";
 
-function advance(status: AccountingMissionStatus): AccountingMissionStatus | null {
+function advance(
+	status: AccountingMissionStatus,
+): AccountingMissionStatus | null {
 	switch (status) {
 		case S.DRAFT:
 			return S.QUEUED;
@@ -41,7 +54,11 @@ function advance(status: AccountingMissionStatus): AccountingMissionStatus | nul
 	}
 }
 
-function makeRuntime(): { runtime: MissionRuntime; fences: InMemoryFenceStore; outbox: InMemoryOutboxStore } {
+function makeRuntime(): {
+	runtime: MissionRuntime;
+	fences: InMemoryFenceStore;
+	outbox: InMemoryOutboxStore;
+} {
 	const store = new InMemoryMissionStore();
 	const events = new InMemoryMissionEventStore();
 	const idempotency = new InMemoryIdempotencyStore();
@@ -57,7 +74,13 @@ function makeRuntime(): { runtime: MissionRuntime; fences: InMemoryFenceStore; o
 		},
 	};
 	registry.register(handler);
-	const runtime = new MissionRuntime({ store, events, idempotency, registry, fenceStore: fences });
+	const runtime = new MissionRuntime({
+		store,
+		events,
+		idempotency,
+		registry,
+		fenceStore: fences,
+	});
 	return { runtime, fences, outbox };
 }
 
@@ -70,7 +93,9 @@ describe("E2E: monthly close (synthetic Peruvian company)", () => {
 			companyId: "synthetic-pe-01",
 			fiscalPeriod: PERIOD,
 			intent: "monthly-close",
-			input: { instruction: `Prepare the ${PERIOD} monthly close for Company X.` },
+			input: {
+				instruction: `Prepare the ${PERIOD} monthly close for Company X.`,
+			},
 		};
 		const mission = await runtime.start(create);
 		expect(mission.companyId).toBe("synthetic-pe-01");
@@ -79,7 +104,11 @@ describe("E2E: monthly close (synthetic Peruvian company)", () => {
 		// 2. Workers execute the close with fencing.
 		const token = await acquireFence(fences, mission.id);
 		const executed = await runtime.apply(
-			{ type: "execute", missionId: mission.id, payload: { expectedMissionVersion: 1 } },
+			{
+				type: "execute",
+				missionId: mission.id,
+				payload: { expectedMissionVersion: 1 },
+			},
 			{ fenceToken: token },
 		);
 		expect(executed.snapshot.status).toBe(S.QUEUED);
@@ -87,12 +116,27 @@ describe("E2E: monthly close (synthetic Peruvian company)", () => {
 		// 3. An accounting candidate with materiality derived from BigInt cents.
 		const lifecycle = new CandidateLifecycle();
 		const candidate = lifecycle.propose({
-			subject: JSON.stringify({ ruc: SYNTHETIC_RUC, period: PERIOD, correction: "reclassify supplier prepayment" }),
+			subject: JSON.stringify({
+				ruc: SYNTHETIC_RUC,
+				period: PERIOD,
+				correction: "reclassify supplier prepayment",
+			}),
 			scope: { ruc: SYNTHETIC_RUC, period: PERIOD },
-			materialityInput: { value: 120_000n, reversibility: "reversible", jurisdiction: "PE" },
+			materialityInput: {
+				value: 120_000n,
+				reversibility: "reversible",
+				jurisdiction: "PE",
+			},
 		});
 		expect(candidate.materiality).toBe("R1");
-		const inspected = lifecycle.inspect(candidate, JSON.stringify({ ruc: SYNTHETIC_RUC, period: PERIOD, correction: "reclassify supplier prepayment" }));
+		const inspected = lifecycle.inspect(
+			candidate,
+			JSON.stringify({
+				ruc: SYNTHETIC_RUC,
+				period: PERIOD,
+				correction: "reclassify supplier prepayment",
+			}),
+		);
 		expect(inspected.status).toBe("inspected");
 
 		// 4. The approved candidate is receipted (Ed25519).
@@ -121,7 +165,11 @@ describe("E2E: monthly close (synthetic Peruvian company)", () => {
 			trustRoot: { keyIds: [keyPair.keyId] },
 			jurisdiction: "PE",
 			createdAt: "2026-08-01T00:00:00.000Z",
-			signingPolicy: { required: false, algorithm: "Ed25519" as const, keyIds: [] },
+			signingPolicy: {
+				required: false,
+				algorithm: "Ed25519" as const,
+				keyIds: [],
+			},
 		};
 		const ts = "2026-08-01T00:00:00.000Z";
 		const genesis = {

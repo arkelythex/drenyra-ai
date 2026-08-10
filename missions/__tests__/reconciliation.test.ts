@@ -43,11 +43,15 @@ describe("reconcileExternalCall", () => {
 
 	it("rejects executed-without-evidence (fail-closed)", async () => {
 		const resolver = resolverFor("executed");
-		await expect(reconcileExternalCall(resolver, call)).rejects.toThrow(ReconciliationError);
+		await expect(reconcileExternalCall(resolver, call)).rejects.toThrow(
+			ReconciliationError,
+		);
 		try {
 			await reconcileExternalCall(resolver, call);
 		} catch (error) {
-			expect((error as ReconciliationError).code).toBe("EXECUTED_WITHOUT_EVIDENCE");
+			expect((error as ReconciliationError).code).toBe(
+				"EXECUTED_WITHOUT_EVIDENCE",
+			);
 		}
 	});
 
@@ -64,7 +68,9 @@ describe("reconcileExternalCall", () => {
 	});
 
 	it("fails closed when no resolver is configured", async () => {
-		await expect(reconcileExternalCall(undefined, call)).rejects.toThrow(ReconciliationError);
+		await expect(reconcileExternalCall(undefined, call)).rejects.toThrow(
+			ReconciliationError,
+		);
 	});
 
 	it("fails closed when the resolver itself fails", async () => {
@@ -73,20 +79,26 @@ describe("reconcileExternalCall", () => {
 				throw new Error("connection refused");
 			},
 		};
-		await expect(reconcileExternalCall(resolver, call)).rejects.toThrow(ReconciliationError);
+		await expect(reconcileExternalCall(resolver, call)).rejects.toThrow(
+			ReconciliationError,
+		);
 	});
 
 	it("never re-executes on its own — decisions only record, retry, or escalate", async () => {
 		const resolver = resolverFor("indeterminate");
 		const result = await reconcileExternalCall(resolver, call);
-		expect(["record", "retry", "human-intervention"]).toContain(result.decision);
+		expect(["record", "retry", "human-intervention"]).toContain(
+			result.decision,
+		);
 	});
 });
 
 describe("isVerifiableEvidence", () => {
 	it("requires every field and a 64-char response hash", () => {
 		expect(isVerifiableEvidence(evidence())).toBe(true);
-		expect(isVerifiableEvidence(evidence({ responseHash: "short" }))).toBe(false);
+		expect(isVerifiableEvidence(evidence({ responseHash: "short" }))).toBe(
+			false,
+		);
 		expect(isVerifiableEvidence(evidence({ identifier: "" }))).toBe(false);
 	});
 });

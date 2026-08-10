@@ -68,5 +68,6 @@ export const KMS_GUIDANCE = {
 		"Key rotation and revocation surfaced through the vault",
 		"No secret material in env, files, prompts, logs, or publicly shareable receipts",
 	],
-	status: "adapter pending — EnvSecretResolver and FileSecretResolver (test-only) are the bounded dev surface",
+	status:
+		"adapter pending — EnvSecretResolver and FileSecretResolver (test-only) are the bounded dev surface",
 } as const;

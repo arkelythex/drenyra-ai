@@ -32,13 +32,23 @@ function expectedMarker(installedAt: string): string {
 export function syncManaged(homeDir: string): SyncResult[] {
 	const manifest = readInstallManifest(homeDir);
 	if (manifest === undefined) {
-		return [{ host: "*", action: "not-installed", reason: "no drenyra-ai install manifest found" }];
+		return [
+			{
+				host: "*",
+				action: "not-installed",
+				reason: "no drenyra-ai install manifest found",
+			},
+		];
 	}
 	const hosts = detectHosts(homeDir);
 	const results: SyncResult[] = [];
 	for (const host of hosts) {
 		if (!host.present) {
-			results.push({ host: host.name, action: "missing", reason: "host config directory absent" });
+			results.push({
+				host: host.name,
+				action: "missing",
+				reason: "host config directory absent",
+			});
 			continue;
 		}
 		const markerPath = join(host.configDir, ".drenyra-managed");
@@ -46,7 +56,11 @@ export function syncManaged(homeDir: string): SyncResult[] {
 		if (existsSync(markerPath)) {
 			const current = readFileSync(markerPath, "utf8");
 			if (current === expected) {
-				results.push({ host: host.name, action: "synced", reason: "marker already current" });
+				results.push({
+					host: host.name,
+					action: "synced",
+					reason: "marker already current",
+				});
 			} else {
 				// Foreign change: preserve it, report it. Never overwrite.
 				results.push({
@@ -57,7 +71,11 @@ export function syncManaged(homeDir: string): SyncResult[] {
 			}
 		} else {
 			writeFileSync(markerPath, expected);
-			results.push({ host: host.name, action: "synced", reason: "marker recreated" });
+			results.push({
+				host: host.name,
+				action: "synced",
+				reason: "marker recreated",
+			});
 		}
 	}
 	return results;
