@@ -15,6 +15,7 @@
 | `receipts/` | RDA receipt core: canonical serialization, SHA-256, Ed25519 sign/verify, trusted signer lifecycle |
 | `ledger/` | Append-only audit ledger validation (chain continuity, first-divergence reporting) |
 | `missions/` | Mission protocol (14 states, commands, events, errors, versioning, idempotency) + `MissionRuntime` |
+| `agents/` | Orchestration layer: deterministic per-intent `IntentHandler`s + registry (stages work only; Core gates and approval stay authoritative) |
 | `candidates/` | Candidate identity (byte-based subject hash), materiality R0–R3, immutable lifecycle with one-scoped correction |
 | `review/` | Proportional review lens selection + review workload forecast |
 | `cmd/` | Thin CLI adapters (receipt verify, ledger validate, mission start/apply/status, candidate inspect/verify) |

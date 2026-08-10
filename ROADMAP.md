@@ -1,6 +1,6 @@
 # Drenyra AI — Roadmap
 
-> **Last updated:** 2026-08-01. Status: pre-alpha.
+> **Last updated:** 2026-08-08. Status: released (all contracts frozen).
 
 ## Phase 0 — Identity (current)
 
@@ -36,9 +36,17 @@ Extracted via vertical PRs and versioned releases, **not** a bulk move:
 - [x] Package integrity: build to `dist/`, Node >= 22 ESM artifact, complete `files` manifest, subpath `exports`, `prepack` verification
 - [x] Packed-artifact test: npm pack → install .tgz → run bin under plain Node → resolve library entry
 - [x] CLI boundaries: split commands/output/adapters, ajv schema validation, atomic JSON-file store (development adapter)
-- [x] Intent-handler policy: default CLI fails with `INTENT_HANDLER_NOT_CONFIGURED`; `--demo` opts in
+- [x] Intent-handler policy: real deterministic agent handlers registered by default (agents/); `--demo` retained as a compatibility no-op
 - [x] RDA terminology unified; roadmap deduplicated; version policy `0.0.1-prealpha.x`
 - [x] CI (typecheck + test + packed-package) and governance docs in all three technical repos
+
+## Phase 2c — Hybrid orchestration layer (current)
+
+- [x] `agents/` orchestration: deterministic `IntentHandler` per mission intent (monthly-close, correction, reconciliation, invoice-review, compliance-check) — stages work only
+- [x] Agent registry composition (`createAgentRegistry`) wired into `mission apply`; demo-only handler gate removed
+- [x] Focused tests for handlers, registry, and the CLI gated lifecycle
+- [ ] Expose `agents/` as a package subpath (next slice, version bump)
+- [ ] Multi-jurisdiction policy integration (Perú → LATAM)
 
 ## Phase 3 — Ecosystem maturity (alpha → beta)
 
