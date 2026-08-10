@@ -1,8 +1,12 @@
 # Drenyra AI — Contracts
 
+> [!IMPORTANT]
 > **Status: all six contracts are FROZEN at v0.1 (release 0.2.0).** Freezing means the normative surface of each frozen contract is pinned by a conformance suite that runs in CI and fails on drift.
->
-> Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents
+
+<!-- -->
+
+> [!NOTE]
+> **Fiscal convention:** monetary values in the Drenyra ecosystem are BigInt cents
 > (no float is ever used for money); sequence and version values are JSON
 > integers, never floats.
 
@@ -10,14 +14,16 @@ Contracts are the **public surface** of Drenyra AI. They are transport-agnostic,
 
 ## Index
 
-| Contract            | Version | Status | Consumed by                                      |
-| ------------------- | ------- | ------ | ------------------------------------------------ |
+| Contract | Version | Status | Consumed by |
+| --- | --- | --- | --- |
 | [mission-protocol](mission-protocol.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, CLI |
 | [candidate](candidate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, review tooling |
 | [receipt](receipt.md) | 0.1 | FROZEN | All consumers, ERPs, auditors |
 | [gate](gate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, CI/CD |
 | [ledger](ledger.md) | 0.1 | FROZEN | Auditors, ERPs, Drenyra Pi |
 | [recovery](recovery.md) | 0.1 | FROZEN | Drenyra Pi, CLI |
+
+The receipt contract's normative shape — the JSON schemas and the frozen conformance vectors — lives in [receipt-schema](receipt-schema/README.md).
 
 ## Contract requirements
 
@@ -34,3 +40,7 @@ Contracts are the **public surface** of Drenyra AI. They are transport-agnostic,
 3. Update conformance vectors in lockstep.
 4. Review with proportional risk review (contracts are high-materiality).
 5. Publish a release; consumers upgrade on their own cadence.
+
+---
+
+**Read next:** [Drenyra AI README](../README.md) — the ecosystem overview with the full contract table.

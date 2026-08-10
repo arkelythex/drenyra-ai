@@ -6,6 +6,11 @@
 > (no float is ever used for money); sequence and version values are JSON
 > integers, never floats.
 
+<!-- -->
+
+> [!IMPORTANT]
+> **Status: FROZEN at v0.1** — the normative surface of this contract is pinned by a conformance suite that runs in CI and fails on drift. See the [Contracts index](README.md) and the [freeze record](#freeze-record) below.
+
 The mission protocol defines the lifecycle of a **mission**: a scoped, resumable unit of accounting work (capture, classification, reconciliation, close, declaration, audit). It mirrors the canonical fiscal lifecycle — captura → clasificacion → conciliacion → cierre → declaracion → auditoria.
 
 ## Purpose
@@ -16,21 +21,21 @@ Any actor (agent, human, integration) that starts, advances, or completes accoun
 
 A mission is a `MissionSnapshot`:
 
-| Field               | Description                                              |
-| ------------------- | -------------------------------------------------------- |
-| `id`                | Canonical identifier (branded, opaque, unique)           |
-| `companyId`         | Company scope — mandatory fiscal context                 |
-| `fiscalPeriod`      | Fiscal period (`YYYYMM`)                                 |
-| `intent`            | Type of accounting work (see intents)                    |
-| `status`            | Current lifecycle state (15 canonical states)            |
-| `version`           | Monotonic optimistic-concurrency version                 |
-| `progress`          | Progress in basis points (0–10000)                       |
-| `steps` / `currentStep` | Executed steps and the active one                    |
-| `blockers`          | Blockers, each with a reason and resolution              |
-| `proposal` / `rejection` | Approval proposal and any rejection                  |
-| `receiptId` / `receiptHash` | Linked execution receipt                         |
-| `lastEventSequence` | Sequence of the last appended event                      |
-| `createdAt` / `updatedAt` | Lifecycle timestamps                                |
+| Field | Description |
+| --- | --- |
+| `id` | Canonical identifier (branded, opaque, unique) |
+| `companyId` | Company scope — mandatory fiscal context |
+| `fiscalPeriod` | Fiscal period (`YYYYMM`) |
+| `intent` | Type of accounting work (see intents) |
+| `status` | Current lifecycle state (15 canonical states) |
+| `version` | Monotonic optimistic-concurrency version |
+| `progress` | Progress in basis points (0–10000) |
+| `steps` / `currentStep` | Executed steps and the active one |
+| `blockers` | Blockers, each with a reason and resolution |
+| `proposal` / `rejection` | Approval proposal and any rejection |
+| `receiptId` / `receiptHash` | Linked execution receipt |
+| `lastEventSequence` | Sequence of the last appended event |
+| `createdAt` / `updatedAt` | Lifecycle timestamps |
 
 ## Intents
 
@@ -63,13 +68,13 @@ REJECTED → REVISION_REQUESTED → QUEUED
 
 The discriminated `MissionCommand` union (`create | execute | approve | reject | reconcile`):
 
-| Command    | Target state        | Notes                                   |
-| ---------- | ------------------- | --------------------------------------- |
-| `create`   | `DRAFT`             | Handled by `MissionRuntime.start()`     |
-| `execute`  | intent-driven       | Dispatched to the registered intent handler; without a handler the runtime keeps `RUNNING` |
-| `approve`  | `APPROVED`          | Carries `proposalId`/`proposalVersion`/`evidenceHash` |
-| `reject`   | `REJECTED`          | Requires a reason                        |
-| `reconcile`| `RUNNING`/`FAILED`/`COMPLETED` | Only from `UNKNOWN` (recovery evidence) |
+| Command | Target state | Notes |
+| --- | --- | --- |
+| `create` | `DRAFT` | Handled by `MissionRuntime.start()` |
+| `execute` | intent-driven | Dispatched to the registered intent handler; without a handler the runtime keeps `RUNNING` |
+| `approve` | `APPROVED` | Carries `proposalId`/`proposalVersion`/`evidenceHash` |
+| `reject` | `REJECTED` | Requires a reason |
+| `reconcile` | `RUNNING`/`FAILED`/`COMPLETED` | Only from `UNKNOWN` (recovery evidence) |
 
 Commands carry `expectedMissionVersion` for optimistic concurrency; a stale version is rejected with `VERSION_CONFLICT`.
 
@@ -104,7 +109,7 @@ The normative surface is pinned by [`contracts/__tests__/mission-protocol-confor
 The TypeScript reference implementation of this contract lives in `missions/` in this repository (a port of `@drenyra/mission-protocol` plus the state-machine enforcement from `@drenyra/mission-domain`), with zero runtime dependencies (node:crypto built-in only):
 
 | Module | Contents |
-| ------ | -------- |
+| --- | --- |
 | `missions/status.ts` | 15-state `AccountingMissionStatus`, `VALID_TRANSITIONS`, terminal/extended state sets, predicates, `STATUS_LABELS` |
 | `missions/commands.ts` | Command payloads and the `MissionCommand` discriminated union |
 | `missions/events.ts` | `MissionEvent`, SSE parse/keepalive/format helpers |
@@ -125,3 +130,7 @@ The protocol modules are ported verbatim (byte-identical except the fiscal heade
 - **Frozen by release:** **0.1.0** — the first release that freezes this contract.
 - **Normative surface pinned by:** [`contracts/__tests__/mission-protocol-conformance.test.ts`](./__tests__/mission-protocol-conformance.test.ts) — runs in CI (`bun run test`) and fails on drift.
 - **Migration note:** any change to the normative surface (states, transitions, commands, events, error codes, versioning, idempotency) requires a **major** version bump of `mission-protocol`. Consumers must declare the protocol version they speak and reject unknown majors; the migration path for a future major is documented in the release notes of that major, per the versioning section above.
+
+---
+
+**Read next:** [Contracts index](README.md) · [Drenyra AI README](../README.md)

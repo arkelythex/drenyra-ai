@@ -6,6 +6,11 @@
 > (no float is ever used for money); ledger sequence numbers and divergence
 > indexes are JSON integers, never floats.
 
+<!-- -->
+
+> [!IMPORTANT]
+> **Status: FROZEN at v0.1** — the normative surface of this contract is pinned by a conformance suite that runs in CI and fails on drift. See the [Contracts index](README.md) and the [freeze record](#freeze-record) below.
+
 The **audit ledger** is the append-only, verifiable record of accounting actions. It chains receipted events into a tamper-evident sequence: commits = atomic accounting changes, diffs = explained differences, PRs = accounting review packages (Ledger-as-Git).
 
 ## Purpose
@@ -16,22 +21,22 @@ The **audit ledger** is the append-only, verifiable record of accounting actions
 
 ## Ledger entry
 
-| Field               | Description                                                          |
-| ------------------- | -------------------------------------------------------------------- |
-| `entryId`           | Canonical entry identifier (UUID v7 recommended)                    |
-| `ledgerId`          | Chain identity — all entries in one chain share it (single-chain scope) |
-| `sequence`          | Strictly increasing integer, starts at 1                            |
-| `entryType`         | `GENESIS` · `RECEIPT_RECORDED` · `ATTESTATION_ADDED` · `ENTRY_SUPERSEDED` · `ENTRY_REVOKED` · `CHECKPOINT_CREATED` |
-| `previousEntryHash` | Link to the previous entry (see continuity)                         |
-| `payloadHash`       | SHA-256 of this entry's payload (64 lowercase hex)                  |
-| `receiptHash`       | Backing receipt hash; the empty-string SHA-256 placeholder only for entries without a receipt |
-| `occurredAt`        | When the action occurred (UTC ISO 8601)                             |
-| `recordedAt`        | When the entry was recorded (UTC ISO 8601)                          |
-| `actor`             | Who performed the action                                            |
-| `schemaVersion`     | Schema version, consistent across the chain                         |
-| `signerKeyId`       | Signing key id — literal `hash-only` for unsigned entries           |
-| `signature`         | Required for signed entries, forbidden for hash-only entries        |
-| `signerPublicKey`   | Required for signed entries, forbidden for hash-only entries        |
+| Field | Description |
+| --- | --- |
+| `entryId` | Canonical entry identifier (UUID v7 recommended) |
+| `ledgerId` | Chain identity — all entries in one chain share it (single-chain scope) |
+| `sequence` | Strictly increasing integer, starts at 1 |
+| `entryType` | `GENESIS` · `RECEIPT_RECORDED` · `ATTESTATION_ADDED` · `ENTRY_SUPERSEDED` · `ENTRY_REVOKED` · `CHECKPOINT_CREATED` |
+| `previousEntryHash` | Link to the previous entry (see continuity) |
+| `payloadHash` | SHA-256 of this entry's payload (64 lowercase hex) |
+| `receiptHash` | Backing receipt hash; the empty-string SHA-256 placeholder only for entries without a receipt |
+| `occurredAt` | When the action occurred (UTC ISO 8601) |
+| `recordedAt` | When the entry was recorded (UTC ISO 8601) |
+| `actor` | Who performed the action |
+| `schemaVersion` | Schema version, consistent across the chain |
+| `signerKeyId` | Signing key id — literal `hash-only` for unsigned entries |
+| `signature` | Required for signed entries, forbidden for hash-only entries |
+| `signerPublicKey` | Required for signed entries, forbidden for hash-only entries |
 
 ## Validation rules
 
@@ -48,15 +53,15 @@ The **audit ledger** is the append-only, verifiable record of accounting actions
 
 ## Ledger manifest
 
-| Field             | Description                                                    |
-| ----------------- | -------------------------------------------------------------- |
-| `ledgerId`        | Chain identity (extension over the source Drenyra schema)      |
-| `protocolVersion` | Ledger protocol version                                        |
-| `hashAlgorithm`   | `SHA-256`                                                      |
-| `trustRoot`       | `{ keyIds: string[] }` — trusted signing keys                  |
-| `jurisdiction`    | Fiscal jurisdiction (e.g. `PE`)                                |
-| `createdAt`       | Creation timestamp (UTC ISO 8601)                              |
-| `signingPolicy`   | `{ required, algorithm: "Ed25519", keyIds }`                   |
+| Field | Description |
+| --- | --- |
+| `ledgerId` | Chain identity (extension over the source Drenyra schema) |
+| `protocolVersion` | Ledger protocol version |
+| `hashAlgorithm` | `SHA-256` |
+| `trustRoot` | `{ keyIds: string[] }` — trusted signing keys |
+| `jurisdiction` | Fiscal jurisdiction (e.g. `PE`) |
+| `createdAt` | Creation timestamp (UTC ISO 8601) |
+| `signingPolicy` | `{ required, algorithm: "Ed25519", keyIds }` |
 
 ## Validation result
 
@@ -89,3 +94,7 @@ Vectors cover: valid chain passes; broken continuity fails at the exact index; n
 - **Frozen by release:** **0.2.0** — the release that freezes this contract.
 - **Normative surface pinned by:** [`contracts/__tests__/ledger-conformance.test.ts`](./__tests__/ledger-conformance.test.ts) — runs in CI (`bun run test`) and fails on drift: all 9 validation rules with positive and negative cases (non-empty chain, GENESIS anchoring at the canonical `sha256("")` hash with sequence 1, continuity, strict sequence, 64-lowercase-hex hash formats, hash-only vs signed entries, single-chain scope, receipt-backed `RECEIPT_RECORDED`, consistent `schemaVersion`), the `LedgerValidationResult` shape (`valid` / `firstDivergence` at the lowest failing index / `reasons` in chain order), the manifest shape, and the append-only no-repair guarantee.
 - **Migration note:** any change to the normative surface (entry shape, manifest shape, validation rules, result shape, hash algorithm) requires a **major** version bump of the ledger contract. Auditors and ERPs must declare the ledger protocol version they speak and reject unknown majors; the migration path for a future major is documented in the release notes of that major.
+
+---
+
+**Read next:** [Contracts index](README.md) · [Drenyra AI README](../README.md)

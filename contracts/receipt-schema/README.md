@@ -4,6 +4,11 @@
 > These schemas and fixtures are the **frozen conformance source of truth** for
 > the `drenyra-ai` receipt surface.
 
+<!-- -->
+
+> [!IMPORTANT]
+> **FROZEN conformance source of truth** — the schemas and fixtures in this directory are normative; any drift fails CI. See the [Contracts index](../README.md).
+
 Canonical JSON schema contract for **SignedReceipt** (hash + Ed25519 + security
 metadata), shared across the TypeScript, Go, and Python surfaces of Drenyra.
 Mirrors the `contracts/<contract>/v1/schemas/ + fixtures/` layout used by
@@ -80,7 +85,8 @@ mapping. Trusted-only statuses are asserted by surfaces implementing
   drift MUST fail CI review).
 - `fixtures/dev-keys.test-only.json` — fixed dev key pairs.
 
-> **WARNING — TEST-ONLY material.** Dev keys under `fixtures/` are committed
+> [!WARNING]
+> **TEST-ONLY material.** Dev keys under `fixtures/` are committed
 > test fixtures. They are NOT operational credentials. Never load them in
 > production code and never use them to sign real receipts.
 
@@ -94,3 +100,7 @@ The generator requires the dev-keys file to carry `classification:
 "TEST-ONLY"`, uses fixed timestamps, and writes atomically only when explicitly
 invoked. Running it MUST reproduce the committed bytes exactly (Ed25519 signing
 is deterministic).
+
+---
+
+**Read next:** [Contracts index](../README.md) · [Drenyra AI README](../../README.md)

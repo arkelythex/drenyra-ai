@@ -6,6 +6,11 @@
 > (no float is ever used for money); proposalVersion and sequence/version values
 > serialize as JSON integers, never floats.
 
+<!-- -->
+
+> [!IMPORTANT]
+> **Status: FROZEN at v0.1** — the normative surface of this contract is pinned by a conformance suite that runs in CI and fails on drift. See the [Contracts index](README.md) and the [freeze record](#freeze-record) below.
+
 The **receipt** is the RDA (Receipt-Driven Accounting) primitive: an immutable, verifiable record of a material accounting action. **Nothing material happens without a receipt.**
 
 ## Purpose
@@ -16,18 +21,18 @@ The **receipt** is the RDA (Receipt-Driven Accounting) primitive: an immutable, 
 
 ## Receipt
 
-| Field          | Description                                             |
-| -------------- | ------------------------------------------------------- |
-| `id`           | Canonical receipt identifier                            |
-| `action`       | Machine-readable action code                            |
-| `actor`        | Who performed it (agent/user/system)                    |
-| `scope`        | RUC/company/period — mandatory fiscal context           |
-| `resource`     | Affected resource (table, file, account, candidate)     |
-| `before_state` | Hash or summary of state before                         |
-| `after_state`  | Hash or summary of state after                          |
-| `timestamp`    | When it happened (UTC)                                  |
-| `signature`    | Ed25519 signature over the canonical receipt bytes      |
-| `version`      | Receipt schema version                                  |
+| Field | Description |
+| --- | --- |
+| `id` | Canonical receipt identifier |
+| `action` | Machine-readable action code |
+| `actor` | Who performed it (agent/user/system) |
+| `scope` | RUC/company/period — mandatory fiscal context |
+| `resource` | Affected resource (table, file, account, candidate) |
+| `before_state` | Hash or summary of state before |
+| `after_state` | Hash or summary of state after |
+| `timestamp` | When it happened (UTC) |
+| `signature` | Ed25519 signature over the canonical receipt bytes |
+| `version` | Receipt schema version |
 
 ## Verification
 
@@ -79,3 +84,7 @@ Vectors cover: canonical serialization, signature verification, chain continuity
   - [`contracts/receipt-schema/fixtures/conformance-vectors.v1.json`](./receipt-schema/fixtures/conformance-vectors.v1.json) — the frozen byte vectors, verified byte-for-byte by `receipts/__tests__/conformance-vectors.test.ts` (drift-guard);
   - [`contracts/__tests__/receipt-conformance.test.ts`](./__tests__/receipt-conformance.test.ts) — runs in CI (`bun run test`) and fails on drift: the verification status chain (`PAYLOAD_TAMPERED → CONTENT_VALID → UNKNOWN_SIGNER → KEY_EXPIRED → KEY_REVOKED → SIGNER_TRUSTED`), the `verifySignedReceipt` result shape, the canonical key-sorted-shallow serialization rule, and mutated-content-byte tamper detection.
 - **Migration note:** any change to the normative surface (schema shape, canonical serialization, verification status chain, hash/signature algorithms, version semantics) requires a **major** version bump of the receipt contract — and a new frozen vector set under `contracts/receipt-schema/` that all runtimes must reproduce byte-for-byte. Unknown receipt schema versions fail closed; the migration path for a future major is documented in the release notes of that major.
+
+---
+
+**Read next:** [Contracts index](README.md) · [Drenyra AI README](../README.md)

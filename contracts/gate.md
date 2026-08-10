@@ -6,6 +6,11 @@
 > (no float is ever used for money); sequence and version values are JSON
 > integers, never floats.
 
+<!-- -->
+
+> [!IMPORTANT]
+> **Status: FROZEN at v0.1** — the normative surface of this contract is pinned by a conformance suite that runs in CI and fails on drift. See the [Contracts index](README.md) and the [freeze record](#freeze-record) below.
+
 A **gate** is a lifecycle checkpoint that validates authority, scope, and receipts before an action is allowed. Gates replace trust with verification: a transition that fails a gate is rejected, never ignored.
 
 ## Purpose
@@ -16,14 +21,14 @@ A **gate** is a lifecycle checkpoint that validates authority, scope, and receip
 
 ## Lifecycle gates
 
-| Gate          | Validates                                                              |
-| ------------- | ---------------------------------------------------------------------- |
-| `mission`     | Legal state transition, scope, materiality tier                        |
-| `pre-commit`  | Receipts for all staged mutations, no secrets, no scope leaks          |
-| `pre-push`    | Commit receipts + authority, branch policy                             |
-| `pre-pr`      | Review evidence, chained-PR boundaries, workload forecast              |
-| `release`     | Full authority chain, receipt ledger continuity, immutable target      |
-| `approval`    | Explicit human approval at R2/R3 with dual approval at R3              |
+| Gate | Validates |
+| --- | --- |
+| `mission` | Legal state transition, scope, materiality tier |
+| `pre-commit` | Receipts for all staged mutations, no secrets, no scope leaks |
+| `pre-push` | Commit receipts + authority, branch policy |
+| `pre-pr` | Review evidence, chained-PR boundaries, workload forecast |
+| `release` | Full authority chain, receipt ledger continuity, immutable target |
+| `approval` | Explicit human approval at R2/R3 with dual approval at R3 |
 
 ## Authority
 
@@ -67,3 +72,7 @@ Vectors cover: allowed/blocked transitions per gate, authority derivation, recei
 - **Frozen by release:** **0.1.0** — the first release that freezes this contract.
 - **Normative surface pinned by:** [`contracts/__tests__/gate-conformance.test.ts`](./__tests__/gate-conformance.test.ts) — runs in CI (`bun run test`) and fails on drift: ApprovalGate tiers (R0/R1 no approval, R2 single, R3 dual distinct approvers), ReceiptGate fail-closed authenticity (only `SIGNER_TRUSTED` allowed; revoked/expired/tampered/unknown/missing blocked), MissionStateGate legal-vs-illegal transitions with the terminal guard, and GateRunner fail-closed ordering with the `needs_input` envelope.
 - **Migration note:** any change to the normative surface (tier thresholds, verdict vocabulary, fail-closed ordering, gate names, envelope shape) requires a **major** version bump of the gate contract. Gates are deterministic and testable; every gate ships with pass/fail vectors, and the migration path for a future major is documented in the release notes of that major.
+
+---
+
+**Read next:** [Contracts index](README.md) · [Drenyra AI README](../README.md)

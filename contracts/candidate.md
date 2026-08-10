@@ -6,6 +6,11 @@
 > (no float is ever used for money); sequence and version values are JSON
 > integers, never floats.
 
+<!-- -->
+
+> [!IMPORTANT]
+> **Status: FROZEN at v0.1** — the normative surface of this contract is pinned by a conformance suite that runs in CI and fails on drift. See the [Contracts index](README.md) and the [freeze record](#freeze-record) below.
+
 A **candidate** is an agent's proposal for a material accounting action, made first-class and reviewable. Candidates are the unit of **human-supervised AI execution**: the agent proposes, the candidate carries identity and materiality, and risk-proportional review decides.
 
 ## Purpose
@@ -16,15 +21,15 @@ A **candidate** is an agent's proposal for a material accounting action, made fi
 
 ## Candidate
 
-| Field          | Description                                                    |
-| -------------- | -------------------------------------------------------------- |
-| `id`           | Canonical candidate identifier                                 |
-| `mission_id`   | Owning mission (if any)                                        |
-| `scope`        | RUC/company/period — mandatory                                 |
-| `materiality`  | Risk tier R0–R3 derived from value, reversibility, jurisdiction |
-| `status`       | `proposed → inspected → reviewing → accepted | corrected | rejected` |
+| Field | Description |
+| --- | --- |
+| `id` | Canonical candidate identifier |
+| `mission_id` | Owning mission (if any) |
+| `scope` | RUC/company/period — mandatory |
+| `materiality` | Risk tier R0–R3 derived from value, reversibility, jurisdiction |
+| `status` | `proposed → inspected → reviewing → accepted \| corrected \| rejected` |
 | `subject_hash` | Hash of the exact reviewed subject (bytes are the source of truth) |
-| `lineage`      | Chain to the parent candidate/mission                          |
+| `lineage` | Chain to the parent candidate/mission |
 
 ## Monetary values
 
@@ -38,12 +43,12 @@ Candidate identity is derived from content (`subject_hash` over the exact review
 
 Materiality is computed from **value (BigInt cents), reversibility, and jurisdiction rules**:
 
-| Tier | Example                                                      | Review                    |
-| ---- | ------------------------------------------------------------ | ------------------------- |
-| R0   | Read-only queries, non-material drafts                       | High autonomy             |
-| R1   | Standard journal entries, within limits                      | Focused review            |
-| R2   | Monthly close, batch mutations                               | Explicit review + approval |
-| R3   | Irreversible operations (declarations, payments, deletion)   | Explicit dual approval    |
+| Tier | Example | Review |
+| --- | --- | --- |
+| R0 | Read-only queries, non-material drafts | High autonomy |
+| R1 | Standard journal entries, within limits | Focused review |
+| R2 | Monthly close, batch mutations | Explicit review + approval |
+| R3 | Irreversible operations (declarations, payments, deletion) | Explicit dual approval |
 
 ## Materiality policy (draft)
 
@@ -88,3 +93,7 @@ Vectors cover: identity derivation (same bytes → same id), materiality derivat
 - **Frozen by release:** **0.1.0** — the first release that freezes this contract.
 - **Normative surface pinned by:** [`contracts/__tests__/candidate-conformance.test.ts`](./__tests__/candidate-conformance.test.ts) — runs in CI (`bun run test`) and fails on drift: content-derived identity, the full materiality policy matrix (rules in the documented order, jurisdiction fail-closed escalation, R3 ceiling, threshold constants as BigInt cents), the lifecycle `proposed → inspected → reviewing → accepted | corrected | rejected`, the one-correction budget, and mutated-subject rejection.
 - **Migration note:** any change to the normative surface (identity derivation, materiality policy, lifecycle, correction budget, error codes) requires a **major** version bump of the candidate contract. The migration path for a future major is documented in the release notes of that major; consumer review tooling must declare the candidate version it speaks and reject unknown majors.
+
+---
+
+**Read next:** [Contracts index](README.md) · [Drenyra AI README](../README.md)
