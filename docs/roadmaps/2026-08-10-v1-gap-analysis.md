@@ -13,13 +13,13 @@
 
 ## Summary
 
-> **Drenyra AI has a contract-complete, verifiable RDA core with a growing ecosystem surface.** As of 2026-08-10 the versioned-skill registry, Guardian Angel, fencing/outbox, prompt-injection defenses, MCP server, `capabilities`/`doctor`, the formal SDK surface, and the PostgreSQL adapter are implemented and tested. Still pending: `install`/`sync`, KMS, external reconciliation, adapters, adversarial test layer, E2E close, pilots, and the license change.
+> **Drenyra AI has a contract-complete, verifiable RDA core with a growing ecosystem surface.** As of 2026-08-10 the versioned-skill registry, Guardian Angel, fencing/outbox, prompt-injection defenses, MCP server, `capabilities`/`doctor`/`install`/`sync`, the formal SDK surface, the PostgreSQL adapter, external reconciliation, secret resolvers, the adversarial suite, and the monthly-close E2E are implemented and tested (601 tests). Still pending: KMS adapters for real vaults, ERP/SUNAT/bank connectors, pilots, and the license change.
 
 | Layer | Status |
 | --- | --- |
 | Contracts, missions, candidates, gates, receipts, ledger, recovery, tenant scope | **Implemented** |
 | Formal SDK (exports + MCP), versioned skills, Guardian Angel, defenses | **Implemented** |
-| Configurator (`install`/`sync`), KMS, connectors, external reconciliation, adversarial tests, productive operation | **Planned** |
+| Real KMS adapters, ERP/SUNAT/bank connectors, pilots, productive operation | **Planned** |
 
 ## Gap matrix
 
@@ -58,15 +58,15 @@ Legend: ✅ implemented · ⚠️ partial · ❌ planned. Each row records exact
 | PostgreSQL production adapter | ✅ | `missions/store.postgres.ts` (Mission/Event/Idempotency/Fence/Outbox stores + DDL); unit tests green on a fake pool | JSON file store is dev-only | Real integration suite against a running PostgreSQL (`DATABASE_URL`) | v0.3 |
 | MCP server | ✅ | `mcp/` — JSON-RPC 2.0 over stdio (`initialize`, `tools/list`, `tools/call`) with core tools; 6 tests | External hosts need a uniform protocol | Stdio binding wired to the CLI binary | v0.3 |
 | `capabilities` command | ✅ | `drenyra-ai capabilities show` (6 contracts, PE jurisdiction, base skills); 2 tests | Consumers need declared contracts/skills/jurisdictions/adapters | Output tied to the live skills registry | v0.3 |
-| `install` / `doctor` / `sync` | ⚠️ | `drenyra-ai doctor run` implemented (read-only, 6 checks); `install`/`sync` pending | Gentle-AI-equivalent configurator experience | `install` configures detected hosts; `sync` preserves foreign changes | v0.4 |
+| `install` / `doctor` / `sync` | ✅ | `doctor` (read-only), `install` (detects codex/claude/opencode, writes managed markers, never installs a host), `sync` (preserves foreign-modified markers); 7 tests | Gentle-AI-equivalent configurator experience | Markers wired to real host skill/policy assets | v0.4 |
 | Versioned skills (registry + Peru base) | ✅ | `skills/` — SkillRegistry (id/version/jurisdiction/validity/checksum, resolve-at-date, fail-closed); 9 tests; 3 PE base skills | Unversioned policy changes break reproducibility | Skills surfaced through `capabilities` and consumed by missions | v0.3 |
 | Guardian Angel | ✅ | `guardian/` — read-only adversarial findings over frozen candidates (scope, R3 dual approval, never approves); 9 tests | Independent adversarial review | Wired into the close flow after candidate freeze | v0.4 |
 | Fencing tokens + inbox/outbox | ✅ | `missions/fencing.ts` + `missions/outbox.ts`; fencing integrated into `MissionRuntime.apply` (stale tokens rejected); 10 tests | Parallel workers can double-confirm | PostgreSQL-backed stores + leader election | v0.3 |
-| KMS/Key Vault integration | ❌ | Connector secrets and keys need managed storage | Deployment target | Keys/secrets resolved from KMS, never from env/config files | v0.5 |
-| External reconciliation (UNKNOWN states) | ❌ | Blind retries duplicate postings | Adapters | UNKNOWN → query external system → record/retry/human decision | v0.5 |
-| Adversarial test layer | ❌ | Prompt injection, tampering, replay, forged approvals | Security module | Adversarial suite green (Design 05 scenarios) | v0.4 |
+| KMS/Key Vault integration | ⚠️ | `security/keys.ts` — SecretResolver contract + EnvResolver (dev) + FileResolver (test-only) + KMS_GUIDANCE; real vault adapter pending | Connector secrets and keys need managed storage | AWS/Azure/GCP KMS adapter implementing SecretResolver | v0.5 |
+| External reconciliation (UNKNOWN states) | ✅ | `missions/reconciliation.ts` — `reconcileExternalCall`: executed requires verifiable evidence, not-executed → idempotent retry, indeterminate → human; fail-closed resolver; 8 tests | Blind retries duplicate postings | Wired into adapter calls (UNKNOWN mission state) | v0.5 |
+| Adversarial test layer | ✅ | `security/__tests__/adversarial.test.ts` — prompt injection, receipt tampering, forged R3 approval, cross-tenant scope, expired skill, ledger reordering (6 scenarios) | Prompt injection, tampering, replay, forged approvals | Extended to live adapter/reconciliation flows | v0.4 |
 | Prompt-injection defenses | ✅ | `security/` — `sanitizeDocumentText` (detect + neutralize + inert delimiters); 10 tests | Untrusted documents can instruct agents | Wired into evidence ingestion | v0.4 |
-| Monthly-close E2E | ❌ | Flagship flow unproven end-to-end | All above | E2E close of a synthetic Peruvian company | v0.5 |
+| Monthly-close E2E | ✅ | `missions/__tests__/e2e-monthly-close.test.ts` — synthetic PE company: mission → candidates → receipt → ledger, evidence-gated SUNAT claim, outbox dedup | Flagship flow unproven end-to-end | Extended with SIRE/conciliation agents | v0.5 |
 | Drenyra consumes the published package | ❌ | Duplicate internal authority must be removed | Drenyra repo | Drenyra consumes released artifact; internal copy removed | v1.0 |
 | Professional pilots | ❌ | Blocks and evidence requests must be understandable | Drenyra Command Center | 3 pilot firms confirm | v1.0 |
 | Apache 2.0 license | ❌ | Open-core adoption; **requires separate explicit change + legal review** | Legal review | License PR merged | v1.0 |
