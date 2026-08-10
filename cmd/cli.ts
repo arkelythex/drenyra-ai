@@ -41,6 +41,7 @@ import { capabilitiesCommand } from "./commands/capabilities.js";
 import { doctorCommand } from "./commands/doctor.js";
 import { installCommand } from "./commands/install.js";
 import { syncCommand } from "./commands/sync.js";
+import { mcpServeCommand } from "./commands/mcp-serve.js";
 import { usageError } from "./output/errors.js";
 
 /** Command handler signature: raw args, resolved exit code (0/1/2). */
@@ -74,6 +75,9 @@ const COMMANDS: Readonly<Record<string, Readonly<Record<string, CommandHandler>>
       },
       sync: {
         run: syncCommand,
+      },
+      mcp: {
+        serve: mcpServeCommand,
       },
 };
 
@@ -113,6 +117,8 @@ function helpText(): string {
     "    Detect and configure existing agent hosts (never installs a host).",
     "  sync run [--home <dir>]",
     "    Refresh managed assets without overwriting foreign changes.",
+    "  mcp serve",
+    "    Run the MCP server over stdio (JSON-RPC 2.0, one message per line).",
     "",
     "Exit codes: 0 success, 1 business error (JSON error to stdout), 2 usage/IO.",
     "",
