@@ -19,9 +19,11 @@
 ---
 
 > [!IMPORTANT]
-> **Private commercial product** — this repository is **private**; distribution
-> is contractual, never public. See the Drenyra
-> [Private Product Policy](https://github.com/arkelythex/Drenyra/blob/main/docs/products/private-product-policy.md).
+> **Public repository, proprietary license** — this repository is **public** for
+> adoption and auditability: the source is visible, but use, copy, and
+> distribution remain governed by the [LICENSE](LICENSE) (proprietary,
+> © Arkelythex). Public visibility grants read access only; distribution rights
+> stay contractual.
 
 <!-- -->
 
