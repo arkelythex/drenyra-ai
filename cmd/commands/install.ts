@@ -15,6 +15,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createRequire } from "node:module";
+import { BASE_PE_SKILLS } from "../../skills/index.js";
 
 const require = createRequire(import.meta.url);
 
@@ -56,6 +57,8 @@ export interface InstallManifest {
 	version: string;
 	installedAt: string;
 	hosts: DetectedHost[];
+	/** Managed assets shipped to each present host. */
+	assets: readonly string[];
 }
 
 const MANAGED_DIR = ".drenyra";
@@ -72,6 +75,7 @@ export function installIntegrations(
 		version: version(),
 		installedAt: now,
 		hosts,
+		assets: ["skills"],
 	};
 	const managedDir = join(homeDir, MANAGED_DIR);
 	mkdirSync(managedDir, { recursive: true });
@@ -83,6 +87,24 @@ export function installIntegrations(
 			writeFileSync(
 				marker,
 				JSON.stringify({ manager: "drenyra-ai", installedAt: now }, null, 2),
+			);
+		}
+		// Ship the managed Peru skills asset (id, version, jurisdiction) so the
+		// host can consume versioned policy without touching foreign files.
+		const skillsPath = join(host.configDir, ".drenyra-skills.json");
+		if (!existsSync(skillsPath)) {
+			writeFileSync(
+				skillsPath,
+				JSON.stringify(
+					BASE_PE_SKILLS.map(({ id, version, jurisdiction, maxAutonomy }) => ({
+						id,
+						version,
+						jurisdiction,
+						maxAutonomy,
+					})),
+					null,
+					2,
+				),
 			);
 		}
 	}

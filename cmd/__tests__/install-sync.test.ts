@@ -34,11 +34,16 @@ describe("install", () => {
 
 			const manifest = installIntegrations(dir);
 			expect(manifest.hosts.filter((h) => h.present)).toHaveLength(1);
-			// marker written only for the present host
+			// marker + skills asset written only for the present host
 			expect(existsSync(join(dir, ".claude", ".drenyra-managed"))).toBe(true);
+			expect(existsSync(join(dir, ".claude", ".drenyra-skills.json"))).toBe(true);
 			expect(existsSync(join(dir, ".codex", ".drenyra-managed"))).toBe(false);
-			// managed manifest persisted
+			const skillsAsset = JSON.parse(readFileSync(join(dir, ".claude", ".drenyra-skills.json"), "utf8")) as Array<{ id: string; version: string }>;
+			expect(skillsAsset.length).toBeGreaterThanOrEqual(6);
+			expect(skillsAsset.some((s) => s.id === "pe.igv-validate")).toBe(true);
+			// managed manifest persisted with the assets list
 			expect(readInstallManifest(dir)?.manager).toBe("drenyra-ai");
+			expect(readInstallManifest(dir)?.assets).toContain("skills");
 		} finally {
 			cleanup();
 		}
