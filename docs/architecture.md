@@ -17,6 +17,7 @@
 | [Dependency Rules](architecture/dependency-rules.md) | In-repo layer model and import rules | Reviewing imports and layering |
 | [Storage Model](architecture/storage-model.md) | Dev adapter vs. canonical storage requirements | Persistence and recovery questions |
 | [Design 01 — Ecosystem Frontier](design/design-01-ecosystem-frontier-and-authority.md) | Approved frontier: responsibilities, never-musts, chain of authority | Understanding who owns what and how authority flows |
+| [Design 02 — Monthly Close](design/design-02-monthly-close.md) | The v1.0 flagship flow: preflight → evidence → reconciliation → candidates → review → external confirmation → close package | Building the monthly accounting and tax close |
 
 ## Position in the ecosystem
 

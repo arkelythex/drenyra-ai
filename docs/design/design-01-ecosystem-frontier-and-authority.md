@@ -66,4 +66,4 @@ Every producer feeds the Core; only the Core issues receipts and writes the ledg
 
 ---
 
-**Read next:** [Architecture](../architecture.md) — back to the index
+**Read next:** [Design 02 — Monthly Close](../design/design-02-monthly-close.md) — the v1.0 flagship flow · [Architecture](../architecture.md) — back to the index
