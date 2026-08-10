@@ -1,6 +1,13 @@
 # Storage Model
 
-> **Last updated:** 2026-08-02. Status: pre-alpha.
+> [!IMPORTANT]
+> **The JSON file mission store is a development adapter** — fine for demos and smoke tests, never canonical storage for a fiscal runtime.
+
+<!-- -->
+
+> **Last updated:** 2026-08-02. Status: pre-alpha. — Part of: [Architecture](../architecture.md)
+
+<!-- -->
 
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; store schema version numbers are JSON integers, never floats.
 
@@ -25,3 +32,10 @@ The runtime interfaces (`MissionStore`, `MissionEventStore`, `IdempotencyStore`)
 5. **Verifiable provenance** — every mutation traces to an actor and a receipt.
 
 Until then, the JSON store is the only implementation, and it is clearly labeled as non-canonical in both code and docs.
+
+---
+
+## Read next
+
+- [Receipt vs. Ledger Entry](receipt-ledger-model.md) — the artifact pair this store must persist
+- [Architecture](../architecture.md) — back to the index

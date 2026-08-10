@@ -1,8 +1,22 @@
 # Dependency Direction — Drenyra AI (Verifiable Accounting Agent Ecosystem)
 
-> **Last updated:** 2026-08-01.
+> [!IMPORTANT]
+> **Drenyra AI is the ecosystem's keystone:** consumed by Drenyra and Drenyra Pi, integrating memory, and depending on nothing product-shaped.
+
+<!-- -->
+
+> **Last updated:** 2026-08-01. — Part of: [Architecture](../architecture.md)
+
+<!-- -->
 
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; version/sequence numbers are JSON integers, never floats.
+
+## In this document
+
+- [Ecosystem dependency graph](#ecosystem-dependency-graph)
+- [Direction rules applied to Drenyra AI](#direction-rules-applied-to-drenyra-ai)
+- [Rules in practice](#rules-in-practice)
+- [Why this matters](#why-this-matters)
 
 ## Ecosystem dependency graph
 
@@ -31,9 +45,9 @@ Arrows point toward the dependency. Drenyra AI is the ecosystem's keystone: cons
 
 ### Drenyra AI MAY depend on
 
-| Repo             | How                                            | Constraint |
-| ---------------- | ---------------------------------------------- | ---------- |
-| `drenyra-engram` | memory reads/context through its surfaces      | memory never authorizes; authority stays in gates + humans |
+| Repo | How | Constraint |
+| --- | --- | --- |
+| `drenyra-engram` | memory reads/context through its surfaces | memory never authorizes; authority stays in gates + humans |
 
 ### Drenyra AI must NEVER depend on
 
@@ -55,3 +69,10 @@ Nobody — Drenyra AI is *meant* to be depended on, via released versions. The d
 ## Why this matters
 
 Drenyra AI is standalone by design so the ecosystem cannot collapse back into a monolith. If Drenyra or Drenyra Pi leak into it, ERPs and external agent hosts lose their adoption path.
+
+---
+
+## Read next
+
+- [Dependency Rules](dependency-rules.md) — the in-repo layer model and import rules
+- [Architecture](../architecture.md) — back to the index

@@ -1,8 +1,26 @@
 # Ecosystem Boundaries — Drenyra AI (Verifiable Accounting Agent Ecosystem)
 
-> **Last updated:** 2026-08-01.
+> [!IMPORTANT]
+> **Drenyra AI is the agent runtime, standalone by design** — no Drenyra dependency — so ERPs, other accounting SaaS, and agent hosts (Codex, Claude Code, OpenCode) can adopt it.
+
+<!-- -->
+
+> **Last updated:** 2026-08-01. — Part of: [Architecture](../architecture.md)
+
+<!-- -->
 
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; version/sequence numbers are JSON integers, never floats.
+
+## In this document
+
+- [Role in the ecosystem](#role-in-the-ecosystem)
+- [What Drenyra AI is (in scope)](#what-drenyra-ai-is-in-scope)
+- [Explicit non-goals](#explicit-non-goals)
+- [What Drenyra AI must NOT contain long-term](#what-drenyra-ai-must-not-contain-long-term)
+- [Consumers and producers](#consumers-and-producers)
+- [Current state and maturity](#current-state-and-maturity)
+- [Ownership and accountability](#ownership-and-accountability)
+- [Boundary enforcement](#boundary-enforcement)
 
 ## Role in the ecosystem
 
@@ -63,4 +81,11 @@ Drenyra AI is **not**:
 ## Boundary enforcement
 
 - Direction violations are caught in review: a PR that imports Drenyra or Drenyra Pi types into Drenyra AI is rejected.
-- Consumers use **released, versioned** artifacts — never a checkout of this repo (see `dependency-direction.md` and `RELEASING.md`).
+- Consumers use **released, versioned** artifacts — never a checkout of this repo (see [dependency-direction.md](dependency-direction.md) and [RELEASING.md](../../RELEASING.md)).
+
+---
+
+## Read next
+
+- [Ecosystem Integration](ecosystem-integration.md) — who consumes what and the integration rules
+- [Architecture](../architecture.md) — back to the index

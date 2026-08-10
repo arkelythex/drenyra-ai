@@ -1,6 +1,13 @@
 # Ecosystem Integration
 
-> **Last updated:** 2026-08-02. Status: pre-alpha.
+> [!IMPORTANT]
+> **Consumers integrate released, versioned artifacts — never a source checkout.** Drenyra Pi additionally pins an exact verified version package-locally and never resolves `drenyra-ai` from `PATH`.
+
+<!-- -->
+
+> **Last updated:** 2026-08-02. Status: pre-alpha. — Part of: [Architecture](../architecture.md)
+
+<!-- -->
 
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; version numbers are JSON integers, never floats.
 
@@ -36,3 +43,10 @@
 - Contracts are the public surface: versioned, transport-agnostic, with canonical vectors and migration paths.
 - `0.1.0` is reserved for the first frozen contract; until then versions are `0.0.1-prealpha.x`.
 - A release only ships after: typecheck, full test suite, conformance vectors, package build, packed-install verification, and the packed-artifact CI job.
+
+---
+
+## Read next
+
+- [Dependency Direction](dependency-direction.md) — the MAY/NEVER dependency graph behind these rules
+- [Architecture](../architecture.md) — back to the index

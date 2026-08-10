@@ -1,6 +1,13 @@
 # System Context
 
-> **Last updated:** 2026-08-02. Status: pre-alpha (0.0.1-prealpha.1).
+> [!IMPORTANT]
+> **`drenyra-ai` is the standalone Verifiable Accounting Agent Ecosystem runtime** — the executable core that Drenyra, Drenyra Pi, ERPs, and other SaaS consume for receipt-driven accounting, mission lifecycle, candidate review, and proportional review. It is the direct accounting-domain counterpart of `gentle-ai`.
+
+<!-- -->
+
+> **Last updated:** 2026-08-02. Status: pre-alpha (0.0.1-prealpha.1). — Part of: [Architecture](../architecture.md)
+
+<!-- -->
 
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; version/sequence numbers are JSON integers, never floats.
 
@@ -33,3 +40,10 @@
 - Not a Pi harness (that is `arkelythex/drenyra-pi`).
 - Not a memory engine (that is `arkelythex/drenyra-engram`).
 - Not an authorization system on its own: gates + human approval are where authority lives.
+
+---
+
+## Read next
+
+- [Ecosystem Boundaries](ecosystem-boundaries.md) — what this package is and is not within the ecosystem
+- [Architecture](../architecture.md) — back to the index

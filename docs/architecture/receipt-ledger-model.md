@@ -1,6 +1,13 @@
 # Receipt vs Ledger Entry
 
-> **Last updated:** 2026-08-02. Status: pre-alpha.
+> [!IMPORTANT]
+> **Receipts and ledger entries are different artifacts.** A receipt proves that an action happened, by whom, in which scope, with which before/after state; the ledger proves the ORDER and INTEGRITY of a chain of receipted events. The ledger chains receipts — it does not replace them.
+
+<!-- -->
+
+> **Last updated:** 2026-08-02. Status: pre-alpha. — Part of: [Architecture](../architecture.md)
+
+<!-- -->
 
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; sequence numbers are JSON integers, never floats.
 
@@ -25,3 +32,10 @@ receipt₂ ──recorded──▶ ledger entry₂ (previousEntryHash = entry₁
 ```
 
 Tampering with any receipt breaks its signature AND breaks the chain link; `ledger validate` reports the first divergence.
+
+---
+
+## Read next
+
+- [Storage Model](storage-model.md) — how receipts and ledger entries persist today
+- [Architecture](../architecture.md) — back to the index

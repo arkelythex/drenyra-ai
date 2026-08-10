@@ -2,6 +2,21 @@
 
 > **Last updated:** 2026-08-01.
 
+## Documentation index
+
+| Doc | What it covers | Read when |
+| --- | --- | --- |
+| [Trust Model](architecture/trust-model.md) | What the runtime can prove and where authority lives | Starting out — read this first |
+| [Authority Model](architecture/authority-model.md) | Chain of authority, risk tiers R0–R3, gates, approvals | Understanding who may authorize what |
+| [Receipt vs. Ledger Entry](architecture/receipt-ledger-model.md) | Receipts as atomic proof vs. the ledger as chained order | Understanding the two audit artifacts |
+| [System Context](architecture/system-context.md) | Package scope, components, entry points, non-goals | Scoping what this repo contains |
+| [Trust Boundaries](architecture/trust-boundaries.md) | Where trust lives and fail-closed behavior per boundary | Reasoning about failure modes |
+| [Ecosystem Boundaries](architecture/ecosystem-boundaries.md) | In-scope vs. non-goals vs. long-term exclusions | Separating this repo from the ecosystem |
+| [Ecosystem Integration](architecture/ecosystem-integration.md) | Who consumes what, integration rules, contract stability | Integrating Drenyra, Drenyra Pi, or Engram |
+| [Dependency Direction](architecture/dependency-direction.md) | Ecosystem MAY/NEVER dependency graph | Enforcing direction between repos |
+| [Dependency Rules](architecture/dependency-rules.md) | In-repo layer model and import rules | Reviewing imports and layering |
+| [Storage Model](architecture/storage-model.md) | Dev adapter vs. canonical storage requirements | Persistence and recovery questions |
+
 ## Position in the ecosystem
 
 ```text
@@ -60,11 +75,11 @@ SUNAT, bank, or ERP execution, and no agent performs fiscal approval.
 
 ## Routing model
 
-| Route       | Use case                                   |
-| ----------- | ------------------------------------------ |
-| Direct      | Small, mechanical, full-context work       |
-| Delegated   | Exploration, multi-file writes, verification |
-| Formal      | High materiality: SDD/FSD artifacts + gates |
+| Route | Use case |
+| --- | --- |
+| Direct | Small, mechanical, full-context work |
+| Delegated | Exploration, multi-file writes, verification |
+| Formal | High materiality: SDD/FSD artifacts + gates |
 
 Materiality escalates the route; the route never demotes materiality.
 

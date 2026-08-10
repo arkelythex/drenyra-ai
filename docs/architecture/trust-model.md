@@ -1,12 +1,22 @@
 # Trust Model — Drenyra AI (Verifiable Accounting Agent Ecosystem)
 
-> **Last updated:** 2026-08-01.
+> [!IMPORTANT]
+> **Authority lives in gates and human approval.** Drenyra AI is the enforcement point of the ecosystem: nothing material happens without a receipt, and no lifecycle transition bypasses a gate.
+
+<!-- -->
+
+> **Last updated:** 2026-08-01. — Part of: [Architecture](../architecture.md)
+
+<!-- -->
 
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; version/sequence numbers are JSON integers, never floats.
 
-## Model in one line
+## In this document
 
-**Authority lives in gates and human approval.** Drenyra AI is the enforcement point of the ecosystem: nothing material happens without a receipt, and no lifecycle transition bypasses a gate.
+- [Trust boundaries](#trust-boundaries)
+- [Fail-closed default](#fail-closed-default)
+- [Interaction with consumers](#interaction-with-consumers)
+- [Operational consequences](#operational-consequences)
 
 ## Trust boundaries
 
@@ -48,3 +58,10 @@ Drenyra and Drenyra Pi rely on Drenyra AI's gates as their enforcement point. Dr
 - A gate failure pauses the mission and preserves state; recovery is crash-safe and resumable.
 - Audit questions are answered from receipts and canonical vectors, never from ambient state.
 - A transition without a receipt is not a transition; it is a defect.
+
+---
+
+## Read next
+
+- [Authority Model](authority-model.md) — how authority is chained and where human approval sits
+- [Architecture](../architecture.md) — back to the index

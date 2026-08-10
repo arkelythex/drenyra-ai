@@ -1,6 +1,13 @@
 # Trust Boundaries
 
-> **Last updated:** 2026-08-02. Status: pre-alpha.
+> [!IMPORTANT]
+> **Trust fails closed.** Unknown states, unknown signers, unknown schemas, and unverifiable artifacts are rejected — never assumed valid.
+
+<!-- -->
+
+> **Last updated:** 2026-08-02. Status: pre-alpha. — Part of: [Architecture](../architecture.md)
+
+<!-- -->
 
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; version/sequence numbers are JSON integers, never floats.
 
@@ -21,4 +28,11 @@
 1. **Fail closed.** Unknown states, unknown signers, unknown schemas, and unverifiable artifacts are rejected — never assumed valid.
 2. **Bytes are the source of truth.** Candidate identity and receipt integrity anchor to exact bytes, not to agent intent or transcripts.
 3. **Authority is derived, not asserted.** The runtime validates; gates + human approval authorize. Drenyra Engram never authorizes operations.
-4. **Local development adapters are never trusted storage.** The JSON mission store is a development adapter; canonical persistence is a later concern (see storage-model.md).
+4. **Local development adapters are never trusted storage.** The JSON mission store is a development adapter; canonical persistence is a later concern (see [storage-model.md](storage-model.md)).
+
+---
+
+## Read next
+
+- [Receipt vs. Ledger Entry](receipt-ledger-model.md) — receipts as atomic proof vs. the ledger as chained order
+- [Architecture](../architecture.md) — back to the index
