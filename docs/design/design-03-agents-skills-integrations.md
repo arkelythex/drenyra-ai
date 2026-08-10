@@ -114,4 +114,4 @@ This allows a powerful model as coordinator and efficient models for extraction 
 
 ---
 
-**Read next:** [Architecture](../architecture.md) — back to the index · [Design 02](design-02-monthly-close.md) — the flagship flow
+**Read next:** [Design 04 — Persistence, Security, and Recovery](design-04-persistence-security-recovery.md) · [Architecture](../architecture.md) — back to the index · [Design 02](design-02-monthly-close.md) — the flagship flow

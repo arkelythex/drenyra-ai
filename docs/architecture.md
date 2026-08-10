@@ -19,6 +19,7 @@
 | [Design 01 — Ecosystem Frontier](design/design-01-ecosystem-frontier-and-authority.md) | Approved frontier: responsibilities, never-musts, chain of authority | Understanding who owns what and how authority flows |
 | [Design 02 — Monthly Close](design/design-02-monthly-close.md) | The v1.0 flagship flow: preflight → evidence → reconciliation → candidates → review → external confirmation → close package | Building the monthly accounting and tax close |
 | [Design 03 — Agents, Skills, Integrations](design/design-03-agents-skills-integrations.md) | AI proposes, deterministic code decides: orchestrator, initial agents, skill layers, integration order, provider agnosticism | Building the agent and integration layer |
+| [Design 04 — Persistence, Security, Recovery](design/design-04-persistence-security-recovery.md) | Authoritative state in persisted events/evidence/receipts: storage model, data model, evidence, approvals, idempotency, error classes, security controls | Building durable persistence and security |
 
 ## Position in the ecosystem
 
