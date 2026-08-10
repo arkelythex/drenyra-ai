@@ -29,3 +29,6 @@ export * from "./store.js";
 export * from "./intents.js";
 export { MissionRuntime, canonicalHash, IdempotencyConflict } from "./runtime.js";
 export type { MissionApplyResult, BoundMissionCommand } from "./runtime.js";
+export * from "./fencing.js";
+export * from "./outbox.js";
+export * from "./reconciliation.js";
