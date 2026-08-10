@@ -68,9 +68,42 @@ export const DETRACTION_CHECK = make(
 	"R1",
 );
 
+/** Withholding validation (D.S. 56-97-EF — retenciones del IGV). */
+export const RETENTION_CHECK = make(
+	"pe.retention-check",
+	"1.0.0",
+	["D.S. 56-97-EF (retenciones del IGV)"],
+	["operation", "supplier", "period"],
+	["retention-validation"],
+	"R1",
+);
+
+/** Perception validation (D.S. 122-94-EF — percepciones del IGV). */
+export const PERCEPTION_CHECK = make(
+	"pe.perception-check",
+	"1.0.0",
+	["D.S. 122-94-EF (percepciones del IGV)"],
+	["operation", "customer", "period"],
+	["perception-validation"],
+	"R1",
+);
+
+/** SIRE filing readiness (R.S. 085-2020/SUNAT). */
+export const SIRE_FILING = make(
+	"pe.sire-filing",
+	"1.0.0",
+	["SUNAT SIRE — R.S. 085-2020/SUNAT"],
+	["sire-proposal", "ledger", "period"],
+	["filing-readiness", "exceptions"],
+	"R2",
+);
+
 /** All base Peruvian skills, ready to register. */
 export const BASE_PE_SKILLS: readonly SkillDefinition[] = [
 	IGV_VALIDATE,
 	SIRE_COMPARE,
 	DETRACTION_CHECK,
+	RETENTION_CHECK,
+	PERCEPTION_CHECK,
+	SIRE_FILING,
 ];
