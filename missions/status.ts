@@ -4,7 +4,7 @@
  * JavaScript Number; sequence/index/version fields are JSON integers, never floats.
  */
 /**
- * Mission status — canonical 14-state enum with terminal classification.
+ * Mission status — canonical 15-state enum with terminal classification.
  *
  * Transport-agnostic: does not depend on HTTP, SSE, or any runtime.
  * This is the single source of truth for mission lifecycle states.
@@ -16,7 +16,7 @@
  */
 
 /**
- * The 14 canonical accounting mission states (11 original + 3 M4).
+ * The 15 canonical accounting mission states (12 original + 3 M4).
  */
 export enum AccountingMissionStatus {
 	DRAFT = "DRAFT",
