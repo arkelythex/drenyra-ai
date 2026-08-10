@@ -6,3 +6,4 @@
 /** Public API of the security module — document sanitization (Design 04). */
 
 export * from "./sanitize.js";
+export * from "./keys.js";
