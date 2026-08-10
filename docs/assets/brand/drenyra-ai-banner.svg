@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="460" viewBox="0 0 1400 460" role="img" aria-label="Drenyra AI — Verifiable Accounting Agent Ecosystem">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070d1a"/>
+      <stop offset="55%" stop-color="#0b1730"/>
+      <stop offset="100%" stop-color="#12203f"/>
+    </linearGradient>
+    <linearGradient id="title" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="55%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1c2c4d"/>
+      <stop offset="100%" stop-color="#14203a"/>
+    </linearGradient>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M 44 0 L 0 0 0 44" fill="none" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="460" fill="url(#bg)"/>
+  <rect width="1400" height="460" fill="url(#grid)"/>
+
+  <!-- Subtle glow accents -->
+  <circle cx="1120" cy="120" r="260" fill="#22d3ee" opacity="0.06"/>
+  <circle cx="150" cy="400" r="300" fill="#a78bfa" opacity="0.05"/>
+
+  <!-- Left: title block -->
+  <text x="80" y="190" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="84" font-weight="800" letter-spacing="2" fill="url(#title)">DRENYRA AI</text>
+
+  <text x="82" y="250" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="500" fill="#cbd5e1" letter-spacing="0.5">Verifiable Accounting Agent Ecosystem</text>
+
+  <!-- Tagline chips -->
+  <g font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600">
+    <rect x="80" y="286" width="262" height="40" rx="20" fill="#22d3ee" opacity="0.12" stroke="#22d3ee" stroke-opacity="0.35"/>
+    <text x="100" y="312" fill="#67e8f9">Receipt-Driven Accounting</text>
+
+    <rect x="362" y="286" width="198" height="40" rx="20" fill="#60a5fa" opacity="0.12" stroke="#60a5fa" stroke-opacity="0.35"/>
+    <text x="382" y="312" fill="#93c5fd">Audit Ledger</text>
+
+    <rect x="580" y="286" width="168" height="40" rx="20" fill="#a78bfa" opacity="0.12" stroke="#a78bfa" stroke-opacity="0.35"/>
+    <text x="600" y="312" fill="#c4b5fd">Missions</text>
+
+    <rect x="768" y="286" width="142" height="40" rx="20" fill="#f59e0b" opacity="0.12" stroke="#f59e0b" stroke-opacity="0.35"/>
+    <text x="788" y="312" fill="#fcd34d">Gates</text>
+  </g>
+
+  <!-- Subline -->
+  <text x="82" y="380" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#94a3b8">
+    Every material action produces an immutable receipt. Every transition runs a gate.
+  </text>
+  <text x="82" y="408" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#94a3b8">
+    Agents propose. The deterministic core decides.
+  </text>
+
+  <!-- Right: receipt stack motif -->
+  <g transform="translate(1030, 60)">
+    <!-- Back card -->
+    <g transform="rotate(-8)">
+      <rect x="0" y="40" width="240" height="300" rx="14" fill="#13203c" stroke="#2c3f66" stroke-width="1.5"/>
+      <rect x="70" y="70" width="100" height="18" rx="4" fill="#22d3ee" opacity="0.5"/>
+      <rect x="24" y="110" width="192" height="10" rx="5" fill="#334a75"/>
+      <rect x="24" y="132" width="160" height="10" rx="5" fill="#334a75"/>
+      <rect x="24" y="154" width="180" height="10" rx="5" fill="#334a75"/>
+      <rect x="24" y="176" width="120" height="10" rx="5" fill="#334a75"/>
+    </g>
+    <!-- Middle card -->
+    <g transform="rotate(-2)">
+      <rect x="22" y="22" width="250" height="310" rx="14" fill="url(#card)" stroke="#3b5486" stroke-width="1.5"/>
+      <rect x="95" y="50" width="105" height="18" rx="4" fill="#60a5fa" opacity="0.6"/>
+      <rect x="44" y="90" width="206" height="10" rx="5" fill="#3a4f7d"/>
+      <rect x="44" y="112" width="170" height="10" rx="5" fill="#3a4f7d"/>
+      <rect x="44" y="134" width="192" height="10" rx="5" fill="#3a4f7d"/>
+      <rect x="44" y="156" width="140" height="10" rx="5" fill="#3a4f7d"/>
+      <rect x="44" y="240" width="120" height="10" rx="5" fill="#f59e0b" opacity="0.55"/>
+      <rect x="44" y="262" width="96" height="10" rx="5" fill="#f59e0b" opacity="0.35"/>
+    </g>
+    <!-- Front card with checkmark -->
+    <g>
+      <rect x="44" y="4" width="260" height="320" rx="14" fill="#16233f" stroke="#22d3ee" stroke-opacity="0.55" stroke-width="2"/>
+      <rect x="122" y="30" width="105" height="18" rx="4" fill="#22d3ee" opacity="0.75"/>
+      <rect x="66" y="72" width="216" height="10" rx="5" fill="#3d5589"/>
+      <rect x="66" y="94" width="180" height="10" rx="5" fill="#3d5589"/>
+      <rect x="66" y="116" width="202" height="10" rx="5" fill="#3d5589"/>
+      <rect x="66" y="138" width="150" height="10" rx="5" fill="#3d5589"/>
+      <circle cx="174" cy="215" r="40" fill="#10b981" opacity="0.15" stroke="#10b981" stroke-opacity="0.6" stroke-width="2"/>
+      <path d="M 152 215 L 168 231 L 197 199" fill="none" stroke="#34d399" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="86" y="286" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#e2e8f0" letter-spacing="1">RECEIPT · Ed25519</text>
+      <text x="86" y="308" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#94a3b8">verified · immutable · receipted</text>
+    </g>
+  </g>
+</svg>
