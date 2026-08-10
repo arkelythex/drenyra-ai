@@ -324,6 +324,7 @@ docs/               Architecture, trust-model, and dependency documentation
 | Your task | Start here |
 | --- | --- |
 | Understand the intended usage and the frozen frontier | [Intended Usage](docs/intended-usage.md) |
+| Read the frozen design series (frontier, monthly close, agents/skills, persistence, v1.0) | [Design 01](docs/design/design-01-ecosystem-frontier-and-authority.md) → [Design 05](docs/design/design-05-testing-releases-v1.md) |
 | Understand the trust model | [Trust Model](docs/architecture/trust-model.md) |
 | See the system and its boundaries | [System Context](docs/architecture/system-context.md), [Trust Boundaries](docs/architecture/trust-boundaries.md) |
 | Understand receipts vs. ledger entries | [Receipt vs. Ledger Entry](docs/architecture/receipt-ledger-model.md) |
