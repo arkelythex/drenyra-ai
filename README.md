@@ -57,6 +57,33 @@ It works **standalone** — no Drenyra dependency — so ERPs, other accounting 
 
 ---
 
+## The Frontier
+
+Drenyra AI occupies the accounting-domain position that Gentle-AI holds in software engineering — **equivalent discipline, stricter controls**. Gentle-AI turns generic coding agents into a disciplined engineering system; Drenyra AI turns generic agents into a verifiable accounting and fiscal system. The added strictness is deliberate: fiscal risk is not a merge conflict.
+
+> [!IMPORTANT]
+> **Drenyra AI is not "an agent that does accounting."** It is the infrastructure that lets any agent participate in accounting processes without becoming the fiscal authority: a configurator, runtime, and control plane for accounting/fiscal agents — never the ERP, and never the primary interface. Agents propose; the deterministic Core and human approval decide.
+
+| Gentle-AI | Equivalent in Drenyra AI |
+| --- | --- |
+| Configures agent runtimes | Configures accounting/fiscal agent runtimes (`drenyra-ai install`) |
+| Installer and TUI | Installer/configurator (`drenyra-ai install`) |
+| SDD | Accounting missions and fiscal specifications |
+| RDD (Receipt-Driven Development) | RDA (Receipt-Driven Accounting) |
+| Code candidate | Posting, reconciliation, or declaration candidate |
+| Review receipt | Accounting/fiscal receipt (Ed25519, canonical vectors) |
+| Pre-commit/push/PR gates | Gates before posting, approving, declaring, or filing |
+| Engram memory | Drenyra Engram — informs, never authorizes |
+| gentle-pi harness | Drenyra Pi — pinned package-local runtime |
+| Skills registry | Drenyra Skills — versioned accounting/tax knowledge |
+| doctor / sync / upgrade / rollback | `drenyra-ai doctor` / `sync` / `upgrade` / rollback |
+
+**What Drenyra AI is:** protocols, missions, agents, candidates, gates, receipts, and ledger.
+
+**What Drenyra AI is not:** the ERP, the UI, the ledger of record, or the fiscal authority. See [Intended Usage](docs/intended-usage.md) for the full frontier and the responsibility split.
+
+---
+
 ## Core Workflow
 
 1. **Install.** Add the package, then use the CLI (or the Drenyra Pi harness) as the runtime.
@@ -168,6 +195,22 @@ drenyra-ai receipt verify receipt.json
 drenyra-ai ledger validate ledger.json
 ```
 
+### The target experience
+
+After installation, a professional accountant should be able to say:
+
+> "I use Codex, Claude, or OpenCode — but Drenyra gives them accounting memory, skills, missions, materiality controls, approvals, and verifiable evidence."
+
+```bash
+drenyra-ai install            # configure the accounting/fiscal agent runtime
+drenyra-ai doctor             # read-only health check of the ecosystem
+drenyra-ai mission start monthly-close
+drenyra-ai candidate inspect correction.json
+drenyra-ai gate check posting.json
+drenyra-ai receipt verify receipt.json
+drenyra-ai ledger validate ledger.json
+```
+
 ---
 
 ## Contracts — the frozen public surface
@@ -258,13 +301,15 @@ docs/               Architecture, trust-model, and dependency documentation
 
 ## Ecosystem
 
-| Project | Role |
-| --- | --- |
-| [Drenyra](https://github.com/arkelythex/Drenyra) | Accounting Command Center (consumes) |
-| [Drenyra Pi](https://github.com/arkelythex/drenyra-pi) | Pi-native harness (consumes, pinned) |
-| [Drenyra Engram](https://github.com/arkelythex/drenyra-engram) | Institutional accounting memory (used) |
+| Project | Role | Status |
+| --- | --- | --- |
+| [Drenyra](https://github.com/arkelythex/Drenyra) | Accounting Command Center (consumes) | In development (private) |
+| [Drenyra Pi](https://github.com/arkelythex/drenyra-pi) | Pi-native harness (consumes, pinned) | In development (private) |
+| [Drenyra Engram](https://github.com/arkelythex/drenyra-engram) | Institutional accounting memory (used — informs, never authorizes) | In development (private) |
+| Drenyra Skills | Versioned accounting, tax, and operational knowledge | Planned |
+| Drenyra Guardian Angel | Independent, adversarial, continuous verification | Planned |
 
-**Direction rule:** Drenyra AI may integrate Drenyra Engram and is consumed by Drenyra and Drenyra Pi. It never depends on Drenyra or Drenyra Pi, and Drenyra Pi never leaks into Drenyra AI's contracts.
+**Direction rule:** Drenyra AI may integrate Drenyra Engram and is consumed by Drenyra and Drenyra Pi. It never depends on Drenyra or Drenyra Pi, and Drenyra Pi never leaks into Drenyra AI's contracts. External systems — ERP, SUNAT, banks — connect through adapters and evidence, never through privileged access.
 
 ---
 
@@ -272,6 +317,7 @@ docs/               Architecture, trust-model, and dependency documentation
 
 | Your task | Start here |
 | --- | --- |
+| Understand the intended usage and the frozen frontier | [Intended Usage](docs/intended-usage.md) |
 | Understand the trust model | [Trust Model](docs/architecture/trust-model.md) |
 | See the system and its boundaries | [System Context](docs/architecture/system-context.md), [Trust Boundaries](docs/architecture/trust-boundaries.md) |
 | Understand receipts vs. ledger entries | [Receipt vs. Ledger Entry](docs/architecture/receipt-ledger-model.md) |
