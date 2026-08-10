@@ -82,6 +82,7 @@ Drenyra AI is **not**:
 
 - Direction violations are caught in review: a PR that imports Drenyra or Drenyra Pi types into Drenyra AI is rejected.
 - Consumers use **released, versioned** artifacts — never a checkout of this repo (see [dependency-direction.md](dependency-direction.md) and [RELEASING.md](../../RELEASING.md)).
+- The approved per-component responsibilities and never-musts: [Design 01 — Ecosystem Frontier and Authority](../design/design-01-ecosystem-frontier-and-authority.md).
 
 ---
 

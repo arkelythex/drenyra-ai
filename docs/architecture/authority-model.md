@@ -21,6 +21,8 @@ Receipt certifica.    Receipt certifies.      (Ed25519-signed receipts, ledger c
 Profesional autoriza. A professional authorizes.  (human approval, R2/R3 gates)
 ```
 
+The operational chain — request to receipt — is pinned in [Design 01 — Ecosystem Frontier and Authority](../design/design-01-ecosystem-frontier-and-authority.md).
+
 ## Risk tiers (materiality)
 
 Materiality is derived deterministically from value (BigInt cents), reversibility, and jurisdiction — never from agent claims. See [`contracts/candidate.md`](../../contracts/candidate.md#materiality-policy-draft) → "Materiality policy (draft)":
