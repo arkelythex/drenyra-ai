@@ -1,7 +1,7 @@
 # Drenyra AI — Roadmap
 
 > [!NOTE]
-> **Last updated:** 2026-08-10. Status: released (all six contracts frozen), repository public.
+> **Last updated:** 2026-08-10. Status: released (all six contracts frozen), repository private.
 
 <!-- -->
 
@@ -29,7 +29,7 @@
 - [x] Repository created with identity scaffolding (README, LICENSE, SECURITY, CONTRIBUTING, CODEOWNERS)
 - [x] Contract index drafted (`contracts/`)
 - [x] Contract review and freeze: mission-protocol, candidate, receipt, gate
-- [x] Public roadmap and architecture published (repository public as of 2026-08-10)
+- [x] Public roadmap and architecture published (2026-08-10)
 
 ## Phase 1 — Contracts (v0.1) — COMPLETE
 

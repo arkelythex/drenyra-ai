@@ -20,7 +20,7 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 - **Design 04 — Persistence, Security, and Recovery** (`docs/design/design-04-persistence-security-recovery.md`) — the 6-store model, the authoritative data model, evidence as untrusted input, idempotency/concurrency, the UNKNOWN-state reconciliation flow, the 9-class error taxonomy, and the security controls.
 - **Design 05 — Testing, Releases, and the v1.0 Definition** (`docs/design/design-05-testing-releases-v1.md`) — the 10-layer test strategy, the 13 mandatory scenarios, the immutable-artifact release pipeline, the maturity stages, the 14 mandatory v1.0 criteria, and the 7 measurable invariants.
 - **Intended Usage** (`docs/intended-usage.md`) — the frozen frontier: definition, institutional thesis, golden rule, the philosophy translation table, the stricter fiscal controls, and the frozen delivery architecture (headless core + Command Center as interface).
-- Repository made public (2026-08-10); README, ROADMAP, and CONTRIBUTING updated to reflect the frontier and current state.
+- README, ROADMAP, and CONTRIBUTING updated to reflect the frontier and current state (2026-08-10).
 
 ## 0.2.0 — 2026-08-02
 
