@@ -40,13 +40,14 @@ export class PostgresMissionStore implements MissionStore {
 
 	async save(snapshot: MissionSnapshot): Promise<void> {
 		await this.pool.query(
-			`INSERT INTO missions (id, snapshot, version, updated_at)
-			 VALUES ($1, $2, $3, $4)
-			 ON CONFLICT (id) DO UPDATE SET snapshot = $2, version = $3, updated_at = $4`,
+			`INSERT INTO missions (id, snapshot, version, created_at, updated_at)
+			 VALUES ($1, $2, $3, $4, $5)
+			 ON CONFLICT (id) DO UPDATE SET snapshot = $2, version = $3, updated_at = $5`,
 			[
 				snapshot.id,
 				JSON.stringify(snapshot),
 				snapshot.version,
+				snapshot.createdAt,
 				snapshot.updatedAt,
 			],
 		);
