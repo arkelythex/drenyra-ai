@@ -13,7 +13,12 @@
  */
 
 import { createHash } from "node:crypto";
-import { canonicalSkillJson, SkillError, type SkillDefinition, type IsoDate } from "./types.js";
+import {
+	canonicalSkillJson,
+	SkillError,
+	type SkillDefinition,
+	type IsoDate,
+} from "./types.js";
 
 const VALID_TIERS = new Set(["R0", "R1", "R2", "R3"]);
 const VALID_PERMISSIONS = new Set([
@@ -28,7 +33,9 @@ const VALID_PERMISSIONS = new Set([
 
 /** SHA-256 checksum over the canonical (key-sorted) definition bytes. */
 export function computeSkillChecksum(skill: SkillDefinition): string {
-	return createHash("sha256").update(canonicalSkillJson(skill), "utf8").digest("hex");
+	return createHash("sha256")
+		.update(canonicalSkillJson(skill), "utf8")
+		.digest("hex");
 }
 
 /** Validate a skill definition; throws SkillError(SKILL_INVALID) on failure. */
@@ -37,35 +44,65 @@ export function validateSkill(skill: SkillDefinition): void {
 		throw new SkillError(`invalid skill id "${skill.id}"`, "SKILL_INVALID");
 	}
 	if (!skill.version || !/^\d+\.\d+\.\d+$/.test(skill.version)) {
-		throw new SkillError(`invalid skill version "${skill.version}"`, "SKILL_INVALID");
+		throw new SkillError(
+			`invalid skill version "${skill.version}"`,
+			"SKILL_INVALID",
+		);
 	}
 	if (!skill.jurisdiction || !/^[A-Z]{2}$/.test(skill.jurisdiction)) {
-		throw new SkillError(`invalid jurisdiction "${skill.jurisdiction}"`, "SKILL_INVALID");
+		throw new SkillError(
+			`invalid jurisdiction "${skill.jurisdiction}"`,
+			"SKILL_INVALID",
+		);
 	}
 	if (!isValidIsoDate(skill.validity.from)) {
-		throw new SkillError(`invalid validity.from "${skill.validity.from}"`, "SKILL_INVALID");
+		throw new SkillError(
+			`invalid validity.from "${skill.validity.from}"`,
+			"SKILL_INVALID",
+		);
 	}
 	if (skill.validity.to !== undefined && !isValidIsoDate(skill.validity.to)) {
-		throw new SkillError(`invalid validity.to "${skill.validity.to}"`, "SKILL_INVALID");
+		throw new SkillError(
+			`invalid validity.to "${skill.validity.to}"`,
+			"SKILL_INVALID",
+		);
 	}
-	if (skill.validity.to !== undefined && skill.validity.to <= skill.validity.from) {
-		throw new SkillError("validity.to must be after validity.from", "SKILL_INVALID");
+	if (
+		skill.validity.to !== undefined &&
+		skill.validity.to <= skill.validity.from
+	) {
+		throw new SkillError(
+			"validity.to must be after validity.from",
+			"SKILL_INVALID",
+		);
 	}
 	if (!VALID_TIERS.has(skill.maxAutonomy)) {
-		throw new SkillError(`invalid maxAutonomy "${skill.maxAutonomy}"`, "SKILL_INVALID");
+		throw new SkillError(
+			`invalid maxAutonomy "${skill.maxAutonomy}"`,
+			"SKILL_INVALID",
+		);
 	}
 	for (const permission of skill.requiredPermissions) {
 		if (!VALID_PERMISSIONS.has(permission)) {
-			throw new SkillError(`unknown permission "${permission}"`, "SKILL_INVALID");
+			throw new SkillError(
+				`unknown permission "${permission}"`,
+				"SKILL_INVALID",
+			);
 		}
 	}
 	if (!/^[a-f0-9]{64}$/.test(skill.checksum)) {
-		throw new SkillError("checksum must be a 64-char hex SHA-256", "SKILL_INVALID");
+		throw new SkillError(
+			"checksum must be a 64-char hex SHA-256",
+			"SKILL_INVALID",
+		);
 	}
 }
 
 function isValidIsoDate(value: string): boolean {
-	return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T00:00:00Z`));
+	return (
+		/^\d{4}-\d{2}-\d{2}$/.test(value) &&
+		!Number.isNaN(Date.parse(`${value}T00:00:00Z`))
+	);
 }
 
 /** In force at a date? `to` is exclusive; undefined means in force forever. */
@@ -113,9 +150,14 @@ export class SkillRegistry {
 
 	/** Resolve by exact id + version. */
 	resolveVersion(id: string, version: string): SkillDefinition {
-		const found = this.#skills.find((skill) => skill.id === id && skill.version === version);
+		const found = this.#skills.find(
+			(skill) => skill.id === id && skill.version === version,
+		);
 		if (found === undefined) {
-			throw new SkillError(`skill ${id}@${version} not found`, "SKILL_NOT_FOUND");
+			throw new SkillError(
+				`skill ${id}@${version} not found`,
+				"SKILL_NOT_FOUND",
+			);
 		}
 		return found;
 	}
@@ -139,8 +181,13 @@ export class SkillRegistry {
 					"SKILL_JURISDICTION_MISMATCH",
 				);
 			}
-			throw new SkillError(`skill ${id} is not in force at ${at}`, "SKILL_OUT_OF_VALIDITY");
+			throw new SkillError(
+				`skill ${id} is not in force at ${at}`,
+				"SKILL_OUT_OF_VALIDITY",
+			);
 		}
-		return [...candidates].sort((a, b) => compareVersions(b.version, a.version))[0]!;
+		return [...candidates].sort((a, b) =>
+			compareVersions(b.version, a.version),
+		)[0]!;
 	}
 }

@@ -11,15 +11,23 @@ import { describe, expect, it, vi } from "vitest";
 import { capabilitiesCommand } from "../commands/capabilities.js";
 import { doctorCommand } from "../commands/doctor.js";
 
-function capture(fn: () => number): { code: number; stdout: string; stderr: string } {
+function capture(fn: () => number): {
+	code: number;
+	stdout: string;
+	stderr: string;
+} {
 	const out: string[] = [];
 	const err: string[] = [];
-	const log = vi.spyOn(console, "log").mockImplementation((...args: unknown[]) => {
-		out.push(args.map(String).join(" "));
-	});
-	const error = vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => {
-		err.push(args.map(String).join(" "));
-	});
+	const log = vi
+		.spyOn(console, "log")
+		.mockImplementation((...args: unknown[]) => {
+			out.push(args.map(String).join(" "));
+		});
+	const error = vi
+		.spyOn(console, "error")
+		.mockImplementation((...args: unknown[]) => {
+			err.push(args.map(String).join(" "));
+		});
 	let code = -1;
 	try {
 		code = fn();
@@ -50,8 +58,12 @@ describe("capabilities show", () => {
 
 	it("skills carry versions and no checksums leak in the declared surface", () => {
 		const { stdout } = capture(capabilitiesCommand);
-		const parsed = JSON.parse(stdout) as { skills: Array<{ id: string; version: string; checksum?: string }> };
-		expect(parsed.skills.every((s) => /^\d+\.\d+\.\d+$/.test(s.version))).toBe(true);
+		const parsed = JSON.parse(stdout) as {
+			skills: Array<{ id: string; version: string; checksum?: string }>;
+		};
+		expect(parsed.skills.every((s) => /^\d+\.\d+\.\d+$/.test(s.version))).toBe(
+			true,
+		);
 		expect(parsed.skills.some((s) => s.checksum !== undefined)).toBe(false);
 	});
 });
@@ -60,7 +72,11 @@ describe("doctor run", () => {
 	it("reports healthy on a clean checkout", () => {
 		const { code, stdout } = capture(doctorCommand);
 		expect(code).toBe(0);
-		const parsed = JSON.parse(stdout) as { status: string; readonly: boolean; checks: Array<{ name: string; ok: boolean }> };
+		const parsed = JSON.parse(stdout) as {
+			status: string;
+			readonly: boolean;
+			checks: Array<{ name: string; ok: boolean }>;
+		};
 		expect(parsed.status).toBe("healthy");
 		expect(parsed.readonly).toBe(true);
 		expect(parsed.checks.every((c) => c.ok)).toBe(true);

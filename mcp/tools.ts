@@ -19,8 +19,13 @@ import type { McpTool } from "./protocol.js";
 export function capabilitiesTool(): McpTool {
 	return {
 		name: "capabilities",
-		description: "Declare available contracts, jurisdictions, skills, and adapters",
-		inputSchema: { type: "object", properties: {}, additionalProperties: false },
+		description:
+			"Declare available contracts, jurisdictions, skills, and adapters",
+		inputSchema: {
+			type: "object",
+			properties: {},
+			additionalProperties: false,
+		},
 		handler() {
 			return {
 				version: "0.2.0",
@@ -64,7 +69,10 @@ export function ledgerValidateTool(): McpTool {
 			if (typeof manifest !== "object" || manifest === null) {
 				throw new Error("manifest is required (LedgerManifest)");
 			}
-			return validateLedger(manifest as LedgerManifest, ledger as LedgerEntry[]);
+			return validateLedger(
+				manifest as LedgerManifest,
+				ledger as LedgerEntry[],
+			);
 		},
 	};
 }

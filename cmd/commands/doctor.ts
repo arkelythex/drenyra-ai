@@ -26,7 +26,10 @@ interface HealthCheck {
 
 function packageInfo(): { version: string; engines?: { node?: string } } {
 	try {
-		return require("../../package.json") as { version: string; engines?: { node?: string } };
+		return require("../../package.json") as {
+			version: string;
+			engines?: { node?: string };
+		};
 	} catch {
 		return { version: "unknown" };
 	}
@@ -49,7 +52,11 @@ export function doctorCommand(): number {
 	});
 
 	// Runtime version.
-	checks.push({ name: "version", ok: pkg.version !== "unknown", detail: pkg.version });
+	checks.push({
+		name: "version",
+		ok: pkg.version !== "unknown",
+		detail: pkg.version,
+	});
 
 	// Frozen contracts present.
 	const contractsDir = resolve(process.cwd(), "contracts");
@@ -61,7 +68,9 @@ export function doctorCommand(): number {
 		"ledger.md",
 		"recovery.md",
 	];
-	const missingContracts = frozen.filter((file) => !existsSync(resolve(contractsDir, file)));
+	const missingContracts = frozen.filter(
+		(file) => !existsSync(resolve(contractsDir, file)),
+	);
 	checks.push({
 		name: "contracts",
 		ok: missingContracts.length === 0,
@@ -72,7 +81,19 @@ export function doctorCommand(): number {
 	});
 
 	// CLI surface.
-	const cliCommands = ["receipt verify", "ledger validate", "mission start", "mission apply", "mission status", "mission recover", "candidate inspect", "candidate verify", "gate check", "capabilities", "doctor"];
+	const cliCommands = [
+		"receipt verify",
+		"ledger validate",
+		"mission start",
+		"mission apply",
+		"mission status",
+		"mission recover",
+		"candidate inspect",
+		"candidate verify",
+		"gate check",
+		"capabilities",
+		"doctor",
+	];
 	checks.push({
 		name: "cli",
 		ok: true,
@@ -81,7 +102,9 @@ export function doctorCommand(): number {
 
 	// Store reachability (dev adapter): report only, never touch.
 	const storePath = resolve(process.cwd(), "drenyra-missions.json");
-	const storeState = existsSync(storePath) ? "present" : "absent (dev adapter, created on first use)";
+	const storeState = existsSync(storePath)
+		? "present"
+		: "absent (dev adapter, created on first use)";
 	checks.push({ name: "mission-store", ok: true, detail: storeState });
 
 	const failed = checks.filter((check) => !check.ok);

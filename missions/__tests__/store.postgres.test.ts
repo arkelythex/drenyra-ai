@@ -13,7 +13,10 @@ import { AccountingMissionStatus } from "../status.js";
 import { MissionEventType } from "../events.js";
 
 /** Fake pg Pool: records queries and serves scripted rows. */
-function fakePool(rows: unknown[][] = []): { pool: Pool; calls: Array<{ text: string; values: unknown[] }> } {
+function fakePool(rows: unknown[][] = []): {
+	pool: Pool;
+	calls: Array<{ text: string; values: unknown[] }>;
+} {
 	const calls: Array<{ text: string; values: unknown[] }> = [];
 	const pool = {
 		async query(text: string, values: unknown[] = []) {
@@ -100,7 +103,15 @@ describe("PostgresIdempotencyStore", () => {
 
 	it("maps a stored record", async () => {
 		const { pool } = fakePool([
-			[{ key: "k", payload_hash: "h", status: "COMPLETED", result: { ok: true }, expires_at: 9999999999 }],
+			[
+				{
+					key: "k",
+					payload_hash: "h",
+					status: "COMPLETED",
+					result: { ok: true },
+					expires_at: 9999999999,
+				},
+			],
 		]);
 		const store = new PostgresIdempotencyStore(pool);
 		const record = await store.get("k");
@@ -139,7 +150,18 @@ describe("PostgresOutboxStore", () => {
 
 	it("maps a pending row back to an OutboxMessage", async () => {
 		const { pool } = fakePool([
-			[{ id: "outbox_1", aggregate_id: "m", type: "t", payload_hash: "h", status: "pending", attempts: 1, created_at: "2026-07-01T00:00:00.000Z", delivered_at: null }],
+			[
+				{
+					id: "outbox_1",
+					aggregate_id: "m",
+					type: "t",
+					payload_hash: "h",
+					status: "pending",
+					attempts: 1,
+					created_at: "2026-07-01T00:00:00.000Z",
+					delivered_at: null,
+				},
+			],
 		]);
 		const store = new PostgresOutboxStore(pool);
 		const message = await store.findById("outbox_1");
@@ -150,11 +172,21 @@ describe("PostgresOutboxStore", () => {
 
 describe("schema DDL", () => {
 	it("declares the five production tables with the dedup unique constraint", () => {
-		expect(POSTGRES_SCHEMA_DDL).toContain("CREATE TABLE IF NOT EXISTS missions");
-		expect(POSTGRES_SCHEMA_DDL).toContain("CREATE TABLE IF NOT EXISTS mission_events");
-		expect(POSTGRES_SCHEMA_DDL).toContain("CREATE TABLE IF NOT EXISTS idempotency_records");
-		expect(POSTGRES_SCHEMA_DDL).toContain("CREATE TABLE IF NOT EXISTS mission_fences");
+		expect(POSTGRES_SCHEMA_DDL).toContain(
+			"CREATE TABLE IF NOT EXISTS missions",
+		);
+		expect(POSTGRES_SCHEMA_DDL).toContain(
+			"CREATE TABLE IF NOT EXISTS mission_events",
+		);
+		expect(POSTGRES_SCHEMA_DDL).toContain(
+			"CREATE TABLE IF NOT EXISTS idempotency_records",
+		);
+		expect(POSTGRES_SCHEMA_DDL).toContain(
+			"CREATE TABLE IF NOT EXISTS mission_fences",
+		);
 		expect(POSTGRES_SCHEMA_DDL).toContain("CREATE TABLE IF NOT EXISTS outbox");
-		expect(POSTGRES_SCHEMA_DDL).toContain("UNIQUE (aggregate_id, payload_hash)");
+		expect(POSTGRES_SCHEMA_DDL).toContain(
+			"UNIQUE (aggregate_id, payload_hash)",
+		);
 	});
 });

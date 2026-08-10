@@ -41,21 +41,50 @@ const SNIPPET_LIMIT = 80;
 
 function snippetOf(match: string): string {
 	const trimmed = match.trim();
-	return trimmed.length > SNIPPET_LIMIT ? `${trimmed.slice(0, SNIPPET_LIMIT)}…` : trimmed;
+	return trimmed.length > SNIPPET_LIMIT
+		? `${trimmed.slice(0, SNIPPET_LIMIT)}…`
+		: trimmed;
 }
 
 /** Detection patterns: regex -> risk kind. */
 const PATTERNS: ReadonlyArray<{ kind: InjectionRisk["kind"]; re: RegExp }> = [
-	{ kind: "ignore-prior-instructions", re: /\bignore (all |any )?(previous|prior|earlier) (instructions?|directives?|prompts?)\b/i },
-	{ kind: "ignore-prior-instructions", re: /\bforget (everything|all previous|your instructions)\b/i },
-	{ kind: "system-prompt-redefinition", re: /\b(system prompt|system message)\s*[=:]\s*.{0,40}/i },
+	{
+		kind: "ignore-prior-instructions",
+		re: /\bignore (all |any )?(previous|prior|earlier) (instructions?|directives?|prompts?)\b/i,
+	},
+	{
+		kind: "ignore-prior-instructions",
+		re: /\bforget (everything|all previous|your instructions)\b/i,
+	},
+	{
+		kind: "system-prompt-redefinition",
+		re: /\b(system prompt|system message)\s*[=:]\s*.{0,40}/i,
+	},
 	{ kind: "system-prompt-redefinition", re: /\byou are now\b/i },
-	{ kind: "role-redefinition", re: /\b(disregard|ignore) (your )?(role|instructions|config(uration)?)\b/i },
-	{ kind: "role-redefinition", re: /\bact as (an? )?(administrator|root|system|unrestricted|omniscient)\b/i },
-	{ kind: "xml-instruction-block", re: /<\s*(instructions?|system|config|tool|permission|prompt)\b[^>]*>[\s\S]{0,200}/i },
-	{ kind: "tool-or-permission-request", re: /\b(grant|give|allow) (me|the agent|yourself) (access|permissions?|tools?|the ability)\b/i },
-	{ kind: "authority-escalation", re: /\b(skip|bypass|override) (the )?(gates?|approvals?|controls?|review)\b/i },
-	{ kind: "authority-escalation", re: /\b(mark|treat|report) (this |it )?as (approved|verified|accepted)\b/i },
+	{
+		kind: "role-redefinition",
+		re: /\b(disregard|ignore) (your )?(role|instructions|config(uration)?)\b/i,
+	},
+	{
+		kind: "role-redefinition",
+		re: /\bact as (an? )?(administrator|root|system|unrestricted|omniscient)\b/i,
+	},
+	{
+		kind: "xml-instruction-block",
+		re: /<\s*(instructions?|system|config|tool|permission|prompt)\b[^>]*>[\s\S]{0,200}/i,
+	},
+	{
+		kind: "tool-or-permission-request",
+		re: /\b(grant|give|allow) (me|the agent|yourself) (access|permissions?|tools?|the ability)\b/i,
+	},
+	{
+		kind: "authority-escalation",
+		re: /\b(skip|bypass|override) (the )?(gates?|approvals?|controls?|review)\b/i,
+	},
+	{
+		kind: "authority-escalation",
+		re: /\b(mark|treat|report) (this |it )?as (approved|verified|accepted)\b/i,
+	},
 ];
 
 /** Detect injection risks in document text. */
@@ -72,7 +101,10 @@ export function detectInjectionRisks(text: string): readonly InjectionRisk[] {
 }
 
 /** Neutralize directives: wrap matched instructions as quoted, inert content. */
-export function neutralizeInstructions(text: string): { text: string; neutralized: boolean } {
+export function neutralizeInstructions(text: string): {
+	text: string;
+	neutralized: boolean;
+} {
 	let out = text;
 	let neutralized = false;
 	for (const { re } of PATTERNS) {

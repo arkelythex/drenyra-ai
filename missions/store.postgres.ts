@@ -43,7 +43,12 @@ export class PostgresMissionStore implements MissionStore {
 			`INSERT INTO missions (id, snapshot, version, updated_at)
 			 VALUES ($1, $2, $3, $4)
 			 ON CONFLICT (id) DO UPDATE SET snapshot = $2, version = $3, updated_at = $4`,
-			[snapshot.id, JSON.stringify(snapshot), snapshot.version, snapshot.updatedAt],
+			[
+				snapshot.id,
+				JSON.stringify(snapshot),
+				snapshot.version,
+				snapshot.updatedAt,
+			],
 		);
 	}
 
@@ -52,10 +57,14 @@ export class PostgresMissionStore implements MissionStore {
 			`SELECT snapshot FROM missions WHERE id = $1`,
 			[id],
 		);
-		return result.rows[0] ? (result.rows[0].snapshot as MissionSnapshot) : undefined;
+		return result.rows[0]
+			? (result.rows[0].snapshot as MissionSnapshot)
+			: undefined;
 	}
 
-	async findByStatus(statuses: AccountingMissionStatus[]): Promise<MissionSnapshot[]> {
+	async findByStatus(
+		statuses: AccountingMissionStatus[],
+	): Promise<MissionSnapshot[]> {
 		const result = await this.pool.query(
 			`SELECT snapshot FROM missions WHERE snapshot->>'status' = ANY($1::text[]) ORDER BY updated_at DESC`,
 			[statuses],
@@ -64,7 +73,9 @@ export class PostgresMissionStore implements MissionStore {
 	}
 
 	async list(): Promise<MissionSnapshot[]> {
-		const result = await this.pool.query(`SELECT snapshot FROM missions ORDER BY created_at ASC`);
+		const result = await this.pool.query(
+			`SELECT snapshot FROM missions ORDER BY created_at ASC`,
+		);
 		return result.rows.map((row) => row.snapshot as MissionSnapshot);
 	}
 }
@@ -77,7 +88,14 @@ export class PostgresMissionEventStore implements MissionEventStore {
 		await this.pool.query(
 			`INSERT INTO mission_events (id, mission_id, sequence, event_type, payload, created_at)
 			 VALUES ($1, $2, $3, $4, $5, $6)`,
-			[event.id, event.missionId, event.sequence, event.eventType, JSON.stringify(event), event.createdAt],
+			[
+				event.id,
+				event.missionId,
+				event.sequence,
+				event.eventType,
+				JSON.stringify(event),
+				event.createdAt,
+			],
 		);
 	}
 
@@ -117,7 +135,13 @@ export class PostgresIdempotencyStore implements IdempotencyStore {
 			`INSERT INTO idempotency_records (key, payload_hash, status, result, expires_at)
 			 VALUES ($1, $2, $3, $4, $5)
 			 ON CONFLICT (key) DO UPDATE SET status = $3, result = $4, expires_at = $5`,
-			[record.key, record.payloadHash, record.status, JSON.stringify(record.result ?? null), record.expiresAt],
+			[
+				record.key,
+				record.payloadHash,
+				record.status,
+				JSON.stringify(record.result ?? null),
+				record.expiresAt,
+			],
 		);
 	}
 }
@@ -152,7 +176,15 @@ export class PostgresOutboxStore implements OutboxStore {
 			await this.pool.query(
 				`INSERT INTO outbox (id, aggregate_id, type, payload_hash, status, attempts, created_at)
 				 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-				[message.id, message.aggregateId, message.type, message.payloadHash, message.status, message.attempts, message.createdAt],
+				[
+					message.id,
+					message.aggregateId,
+					message.type,
+					message.payloadHash,
+					message.status,
+					message.attempts,
+					message.createdAt,
+				],
 			);
 		} catch (error) {
 			if (isUniqueViolation(error)) {
@@ -178,7 +210,10 @@ export class PostgresOutboxStore implements OutboxStore {
 		);
 	}
 
-	async findPending(aggregateId: string, payloadHash: string): Promise<OutboxMessage | undefined> {
+	async findPending(
+		aggregateId: string,
+		payloadHash: string,
+	): Promise<OutboxMessage | undefined> {
 		const result = await this.pool.query(
 			`SELECT id, aggregate_id, type, payload_hash, status, attempts, created_at, delivered_at
 			 FROM outbox WHERE aggregate_id = $1 AND payload_hash = $2`,
@@ -196,7 +231,10 @@ export class PostgresOutboxStore implements OutboxStore {
 		return result.rows[0] ? rowToOutbox(result.rows[0]) : undefined;
 	}
 
-	async wasDelivered(aggregateId: string, payloadHash: string): Promise<boolean> {
+	async wasDelivered(
+		aggregateId: string,
+		payloadHash: string,
+	): Promise<boolean> {
 		const message = await this.findPending(aggregateId, payloadHash);
 		return message !== undefined && message.status === "delivered";
 	}

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { acquireFence, assertFence, FenceConflict, InMemoryFenceStore } from "../fencing.js";
+import {
+	acquireFence,
+	assertFence,
+	FenceConflict,
+	InMemoryFenceStore,
+} from "../fencing.js";
 import {
 	deliverMessage,
 	DuplicateDeliveryError,
@@ -20,14 +25,18 @@ describe("fencing", () => {
 		const token = await acquireFence(store, "mission_a");
 		await assertFence(store, "mission_a", token);
 		await acquireFence(store, "mission_a");
-		await expect(assertFence(store, "mission_a", token)).rejects.toThrow(FenceConflict);
+		await expect(assertFence(store, "mission_a", token)).rejects.toThrow(
+			FenceConflict,
+		);
 	});
 
 	it("stale worker cannot write after a leader change", async () => {
 		const store = new InMemoryFenceStore();
 		const worker1 = await acquireFence(store, "mission_a");
 		await acquireFence(store, "mission_a"); // leader change
-		await expect(assertFence(store, "mission_a", worker1)).rejects.toThrow(FenceConflict);
+		await expect(assertFence(store, "mission_a", worker1)).rejects.toThrow(
+			FenceConflict,
+		);
 	});
 });
 
@@ -53,7 +62,11 @@ describe("outbox", () => {
 		});
 		await deliverMessage(store, message.id);
 		await expect(
-			enqueueMessage(store, { aggregateId: "mission_a", type: "post-journal", payloadHash: "h1" }),
+			enqueueMessage(store, {
+				aggregateId: "mission_a",
+				type: "post-journal",
+				payloadHash: "h1",
+			}),
 		).rejects.toThrow(DuplicateDeliveryError);
 	});
 
@@ -89,8 +102,16 @@ describe("outbox", () => {
 
 	it("different payloads on the same aggregate are distinct deliveries", async () => {
 		const store = new InMemoryOutboxStore();
-		const a = await enqueueMessage(store, { aggregateId: "m", type: "t", payloadHash: "h1" });
-		const b = await enqueueMessage(store, { aggregateId: "m", type: "t", payloadHash: "h2" });
+		const a = await enqueueMessage(store, {
+			aggregateId: "m",
+			type: "t",
+			payloadHash: "h1",
+		});
+		const b = await enqueueMessage(store, {
+			aggregateId: "m",
+			type: "t",
+			payloadHash: "h2",
+		});
 		expect(a.id).not.toBe(b.id);
 		expect(await deliverMessage(store, a.id)).toBe(true);
 		expect(await deliverMessage(store, b.id)).toBe(true);

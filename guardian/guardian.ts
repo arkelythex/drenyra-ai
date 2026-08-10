@@ -80,31 +80,51 @@ export function runGuardianReview(
 
 	// Scope integrity — the candidate's fiscal scope must be shape-valid.
 	if (!isValidRuc(candidate.scope.ruc)) {
-		findings.push(finding("blocker", "scope", `invalid RUC "${candidate.scope.ruc}" in candidate scope`));
+		findings.push(
+			finding(
+				"blocker",
+				"scope",
+				`invalid RUC "${candidate.scope.ruc}" in candidate scope`,
+			),
+		);
 	}
 	if (!isValidPeriod(candidate.scope.period)) {
 		findings.push(
-			finding("blocker", "scope", `invalid fiscal period "${candidate.scope.period}" (expected YYYYMM)`),
+			finding(
+				"blocker",
+				"scope",
+				`invalid fiscal period "${candidate.scope.period}" (expected YYYYMM)`,
+			),
 		);
 	}
 
 	// Identity integrity — a frozen candidate must carry a non-empty subject hash.
 	if (!candidate.subjectHash || candidate.subjectHash.length < 32) {
 		findings.push(
-			finding("blocker", "integrity", "candidate subject hash is missing or implausibly short"),
+			finding(
+				"blocker",
+				"integrity",
+				"candidate subject hash is missing or implausibly short",
+			),
 		);
 	}
 
 	// Materiality integrity — the tier must be a declared tier.
 	if (!TIERS.has(candidate.materiality)) {
 		findings.push(
-			finding("blocker", "materiality", `unknown materiality tier "${candidate.materiality}"`),
+			finding(
+				"blocker",
+				"materiality",
+				`unknown materiality tier "${candidate.materiality}"`,
+			),
 		);
 	}
 
 	// Approval sufficiency — R3 demands dual distinct approval when required.
 	if (r3DualRequired && orderOf(candidate.materiality) >= 3) {
-		const approvers = candidate.reviews.filter((review) => review.verdict === "accept");
+		const approvers = candidate.reviews.filter(
+			(review) => review.verdict === "accept",
+		);
 		if (approvers.length < 2) {
 			findings.push(
 				finding(
@@ -140,7 +160,11 @@ export function runGuardianReview(
 	}
 
 	// Read-only guarantee: sort findings by severity, never touch the candidate.
-	const severityOrder: Record<GuardianSeverity, number> = { blocker: 0, concern: 1, info: 2 };
+	const severityOrder: Record<GuardianSeverity, number> = {
+		blocker: 0,
+		concern: 1,
+		info: 2,
+	};
 	return {
 		candidateHash: candidate.subjectHash,
 		findings: [...findings].sort(

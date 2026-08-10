@@ -14,7 +14,9 @@ import type { MissionSnapshot } from "../types.js";
 const S = AccountingMissionStatus;
 
 /** Next single legal step (mirrors the scripted handler in runtime.test.ts). */
-function advanceStatus(status: AccountingMissionStatus): AccountingMissionStatus | null {
+function advanceStatus(
+	status: AccountingMissionStatus,
+): AccountingMissionStatus | null {
 	switch (status) {
 		case S.DRAFT:
 			return S.QUEUED;
@@ -48,7 +50,13 @@ function makeRuntime(fenceStore?: InMemoryFenceStore): {
 		},
 	};
 	registry.register(handler);
-	const runtime = new MissionRuntime({ store, events, idempotency, registry, fenceStore });
+	const runtime = new MissionRuntime({
+		store,
+		events,
+		idempotency,
+		registry,
+		fenceStore,
+	});
 	return {
 		runtime,
 		create: async () => {
@@ -64,8 +72,15 @@ function makeRuntime(fenceStore?: InMemoryFenceStore): {
 	};
 }
 
-function executeCommand(missionId: string, expectedVersion: number): BoundMissionCommand {
-	return { type: "execute", missionId, payload: { expectedMissionVersion: expectedVersion } };
+function executeCommand(
+	missionId: string,
+	expectedVersion: number,
+): BoundMissionCommand {
+	return {
+		type: "execute",
+		missionId,
+		payload: { expectedMissionVersion: expectedVersion },
+	};
 }
 
 describe("MissionRuntime + fencing", () => {

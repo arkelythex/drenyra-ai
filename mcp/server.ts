@@ -65,7 +65,10 @@ export class McpServer {
 			return this.#serialize({
 				jsonrpc: "2.0",
 				id: null,
-				error: { code: RpcErrorCode.INVALID_REQUEST, message: "invalid request" },
+				error: {
+					code: RpcErrorCode.INVALID_REQUEST,
+					message: "invalid request",
+				},
 			});
 		}
 		if (isNotification(message)) {
@@ -93,28 +96,45 @@ export class McpServer {
 					jsonrpc: "2.0",
 					id: request.id,
 					result: {
-						tools: this.listTools().map(({ name, description, inputSchema }) => ({
-							name,
-							description,
-							inputSchema,
-						})),
+						tools: this.listTools().map(
+							({ name, description, inputSchema }) => ({
+								name,
+								description,
+								inputSchema,
+							}),
+						),
 					},
 				};
 			case "tools/call":
 				return this.#callTool(request);
 			default:
-				return this.#error(request.id, RpcErrorCode.METHOD_NOT_FOUND, `method not found: ${request.method}`);
+				return this.#error(
+					request.id,
+					RpcErrorCode.METHOD_NOT_FOUND,
+					`method not found: ${request.method}`,
+				);
 		}
 	}
 
 	async #callTool(request: JsonRpcRequest): Promise<JsonRpcResponse> {
-		const params = (request.params ?? {}) as { name?: unknown; arguments?: unknown };
+		const params = (request.params ?? {}) as {
+			name?: unknown;
+			arguments?: unknown;
+		};
 		if (typeof params.name !== "string") {
-			return this.#error(request.id, RpcErrorCode.INVALID_PARAMS, "missing tool name");
+			return this.#error(
+				request.id,
+				RpcErrorCode.INVALID_PARAMS,
+				"missing tool name",
+			);
 		}
 		const tool = this.#tools.get(params.name);
 		if (tool === undefined) {
-			return this.#error(request.id, RpcErrorCode.METHOD_NOT_FOUND, `unknown tool: ${params.name}`);
+			return this.#error(
+				request.id,
+				RpcErrorCode.METHOD_NOT_FOUND,
+				`unknown tool: ${params.name}`,
+			);
 		}
 		try {
 			const result = await tool.handler(params.arguments);
@@ -157,5 +177,9 @@ function isRequest(value: unknown): value is JsonRpcRequest {
 function isNotification(value: unknown): value is JsonRpcNotification {
 	if (typeof value !== "object" || value === null) return false;
 	const record = value as Record<string, unknown>;
-	return record.jsonrpc === "2.0" && typeof record.method === "string" && !("id" in record);
+	return (
+		record.jsonrpc === "2.0" &&
+		typeof record.method === "string" &&
+		!("id" in record)
+	);
 }

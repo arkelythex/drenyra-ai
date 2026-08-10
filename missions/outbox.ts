@@ -32,7 +32,10 @@ export interface OutboxMessage {
 
 /** Raised when a message is enqueued that matches an already-delivered one. */
 export class DuplicateDeliveryError extends Error {
-	constructor(readonly aggregateId: string, readonly payloadHash: string) {
+	constructor(
+		readonly aggregateId: string,
+		readonly payloadHash: string,
+	) {
 		super(
 			`duplicate delivery blocked for ${aggregateId} (payload ${payloadHash.slice(0, 12)}…)`,
 		);
@@ -49,7 +52,10 @@ export interface OutboxStore {
 	/** Mark a message failed (bounded retries allowed). */
 	markFailed(id: string): Promise<void>;
 	/** Find a pending message by aggregate + payload hash. */
-	findPending(aggregateId: string, payloadHash: string): Promise<OutboxMessage | undefined>;
+	findPending(
+		aggregateId: string,
+		payloadHash: string,
+	): Promise<OutboxMessage | undefined>;
 	/** Find a message by its id. */
 	findById(id: string): Promise<OutboxMessage | undefined>;
 	/** True when a message with this payload hash was already delivered. */
@@ -62,7 +68,10 @@ export class InMemoryOutboxStore implements OutboxStore {
 
 	async enqueue(message: OutboxMessage): Promise<void> {
 		if (await this.wasDelivered(message.aggregateId, message.payloadHash)) {
-			throw new DuplicateDeliveryError(message.aggregateId, message.payloadHash);
+			throw new DuplicateDeliveryError(
+				message.aggregateId,
+				message.payloadHash,
+			);
 		}
 		this.#messages.set(message.id, message);
 	}
@@ -81,9 +90,15 @@ export class InMemoryOutboxStore implements OutboxStore {
 		message.attempts += 1;
 	}
 
-	async findPending(aggregateId: string, payloadHash: string): Promise<OutboxMessage | undefined> {
+	async findPending(
+		aggregateId: string,
+		payloadHash: string,
+	): Promise<OutboxMessage | undefined> {
 		for (const message of this.#messages.values()) {
-			if (message.aggregateId === aggregateId && message.payloadHash === payloadHash) {
+			if (
+				message.aggregateId === aggregateId &&
+				message.payloadHash === payloadHash
+			) {
 				return message;
 			}
 		}
@@ -94,7 +109,10 @@ export class InMemoryOutboxStore implements OutboxStore {
 		return this.#messages.get(id);
 	}
 
-	async wasDelivered(aggregateId: string, payloadHash: string): Promise<boolean> {
+	async wasDelivered(
+		aggregateId: string,
+		payloadHash: string,
+	): Promise<boolean> {
 		const found = await this.findPending(aggregateId, payloadHash);
 		return found !== undefined && found.status === "delivered";
 	}
@@ -108,7 +126,10 @@ export async function enqueueMessage(
 	store: OutboxStore,
 	input: { aggregateId: string; type: string; payloadHash: string },
 ): Promise<OutboxMessage> {
-	const existing = await store.findPending(input.aggregateId, input.payloadHash);
+	const existing = await store.findPending(
+		input.aggregateId,
+		input.payloadHash,
+	);
 	if (existing !== undefined) {
 		if (existing.status === "delivered") {
 			throw new DuplicateDeliveryError(input.aggregateId, input.payloadHash);
@@ -132,7 +153,10 @@ export async function enqueueMessage(
  * Deliver a pending message exactly once. Returns false (and does not
  * re-deliver) when the payload was already delivered.
  */
-export async function deliverMessage(store: OutboxStore, id: string): Promise<boolean> {
+export async function deliverMessage(
+	store: OutboxStore,
+	id: string,
+): Promise<boolean> {
 	const message = await store.findById(id);
 	if (message === undefined) return false;
 	if (message.status === "delivered") return false;

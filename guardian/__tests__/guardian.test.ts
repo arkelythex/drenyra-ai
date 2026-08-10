@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import { runGuardianReview } from "../index.js";
 import type { Candidate, CandidateReview } from "../../candidates/types.js";
 
-function review(reviewer: string, verdict: "accept" | "reject" = "accept"): CandidateReview {
+function review(
+	reviewer: string,
+	verdict: "accept" | "reject" = "accept",
+): CandidateReview {
 	return {
 		id: `review-${reviewer}`,
 		verdict,
@@ -38,8 +41,12 @@ describe("runGuardianReview", () => {
 	});
 
 	it("flags invalid scope (RUC and period) as blockers", () => {
-		const report = runGuardianReview(candidate({ scope: { ruc: "123", period: "2026" } }));
-		expect(report.findings.filter((f) => f.category === "scope")).toHaveLength(2);
+		const report = runGuardianReview(
+			candidate({ scope: { ruc: "123", period: "2026" } }),
+		);
+		expect(report.findings.filter((f) => f.category === "scope")).toHaveLength(
+			2,
+		);
 		expect(report.findings.every((f) => f.severity === "blocker")).toBe(true);
 	});
 
@@ -52,17 +59,31 @@ describe("runGuardianReview", () => {
 		const oneApprover = runGuardianReview(
 			candidate({ materiality: "R3", reviews: [review("alicia")] }),
 		);
-		expect(oneApprover.findings.some((f) => f.category === "approval")).toBe(true);
+		expect(oneApprover.findings.some((f) => f.category === "approval")).toBe(
+			true,
+		);
 
 		const duplicate = runGuardianReview(
-			candidate({ materiality: "R3", reviews: [review("alicia"), review("alicia")] }),
+			candidate({
+				materiality: "R3",
+				reviews: [review("alicia"), review("alicia")],
+			}),
 		);
-		expect(duplicate.findings.some((f) => f.description.includes("single reviewer identity"))).toBe(true);
+		expect(
+			duplicate.findings.some((f) =>
+				f.description.includes("single reviewer identity"),
+			),
+		).toBe(true);
 
 		const dual = runGuardianReview(
-			candidate({ materiality: "R3", reviews: [review("alicia"), review("beto")] }),
+			candidate({
+				materiality: "R3",
+				reviews: [review("alicia"), review("beto")],
+			}),
 		);
-		expect(dual.findings.filter((f) => f.category === "approval")).toHaveLength(0);
+		expect(dual.findings.filter((f) => f.category === "approval")).toHaveLength(
+			0,
+		);
 	});
 
 	it("does not demand dual approval when disabled", () => {
@@ -70,11 +91,15 @@ describe("runGuardianReview", () => {
 			candidate({ materiality: "R3", reviews: [review("alicia")] }),
 			{ r3DualRequired: false },
 		);
-		expect(report.findings.filter((f) => f.category === "approval")).toHaveLength(0);
+		expect(
+			report.findings.filter((f) => f.category === "approval"),
+		).toHaveLength(0);
 	});
 
 	it("notes missing review history on material candidates (concern, not blocker)", () => {
-		const report = runGuardianReview(candidate({ materiality: "R2", reviews: [] }));
+		const report = runGuardianReview(
+			candidate({ materiality: "R2", reviews: [] }),
+		);
 		expect(report.findings.some((f) => f.severity === "concern")).toBe(true);
 	});
 
@@ -87,7 +112,11 @@ describe("runGuardianReview", () => {
 
 	it("orders findings by severity (blockers first)", () => {
 		const report = runGuardianReview(
-			candidate({ materiality: "R3", scope: { ruc: "x", period: "y" }, reviews: [] }),
+			candidate({
+				materiality: "R3",
+				scope: { ruc: "x", period: "y" },
+				reviews: [],
+			}),
 		);
 		expect(report.findings[0]!.severity).toBe("blocker");
 	});
