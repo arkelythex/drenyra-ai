@@ -10,6 +10,18 @@ All notable changes to Drenyra AI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
+## [Unreleased]
+
+### Added — design series (docs)
+
+- **Design 01 — Ecosystem Frontier and Authority** (`docs/design/design-01-ecosystem-frontier-and-authority.md`) — approved frontier: per-component responsibilities with explicit never-musts, the 8-step chain of authority, and the dependency rule (consumers use published versions; no consumer turns a Core rejection into an approval).
+- **Design 02 — Monthly Accounting and Tax Close** (`docs/design/design-02-monthly-close.md`) — the v1.0 flagship flow: preflight → evidence → reconciliation → candidates → proportional review → external confirmation → close package, plus the safe-recovery table.
+- **Design 03 — Agents, Skills, and Integrations** (`docs/design/design-03-agents-skills-integrations.md`) — AI proposes, deterministic code decides; the 7 initial agents, the 3 skill layers, the v1.0 integration order, and provider-agnostic model selection.
+- **Design 04 — Persistence, Security, and Recovery** (`docs/design/design-04-persistence-security-recovery.md`) — the 6-store model, the authoritative data model, evidence as untrusted input, idempotency/concurrency, the UNKNOWN-state reconciliation flow, the 9-class error taxonomy, and the security controls.
+- **Design 05 — Testing, Releases, and the v1.0 Definition** (`docs/design/design-05-testing-releases-v1.md`) — the 10-layer test strategy, the 13 mandatory scenarios, the immutable-artifact release pipeline, the maturity stages, the 14 mandatory v1.0 criteria, and the 7 measurable invariants.
+- **Intended Usage** (`docs/intended-usage.md`) — the frozen frontier: definition, institutional thesis, golden rule, the philosophy translation table, the stricter fiscal controls, and the frozen delivery architecture (headless core + Command Center as interface).
+- Repository made public (2026-08-10); README, ROADMAP, and CONTRIBUTING updated to reflect the frontier and current state.
+
 ## 0.2.0 — 2026-08-02
 
 ### Added — all six contracts FROZEN
