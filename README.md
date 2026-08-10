@@ -86,6 +86,8 @@ Drenyra AI occupies the accounting-domain position that Gentle-AI holds in softw
 
 **What Drenyra AI is not:** the ERP, the UI, the ledger of record, or the fiscal authority. See [Intended Usage](docs/intended-usage.md) for the full frontier and the responsibility split.
 
+**Delivery (v1.0):** Drenyra AI ships as a **headless core** consumed by Drenyra Command Center via library, CLI, or MCP; the flagship flow is the **monthly accounting and tax close**. Gentle-AI disappears behind the developer's flow — Drenyra AI disappears behind the professional accountant's flow.
+
 ---
 
 ## Core Workflow

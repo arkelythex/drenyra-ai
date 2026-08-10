@@ -69,6 +69,31 @@ flowchart TD
     R --> L["Verifiable ledger"]
 ```
 
+## The delivery architecture (frozen for v1.0)
+
+**The flagship flow for v1.0 is the monthly accounting and tax close.**
+
+**Decision:** Drenyra AI ships as a **headless, independent core**, consumed by Drenyra Command Center as the professional's interface — through library, CLI, or MCP. Drenyra AI never ships its own UI.
+
+```mermaid
+flowchart TD
+    P["Professional"] --> D["Drenyra Command Center"]
+    D --> AI["Drenyra AI"]
+    AI --> E["Agents and connectors"]
+    AI --> G["Gates · Receipts · Ledger"]
+```
+
+| Model | Verdict | Why |
+| --- | --- | --- |
+| **1. Headless core + Command Center as interface** | ✅ Chosen | Best experience for accountants; Drenyra AI stays integrable by ERPs and other SaaS; Codex, Claude, OpenCode, or Drenyra Pi can run inside; one authority for gates, receipts, and missions |
+| 2. Agent configurator first | ❌ Rejected | Most literal resemblance to Gentle-AI and good for developers/early adopters, but most accountants will not operate agents, JSON files, or commands; relegates the Command Center |
+| 3. Everything inside Drenyra AI | ❌ Rejected | Fast demos and no cross-repo coordination, but couples UI, fiscal domain, and runtime; blocks external integrations; duplicates responsibilities and destroys the current architectural boundaries |
+
+> [!IMPORTANT]
+> **Gentle-AI disappears behind the developer's flow. Drenyra AI disappears behind the professional accountant's flow.** The accountant never operates agent orchestration, JSON files, or commands — they work in the Command Center, and Drenyra AI controls underneath.
+
+**Operational consequence:** Drenyra consumes released, versioned artifacts of Drenyra AI — never a checkout. Versions must be coordinated between the two repositories; the frozen contracts are the coordination surface.
+
 ## What Drenyra AI is not
 
 | Not this | Because |
