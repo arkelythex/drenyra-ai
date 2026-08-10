@@ -5,7 +5,7 @@
 
 <!-- -->
 
-> **Last updated:** 2026-08-02. Status: pre-alpha. — Part of: [Architecture](../architecture.md)
+> **Last updated:** 2026-08-11 (Design 4 — untrusted documents). Status: pre-alpha. — Part of: [Architecture](../architecture.md)
 
 <!-- -->
 
@@ -22,6 +22,7 @@
 | Candidate identity | SHA-256 over the exact subject bytes | Mutated subject ⇒ `SUBJECT_MUTATED`; one correction only |
 | Intent execution | Registered intent handlers | No handler ⇒ `INTENT_HANDLER_NOT_CONFIGURED` (CLI fails; it never fakes accounting work) |
 | Memory (Engram) | Memory guides, never authorizes | No authorization surface exists in the memory engine |
+| **Documents (evidence input)** | **Untrusted input** — a PDF, XML or description can never inject agent instructions, change permissions, or request tools | Sanitize before prompting: strip instructions, bind to schema, verify hash and provenance (Design 4) |
 
 ## Principles
 
@@ -35,4 +36,5 @@
 ## Read next
 
 - [Receipt vs. Ledger Entry](receipt-ledger-model.md) — receipts as atomic proof vs. the ledger as chained order
+- [Design 04 — Persistence, Security & Recovery](../design/design-04-persistence-security-recovery.md) — storage model, approvals, idempotency/concurrency, unknown states, security controls
 - [Architecture](../architecture.md) — back to the index
