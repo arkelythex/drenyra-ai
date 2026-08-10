@@ -34,33 +34,39 @@ Drenyra AI is the direct counterpart of `gentle-ai` for the accounting domain: a
 - **Gates** — lifecycle gates that validate authority, scope, and receipts before commit/push/PR/release.
 - **Approvals** — human approval as an explicit, recorded event, never implied.
 - **Recovery** — crash-safe resumption of missions and candidates.
-- **CLI + MCP** — `drenyra-ai` command surface and MCP server for multi-agent configuration.
+- **CLI** — `drenyra-ai` command surface for mission, receipt, ledger, candidate, and gate operations.
 
 ## Layout
 
 ```text
-cmd/drenyra-ai      CLI entrypoint
+cmd/                CLI dispatcher and command adapters
 contracts/          Canonical contracts (protocol, candidate, receipt, gate, ledger)
-agents/             Specialized accounting agents
-skills/             Packaged skills (extracted to arkelythex/drenyra-skills when they outgrow this repo)
-policies/           Risk and review policies
-runtime/            Core runtime (missions, routing, execution)
+agents/             Agent orchestration layer: deterministic intent handlers + registry (stages work only)
+missions/           Mission protocol + MissionRuntime (lifecycle, idempotency, events)
+candidates/         Candidate identity and materiality
 review/             Proportional review lenses and evidence
-candidate/          Candidate identity and lifecycle
 receipts/           Receipt schemas and verification
 ledger/             Audit ledger core
 gates/              Lifecycle gates
 recovery/           Crash recovery and resumption
-integrations/       MCP, external ERPs, agent hosts
+docs/               Architecture, trust-model, and dependency documentation
 ```
+
+## Hybrid orchestration vs. Drenyra Core
+
+Drenyra AI orchestrates specialized accounting/fiscal agents through `agents/`:
+deterministic `IntentHandler` implementations for every mission intent
+(monthly-close, correction, reconciliation, invoice-review, compliance-check)
+stage work, request evidence, and pause at the evidence or approval gate. The
+deterministic Core — `missions/` (lifecycle, idempotency, rules), `gates/`,
+`receipts/`, and explicit human approval — remains the authority for what may
+actually change. Agents never claim SUNAT, bank, or ERP execution and never
+perform fiscal approval; they only propose and stage work.
 
 ## Quick start
 
 ```bash
-drenyra-ai install
-drenyra-ai doctor
 drenyra-ai mission start
-drenyra-ai candidate inspect
 drenyra-ai receipt verify
 drenyra-ai ledger validate
 ```

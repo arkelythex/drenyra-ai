@@ -36,20 +36,27 @@ Drenyra AI may integrate Drenyra Engram. It is consumed by Drenyra and Drenyra P
 ## Layer model
 
 ```text
-integrations/        MCP, agent hosts, external ERPs
+agents/              Orchestration: deterministic intent handlers + registry (staging only)
    │
-contracts/           Canonical, versioned contracts (transport-agnostic)
+cmd/                 Thin CLI adapters
    │
-runtime/             Missions, routing (direct/delegated/formal), execution
+missions/            Mission protocol + MissionRuntime (lifecycle, idempotency, rules)
    │
 domain services      candidates, receipts, ledger, gates, review, recovery
    │
-policies/            Risk tiers and review policies per jurisdiction
+contracts/           Canonical, versioned contracts (transport-agnostic)
 ```
 
 - **Contracts are transport-agnostic.** Types, schemas, states, commands, events, and errors live without transport bindings.
 - **Adapters are entry points, not architecture.** CLI, MCP, and integrations map onto the same domain services.
 - **Everything deterministic is tested with canonical vectors.** Receipt verification and ledger hashing never rely on ambient state.
+
+**Hybrid orchestration vs. Core:** `agents/` is the orchestration layer —
+deterministic, per-intent `IntentHandler`s that stage work and pause at the
+evidence/approval gate. The deterministic Core (MissionRuntime transitions,
+idempotency, gates, receipts, explicit human approval) stays authoritative:
+agents propose and stage, Core gates and humans decide. No agent claims
+SUNAT, bank, or ERP execution, and no agent performs fiscal approval.
 
 ## Routing model
 

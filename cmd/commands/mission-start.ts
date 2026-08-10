@@ -6,13 +6,12 @@
  *
  * Thin executor over the in-memory stores; the JSON-file store adapter owns
  * all file I/O (hydrate/persist). The MissionRuntime itself never touches the
- * filesystem. `--demo` registers the demo auto-advance intent handler for THIS
- * invocation only; without it no intent handlers are registered.
+ * filesystem. `--demo` is accepted for compatibility and has no effect.
  */
-
-import { MissionRuntime, IntentRegistryImpl, type CreateMissionCommand } from "../../missions/index.js";
+    
+import { MissionRuntime, type CreateMissionCommand } from "../../missions/index.js";
 import { MissionFileStore } from "../adapters/file-mission-store.js";
-import { parseMissionFlags, registerDemoIntentHandlers, VALID_MISSION_INTENTS } from "./mission-demo-handler.js";
+import { parseMissionFlags, VALID_MISSION_INTENTS } from "./mission-demo-handler.js";
 import { readJsonFile, emitJson, emitSummary } from "../output/json.js";
 import { errorMessage, usageError } from "../output/errors.js";
 
@@ -57,15 +56,11 @@ export async function missionStartCommand(args: string[]): Promise<number> {
     }
     const fileStore = new MissionFileStore(flags.storePath);
     const stores = await fileStore.hydrate();
-    const registry = new IntentRegistryImpl();
-    if (flags.demo) {
-      registerDemoIntentHandlers(registry);
-    }
+    // start() only creates DRAFT missions: no intent handlers are needed here.
     const runtime = new MissionRuntime({
       store: stores.missions,
       events: stores.events,
       idempotency: stores.idempotency,
-      registry,
     });
     const snapshot = await runtime.start(raw);
     await fileStore.persist(stores);

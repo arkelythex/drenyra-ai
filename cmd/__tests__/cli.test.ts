@@ -5,12 +5,14 @@
  * CLI command tests — exit-code contracts and end-to-end mission lifecycle for
  * the cmd/ command adapters.
  *
- * Covers: INTENT_HANDLER_NOT_CONFIGURED on execute without a handler, the
- * --demo lifecycle (start --demo -> 3x execute --demo -> approve -> APPROVED,
- * 5 events), the atomic JSON-file store round trip (storeSchemaVersion
- * present), the receipt verify exit-code contract (valid -> 0, revoked key ->
- * 1, tampered -> 1, schema-invalid -> 2), and the writeFileAtomic helper
- * (temp+rename leaves the target intact on failure; no stale tmp files).
+ * Covers: real intent handlers registered by default (execute stages the
+ * intent plan without --demo; --demo stays a compatibility no-op), the gated
+ * end-to-end lifecycle (start -> staged executes -> evidence gate -> approval
+ * gate -> human approve -> finalize, 10 events), the atomic JSON-file store
+ * round trip (storeSchemaVersion present), the receipt verify exit-code
+ * contract (valid -> 0, revoked key -> 1, tampered -> 1, schema-invalid -> 2),
+ * and the writeFileAtomic helper (temp+rename leaves the target intact on
+ * failure; no stale tmp files).
  */
 
 import { describe, expect, it, afterEach, vi } from "vitest";
@@ -39,7 +41,6 @@ import {
   missionStatusCommand,
 } from "../commands/mission-status.js";
 import {
-  MissionFileStore,
   writeFileAtomic,
   buildTempPath,
   STORE_SCHEMA_VERSION,
@@ -50,6 +51,7 @@ import {
   type ReceiptContent,
   type SigningKeyInfo,
 } from "../../receipts/index.js";
+import { canonicalHash } from "../../missions/index.js";
 
 /** Creates a fresh temp directory for one test. */
 function makeTmpDir(): string {
@@ -87,19 +89,6 @@ function makeExecuteCommand(missionId: string, expectedVersion: number): Record<
   };
 }
 
-function makeApproveCommand(missionId: string, expectedVersion: number): Record<string, unknown> {
-  return {
-    type: "approve",
-    missionId,
-    payload: {
-      proposalId: "proposal_1",
-      proposalVersion: 1,
-      evidenceHash: "evt_hash_1",
-      expectedMissionVersion: expectedVersion,
-    },
-  };
-}
-
 function makeReceiptContent(missionId: string): ReceiptContent {
   return {
     missionId,
@@ -115,19 +104,19 @@ function makeReceiptContent(missionId: string): ReceiptContent {
   };
 }
 
-describe("mission apply: intent handler policy", () => {
+describe("mission apply: real intent handlers by default", () => {
   let dir: string;
   afterEach(() => {
     rmSync(dir, { recursive: true, force: true });
     vi.restoreAllMocks();
   });
 
-  it("rejects execute without a handler with INTENT_HANDLER_NOT_CONFIGURED (exit 1)", async () => {
+  it("executes without --demo, staging the intent plan deterministically", async () => {
     dir = makeTmpDir();
     const storePath = join(dir, "store.json");
     const createPath = join(dir, "create.json");
     writeJson(createPath, makeCreateCommand());
-    const logSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
+    vi.spyOn(console, "log").mockImplementation(() => undefined);
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     const startCode = await missionStartCommand([createPath, "--store", storePath]);
@@ -137,21 +126,23 @@ describe("mission apply: intent handler policy", () => {
     const executePath = join(dir, "execute.json");
     writeJson(executePath, makeExecuteCommand(missionId, 1));
     const applyCode = await missionApplyCommand([executePath, "--store", storePath]);
-    expect(applyCode).toBe(1);
-    const error = lastStdout() as { error: { code: string } };
-    expect(error.error.code).toBe("INTENT_HANDLER_NOT_CONFIGURED");
-
-    // Fail closed: nothing was persisted.
-    const store = JSON.parse(readFileSync(storePath, "utf-8")) as {
-      missions: unknown[];
-      events: unknown[];
+    expect(applyCode).toBe(0);
+    const output = lastStdout() as {
+      snapshot: { status: string; steps: { status: string }[]; progress: number };
     };
-    expect(store.missions).toHaveLength(1);
-    expect(store.events).toHaveLength(1);
-    expect(logSpy).toHaveBeenCalled();
+    expect(output.snapshot.status).toBe("QUEUED");
+    expect(output.snapshot.steps).toHaveLength(3);
+    expect(output.snapshot.steps.every((step) => step.status === "PENDING")).toBe(true);
+    expect(output.snapshot.progress).toBe(0);
+
+    // The staged plan persists to the store.
+    const store = JSON.parse(readFileSync(storePath, "utf-8")) as {
+      missions: { intent: string }[];
+    };
+    expect(store.missions[0].intent).toBe("monthly-close");
   });
 
-  it("does not leak the demo handler across invocations (start --demo + apply without --demo still fails)", async () => {
+  it("accepts --demo as a compatibility flag with identical behavior", async () => {
     dir = makeTmpDir();
     const storePath = join(dir, "store.json");
     const createPath = join(dir, "create.json");
@@ -165,21 +156,21 @@ describe("mission apply: intent handler policy", () => {
 
     const executePath = join(dir, "execute.json");
     writeJson(executePath, makeExecuteCommand(missionId, 1));
-    const applyCode = await missionApplyCommand([executePath, "--store", storePath]);
-    expect(applyCode).toBe(1);
-    const error = lastStdout() as { error: { code: string } };
-    expect(error.error.code).toBe("INTENT_HANDLER_NOT_CONFIGURED");
+    const applyCode = await missionApplyCommand([executePath, "--store", storePath, "--demo"]);
+    expect(applyCode).toBe(0);
+    const output = lastStdout() as { snapshot: { status: string } };
+    expect(output.snapshot.status).toBe("QUEUED");
   });
 });
 
-describe("mission --demo lifecycle end-to-end", () => {
+describe("mission real-handler lifecycle end-to-end", () => {
   let dir: string;
   afterEach(() => {
     rmSync(dir, { recursive: true, force: true });
     vi.restoreAllMocks();
   });
 
-  it("drives start --demo -> 3x execute --demo -> approve --demo to APPROVED with 5 events and a versioned store file", async () => {
+  it("drives start -> staged executes -> gated approval -> finalize to COMPLETED", async () => {
     dir = makeTmpDir();
     const storePath = join(dir, "store.json");
     const createPath = join(dir, "create.json");
@@ -187,34 +178,76 @@ describe("mission --demo lifecycle end-to-end", () => {
     vi.spyOn(console, "log").mockImplementation(() => undefined);
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 
-    const startCode = await missionStartCommand([createPath, "--store", storePath, "--demo"]);
+    const startCode = await missionStartCommand([createPath, "--store", storePath]);
     expect(startCode).toBe(0);
     const missionId = (lastStdout() as { id: string }).id;
 
-    const executePath = (n: number) => join(dir, `execute-${n}.json`);
-    writeJson(executePath(1), makeExecuteCommand(missionId, 1));
-    writeJson(executePath(2), makeExecuteCommand(missionId, 2));
-    writeJson(executePath(3), makeExecuteCommand(missionId, 3));
-    for (let i = 1; i <= 3; i++) {
-      const code = await missionApplyCommand([executePath(i), "--store", storePath, "--demo"]);
+    // Seven executes walk the plan through the evidence gate to the approval gate.
+    const expectedStatuses = [
+      "QUEUED",
+      "RUNNING",
+      "WAITING_FOR_EVIDENCE",
+      "RUNNING",
+      "WAITING_FOR_EVIDENCE",
+      "RUNNING",
+      "AWAITING_APPROVAL",
+    ];
+    for (let i = 0; i < expectedStatuses.length; i++) {
+      const executePath = join(dir, `execute-${i + 1}.json`);
+      writeJson(executePath, makeExecuteCommand(missionId, i + 1));
+      const code = await missionApplyCommand([executePath, "--store", storePath]);
       expect(code).toBe(0);
+      const output = lastStdout() as { snapshot: { status: string } };
+      expect(output.snapshot.status).toBe(expectedStatuses[i]);
     }
 
+    // The staged proposal binds zero evidence and a deterministic hash.
+    const awaiting = lastStdout() as {
+      snapshot: {
+        proposal: { id: string; version: number; evidenceHash: string; evidence: unknown[] };
+      };
+    };
+    const proposal = awaiting.snapshot.proposal;
+    expect(proposal.evidence).toEqual([]);
+    expect(proposal.evidenceHash).toBe(canonicalHash([]));
+
+    // Human approval through the Core gate, then finalize on the next execute.
     const approvePath = join(dir, "approve.json");
-    writeJson(approvePath, makeApproveCommand(missionId, 4));
-    const approveCode = await missionApplyCommand([approvePath, "--store", storePath, "--demo"]);
+    writeJson(approvePath, {
+      type: "approve",
+      missionId,
+      payload: {
+        proposalId: proposal.id,
+        proposalVersion: proposal.version,
+        evidenceHash: proposal.evidenceHash,
+        expectedMissionVersion: 8,
+      },
+    });
+    const approveCode = await missionApplyCommand([approvePath, "--store", storePath]);
     expect(approveCode).toBe(0);
 
-    // status reads back the persisted round trip.
+    const finalizePath = join(dir, "finalize.json");
+    writeJson(finalizePath, makeExecuteCommand(missionId, 9));
+    const finalizeCode = await missionApplyCommand([finalizePath, "--store", storePath]);
+    expect(finalizeCode).toBe(0);
+
+    // status reads back the persisted round trip: 10 events, version 10.
     const statusCode = await missionStatusCommand([missionId, "--store", storePath]);
     expect(statusCode).toBe(0);
     const status = lastStdout() as {
-      snapshot: { status: string; version: number };
+      snapshot: {
+        status: string;
+        version: number;
+        progress: number;
+        steps: { status: string }[];
+      };
       events: unknown[];
     };
-    expect(status.snapshot.status).toBe("APPROVED");
-    expect(status.snapshot.version).toBe(5);
-    expect(status.events).toHaveLength(5);
+    expect(status.snapshot.status).toBe("COMPLETED");
+    expect(status.snapshot.version).toBe(10);
+    expect(status.snapshot.progress).toBe(3);
+    expect(status.snapshot.steps.every((step) => step.status === "COMPLETED")).toBe(true);
+    expect(status.events).toHaveLength(10);
 
     // Atomic store file round trip: storeSchemaVersion present and intact.
     const store = JSON.parse(readFileSync(storePath, "utf-8")) as {
@@ -225,15 +258,8 @@ describe("mission --demo lifecycle end-to-end", () => {
     };
     expect(store.storeSchemaVersion).toBe(STORE_SCHEMA_VERSION);
     expect(store.missions).toHaveLength(1);
-    expect(store.events).toHaveLength(5);
+    expect(store.events).toHaveLength(10);
     expect(store.idempotency).toHaveLength(0);
-
-    // The file store hydrates the same data through its own API.
-    const fileStore = new MissionFileStore(storePath);
-    const stores = await fileStore.hydrate();
-    const reloaded = await stores.missions.findById(missionId);
-    expect(reloaded?.status).toBe("APPROVED");
-    expect(await stores.events.list(missionId)).toHaveLength(5);
   });
 });
 

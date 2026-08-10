@@ -19,7 +19,7 @@ Drenyra AI works **standalone** — no Drenyra dependency — so ERPs, other acc
 - **Ledger** — append-only, verifiable, Ed25519-signed audit ledger core.
 - **Gates** — lifecycle gates validating authority, scope, and receipts before commit/push/PR/release.
 - **Approvals** — human approval as an explicit, recorded event, never implied.
-- **CLI + MCP** — `drenyra-ai` command surface and MCP server for multi-agent configuration.
+- **CLI** — `drenyra-ai` command surface for mission, receipt, ledger, candidate, and gate operations. (MCP server is roadmap, not implemented.)
 
 ## Explicit non-goals
 
@@ -49,7 +49,9 @@ Drenyra AI is **not**:
 
 ## Current state and maturity
 
-- Pre-alpha: contracts are draft; slices 1–3 (receipts/ledger, missions, candidates/review) are implemented; recovery and gates are planned.
+- All six contracts frozen and released; mission runtime, candidates/review, recovery, and gates implemented.
+- Hybrid orchestration added: `agents/` stages deterministic intent work; the Core lifecycle, gates, receipts, and human approval remain authoritative.
+- MCP server and external ERP/integration surfaces are roadmap, not implemented.
 - Consumers must wait for released versions — a checkout is never a dependency.
 
 ## Ownership and accountability
