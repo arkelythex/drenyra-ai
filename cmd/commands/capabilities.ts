@@ -12,65 +12,10 @@
  */
 
 import { createRequire } from "node:module";
-import { SkillRegistry, computeSkillChecksum } from "../../skills/index.js";
-import type { SkillDefinition } from "../../skills/index.js";
+import { SkillRegistry } from "../../skills/index.js";
+import { BASE_PE_SKILLS } from "../../skills/index.js";
 
 const require = createRequire(import.meta.url);
-
-/** Base Peruvian skills (Design 03 "Drenyra Skills" — Peru layer). */
-function basePeruvianSkills(): SkillDefinition[] {
-	const make = (
-		id: string,
-		version: string,
-		normativeSources: string[],
-		inputs: string[],
-		outputs: string[],
-		maxAutonomy: SkillDefinition["maxAutonomy"],
-	): SkillDefinition => {
-		const skill: SkillDefinition = {
-			id,
-			version,
-			jurisdiction: "PE",
-			validity: { from: "2026-01-01" },
-			normativeSources,
-			inputs,
-			outputs,
-			requiredPermissions: ["evidence:read"],
-			maxAutonomy,
-			contractCompatibility: ["candidate@0.1", "receipt@0.1"],
-			retirementPolicy: "superseded-by-next-major",
-			checksum: "",
-		};
-		skill.checksum = computeSkillChecksum(skill);
-		return skill;
-	};
-	return [
-		make(
-			"pe.igv-validate",
-			"1.0.0",
-			["TUO IGV — D.S. 055-99-EF"],
-			["invoice", "tax-period"],
-			["igv-validation"],
-			"R1",
-		),
-		make(
-			"pe.sire-compare",
-			"1.0.0",
-			["SUNAT SIRE — R.S. 085-2020/SUNAT"],
-			["sire-proposal", "ledger"],
-			["exceptions", "candidates"],
-			"R1",
-		),
-		make(
-			"pe.detraction-check",
-			"1.0.0",
-			["D.S. 155-98-EF (detracciones)"],
-			["operation", "period"],
-			["detraction-validation"],
-			"R1",
-		),
-	];
-}
 
 /** Runtime version from the package manifest. */
 function runtimeVersion(): string {
@@ -84,7 +29,7 @@ function runtimeVersion(): string {
 
 export function capabilitiesCommand(): number {
 	const registry = new SkillRegistry();
-	for (const skill of basePeruvianSkills()) {
+	for (const skill of BASE_PE_SKILLS) {
 		registry.register(skill);
 	}
 	const result = {
