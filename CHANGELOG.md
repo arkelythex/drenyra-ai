@@ -24,10 +24,10 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ### Added — brand-system contract (DRAFT)
 
-- **Brand-system contract** (`contracts/brand-system.md`, `contracts/brand-system/tokens.json`) — the single source of truth for the Drenyra ecosystem visual identity: canonical palette derived from the Command Center design tokens, derived-token derivation rules, the three canonical gradients, typography (Space Grotesk / Inter / Geist Mono), vector-vs-AI asset rules, and the AI image generation rules (palette-only, no critical text, C2PA provenance).
-- **Conformance checker** (`scripts/brand-conformance.mjs`) — zero-dependency verification: derived tokens re-derived byte-exact from base, SVG zero-tolerance color scan, built-in PNG decoder with even-spread sampling and palette-coverage gating. Wired into CI (`brand-conformance` job) and `bun run brand:conformance`.
-- **Conformance suite** (`contracts/__tests__/brand-conformance.test.ts`) — 7 tests pinning derivation, the banner, banned-drift rejection, structural SVG values, and PNG coverage.
-- **Banner migrated** — `docs/assets/brand/drenyra-ai-banner.svg` rebuilt on the canonical palette (the previous cyan/purple hero colors were off-system).
+- **Brand-system contract** (`contracts/brand-system.md`, `contracts/brand-system/tokens.json`) — the single source of truth for the Drenyra ecosystem visual identity, mirroring the apps/web DTCG token pipeline exactly: dark + light themes and the cyan/violet accent system, typography (Space Grotesk / Inter / Geist Mono), vector-vs-AI asset rules, and the AI image generation rules (palette-only, no critical text, C2PA provenance).
+- **Conformance checker** (`scripts/brand-conformance.mjs`) — zero-dependency verification: palette shape (both themes + both accents), SVG zero-tolerance scan that resolves `var(--…)` declarations from `<style>` blocks (dual-theme banners), built-in PNG decoder with even-spread sampling and palette-coverage gating. Wired into CI (`brand-conformance` job) and `bun run brand:conformance`.
+- **Conformance suite** (`contracts/__tests__/brand-conformance.test.ts`) — 8 tests pinning palette shape, the dual-theme banner, banned-legacy rejection, off-palette `var()` rejection, structural SVG values, and PNG coverage.
+- **Banner migrated** — `docs/assets/brand/drenyra-ai-banner.svg` rebuilt on the canonical cyan/violet palette with dual-theme rendering via `@media (prefers-color-scheme: light)` (the v0.1 blue palette is banned).
 
 ## 0.2.0 — 2026-08-02
 

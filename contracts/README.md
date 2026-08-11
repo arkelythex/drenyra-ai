@@ -22,7 +22,7 @@ Contracts are the **public surface** of Drenyra AI. They are transport-agnostic,
 | [gate](gate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, CI/CD |
 | [ledger](ledger.md) | 0.1 | FROZEN | Auditors, ERPs, Drenyra Pi |
 | [recovery](recovery.md) | 0.1 | FROZEN | Drenyra Pi, CLI |
-| [brand-system](brand-system.md) | 0.1 | DRAFT | Drenyra, Drenyra Pi, Drenyra Engram, Guardian Angel, docs |
+| [brand-system](brand-system.md) | 0.2 | DRAFT | Drenyra, Drenyra Pi, Drenyra Engram, Guardian Angel, docs |
 
 The receipt contract's normative shape — the JSON schemas and the frozen conformance vectors — lives in [receipt-schema](receipt-schema/README.md).
 

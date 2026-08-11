@@ -9,7 +9,7 @@
 <p>
 <a href="https://github.com/arkelythex/drenyra-ai/releases"><img src="https://img.shields.io/github/v/release/arkelythex/drenyra-ai" alt="Release"></a>
 <img src="https://img.shields.io/badge/License-Proprietary-red" alt="License: Proprietary">
-<img src="https://img.shields.io/badge/tests-639-green" alt="Tests: 639 passing">
+<img src="https://img.shields.io/badge/tests-640-green" alt="Tests: 640 passing">
 <img src="https://img.shields.io/badge/Node-22+-339933?logo=nodedotjs&logoColor=white" alt="Node 22+">
 <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey" alt="Platform">
 </p>
@@ -230,7 +230,7 @@ Contracts are the **public surface** of Drenyra AI: transport-agnostic, versione
 | [gate](contracts/gate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, CI/CD |
 | [ledger](contracts/ledger.md) | 0.1 | FROZEN | Auditors, ERPs, Drenyra Pi |
 | [recovery](contracts/recovery.md) | 0.1 | FROZEN | Drenyra Pi, CLI |
-| [brand-system](contracts/brand-system.md) | 0.1 | DRAFT | Drenyra, Drenyra Pi, Drenyra Engram, Guardian Angel, docs |
+| [brand-system](contracts/brand-system.md) | 0.2 | DRAFT | Drenyra, Drenyra Pi, Drenyra Engram, Guardian Angel, docs |
 
 **Contract requirements:** versioned · verifiable (canonical vectors + conformance suite) · scope-safe (RUC/company/period where fiscal context applies) · transport-agnostic (no HTTP/CLI/framework bindings) · backward-compatible by default (breaking changes require a major bump and a migration path).
 

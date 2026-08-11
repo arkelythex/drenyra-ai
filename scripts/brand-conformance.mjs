@@ -1,24 +1,25 @@
 #!/usr/bin/env node
 /**
- * brand-system conformance checker (contracts/brand-system.md, v0.1 DRAFT).
+ * brand-system conformance checker (contracts/brand-system.md, v0.2 DRAFT).
  *
- * Zero-dependency verifier for the Drenyra ecosystem brand system:
+ * Zero-dependency verifier for the Drenyra ecosystem brand system. The
+ * canonical palette mirrors the Drenyra apps/web DTCG token pipeline
+ * (tokens.dtcg.json -> generated tokens): class-based .dark/.light themes
+ * plus the cyan/violet accent system. No derived tokens are invented — every
+ * variant (hover/active/dim, text tiers, states) comes from the source.
  *
- *   1. DERIVATION — recomputes every derived token from base tokens via
- *      mix(base, target, ratio) with Math.round per channel and fails on any
- *      byte drift vs contracts/brand-system/tokens.json. Hand-edited derived
- *      values are contract violations.
+ *   1. PALETTE — both themes (dark + light) and both accents must be present
+ *      in contracts/brand-system/tokens.json with valid hex values; the
+ *      conformance set is the union of themes + accents + #ffffff + #000000.
  *
  *   2. VECTORS (SVG) — zero tolerance: every fill/stroke/stop-color/color
- *      attribute must be a canonical color (base + derived + #ffffff +
- *      #000000) or a structural value (none, currentColor, inherit,
- *      url(#...)). Anything else is unverifiable and fails closed.
+ *      attribute must be in the conformance set or a structural value (none,
+ *      currentColor, inherit, url(#...)). Anything else fails closed.
  *
  *   3. RASTER (PNG) — built-in minimal PNG decoder (8-bit RGB/RGBA, filters
- *      0-4, node:zlib). Samples pixels and requires at least coverageRequired
- *      of sampled pixels to fall within tolerancePerChannel of a canonical
- *      color. Reports the dominant off-palette colors so the asset can be
- *      regenerated with a corrected prompt.
+ *      0-4, node:zlib) with even-spread sampling; at least coverageRequired
+ *      of sampled pixels must fall within tolerancePerChannel of a canonical
+ *      color. Reports the dominant off-palette colors for prompt correction.
  *
  * Usage:
  *   node scripts/brand-conformance.mjs                 # scan docs/assets/brand/**
@@ -38,38 +39,41 @@ const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const TOKENS_PATH = join(ROOT, "contracts", "brand-system", "tokens.json");
 const DEFAULT_ASSET_DIR = join(ROOT, "docs", "assets", "brand");
 
-const WHITE = [255, 255, 255];
-const BLACK = [0, 0, 0];
-const PNG_SIGNATURE = Buffer.from([
-	0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
-]);
-
-/** mix(base, target, ratio) with Math.round per channel. target is a hex string or an RGB array. */
-function mix(baseHex, target, ratio) {
-	const b = hexToRgb(baseHex);
-	const t = Array.isArray(target) ? target : hexToRgb(target);
-	const out = b.map((v, i) => Math.round(v + (t[i] - v) * ratio));
-	return rgbToHex(out);
-}
+const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const REQUIRED_THEMES = ["dark", "light"];
+const REQUIRED_ACCENTS = ["cyan", "violet"];
+const REQUIRED_TOKEN_KEYS = [
+	"canvas",
+	"surface",
+	"surface-2",
+	"overlay",
+	"border-subtle",
+	"border-default",
+	"text-primary",
+	"text-secondary",
+	"text-tertiary",
+	"text-disabled",
+	"state-success",
+	"state-warning",
+	"state-error",
+	"state-pending",
+];
+const REQUIRED_ACCENT_KEYS = ["base", "hover", "active", "dim"];
 
 function hexToRgb(hex) {
 	const h = hex.replace("#", "");
 	if (h.length === 3) return [0, 1, 2].map((i) => parseInt(h[i] + h[i], 16));
-	if (h.length === 6)
-		return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+	if (h.length === 6) return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
 	throw new Error(`invalid hex: ${hex}`);
 }
 
 function rgbToHex([r, g, b]) {
-	return (
-		"#" +
-		[r, g, b]
-			.map((v) => Math.min(255, Math.max(0, v)).toString(16).padStart(2, "0"))
-			.join("")
-	);
+	return "#" + [r, g, b].map((v) => Math.min(255, Math.max(0, v)).toString(16).padStart(2, "0")).join("");
 }
 
-/** Load tokens and verify derived tokens re-derive byte-exact from base. */
+const HEX_RE = /^#[0-9a-f]{6}$/i;
+
+/** Load tokens, validate the palette shape, and build the conformance set. */
 function loadTokens() {
 	let raw;
 	try {
@@ -78,34 +82,47 @@ function loadTokens() {
 		console.error(`brand-system: cannot read ${TOKENS_PATH}: ${err.message}`);
 		process.exit(1);
 	}
-	const { base, derived } = raw;
-	const derivedRules = {
-		"primary-light": [base.primary, WHITE, 0.3],
-		"primary-dark": [base.primary, BLACK, 0.2],
-		"secondary-light": [base.secondary, WHITE, 0.25],
-		"success-light": [base.success, WHITE, 0.2],
-		"warning-light": [base.warning, WHITE, 0.2],
-		"surface-1": [base.background, WHITE, 0.04],
-		"surface-2": [base.background, WHITE, 0.08],
-		"surface-3": [base.background, WHITE, 0.12],
-		"muted-foreground-light": [base["muted-foreground"], WHITE, 0.25],
-	};
-	const violations = [];
-	for (const [name, [baseHex, target, ratio]] of Object.entries(derivedRules)) {
-		const computed = mix(baseHex, target, ratio);
-		const declared = derived[name];
-		if (computed.toLowerCase() !== declared.toLowerCase()) {
-			violations.push(`${name}: declared ${declared}, derived ${computed}`);
+	const problems = [];
+	if (raw.version !== "0.2") problems.push(`version must be 0.2, got ${raw.version}`);
+	for (const theme of REQUIRED_THEMES) {
+		if (!raw.themes?.[theme]) {
+			problems.push(`missing theme: ${theme}`);
+			continue;
+		}
+		for (const key of REQUIRED_TOKEN_KEYS) {
+			const v = raw.themes[theme][key];
+			if (typeof v !== "string" || !HEX_RE.test(v)) {
+				problems.push(`theme ${theme}: ${key} must be a #rrggbb hex, got ${v}`);
+			}
+		}
+	}
+	for (const accent of REQUIRED_ACCENTS) {
+		if (!raw.accents?.[accent]) {
+			problems.push(`missing accent: ${accent}`);
+			continue;
+		}
+		for (const key of REQUIRED_ACCENT_KEYS) {
+			const v = raw.accents[accent][key];
+			if (typeof v !== "string" || !HEX_RE.test(v)) {
+				problems.push(`accent ${accent}: ${key} must be a #rrggbb hex, got ${v}`);
+			}
 		}
 	}
 	const canonical = new Set();
-	for (const v of Object.values(base)) canonical.add(v.toLowerCase());
-	for (const v of Object.values(derived)) canonical.add(v.toLowerCase());
+	const collect = (obj) => {
+		for (const v of Object.values(obj)) {
+			if (typeof v === "string" && HEX_RE.test(v)) canonical.add(v.toLowerCase());
+		}
+	};
+	collect(raw.themes?.dark ?? {});
+	collect(raw.themes?.light ?? {});
+	collect(raw.accents?.cyan ?? {});
+	collect(raw.accents?.violet ?? {});
 	canonical.add("#ffffff");
 	canonical.add("#000000");
 	return {
 		tokens: raw,
-		derivedViolations: violations,
+		paletteProblems: problems,
 		canonical,
 		tolerancePerChannel: raw.aiImage.tolerancePerChannel,
 		coverageRequired: raw.aiImage.coverageRequired,
@@ -114,18 +131,55 @@ function loadTokens() {
 
 const STRUCTURAL_SVG = /^(none|currentColor|inherit|url\(#[^)]*\))$/i;
 const HEX_VALUE = /^#[0-9a-f]{3,8}$/i;
-const ATTR_RE =
-	/(?:fill|stroke|stop-color|color)\s*=\s*("([^"]*)"|'([^']*)')/gi;
+const ATTR_RE = /(?:fill|stroke|stop-color|color)\s*=\s*("([^"]*)"|'([^']*)')/gi;
+const CSS_VAR_RE = /--([a-zA-Z0-9-]+)\s*:\s*(#[0-9a-fA-F]{6})/g;
+const VAR_REF_RE = /^var\(--([a-zA-Z0-9-]+)\)$/;
 
-/** Zero-tolerance SVG scan: returns offending/unverifiable attribute values. */
+/**
+ * Collect CSS custom-property declarations (hex values) from <style> blocks,
+ * including per-theme overrides inside @media (prefers-color-scheme) blocks.
+ * Returns a map of var name -> set of every declared hex (all must be canonical).
+ */
+function collectCssVars(source) {
+	const vars = new Map();
+	for (const m of source.matchAll(CSS_VAR_RE)) {
+		const name = m[1];
+		const hex = m[2].toLowerCase();
+		if (!vars.has(name)) vars.set(name, new Set());
+		vars.get(name).add(hex);
+	}
+	return vars;
+}
+
+/** Zero-tolerance SVG scan: resolves var() references, returns off-palette values. */
 function checkSvg(file) {
 	const source = readFileSync(file, "utf8");
+	const cssVars = collectCssVars(source);
 	const problems = [];
+	// Every hex declared in <style> (all themes) must be canonical, whether
+	// referenced by an attribute or applied via CSS class (gradient stops).
+	for (const [name, declared] of cssVars) {
+		for (const hex of declared) {
+			if (!tokens.canonical.has(hex)) problems.push(`var(--${name}) -> ${hex}`);
+		}
+	}
 	for (const m of source.matchAll(ATTR_RE)) {
 		const attr = (m[2] ?? m[3]).trim();
 		if (STRUCTURAL_SVG.test(attr)) continue;
 		if (HEX_VALUE.test(attr)) {
 			if (!tokens.canonical.has(attr.toLowerCase())) problems.push(attr);
+			continue;
+		}
+		const varMatch = attr.match(VAR_REF_RE);
+		if (varMatch) {
+			const declared = cssVars.get(varMatch[1]);
+			if (!declared) {
+				problems.push(`unknown css variable: ${attr}`);
+				continue;
+			}
+			for (const hex of declared) {
+				if (!tokens.canonical.has(hex)) problems.push(`${attr} -> ${hex}`);
+			}
 			continue;
 		}
 		problems.push(`unverifiable attribute: ${attr}`);
@@ -139,8 +193,7 @@ function checkSvg(file) {
  */
 function decodePngSamples(file, sampleCap = 2000) {
 	const buf = readFileSync(file);
-	if (buf.length < 33 || !buf.subarray(0, 8).equals(PNG_SIGNATURE))
-		throw new Error("not a PNG");
+	if (buf.length < 33 || !buf.subarray(0, 8).equals(PNG_SIGNATURE)) throw new Error("not a PNG");
 	let offset = 8;
 	let width = 0;
 	let height = 0;
@@ -157,9 +210,7 @@ function decodePngSamples(file, sampleCap = 2000) {
 			bitDepth = data[8];
 			colorType = data[9];
 			if (data[10] !== 0 || data[11] !== 0 || data[12] !== 0) {
-				throw new Error(
-					`unsupported PNG encoding (compression ${data[10]}, filter ${data[11]}, interlace ${data[12]})`,
-				);
+				throw new Error(`unsupported PNG encoding (compression ${data[10]}, filter ${data[11]}, interlace ${data[12]})`);
 			}
 		} else if (type === "IDAT") {
 			idat.push(data);
@@ -170,26 +221,18 @@ function decodePngSamples(file, sampleCap = 2000) {
 	}
 	if (!width || !height) throw new Error("PNG missing IHDR");
 	if (bitDepth !== 8 || (colorType !== 2 && colorType !== 6)) {
-		throw new Error(
-			`unsupported PNG format: bitDepth ${bitDepth}, colorType ${colorType}`,
-		);
+		throw new Error(`unsupported PNG format: bitDepth ${bitDepth}, colorType ${colorType}`);
 	}
 	const channels = colorType === 6 ? 4 : 3;
 	const bpp = channels;
-	// Evenly-spread sampling grid (uniform across rows and columns, not just the
-	// first rows): representative coverage for wide/tall banners.
+	// Evenly-spread sampling grid: representative coverage for wide/tall banners.
 	const targetSamples = Math.min(sampleCap, width * height);
-	const xSamples = Math.max(
-		1,
-		Math.round(Math.sqrt((targetSamples * width) / height)),
-	);
+	const xSamples = Math.max(1, Math.round(Math.sqrt((targetSamples * width) / height)));
 	const ySamples = Math.max(1, Math.round(targetSamples / xSamples));
 	const sampledYs = new Set();
-	for (let yi = 0; yi < ySamples; yi++)
-		sampledYs.add(Math.min(height - 1, Math.floor((yi * height) / ySamples)));
+	for (let yi = 0; yi < ySamples; yi++) sampledYs.add(Math.min(height - 1, Math.floor((yi * height) / ySamples)));
 	const xPositions = [];
-	for (let xi = 0; xi < xSamples; xi++)
-		xPositions.push(Math.min(width - 1, Math.floor((xi * width) / xSamples)));
+	for (let xi = 0; xi < xSamples; xi++) xPositions.push(Math.min(width - 1, Math.floor((xi * width) / xSamples)));
 	const raw = zlib.inflateSync(Buffer.concat(idat));
 	const stride = width * channels;
 	const out = [];
@@ -306,13 +349,13 @@ function checkAsset(file) {
 export function runConformance(extraPaths = [], { json = false } = {}) {
 	const results = [];
 	for (const file of collectAssets(extraPaths)) results.push(checkAsset(file));
-	const derivationPass = tokens.derivedViolations.length === 0;
-	const allPass = derivationPass && results.every((r) => r.pass);
+	const palettePass = tokens.paletteProblems.length === 0;
+	const allPass = palettePass && results.every((r) => r.pass);
 	const report = {
 		contract: "brand-system",
 		version: tokens.tokens.version,
 		status: tokens.tokens.status,
-		derivation: { pass: derivationPass, violations: tokens.derivedViolations },
+		palette: { pass: palettePass, problems: tokens.paletteProblems },
 		assets: results.map((r) => ({
 			file: r.file.replace(ROOT + "/", ""),
 			pass: r.pass,
@@ -327,9 +370,9 @@ export function runConformance(extraPaths = [], { json = false } = {}) {
 			`brand-system v${tokens.tokens.version} (${tokens.tokens.status}) conformance\n`,
 		);
 		process.stdout.write(
-			derivationPass
-				? "✓ derivation: all derived tokens byte-exact from base\n"
-				: `✗ derivation: ${tokens.derivedViolations.join("; ")}\n`,
+			palettePass
+				? "✓ palette: dark + light themes, cyan + violet accents, all tokens hex-valid\n"
+				: `✗ palette: ${tokens.paletteProblems.join("; ")}\n`,
 		);
 		for (const r of results) {
 			if (r.pass) {
@@ -340,9 +383,7 @@ export function runConformance(extraPaths = [], { json = false } = {}) {
 				const detail = Array.isArray(r.detail)
 					? r.detail.join("; ")
 					: `coverage ${r.detail.coverage.toFixed(2)} < ${r.detail.required} · off-palette: ${r.detail.offPalette.join(", ")}`;
-				process.stdout.write(
-					`✗ ${r.file.replace(ROOT + "/", "")} — ${detail}\n`,
-				);
+				process.stdout.write(`✗ ${r.file.replace(ROOT + "/", "")} — ${detail}\n`);
 			}
 		}
 		process.stdout.write(allPass ? "PASS\n" : "FAIL\n");

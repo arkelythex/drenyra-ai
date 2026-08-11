@@ -1,34 +1,47 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Drenyra brand-system tokens",
-  "description": "Canonical token vectors for contracts/brand-system.md (v0.1 DRAFT). Base tokens come from the Command Center design tokens; derived tokens must re-derive byte-exact via mix(base, target, ratio).",
+  "description": "Canonical token vectors for contracts/brand-system.md (v0.2 DRAFT). Mirrors the Drenyra apps/web DTCG token pipeline exactly: class-based .dark/.light themes with cyan/violet accents.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "version",
     "status",
     "source",
-    "derivation",
-    "base",
-    "derived",
+    "themes",
+    "accents",
     "gradients",
     "typography",
     "radius",
     "aiImage"
   ],
   "properties": {
-    "$schema": { "type": "string" },
-    "version": { "type": "string", "const": "0.1" },
+    "version": { "type": "string", "const": "0.2" },
     "status": { "type": "string", "const": "DRAFT" },
     "source": { "type": "string" },
-    "derivation": { "type": "string" },
-    "base": { "$ref": "#/definitions/tokenMap" },
-    "derived": { "$ref": "#/definitions/tokenMap" },
+    "themes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dark", "light"],
+      "properties": {
+        "dark": { "$ref": "#/definitions/theme" },
+        "light": { "$ref": "#/definitions/theme" }
+      }
+    },
+    "accents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cyan", "violet"],
+      "properties": {
+        "cyan": { "$ref": "#/definitions/accent" },
+        "violet": { "$ref": "#/definitions/accent" }
+      }
+    },
     "gradients": {
       "type": "object",
       "additionalProperties": {
         "type": "array",
-        "items": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "items": { "type": "string", "pattern": "^[a-zA-Z0-9.-]+$" },
         "minItems": 2
       }
     },
@@ -63,9 +76,14 @@
     }
   },
   "definitions": {
-    "tokenMap": {
+    "hexColor": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+    "theme": {
       "type": "object",
-      "additionalProperties": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" }
+      "additionalProperties": { "$ref": "#/definitions/hexColor" }
+    },
+    "accent": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/hexColor" }
     }
   }
 }
