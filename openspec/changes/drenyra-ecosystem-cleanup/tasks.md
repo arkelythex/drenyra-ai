@@ -38,8 +38,8 @@ Notes:
 
 **Atomic unit: none (no commit — evidence only)**
 
-- [ ] Capture `git status --porcelain` and `git diff --name-only` for each touched repo (drenyra-ai, drenyra-pi, drenyra-skills, drenyra-guardian-angel) BEFORE any edit, to serve as the integrity baseline. Verify the three protected drenyra-pi files are clean at baseline. <!-- sdd-owner: implementation -->
-- [ ] Confirm `bun` is available and that `drenyra-ai/package.json` and `drenyra-pi/package.json` both run `bun run typecheck` and `bun run test`. <!-- sdd-owner: implementation -->
+- [x] Capture `git status --porcelain` and `git diff --name-only` for each touched repo (drenyra-ai, drenyra-pi, drenyra-skills, drenyra-guardian-angel) BEFORE any edit, to serve as the integrity baseline. Verify the three protected drenyra-pi files are clean at baseline. <!-- sdd-owner: implementation -->
+- [x] Confirm `bun` is available and that `drenyra-ai/package.json` and `drenyra-pi/package.json` both run `bun run typecheck` and `bun run test`. <!-- sdd-owner: implementation -->
 
 ---
 
@@ -51,9 +51,9 @@ Notes:
 
 **Files:** `drenyra-ai/flow/close.ts`, `drenyra-ai/candidates/types.ts` (reference only — must NOT change), `drenyra-ai/flow/__tests__/close.test.ts` (must pass unchanged).
 
-- [ ] In `flow/close.ts`, add `isValidRuc` and `isValidPeriod` to the existing `import ... from "../candidates/types.js"` line (the same module already imports `Candidate`, `MaterialityInput`, `Reversibility` as types). Keep `guardian/guardian.ts`'s import surface identical. <!-- sdd-owner: implementation -->
-- [ ] Remove the local `const RUC_RE = /^\d{11}$/;` and `const PERIOD_RE = /^\d{6}$/;` declarations (currently `flow/close.ts:78-79`). Replace `RUC_RE.test(scope.ruc)` with `isValidRuc(scope.ruc)` and `PERIOD_RE.test(scope.period)` with `isValidPeriod(scope.period)` inside `runMonthlyClose` preflight. Keep the exact `fail(...)` messages `invalid RUC "…" (must be 11 digits)` and `invalid fiscal period "…" (must be YYYYMM)`. <!-- sdd-owner: implementation -->
-- [ ] VERIFY: `grep -rn "RUC_RE\|PERIOD_RE" flow/close.ts` returns zero matches; `git diff candidates/types.ts` is empty (export surface byte-identical); `bun run typecheck` and `bun run test` pass in `drenyra-ai` (specifically `flow/__tests__/close.test.ts` still asserts `preflight-failed` with `invalid RUC` / `invalid fiscal period`). <!-- sdd-owner: implementation -->
+- [x] In `flow/close.ts`, add `isValidRuc` and `isValidPeriod` to the existing `import ... from "../candidates/types.js"` line (the same module already imports `Candidate`, `MaterialityInput`, `Reversibility` as types). Keep `guardian/guardian.ts`'s import surface identical. <!-- sdd-owner: implementation -->
+- [x] Remove the local `const RUC_RE = /^\d{11}$/;` and `const PERIOD_RE = /^\d{6}$/;` declarations (currently `flow/close.ts:78-79`). Replace `RUC_RE.test(scope.ruc)` with `isValidRuc(scope.ruc)` and `PERIOD_RE.test(scope.period)` with `isValidPeriod(scope.period)` inside `runMonthlyClose` preflight. Keep the exact `fail(...)` messages `invalid RUC "…" (must be 11 digits)` and `invalid fiscal period "…" (must be YYYYMM)`. <!-- sdd-owner: implementation -->
+- [x] VERIFY: `grep -rn "RUC_RE\|PERIOD_RE" flow/close.ts` returns zero matches; `git diff candidates/types.ts` is empty (export surface byte-identical); `bun run typecheck` and `bun run test` pass in `drenyra-ai` (specifically `flow/__tests__/close.test.ts` still asserts `preflight-failed` with `invalid RUC` / `invalid fiscal period`). <!-- sdd-owner: implementation -->
 
 ### UNIT-B — contracts/README.md brand-system version note
 
@@ -61,8 +61,8 @@ Notes:
 
 **Files:** `drenyra-ai/contracts/README.md` only.
 
-- [ ] In the first `[!IMPORTANT]` block of `contracts/README.md`, change `` `brand-system` is DRAFT at v0.1 `` → `` `brand-system` is DRAFT at v0.2 ``. Do NOT touch the contract table, any other prose, `contracts/brand-system.md`, or any contract file. <!-- sdd-owner: implementation -->
-- [ ] VERIFY: `grep -n "brand-system is DRAFT" contracts/README.md` shows `v0.2`; `cat contracts/brand-system/tokens.json` reports `"version": "0.2"`; `git diff --stat` touches only `contracts/README.md`. <!-- sdd-owner: implementation -->
+- [x] In the first `[!IMPORTANT]` block of `contracts/README.md`, change `` `brand-system` is DRAFT at v0.1 `` → `` `brand-system` is DRAFT at v0.2 ``. Do NOT touch the contract table, any other prose, `contracts/brand-system.md`, or any contract file. <!-- sdd-owner: implementation -->
+- [x] VERIFY: `grep -n "brand-system is DRAFT" contracts/README.md` shows `v0.2`; `cat contracts/brand-system/tokens.json` reports `"version": "0.2"`; `git diff --stat` touches only `contracts/README.md`. <!-- sdd-owner: implementation -->
 
 ### UNIT-C — nanoid override remediation
 
@@ -70,8 +70,8 @@ Notes:
 
 **Files:** `drenyra-ai/package.json`, `drenyra-ai/bun.lock`.
 
-- [ ] Add a root-level `"overrides": { "nanoid": ">=3.3.17" }` block to `drenyra-ai/package.json`. Do NOT change any direct dependency range. Then run `bun install` in `drenyra-ai` to regenerate `bun.lock`. <!-- sdd-owner: implementation -->
-- [ ] VERIFY: `git diff package.json` shows ONLY the added `overrides` block; `git diff --stat bun.lock` is minimal (only the `nanoid` resolution change, current 3.x resolves to `3.3.18`, plus any resolution necessarily forced by it); `grep -n "nanoid" bun.lock` shows every resolution `>= 3.3.17` and no `3.3.16`/lower; `bun run typecheck` and `bun run test` pass. Record the lockfile churn justification in the change record if any unexpected line changed. <!-- sdd-owner: implementation -->
+- [x] Add a root-level `"overrides": { "nanoid": ">=3.3.17" }` block to `drenyra-ai/package.json`. Do NOT change any direct dependency range. Then run `bun install` in `drenyra-ai` to regenerate `bun.lock`. <!-- sdd-owner: implementation -->
+- [x] VERIFY: `git diff package.json` shows ONLY the added `overrides` block; `git diff --stat bun.lock` is minimal (only the `nanoid` resolution change, current 3.x resolves to `3.3.18`, plus any resolution necessarily forced by it); `grep -n "nanoid" bun.lock` shows every resolution `>= 3.3.17` and no `3.3.16`/lower; `bun run typecheck` and `bun run test` pass. Record the lockfile churn justification in the change record if any unexpected line changed. <!-- sdd-owner: implementation -->
 
 ---
 
@@ -97,7 +97,7 @@ export function eachNdjsonLine(raw: string, onLine: (line: string) => void, spli
 
 Preserves every per-site difference through parameters/labels — the helper does NOT standardize away split, throw-vs-empty, or message text.
 
-- [ ] Create `drenyra-pi/lib/parse.ts` implementing `parseJsonOrThrow` (throws `Error(label)` when `includeMessage` is false; `Error(`${label} — ${e.message}`)` when true) and `eachNdjsonLine` (skips blank/whitespace lines). <!-- sdd-owner: implementation -->
+- [x] Create `drenyra-pi/lib/parse.ts` implementing `parseJsonOrThrow` (throws `Error(label)` when `includeMessage` is false; `Error(`${label} — ${e.message}`)` when true) and `eachNdjsonLine` (skips blank/whitespace lines). <!-- sdd-owner: implementation -->
 
 #### Per-site migration mapping (each `implementation` task runs the pi suite after editing its files)
 
@@ -113,16 +113,16 @@ Preserves every per-site difference through parameters/labels — the helper doe
 | `chains/reconcile.ts` (`parseReconcileManifest`) | single JSON string | n/a | throw | `reconcile: the source manifest is not valid JSON — ${e.message}` (includeMessage=true) |
 | `chains/monthly-close.ts` (evidence graph read) | NDJSON line | `/\r?\n/` | return empty (`[]`) | no throw — graph treated as unavailable |
 
-- [ ] Migrate `lib/mission-store.ts` to use the helper for both its single-doc parse (`parseJsonFile`) and its NDJSON line sites (`readEventLine` and `list`). Preserve the unreadable-file throw and the `mission store corrupt`/`mission event log corrupt` labels and the `\n` split. <!-- sdd-owner: implementation -->
-- [ ] Migrate `lib/authority-store.ts` `readRecords` to use the helper with `\n` split and the `authority log corrupt` label. Preserve the separate non-object/truncated-record throw. <!-- sdd-owner: implementation -->
-- [ ] Migrate `lib/receipt-store.ts` `parseRecordFile` to use the helper (single doc, `receipt store corrupt` label, no raw message appended). Preserve the unreadable-file throw and the validation throw. <!-- sdd-owner: implementation -->
-- [ ] Migrate `lib/evidence-graph.ts` `load` to use the helper with `\n` split and the `evidence log corrupt` label. Preserve the non-object and cross-mission throws. <!-- sdd-owner: implementation -->
-- [ ] Migrate `chains/verify.ts` `parseVerifyInput` to use the helper with `includeMessage: true` and label `verify: the source manifest is not valid JSON`. <!-- sdd-owner: implementation -->
-- [ ] Migrate `chains/evidence.ts` op-envelope parse to use the helper with `includeMessage: true` and label `evidence: the op envelope is not valid JSON`. <!-- sdd-owner: implementation -->
-- [ ] Migrate `chains/reconcile.ts` `parseReconcileManifest` to use the helper with `includeMessage: true` and label `reconcile: the source manifest is not valid JSON`. <!-- sdd-owner: implementation -->
-- [ ] Migrate `chains/monthly-close.ts` evidence-graph read to use `eachNdjsonLine` with `/\r?\n/` split, keeping the try/catch that returns `[]` (empty node list) on any corrupt line (graph unavailable). <!-- sdd-owner: implementation -->
+- [x] Migrate `lib/mission-store.ts` to use the helper for both its single-doc parse (`parseJsonFile`) and its NDJSON line sites (`readEventLine` and `list`). Preserve the unreadable-file throw and the `mission store corrupt`/`mission event log corrupt` labels and the `\n` split. <!-- sdd-owner: implementation -->
+- [x] Migrate `lib/authority-store.ts` `readRecords` to use the helper with `\n` split and the `authority log corrupt` label. Preserve the separate non-object/truncated-record throw. <!-- sdd-owner: implementation -->
+- [x] Migrate `lib/receipt-store.ts` `parseRecordFile` to use the helper (single doc, `receipt store corrupt` label, no raw message appended). Preserve the unreadable-file throw and the validation throw. <!-- sdd-owner: implementation -->
+- [x] Migrate `lib/evidence-graph.ts` `load` to use the helper with `\n` split and the `evidence log corrupt` label. Preserve the non-object and cross-mission throws. <!-- sdd-owner: implementation -->
+- [x] Migrate `chains/verify.ts` `parseVerifyInput` to use the helper with `includeMessage: true` and label `verify: the source manifest is not valid JSON`. <!-- sdd-owner: implementation -->
+- [x] Migrate `chains/evidence.ts` op-envelope parse to use the helper with `includeMessage: true` and label `evidence: the op envelope is not valid JSON`. <!-- sdd-owner: implementation -->
+- [x] Migrate `chains/reconcile.ts` `parseReconcileManifest` to use the helper with `includeMessage: true` and label `reconcile: the source manifest is not valid JSON`. <!-- sdd-owner: implementation -->
+- [x] Migrate `chains/monthly-close.ts` evidence-graph read to use `eachNdjsonLine` with `/\r?\n/` split, keeping the try/catch that returns `[]` (empty node list) on any corrupt line (graph unavailable). <!-- sdd-owner: implementation -->
 
-- [ ] VERIFY (UNIT-E): `bun run typecheck` and `bun run test` pass in `drenyra-pi`; `grep -rn "JSON.parse" lib/ chains/` shows no duplicated inline parse-helper body outside `lib/parse.ts`; the three protected files show zero modification in `git status --porcelain` and `git diff --name-only` vs the Phase 0 baseline. <!-- sdd-owner: implementation -->
+- [x] VERIFY (UNIT-E): `bun run typecheck` and `bun run test` pass in `drenyra-pi`; `grep -rn "JSON.parse" lib/ chains/` shows no duplicated inline parse-helper body outside `lib/parse.ts`; the three protected files show zero modification in `git status --porcelain` and `git diff --name-only` vs the Phase 0 baseline. *Caveat: `lib/trusted-key-registry.ts` retains one duplicated single-doc parse body (same pattern) but is outside the enumerated 8-module scope — surfaced for parent decision.* <!-- sdd-owner: implementation -->
 
 ### UNIT-D-pi — Portable BRAND.md
 
@@ -130,7 +130,7 @@ Preserves every per-site difference through parameters/labels — the helper doe
 
 **Files:** `drenyra-pi/assets/branding/BRAND.md`
 
-- [ ] In the `## Validate` block, replace the absolute path
+- [x] In the `## Validate` block, replace the absolute path
 
   ```
   node /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/scripts/brand-conformance.mjs \
@@ -143,7 +143,7 @@ Preserves every per-site difference through parameters/labels — the helper doe
   ```
 
   Keep the rest of the command (`assets/branding/drenyra-pi-banner.png`) unchanged. Optionally document the sibling-checkout convention in the same file if not already present. <!-- sdd-owner: implementation -->
-- [ ] VERIFY: `grep -n "/home/\|/PROYECTOS/" assets/branding/BRAND.md` returns zero matches in drenyra-pi. <!-- sdd-owner: implementation -->
+- [x] VERIFY: `grep -n "/home/\|/PROYECTOS/" assets/branding/BRAND.md` returns zero matches in drenyra-pi. <!-- sdd-owner: implementation -->
 
 ---
 
@@ -151,8 +151,8 @@ Preserves every per-site difference through parameters/labels — the helper doe
 
 **Commit message:** `docs(branding): use sibling-relative brand-conformance path in BRAND.md`
 
-- [ ] In `drenyra-skills/assets/branding/BRAND.md`, replace the absolute path `node /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/scripts/brand-conformance.mjs \` with `node ../drenyra-ai/scripts/brand-conformance.mjs \` (target stays `assets/branding/drenyra-skills-banner.png`). <!-- sdd-owner: implementation -->
-- [ ] VERIFY: `grep -n "/home/\|/PROYECTOS/" assets/branding/BRAND.md` returns zero matches in drenyra-skills. <!-- sdd-owner: implementation -->
+- [x] In `drenyra-skills/assets/branding/BRAND.md`, replace the absolute path `node /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/scripts/brand-conformance.mjs \` with `node ../drenyra-ai/scripts/brand-conformance.mjs \` (target stays `assets/branding/drenyra-skills-banner.png`). <!-- sdd-owner: implementation -->
+- [x] VERIFY: `grep -n "/home/\|/PROYECTOS/" assets/branding/BRAND.md` returns zero matches in drenyra-skills. <!-- sdd-owner: implementation -->
 
 ---
 
@@ -160,8 +160,8 @@ Preserves every per-site difference through parameters/labels — the helper doe
 
 **Commit message:** `docs(branding): use sibling-relative brand-conformance path in BRAND.md`
 
-- [ ] In `drenyra-guardian-angel/assets/branding/BRAND.md`, replace the absolute path `node /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/scripts/brand-conformance.mjs \` with `node ../drenyra-ai/scripts/brand-conformance.mjs \` (target stays `assets/branding/drenyra-guardian-angel-banner.png`). <!-- sdd-owner: implementation -->
-- [ ] VERIFY: `grep -n "/home/\|/PROYECTOS/" assets/branding/BRAND.md` returns zero matches in drenyra-guardian-angel. <!-- sdd-owner: implementation -->
+- [x] In `drenyra-guardian-angel/assets/branding/BRAND.md`, replace the absolute path `node /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/scripts/brand-conformance.mjs \` with `node ../drenyra-ai/scripts/brand-conformance.mjs \` (target stays `assets/branding/drenyra-guardian-angel-banner.png`). <!-- sdd-owner: implementation -->
+- [x] VERIFY: `grep -n "/home/\|/PROYECTOS/" assets/branding/BRAND.md` returns zero matches in drenyra-guardian-angel. <!-- sdd-owner: implementation -->
 
 ---
 
@@ -169,7 +169,7 @@ Preserves every per-site difference through parameters/labels — the helper doe
 
 **Atomic unit: none (no commit — evidence only)**
 
-- [ ] In every touched repo, run `git status --porcelain` and `git diff --name-only` again and compare against the Phase 0 baseline. Confirm: no path under `drenyra-command-center` appears in any commit set; the three protected drenyra-pi files remain untouched; the only diffs are the intended UNIT-A…UNIT-D changes. <!-- sdd-owner: implementation -->
+- [x] In every touched repo, run `git status --porcelain` and `git diff --name-only` again and compare against the Phase 0 baseline. Confirm: no path under `drenyra-command-center` appears in any commit set; the three protected drenyra-pi files remain untouched; the only diffs are the intended UNIT-A…UNIT-D changes. <!-- sdd-owner: implementation -->
 
 ---
 
