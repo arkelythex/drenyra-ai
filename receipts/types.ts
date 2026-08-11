@@ -2,7 +2,7 @@
  * Receipt domain types — the canonical payload, the signed bundle, and the
  * trusted-key vocabulary.
  *
- * Ported verbatim from arkelythex/Drenyra `packages/mission-domain/src/mission-receipt.ts`
+ * Ported verbatim from arkelythex/drenyra-command-center `packages/mission-domain/src/mission-receipt.ts`
  * (types) and `packages/mission-domain/src/mission-contracts.ts` (EvidenceItem).
  * The `ReceiptType` union replaces the `@drenyra/mission-protocol` enum with the
  * exact same literal values so this package has ZERO workspace dependencies.

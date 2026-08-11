@@ -2,7 +2,7 @@
  * Receipt unit tests — canonical hash determinism, integrity tamper detection,
  * signature validity, and the trusted key lifecycle.
  *
- * Ported from arkelythex/Drenyra `packages/mission-domain/src/__tests__/mission-receipt*.test.ts`
+ * Ported from arkelythex/drenyra-command-center `packages/mission-domain/src/__tests__/mission-receipt*.test.ts`
  * against the local, dependency-free port. Fiscal convention: money is BigInt
  * cents; no float is used for money anywhere in drenyra-ai.
  */

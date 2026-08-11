@@ -1,7 +1,7 @@
 /**
  * Canonical serialization — the byte contract shared by every runtime.
  *
- * Ported verbatim from arkelythex/Drenyra `packages/mission-domain/src/mission-receipt.ts`.
+ * Ported verbatim from arkelythex/drenyra-command-center `packages/mission-domain/src/mission-receipt.ts`.
  * Mirrored by Go `sortedStringify` and Python `json.dumps(obj, sort_keys=True,
  * separators=(",", ":"))`; MUST NOT change.
  */

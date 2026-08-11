@@ -43,7 +43,11 @@ const REPOS = [
 		name: "drenyra-engram",
 		dir: join(ROOT, "..", "drenyra-engram"),
 		banner: "assets/branding/drenyra-engram-banner.png",
-		legacy: ["drenyra-engram-banner-1.png", "drenyra-engram-banner-2.png", "drenyra-engram-banner-3.png"],
+		legacy: [
+			"drenyra-engram-banner-1.png",
+			"drenyra-engram-banner-2.png",
+			"drenyra-engram-banner-3.png",
+		],
 	},
 	{
 		name: "drenyra-skills",
@@ -63,16 +67,21 @@ function runChecker(bannerPath) {
 		stdio: ["ignore", "pipe", "pipe"],
 	});
 	if (result.status === null) {
-		throw new Error(`brand-conformance crashed for ${bannerPath}: ${result.error?.message ?? "unknown"}`);
+		throw new Error(
+			`brand-conformance crashed for ${bannerPath}: ${result.error?.message ?? "unknown"}`,
+		);
 	}
 	let report;
 	try {
 		report = JSON.parse(result.stdout);
 	} catch (err) {
-		throw new Error(`brand-conformance produced invalid JSON for ${bannerPath}: ${err.message}`);
+		throw new Error(
+			`brand-conformance produced invalid JSON for ${bannerPath}: ${err.message}`,
+		);
 	}
 	const asset =
-		report.assets.find((a) => resolve(ROOT, "..", a.file) === bannerPath) ?? report.assets[0];
+		report.assets.find((a) => resolve(ROOT, "..", a.file) === bannerPath) ??
+		report.assets[0];
 	return asset;
 }
 
@@ -80,13 +89,22 @@ function statusFor(repo) {
 	const abs = join(repo.dir, repo.banner);
 	if (existsSync(abs)) {
 		const asset = runChecker(abs);
-		if (asset.pass) return { state: "PASS", detail: `coverage ${asset.detail.coverage.toFixed(2)}` };
-		return { state: "FAIL", detail: `coverage ${asset.detail.coverage.toFixed(2)} < ${asset.detail.required}` };
+		if (asset.pass)
+			return {
+				state: "PASS",
+				detail: `coverage ${asset.detail.coverage.toFixed(2)}`,
+			};
+		return {
+			state: "FAIL",
+			detail: `coverage ${asset.detail.coverage.toFixed(2)} < ${asset.detail.required}`,
+		};
 	}
 	const brandingDir = join(repo.dir, "assets", "branding");
-	if (!existsSync(brandingDir)) return { state: "MISSING", detail: "no banner asset yet" };
+	if (!existsSync(brandingDir))
+		return { state: "MISSING", detail: "no banner asset yet" };
 	const pngs = readdirSync(brandingDir).filter((f) => /\.png$/i.test(f));
-	if (pngs.length === 0) return { state: "MISSING", detail: "no banner asset yet" };
+	if (pngs.length === 0)
+		return { state: "MISSING", detail: "no banner asset yet" };
 	const legacy = pngs.filter((p) => !(repo.legacy ?? []).includes(p));
 	const targets = legacy.length > 0 ? legacy : pngs;
 	const results = targets.map((f) => {
@@ -95,10 +113,18 @@ function statusFor(repo) {
 	});
 	const anyPass = results.some((r) => r.pass);
 	if (anyPass) {
-		return { state: "PASS", detail: results.map((r) => `${r.file} ${r.coverage.toFixed(2)}`).join(", ") };
+		return {
+			state: "PASS",
+			detail: results
+				.map((r) => `${r.file} ${r.coverage.toFixed(2)}`)
+				.join(", "),
+		};
 	}
 	const fail = results.find((r) => !r.pass);
-	return { state: "FAIL", detail: `${fail.file} coverage ${fail.coverage.toFixed(2)}` };
+	return {
+		state: "FAIL",
+		detail: `${fail.file} coverage ${fail.coverage.toFixed(2)}`,
+	};
 }
 
 const results = REPOS.map((repo) => ({ name: repo.name, ...statusFor(repo) }));
@@ -106,7 +132,10 @@ const allPass = results.every((r) => r.state === "PASS");
 const ready = allPass ? "FREEZE-READY" : "PENDING";
 
 if (process.argv.includes("--json")) {
-	process.stdout.write(JSON.stringify({ gate: ready, pass: allPass, repos: results }, null, 2) + "\n");
+	process.stdout.write(
+		JSON.stringify({ gate: ready, pass: allPass, repos: results }, null, 2) +
+			"\n",
+	);
 } else {
 	process.stdout.write(`brand-system v0.3 freeze gate — ${ready}\n`);
 	process.stdout.write(`${"REPO".padEnd(24)} ${"STATUS".padEnd(9)} DETAIL\n`);
@@ -114,7 +143,9 @@ if (process.argv.includes("--json")) {
 		let icon = "·";
 		if (r.state === "PASS") icon = "✓";
 		else if (r.state === "FAIL") icon = "✗";
-		process.stdout.write(`${icon} ${r.name.padEnd(23)} ${r.state.padEnd(9)} ${r.detail}\n`);
+		process.stdout.write(
+			`${icon} ${r.name.padEnd(23)} ${r.state.padEnd(9)} ${r.detail}\n`,
+		);
 	}
 }
 process.exit(allPass ? 0 : 1);

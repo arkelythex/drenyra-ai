@@ -2,7 +2,7 @@
  * Receipt signing — Ed25519 key generation, canonical-payload signing, and
  * signed bundle construction.
  *
- * Ported verbatim from arkelythex/Drenyra `packages/mission-domain/src/mission-receipt.ts`.
+ * Ported verbatim from arkelythex/drenyra-command-center `packages/mission-domain/src/mission-receipt.ts`.
  * The signature covers the exact canonical payload bytes, stable across
  * languages. Fiscal convention: money is BigInt cents; no float here.
  */

@@ -2,7 +2,7 @@
  * Receipt verification — SHA-256 integrity, Ed25519 authenticity, and the
  * trusted signer lifecycle surface.
  *
- * Ported verbatim from arkelythex/Drenyra `packages/mission-domain/src/mission-receipt.ts`.
+ * Ported verbatim from arkelythex/drenyra-command-center `packages/mission-domain/src/mission-receipt.ts`.
  * The frozen conformance vectors (contracts/receipt-schema/fixtures) are the
  * source of truth for correctness. Fiscal convention: money is BigInt cents;
  * no float is used for money anywhere in drenyra-ai.
