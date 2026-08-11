@@ -24,14 +24,14 @@ const RUC_WEIGHTS = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2] as const;
  * expected = 11 - (sum % 11); 10 → 0; 11 → 1; otherwise the result.
  */
 export function expectedRucCheckDigit(first10: string): number {
-  let sum = 0;
-  for (let i = 0; i < 10; i += 1) {
-    sum += Number.parseInt(first10[i] ?? "0", 10) * RUC_WEIGHTS[i];
-  }
-  const expected = 11 - (sum % 11);
-  if (expected === 10) return 0;
-  if (expected === 11) return 1;
-  return expected;
+	let sum = 0;
+	for (let i = 0; i < 10; i += 1) {
+		sum += Number.parseInt(first10[i] ?? "0", 10) * RUC_WEIGHTS[i];
+	}
+	const expected = 11 - (sum % 11);
+	if (expected === 10) return 0;
+	if (expected === 11) return 1;
+	return expected;
 }
 
 /**
@@ -40,9 +40,9 @@ export function expectedRucCheckDigit(first10: string): number {
  * check digit is rejected.
  */
 export function isValidRucChecksummed(ruc: string): boolean {
-  if (!/^\d{11}$/.test(ruc)) {
-    return false;
-  }
-  const actual = Number.parseInt(ruc[10] ?? "0", 10);
-  return expectedRucCheckDigit(ruc.slice(0, 10)) === actual;
+	if (!/^\d{11}$/.test(ruc)) {
+		return false;
+	}
+	const actual = Number.parseInt(ruc[10] ?? "0", 10);
+	return expectedRucCheckDigit(ruc.slice(0, 10)) === actual;
 }

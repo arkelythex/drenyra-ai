@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { runMonthlyClose, REQUIRED_EVIDENCE_SYSTEMS } from "../index.js";
 import type { MonthlyCloseInput } from "../index.js";
-import { AdapterRegistry, type EvidenceAdapter, type EvidenceFetchInput } from "../../adapters/index.js";
+import {
+	AdapterRegistry,
+	type EvidenceAdapter,
+	type EvidenceFetchInput,
+} from "../../adapters/index.js";
 import { generateReceiptKeyPair } from "../../receipts/index.js";
 import { GENESIS_EMPTY_HASH, type LedgerManifest } from "../../ledger/index.js";
 import { BASE_PE_SKILLS } from "../../skills/index.js";
@@ -9,9 +13,14 @@ import { BASE_PE_SKILLS } from "../../skills/index.js";
 function fakeAdapter(system: string, present = true): EvidenceAdapter {
 	return {
 		name: `fake-${system}`,
-		declareCapability: () => ({ system, jurisdiction: "PE", evidenceTypes: [system] }),
+		declareCapability: () => ({
+			system,
+			jurisdiction: "PE",
+			evidenceTypes: [system],
+		}),
 		fetch: async (_input: EvidenceFetchInput) => {
-			if (!present) return { items: [], missingRequired: [system], complete: false };
+			if (!present)
+				return { items: [], missingRequired: [system], complete: false };
 			return {
 				items: [
 					{
@@ -65,12 +74,21 @@ function genesisEntry(ledgerId: string) {
 	};
 }
 
-function baseInput(overrides: Partial<MonthlyCloseInput> = {}): MonthlyCloseInput {
+function baseInput(
+	overrides: Partial<MonthlyCloseInput> = {},
+): MonthlyCloseInput {
 	return {
-		scope: { ruc: "20131312955", period: "202607", companyId: "synthetic-pe-01" },
+		scope: {
+			ruc: "20131312955",
+			period: "202607",
+			companyId: "synthetic-pe-01",
+		},
 		adapters: registryWith({}),
 		keyPair: generateReceiptKeyPair("key_flow"),
-		igvSkill: { id: BASE_PE_SKILLS[0]!.id, version: BASE_PE_SKILLS[0]!.version },
+		igvSkill: {
+			id: BASE_PE_SKILLS[0]!.id,
+			version: BASE_PE_SKILLS[0]!.version,
+		},
 		ledgerManifest: manifest("ledger-202607"),
 		ledgerEntries: [genesisEntry("ledger-202607")],
 		proposals: [
@@ -88,16 +106,24 @@ function baseInput(overrides: Partial<MonthlyCloseInput> = {}): MonthlyCloseInpu
 
 describe("runMonthlyClose", () => {
 	it("fails preflight on an invalid scope (RUC or period)", async () => {
-		const badRuc = await runMonthlyClose(baseInput({ scope: { ruc: "123", period: "202607", companyId: "x" } }));
+		const badRuc = await runMonthlyClose(
+			baseInput({ scope: { ruc: "123", period: "202607", companyId: "x" } }),
+		);
 		expect(badRuc.status).toBe("preflight-failed");
 		expect(badRuc.risks[0]).toContain("invalid RUC");
 		// Shape-valid but Módulo 11-invalid RUC is rejected (Option A, slice 2).
 		const badChecksum = await runMonthlyClose(
-			baseInput({ scope: { ruc: "20123456789", period: "202607", companyId: "x" } }),
+			baseInput({
+				scope: { ruc: "20123456789", period: "202607", companyId: "x" },
+			}),
 		);
 		expect(badChecksum.status).toBe("preflight-failed");
 		expect(badChecksum.risks[0]).toContain("invalid RUC");
-		const badPeriod = await runMonthlyClose(baseInput({ scope: { ruc: "20131312955", period: "2026", companyId: "x" } }));
+		const badPeriod = await runMonthlyClose(
+			baseInput({
+				scope: { ruc: "20131312955", period: "2026", companyId: "x" },
+			}),
+		);
 		expect(badPeriod.status).toBe("preflight-failed");
 	});
 
