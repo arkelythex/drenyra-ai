@@ -32,7 +32,7 @@ describe("candidate audit", () => {
 			const file = writeCandidate(dir, {
 				id: "cand-1",
 				subjectHash: "a".repeat(64),
-				scope: { ruc: "20123456789", period: "202607" },
+				scope: { ruc: "20131312955", period: "202607" },
 				materiality: "R1",
 				status: "reviewing",
 				reviews: [],
@@ -59,7 +59,7 @@ describe("candidate audit", () => {
 			const file = writeCandidate(dir, {
 				id: "cand-2",
 				subjectHash: "b".repeat(64),
-				scope: { ruc: "20123456789", period: "202607" },
+				scope: { ruc: "20131312955", period: "202607" },
 				materiality: "R3",
 				status: "reviewing",
 				reviews: [

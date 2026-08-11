@@ -12,7 +12,8 @@
  */
 
 import type { Candidate, Materiality } from "../candidates/types.js";
-import { isValidRuc, isValidPeriod, orderOf } from "../candidates/types.js";
+import { isValidPeriod, orderOf } from "../candidates/types.js";
+import { isValidRucChecksummed } from "../candidates/ruc.js";
 
 /** Severity of a guardian finding. */
 export type GuardianSeverity = "blocker" | "concern" | "info";
@@ -78,8 +79,8 @@ export function runGuardianReview(
 	const findings: GuardianFinding[] = [];
 	const { r3DualRequired = true } = options;
 
-	// Scope integrity — the candidate's fiscal scope must be shape-valid.
-	if (!isValidRuc(candidate.scope.ruc)) {
+	// Scope integrity — the candidate's fiscal scope must be valid (checksummed RUC).
+	if (!isValidRucChecksummed(candidate.scope.ruc)) {
 		findings.push(
 			finding(
 				"blocker",

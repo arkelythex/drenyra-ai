@@ -15,11 +15,24 @@
  */
 
 import { CandidateLifecycle } from "../candidates/lifecycle.js";
-import { isValidRuc, isValidPeriod } from "../candidates/types.js";
-import type { Candidate, MaterialityInput, Reversibility } from "../candidates/types.js";
+import { isValidPeriod } from "../candidates/types.js";
+import { isValidRucChecksummed } from "../candidates/ruc.js";
+import type {
+	Candidate,
+	MaterialityInput,
+	Reversibility,
+} from "../candidates/types.js";
 import { runGuardianReview, type GuardianReport } from "../guardian/index.js";
-import { buildSignedReceipt, type ReceiptKeyPair, type SignedReceipt } from "../receipts/index.js";
-import { validateLedger, type LedgerManifest, type LedgerEntry } from "../ledger/index.js";
+import {
+	buildSignedReceipt,
+	type ReceiptKeyPair,
+	type SignedReceipt,
+} from "../receipts/index.js";
+import {
+	validateLedger,
+	type LedgerManifest,
+	type LedgerEntry,
+} from "../ledger/index.js";
 import type { AdapterRegistry, EvidenceFetchInput } from "../adapters/index.js";
 
 /** Fiscal scope of the close (tenant-bound). */
@@ -61,7 +74,10 @@ export interface MonthlyCloseInput {
 }
 
 /** Result status of the close vertical. */
-export type CloseStatus = "preflight-failed" | "waiting-for-evidence" | "complete";
+export type CloseStatus =
+	| "preflight-failed"
+	| "waiting-for-evidence"
+	| "complete";
 
 /** The verifiable close package (Design 02 §6.7). */
 export interface ClosePackage {
@@ -77,16 +93,24 @@ export interface ClosePackage {
 }
 
 /** Run the monthly close vertical. Deterministic; never mutates external state. */
-export async function runMonthlyClose(input: MonthlyCloseInput): Promise<ClosePackage> {
+export async function runMonthlyClose(
+	input: MonthlyCloseInput,
+): Promise<ClosePackage> {
 	const { scope } = input;
 	const risks: string[] = [];
 
 	// 1. Preflight: the scope freezes before any work (Design 02 §6.1).
-	if (!isValidRuc(scope.ruc)) {
-		return fail(`invalid RUC "${scope.ruc}" (must be 11 digits)`, scope);
+	if (!isValidRucChecksummed(scope.ruc)) {
+		return fail(
+			`invalid RUC "${scope.ruc}" (must be 11 digits with a valid Módulo 11 check digit)`,
+			scope,
+		);
 	}
 	if (!isValidPeriod(scope.period)) {
-		return fail(`invalid fiscal period "${scope.period}" (must be YYYYMM)`, scope);
+		return fail(
+			`invalid fiscal period "${scope.period}" (must be YYYYMM)`,
+			scope,
+		);
 	}
 
 	// 2. Evidence collection: adapters fetch and hash; absence is never zero.
@@ -104,7 +128,10 @@ export async function runMonthlyClose(input: MonthlyCloseInput): Promise<ClosePa
 			sourcesMissing.push(system);
 			continue;
 		}
-		const result = await adapter.fetch({ ...fetchInput, requiredTypes: [system] });
+		const result = await adapter.fetch({
+			...fetchInput,
+			requiredTypes: [system],
+		});
 		if (result.complete && result.items.length > 0) {
 			sourcesUsed.push(system);
 		} else {
@@ -148,7 +175,9 @@ export async function runMonthlyClose(input: MonthlyCloseInput): Promise<ClosePa
 		guardianReports.push(report);
 		const blockers = report.findings.filter((f) => f.severity === "blocker");
 		if (blockers.length > 0) {
-			risks.push(`candidate ${candidate.id}: ${blockers.map((b) => b.description).join("; ")}`);
+			risks.push(
+				`candidate ${candidate.id}: ${blockers.map((b) => b.description).join("; ")}`,
+			);
 			continue;
 		}
 
@@ -172,7 +201,9 @@ export async function runMonthlyClose(input: MonthlyCloseInput): Promise<ClosePa
 	}
 
 	// 6. Ledger: the existing chain must validate; pending entries append.
-	const ledgerValid = validateLedger(input.ledgerManifest, [...input.ledgerEntries]).valid;
+	const ledgerValid = validateLedger(input.ledgerManifest, [
+		...input.ledgerEntries,
+	]).valid;
 
 	return {
 		status: "complete",
@@ -200,4 +231,3 @@ function fail(reason: string, scope: CloseScope): ClosePackage {
 		risks: [reason],
 	};
 }
-

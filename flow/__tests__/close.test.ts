@@ -67,7 +67,7 @@ function genesisEntry(ledgerId: string) {
 
 function baseInput(overrides: Partial<MonthlyCloseInput> = {}): MonthlyCloseInput {
 	return {
-		scope: { ruc: "20123456789", period: "202607", companyId: "synthetic-pe-01" },
+		scope: { ruc: "20131312955", period: "202607", companyId: "synthetic-pe-01" },
 		adapters: registryWith({}),
 		keyPair: generateReceiptKeyPair("key_flow"),
 		igvSkill: { id: BASE_PE_SKILLS[0]!.id, version: BASE_PE_SKILLS[0]!.version },
@@ -91,7 +91,13 @@ describe("runMonthlyClose", () => {
 		const badRuc = await runMonthlyClose(baseInput({ scope: { ruc: "123", period: "202607", companyId: "x" } }));
 		expect(badRuc.status).toBe("preflight-failed");
 		expect(badRuc.risks[0]).toContain("invalid RUC");
-		const badPeriod = await runMonthlyClose(baseInput({ scope: { ruc: "20123456789", period: "2026", companyId: "x" } }));
+		// Shape-valid but Módulo 11-invalid RUC is rejected (Option A, slice 2).
+		const badChecksum = await runMonthlyClose(
+			baseInput({ scope: { ruc: "20123456789", period: "202607", companyId: "x" } }),
+		);
+		expect(badChecksum.status).toBe("preflight-failed");
+		expect(badChecksum.risks[0]).toContain("invalid RUC");
+		const badPeriod = await runMonthlyClose(baseInput({ scope: { ruc: "20131312955", period: "2026", companyId: "x" } }));
 		expect(badPeriod.status).toBe("preflight-failed");
 	});
 
