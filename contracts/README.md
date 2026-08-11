@@ -1,7 +1,7 @@
 # Drenyra AI — Contracts
 
 > [!IMPORTANT]
-> **Status: six contracts are FROZEN at v0.1 (release 0.2.0); `brand-system` is DRAFT at v0.1.** Freezing means the normative surface of each frozen contract is pinned by a conformance suite that runs in CI and fails on drift. `brand-system` ships its conformance suite now and freezes when the ecosystem adopts it (see the [contract](brand-system.md)).
+> **Status: six contracts are FROZEN at v0.1 (release 0.2.0); `brand-system` is DRAFT at v0.2.** Freezing means the normative surface of each frozen contract is pinned by a conformance suite that runs in CI and fails on drift. `brand-system` ships its conformance suite now and freezes when the ecosystem adopts it (see the [contract](brand-system.md)).
 
 <!-- -->
 
