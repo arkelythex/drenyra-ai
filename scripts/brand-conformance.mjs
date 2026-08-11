@@ -39,7 +39,9 @@ const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const TOKENS_PATH = join(ROOT, "contracts", "brand-system", "tokens.json");
 const DEFAULT_ASSET_DIR = join(ROOT, "docs", "assets", "brand");
 
-const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const PNG_SIGNATURE = Buffer.from([
+	0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+]);
 const REQUIRED_THEMES = ["dark", "light"];
 const REQUIRED_ACCENTS = ["cyan", "violet"];
 const REQUIRED_TOKEN_KEYS = [
@@ -63,12 +65,18 @@ const REQUIRED_ACCENT_KEYS = ["base", "hover", "active", "dim"];
 function hexToRgb(hex) {
 	const h = hex.replace("#", "");
 	if (h.length === 3) return [0, 1, 2].map((i) => parseInt(h[i] + h[i], 16));
-	if (h.length === 6) return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+	if (h.length === 6)
+		return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
 	throw new Error(`invalid hex: ${hex}`);
 }
 
 function rgbToHex([r, g, b]) {
-	return "#" + [r, g, b].map((v) => Math.min(255, Math.max(0, v)).toString(16).padStart(2, "0")).join("");
+	return (
+		"#" +
+		[r, g, b]
+			.map((v) => Math.min(255, Math.max(0, v)).toString(16).padStart(2, "0"))
+			.join("")
+	);
 }
 
 const HEX_RE = /^#[0-9a-f]{6}$/i;
@@ -83,7 +91,8 @@ function loadTokens() {
 		process.exit(1);
 	}
 	const problems = [];
-	if (raw.version !== "0.2") problems.push(`version must be 0.2, got ${raw.version}`);
+	if (raw.version !== "0.2")
+		problems.push(`version must be 0.2, got ${raw.version}`);
 	for (const theme of REQUIRED_THEMES) {
 		if (!raw.themes?.[theme]) {
 			problems.push(`missing theme: ${theme}`);
@@ -104,14 +113,17 @@ function loadTokens() {
 		for (const key of REQUIRED_ACCENT_KEYS) {
 			const v = raw.accents[accent][key];
 			if (typeof v !== "string" || !HEX_RE.test(v)) {
-				problems.push(`accent ${accent}: ${key} must be a #rrggbb hex, got ${v}`);
+				problems.push(
+					`accent ${accent}: ${key} must be a #rrggbb hex, got ${v}`,
+				);
 			}
 		}
 	}
 	const canonical = new Set();
 	const collect = (obj) => {
 		for (const v of Object.values(obj)) {
-			if (typeof v === "string" && HEX_RE.test(v)) canonical.add(v.toLowerCase());
+			if (typeof v === "string" && HEX_RE.test(v))
+				canonical.add(v.toLowerCase());
 		}
 	};
 	collect(raw.themes?.dark ?? {});
@@ -131,7 +143,8 @@ function loadTokens() {
 
 const STRUCTURAL_SVG = /^(none|currentColor|inherit|url\(#[^)]*\))$/i;
 const HEX_VALUE = /^#[0-9a-f]{3,8}$/i;
-const ATTR_RE = /(?:fill|stroke|stop-color|color)\s*=\s*("([^"]*)"|'([^']*)')/gi;
+const ATTR_RE =
+	/(?:fill|stroke|stop-color|color)\s*=\s*("([^"]*)"|'([^']*)')/gi;
 const CSS_VAR_RE = /--([a-zA-Z0-9-]+)\s*:\s*(#[0-9a-fA-F]{6})/g;
 const VAR_REF_RE = /^var\(--([a-zA-Z0-9-]+)\)$/;
 
@@ -193,7 +206,8 @@ function checkSvg(file) {
  */
 function decodePngSamples(file, sampleCap = 2000) {
 	const buf = readFileSync(file);
-	if (buf.length < 33 || !buf.subarray(0, 8).equals(PNG_SIGNATURE)) throw new Error("not a PNG");
+	if (buf.length < 33 || !buf.subarray(0, 8).equals(PNG_SIGNATURE))
+		throw new Error("not a PNG");
 	let offset = 8;
 	let width = 0;
 	let height = 0;
@@ -210,7 +224,9 @@ function decodePngSamples(file, sampleCap = 2000) {
 			bitDepth = data[8];
 			colorType = data[9];
 			if (data[10] !== 0 || data[11] !== 0 || data[12] !== 0) {
-				throw new Error(`unsupported PNG encoding (compression ${data[10]}, filter ${data[11]}, interlace ${data[12]})`);
+				throw new Error(
+					`unsupported PNG encoding (compression ${data[10]}, filter ${data[11]}, interlace ${data[12]})`,
+				);
 			}
 		} else if (type === "IDAT") {
 			idat.push(data);
@@ -221,18 +237,25 @@ function decodePngSamples(file, sampleCap = 2000) {
 	}
 	if (!width || !height) throw new Error("PNG missing IHDR");
 	if (bitDepth !== 8 || (colorType !== 2 && colorType !== 6)) {
-		throw new Error(`unsupported PNG format: bitDepth ${bitDepth}, colorType ${colorType}`);
+		throw new Error(
+			`unsupported PNG format: bitDepth ${bitDepth}, colorType ${colorType}`,
+		);
 	}
 	const channels = colorType === 6 ? 4 : 3;
 	const bpp = channels;
 	// Evenly-spread sampling grid: representative coverage for wide/tall banners.
 	const targetSamples = Math.min(sampleCap, width * height);
-	const xSamples = Math.max(1, Math.round(Math.sqrt((targetSamples * width) / height)));
+	const xSamples = Math.max(
+		1,
+		Math.round(Math.sqrt((targetSamples * width) / height)),
+	);
 	const ySamples = Math.max(1, Math.round(targetSamples / xSamples));
 	const sampledYs = new Set();
-	for (let yi = 0; yi < ySamples; yi++) sampledYs.add(Math.min(height - 1, Math.floor((yi * height) / ySamples)));
+	for (let yi = 0; yi < ySamples; yi++)
+		sampledYs.add(Math.min(height - 1, Math.floor((yi * height) / ySamples)));
 	const xPositions = [];
-	for (let xi = 0; xi < xSamples; xi++) xPositions.push(Math.min(width - 1, Math.floor((xi * width) / xSamples)));
+	for (let xi = 0; xi < xSamples; xi++)
+		xPositions.push(Math.min(width - 1, Math.floor((xi * width) / xSamples)));
 	const raw = zlib.inflateSync(Buffer.concat(idat));
 	const stride = width * channels;
 	const out = [];
@@ -383,7 +406,9 @@ export function runConformance(extraPaths = [], { json = false } = {}) {
 				const detail = Array.isArray(r.detail)
 					? r.detail.join("; ")
 					: `coverage ${r.detail.coverage.toFixed(2)} < ${r.detail.required} · off-palette: ${r.detail.offPalette.join(", ")}`;
-				process.stdout.write(`✗ ${r.file.replace(ROOT + "/", "")} — ${detail}\n`);
+				process.stdout.write(
+					`✗ ${r.file.replace(ROOT + "/", "")} — ${detail}\n`,
+				);
 			}
 		}
 		process.stdout.write(allPass ? "PASS\n" : "FAIL\n");

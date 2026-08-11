@@ -169,6 +169,13 @@ Rules (enforced by the conformance checker on raster assets):
 
 ### Prompt template (ChatGPT Images 2.0)
 
+The canonical **ecosystem prompt set** lives in
+[`docs/assets/brand/gpt-image-prompts.md`](../docs/assets/brand/gpt-image-prompts.md)
+— one optimized prompt per product (Drenyra, Drenyra AI, Drenyra Pi, Drenyra
+Engram, Drenyra Skills, Guardian Angel), each composed of the shared
+Ecosystem DNA block plus a product-specific motif. The generic template below
+is for ad-hoc explorations:
+
 ```text
 Design a dark, professional, architectural banner for an enterprise accounting
 verification platform. Background: deep navy canvas #0B0E11 with a subtle
