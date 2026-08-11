@@ -69,23 +69,24 @@ Keep this block byte-for-byte identical in all six prompts. It is what makes
 the ecosystem read as one family.
 
 ```text
-Drenyra ecosystem brand banner in the Dreamcoder-inspired visual language:
-calm, premium, architectural. Background: deep anthracite-navy canvas #0B0E11
-with a faint blueprint grid at ~3% white opacity and a subtle 1% film grain to
-smooth gradients. Two aurora glows at low intensity (5-8% opacity): cyan
-#3CE6D8 on the upper right, violet #9B7FE8 on the lower left, both diffused
-into the canvas with no hard edges. Accent colors allowed ONLY: cyan #3CE6D8
-(lighter #6AEFE4, dimmer #1F8A80), violet #9B7FE8 (lighter #B8A2F0, dimmer
-#7B66C0), success green #4ADE94, muted blue-gray #A8B0BC, plus the surface
-ladder #12161B, #1A1F26, #20262E for layered panels and elevation shadows.
-All gradients blend exclusively between these colors. Composition language:
-layered elevation with soft inner shadows, curved geometry (orbital arcs,
-concentric rings, sweeping Bézier curves), and tiny luminous spark accents at
-arc intersections. NO cartoon, NO mascot, NO photorealism, NO organic texture.
-NO TEXT of any kind — no letters, words, numbers, or logos; the product name
-lives in the README, never in the raster. Aspect ratio exactly 1400:460
-(banner). Keep C2PA provenance metadata and the imperceptible watermark
-enabled.
+Drenyra ecosystem brand banner — premium art direction (see
+docs/assets/brand/creative-brief.md): radical minimalism with obsessive
+maximalism. ONE hero element rendered with pathological fidelity; the deep
+anthracite-navy canvas #0B0E11 is CARVED ATMOSPHERE (subtle film grain,
+volumetric depth, soft light falloff), never empty space. Cinematic
+directional light: rim light tracing the hero's silhouette, gentle god
+rays, caustics on machined/optical surfaces. Accent colors allowed ONLY:
+cyan #3CE6D8 (lighter #6AEFE4, dimmer #1F8A80), violet #9B7FE8 (lighter
+#B8A2F0, dimmer #7B66C0), success green #4ADE94, muted blue-gray #A8B0BC,
+plus the surface ladder #12161B, #1A1F26, #20262E. All gradients blend
+exclusively between these colors. Composition: one hero on the right third,
+deep negative space on the left, brutal precision meeting organic curves,
+and ONE intricate signature micro-detail that rewards close looking. NO
+cartoon, NO mascot, NO clip-art, NO flat fills — every surface reads as a
+real material under real light. NO TEXT of any kind — no letters, words,
+numbers, or logos; the product name lives in the README, never in the
+raster. Aspect ratio exactly 1400:460 (banner). Keep C2PA provenance
+metadata and the imperceptible watermark enabled.
 ```
 
 ---
@@ -106,7 +107,7 @@ rings — one cyan #3CE6D8, one violet #9B7FE8 — tilted in 3D, with small
 spark dots at the points where a sweeping Bézier curve crosses each ring. At
 the console center: a dual-approval seal (two interlocking arcs, cyan and
 violet) with a checkmark in success green #4ADE94, surrounded by a soft focus
-halo. Light variant (optional): canvas #FAFAF9, panels #FFFFFF/#F2F2F0, rings
+halo. Signature detail: the seal's engraving catches a rim light. Light variant (optional): canvas #FAFAF9, panels #FFFFFF/#F2F2F0, rings
 cyan #2ECFC2 and violet #6B54A8, checkmark #1A8F52, sparks #1F8A80.
 ```
 
@@ -120,7 +121,7 @@ green #4ADE94. Around the card: a tilted circular chain of small hash blocks
 (rounded squares in muted blue-gray #A8B0BC and violet #9B7FE8) orbiting like
 a ring, with tiny sparks at the link points and a thin luminous arc sweeping
 behind the card. Composition: the receipt as the calm center, sparks as the
-only bright points, deep negative space on the left for the README title. Light
+only bright points, deep negative space on the left for the README title. Signature detail: the hash-circlet's light path is the one intricate element. Light
 variant (optional): canvas #FAFAF9, card #FFFFFF with #F2F2F0 layer and cyan
 #2ECFC2 border, ring violet #6B54A8, checkmark #1A8F52.
 ```
@@ -135,7 +136,7 @@ arcs of muted blue-gray #A8B0BC — two full rings and one partial — with smal
 satellite nodes at the arc intersections and a spark dot where the pin meets
 the top ring. A tiny padlock in success green #4ADE94 marks the deterministic
 core. Composition: the pinned node as the still center, everything else in
-curved orbit around it. Light variant (optional): canvas #FAFAF9, cube #F2F2F0
+curved orbit around it. Signature detail: the padlock is a single engraved facet. Light variant (optional): canvas #FAFAF9, cube #F2F2F0
 with cyan #2ECFC2 edges, pin #6B54A8, padlock #1A8F52, arcs #D4D4D0.
 ```
 
@@ -149,7 +150,7 @@ blue-gray #A8B0BC, with node dots at every curve intersection and sparks
 scattered along the arcs like fireflies. Beneath the canopy: a fiscal-scope
 document silhouette (surface #12161B, cyan #3CE6D8 outline) with a small
 verified checkmark in success green #4ADE94. Composition: the lattice curves
-like a wave over the document; deep negative space on the left. Light variant
+like a wave over the document; deep negative space on the left. Signature detail: one node casts a tiny caustic onto the document. Light variant
 (optional): canvas #FAFAF9, document #FFFFFF with cyan #2ECFC2 outline,
 checkmark #1A8F52, nodes #6B54A8.
 ```
@@ -164,7 +165,7 @@ and violet #9B7FE8. Each sheet carries a small abstract rule-glyph (a §-mark
 formed by a simple curve in muted blue-gray #A8B0BC) and a tiny spark sits at
 each glyph's curve tip. A version tag in success green #4ADE94 floats on the
 top folio with a soft halo. Composition: the folio stack as a calm hero, a
-single sweeping arc crossing behind it. Light variant (optional): sheets
+single sweeping arc crossing behind it. Signature detail: the sigil's curve tip holds a point of light. Light variant (optional): sheets
 #FAFAF9/#FFFFFF/#F2F2F0, spines #2ECFC2 and #6B54A8, tag #1A8F52.
 ```
 
@@ -178,7 +179,7 @@ with a checkmark in success green #4ADE94 at its center. Above the shield: a
 single lens-shaped beacon (muted blue-gray #A8B0BC with a cyan #6AEFE4 core)
 sending two faint concentric ripple arcs downward over the shield, with sparks
 where the ripples meet the shield's edge. Composition: the shield as the calm
-center, ripples as the only motion. Light variant (optional): halves #2ECFC2
+center, ripples as the only motion. Signature detail: the ripple edges resolve into fine engraving. Light variant (optional): halves #2ECFC2
 and #6B54A8, checkmark #1A8F52, beacon core #1F8A80.
 ```
 
@@ -192,7 +193,7 @@ and #6B54A8, checkmark #1A8F52, beacon core #1F8A80.
 | drenyra-ai | `docs/assets/brand/drenyra-ai-banner.png` (create) | replace `src="docs/assets/brand/drenyra-ai-banner.svg"` with the PNG |
 | drenyra-pi | `assets/branding/drenyra-pi-banner.png` (create) | add banner `<img>` at top |
 | drenyra-engram | `assets/branding/drenyra-engram-banner.png` (rename) | replace `drenyra-engram-banner-1.png`; delete banner-1/2/3 |
-| gentleman-guardian-angel | `assets/branding/guardian-angel-banner.png` (create) | add banner `<img>` at top |
+| drenyra-guardian-angel | `assets/branding/drenyra-guardian-angel-banner.png` (create) | add banner `<img>` at top |
 | drenyra-skills | (planned) | — |
 
 The vector SVG in drenyra-ai stays in the repo as the **vector reference**
