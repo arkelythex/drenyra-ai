@@ -1,6 +1,6 @@
 # receipt-schema / v1
 
-> **Source: arkelythex/drenyra-app-web `contracts/receipt-schema/v1`** — copied verbatim.
+> **Source: arkelythex/drenyra-command-center `contracts/receipt-schema/v1`** — copied verbatim.
 > These schemas and fixtures are the **frozen conformance source of truth** for
 > the `drenyra-ai` receipt surface.
 

@@ -94,4 +94,4 @@ Drenyra and Drenyra Pi consume **released, versioned** artifacts — never a che
 
 ## Repository scope
 
-This repo is the agent ecosystem. It does **not** contain the product UI, tenants, documents, accounts, or SUNAT flows (those live in `arkelythex/drenyra-app-web`), nor a Pi harness (that is `arkelythex/drenyra-pi`), nor a memory engine (that is `arkelythex/drenyra-engram`).
+This repo is the agent ecosystem. It does **not** contain the product UI, tenants, documents, accounts, or SUNAT flows (those live in `arkelythex/drenyra-command-center`), nor a Pi harness (that is `arkelythex/drenyra-pi`), nor a memory engine (that is `arkelythex/drenyra-engram`).

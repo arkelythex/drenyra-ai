@@ -2,7 +2,7 @@
   "contract": "receipt-schema",
   "version": "v1",
   "schemaDraft": "draft-07",
-  "source": "arkelythex/drenyra-app-web contracts/receipt-schema/v1",
+  "source": "arkelythex/drenyra-command-center contracts/receipt-schema/v1",
   "description": "Signed mission receipt contract — canonical JSON schemas and conformance fixtures shared across TypeScript, Go, and Python surfaces.",
   "schemas": [
     {

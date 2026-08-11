@@ -36,7 +36,7 @@
 
 ## What this package is NOT
 
-- Not the product UI/tenants/documents (that is `arkelythex/drenyra-app-web`).
+- Not the product UI/tenants/documents (that is `arkelythex/drenyra-command-center`).
 - Not a Pi harness (that is `arkelythex/drenyra-pi`).
 - Not a memory engine (that is `arkelythex/drenyra-engram`).
 - Not an authorization system on its own: gates + human approval are where authority lives.

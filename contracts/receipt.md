@@ -47,7 +47,7 @@ Canonical vectors ship with the reference implementation and must reproduce byte
 
 ## Schema contract
 
-The normative shape of a receipt lives in [`contracts/receipt-schema/`](./receipt-schema/) (source: arkelythex/drenyra-app-web `contracts/receipt-schema/v1`):
+The normative shape of a receipt lives in [`contracts/receipt-schema/`](./receipt-schema/) (source: arkelythex/drenyra-command-center `contracts/receipt-schema/v1`):
 
 - `schemas/` — draft-07 JSON schemas for `ReceiptContent`, `SignedReceipt`, and `SigningKeyInfo`.
 - `fixtures/conformance-vectors.v1.json` — the **frozen conformance vectors** (8). They are the source of truth for correctness: every runtime MUST reproduce them byte-for-byte, and tests MUST pass against them.

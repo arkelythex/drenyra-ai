@@ -309,7 +309,7 @@ docs/               Architecture, trust-model, and dependency documentation
 
 | Project | Role | Status |
 | --- | --- | --- |
-| [Drenyra App Web](https://github.com/arkelythex/drenyra-app-web) | Command Center — web application (consumes) | In development (private) |
+| [Drenyra Command Center](https://github.com/arkelythex/drenyra-command-center) | Command Center — web application (consumes) | In development (private) |
 | [Drenyra Pi](https://github.com/arkelythex/drenyra-pi) | Pi-native harness (consumes, pinned) | In development (private) |
 | [Drenyra Engram](https://github.com/arkelythex/drenyra-engram) | Institutional accounting memory (used — informs, never authorizes) | In development |
 | [Drenyra Skills](https://github.com/arkelythex/drenyra-skills) | Versioned accounting, tax, and operational knowledge | In development (private) |
