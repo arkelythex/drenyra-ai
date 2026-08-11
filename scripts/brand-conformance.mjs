@@ -340,7 +340,9 @@ export function runConformance(extraPaths = [], { json = false } = {}) {
 				const detail = Array.isArray(r.detail)
 					? r.detail.join("; ")
 					: `coverage ${r.detail.coverage.toFixed(2)} < ${r.detail.required} · off-palette: ${r.detail.offPalette.join(", ")}`;
-				process.stdout.write(`✗ ${r.file.replace(ROOT + "/", "")} — ${detail}\n`);
+				process.stdout.write(
+					`✗ ${r.file.replace(ROOT + "/", "")} — ${detail}\n`,
+				);
 			}
 		}
 		process.stdout.write(allPass ? "PASS\n" : "FAIL\n");

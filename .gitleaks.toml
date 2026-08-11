@@ -9,6 +9,4 @@
 # this exact path must NOT be added here.
 
 [allowlist]
-paths = [
-  '''contracts/receipt-schema/fixtures/dev-keys\.test-only\.json''',
-]
+paths = ['''contracts/receipt-schema/fixtures/dev-keys\.test-only\.json''']
