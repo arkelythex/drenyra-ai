@@ -155,7 +155,7 @@ Rules (enforced by the conformance checker on raster assets):
 
 1. **Palette-only.** Every sampled pixel must be within `tolerancePerChannel`
    (±24 per channel) of a canonical color (union of both themes + accents); at
-   least `coverageRequired` (85%) of sampled pixels must be in palette. The
+   least `coverageRequired` (92%) of sampled pixels must be in palette. The
    checker reports the off-palette colors so the image can be regenerated with
    a corrected prompt.
 2. **No critical text.** Product names, claims, and version numbers live in SVG
@@ -213,7 +213,8 @@ ratio 1400:460. Keep C2PA provenance metadata.
   migrated to dual-theme CSS variables; conformance resolves theme-aware CSS
   variables; AI rules and prompt template updated. v0.1's blue palette is
   banned.
-- Freeze to v0.3 requires: every consuming repo (Drenyra Pi, Drenyra Engram,
-  Guardian Angel) passes the conformance checker on its brand assets in both
-  themes, and documented drift examples (drenyra-engram banner) are regenerated
-  or removed.
+- Freeze to v0.3 requires: every consuming repo (App Web, Pi, Engram,
+  Skills, Guardian Angel) passes the conformance checker on its brand assets in
+  both themes, and documented drift examples (drenyra-engram banner) are
+  regenerated or removed. The freeze gate is `bun run brand:ecosystem` — it
+  must report every repo `PASS` (exit 0) before v0.3 is marked FROZEN.

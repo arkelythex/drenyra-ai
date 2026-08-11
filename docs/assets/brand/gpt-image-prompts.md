@@ -17,14 +17,14 @@
 2. Paste the full prompt (Shared DNA + your product's section) verbatim.
 3. Generate **2–3 candidates**, keep the strongest.
 4. Validate with the conformance checker. Iterate with its off-palette
-   feedback if coverage < 0.85.
+   feedback if coverage < 0.92.
 5. Swap the README `<img>` to the passing PNG.
 
 **Conformance gate (non-negotiable):**
 
 ```bash
 node /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/scripts/brand-conformance.mjs <path-to-banner.png>
-# expect: ✓ <file> (coverage >= 0.85) ... PASS
+# expect: ✓ <file> (coverage >= 0.92) ... PASS
 ```
 
 **Anti-palette exclusions (baked into every prompt):** no legacy blue

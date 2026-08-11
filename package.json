@@ -39,6 +39,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "brand:conformance": "node scripts/brand-conformance.mjs",
+    "brand:ecosystem": "node scripts/brand-ecosystem-status.mjs",
     "prepare": "node scripts/build.mjs",
     "verify:package": "node scripts/build.mjs && bun run test && node scripts/verify-package-files.mjs",
     "prepack": "bun run verify:package",
