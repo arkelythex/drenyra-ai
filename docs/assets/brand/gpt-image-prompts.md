@@ -188,7 +188,7 @@ and #6B54A8, checkmark #1A8F52, beacon core #1F8A80.
 
 | Repo | File | README line |
 | --- | --- | --- |
-| Drenyra | `assets/branding/drenyra-banner.png` (create) | add banner `<img>` at top |
+| Drenyra App Web (`drenyra-app-web`) | `assets/branding/drenyra-banner.png` (create) | add banner `<img>` at top |
 | drenyra-ai | `docs/assets/brand/drenyra-ai-banner.png` (create) | replace `src="docs/assets/brand/drenyra-ai-banner.svg"` with the PNG |
 | drenyra-pi | `assets/branding/drenyra-pi-banner.png` (create) | add banner `<img>` at top |
 | drenyra-engram | `assets/branding/drenyra-engram-banner.png` (rename) | replace `drenyra-engram-banner-1.png`; delete banner-1/2/3 |

@@ -43,7 +43,7 @@ Drenyra AI works **standalone** — no Drenyra dependency — so ERPs, other acc
 
 Drenyra AI is **not**:
 
-- The product: no UI, tenants, documents, accounts, or SUNAT flows (that is `arkelythex/Drenyra`).
+- The product: no UI, tenants, documents, accounts, or SUNAT flows (that is `arkelythex/drenyra-app-web`).
 - A Pi harness: no extension registration, startup panels, or Pi-native commands (that is `arkelythex/drenyra-pi`).
 - A memory engine: no observations, scope-first search, relations, or vigencia (that is `arkelythex/drenyra-engram`).
 

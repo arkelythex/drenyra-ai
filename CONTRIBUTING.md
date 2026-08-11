@@ -1,6 +1,6 @@
 # Contributing to Drenyra AI
 
-> **Status: released core, ecosystem in progress.** Drenyra AI is extracted from `arkelythex/Drenyra` through vertical slices and the repository hosts a released RDA core with **all six contracts frozen** (`contracts/`, v0.1, pinned by CI conformance suites). External contributions are welcome; contract changes follow the frozen-contract regime below (major bump required). See the [frontier](docs/intended-usage.md) before contributing.
+> **Status: released core, ecosystem in progress.** Drenyra AI is extracted from `arkelythex/drenyra-app-web` through vertical slices and the repository hosts a released RDA core with **all six contracts frozen** (`contracts/`, v0.1, pinned by CI conformance suites). External contributions are welcome; contract changes follow the frozen-contract regime below (major bump required). See the [frontier](docs/intended-usage.md) before contributing.
 
 <!-- -->
 

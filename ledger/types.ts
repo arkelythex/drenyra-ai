@@ -1,7 +1,7 @@
 /**
  * Ledger domain types — the append-only audit chain and its manifest.
  *
- * Design basis: arkelythex/Drenyra `docs/audits/schemas/ledger-entry.schema.json`
+ * Design basis: arkelythex/drenyra-app-web `docs/audits/schemas/ledger-entry.schema.json`
  * and `ledger-manifest.schema.json`. The `LedgerManifest` extends the source
  * manifest with the `ledgerId` field required by the single-chain scope rule
  * (see contracts/ledger.md).

@@ -309,11 +309,11 @@ docs/               Architecture, trust-model, and dependency documentation
 
 | Project | Role | Status |
 | --- | --- | --- |
-| [Drenyra](https://github.com/arkelythex/Drenyra) | Accounting Command Center (consumes) | In development (private) |
+| [Drenyra App Web](https://github.com/arkelythex/drenyra-app-web) | Command Center — web application (consumes) | In development (private) |
 | [Drenyra Pi](https://github.com/arkelythex/drenyra-pi) | Pi-native harness (consumes, pinned) | In development (private) |
-| [Drenyra Engram](https://github.com/arkelythex/drenyra-engram) | Institutional accounting memory (used — informs, never authorizes) | In development (private) |
-| Drenyra Skills | Versioned accounting, tax, and operational knowledge | Planned |
-| Drenyra Guardian Angel | Independent, adversarial, continuous verification | Planned |
+| [Drenyra Engram](https://github.com/arkelythex/drenyra-engram) | Institutional accounting memory (used — informs, never authorizes) | In development |
+| [Drenyra Skills](https://github.com/arkelythex/drenyra-skills) | Versioned accounting, tax, and operational knowledge | In development (private) |
+| [Drenyra Guardian Angel](https://github.com/arkelythex/drenyra-guardian-angel) | Independent, adversarial, continuous verification | In development (private) |
 
 **Direction rule:** Drenyra AI may integrate Drenyra Engram and is consumed by Drenyra and Drenyra Pi. It never depends on Drenyra or Drenyra Pi, and Drenyra Pi never leaks into Drenyra AI's contracts. External systems — ERP, SUNAT, banks — connect through adapters and evidence, never through privileged access.
 
