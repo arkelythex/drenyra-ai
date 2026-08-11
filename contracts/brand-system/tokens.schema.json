@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Drenyra brand-system tokens",
+  "description": "Canonical token vectors for contracts/brand-system.md (v0.1 DRAFT). Base tokens come from the Command Center design tokens; derived tokens must re-derive byte-exact via mix(base, target, ratio).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status",
+    "source",
+    "derivation",
+    "base",
+    "derived",
+    "gradients",
+    "typography",
+    "radius",
+    "aiImage"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "string", "const": "0.1" },
+    "status": { "type": "string", "const": "DRAFT" },
+    "source": { "type": "string" },
+    "derivation": { "type": "string" },
+    "base": { "$ref": "#/definitions/tokenMap" },
+    "derived": { "$ref": "#/definitions/tokenMap" },
+    "gradients": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "minItems": 2
+      }
+    },
+    "typography": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "required": ["display", "sans", "mono"]
+    },
+    "radius": { "type": "string" },
+    "aiImage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tolerancePerChannel", "coverageRequired", "criticalText", "provenance", "formats"],
+      "properties": {
+        "tolerancePerChannel": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "coverageRequired": { "type": "number", "minimum": 0, "maximum": 1 },
+        "criticalText": { "type": "string", "const": "none" },
+        "provenance": { "type": "string", "const": "c2pa-required" },
+        "formats": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["width", "height"],
+            "properties": {
+              "width": { "type": "integer", "minimum": 1 },
+              "height": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "tokenMap": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" }
+    }
+  }
+}

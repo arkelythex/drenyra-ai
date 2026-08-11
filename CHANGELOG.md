@@ -22,6 +22,13 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 - **Intended Usage** (`docs/intended-usage.md`) — the frozen frontier: definition, institutional thesis, golden rule, the philosophy translation table, the stricter fiscal controls, and the frozen delivery architecture (headless core + Command Center as interface).
 - README, ROADMAP, and CONTRIBUTING updated to reflect the frontier and current state (2026-08-10).
 
+### Added — brand-system contract (DRAFT)
+
+- **Brand-system contract** (`contracts/brand-system.md`, `contracts/brand-system/tokens.json`) — the single source of truth for the Drenyra ecosystem visual identity: canonical palette derived from the Command Center design tokens, derived-token derivation rules, the three canonical gradients, typography (Space Grotesk / Inter / Geist Mono), vector-vs-AI asset rules, and the AI image generation rules (palette-only, no critical text, C2PA provenance).
+- **Conformance checker** (`scripts/brand-conformance.mjs`) — zero-dependency verification: derived tokens re-derived byte-exact from base, SVG zero-tolerance color scan, built-in PNG decoder with even-spread sampling and palette-coverage gating. Wired into CI (`brand-conformance` job) and `bun run brand:conformance`.
+- **Conformance suite** (`contracts/__tests__/brand-conformance.test.ts`) — 7 tests pinning derivation, the banner, banned-drift rejection, structural SVG values, and PNG coverage.
+- **Banner migrated** — `docs/assets/brand/drenyra-ai-banner.svg` rebuilt on the canonical palette (the previous cyan/purple hero colors were off-system).
+
 ## 0.2.0 — 2026-08-02
 
 ### Added — all six contracts FROZEN

@@ -1,7 +1,7 @@
 # Drenyra AI — Contracts
 
 > [!IMPORTANT]
-> **Status: all six contracts are FROZEN at v0.1 (release 0.2.0).** Freezing means the normative surface of each frozen contract is pinned by a conformance suite that runs in CI and fails on drift.
+> **Status: six contracts are FROZEN at v0.1 (release 0.2.0); `brand-system` is DRAFT at v0.1.** Freezing means the normative surface of each frozen contract is pinned by a conformance suite that runs in CI and fails on drift. `brand-system` ships its conformance suite now and freezes when the ecosystem adopts it (see the [contract](brand-system.md)).
 
 <!-- -->
 
@@ -22,6 +22,7 @@ Contracts are the **public surface** of Drenyra AI. They are transport-agnostic,
 | [gate](gate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, CI/CD |
 | [ledger](ledger.md) | 0.1 | FROZEN | Auditors, ERPs, Drenyra Pi |
 | [recovery](recovery.md) | 0.1 | FROZEN | Drenyra Pi, CLI |
+| [brand-system](brand-system.md) | 0.1 | DRAFT | Drenyra, Drenyra Pi, Drenyra Engram, Guardian Angel, docs |
 
 The receipt contract's normative shape — the JSON schemas and the frozen conformance vectors — lives in [receipt-schema](receipt-schema/README.md).
 

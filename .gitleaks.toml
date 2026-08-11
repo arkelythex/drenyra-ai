@@ -1,0 +1,14 @@
+# gitleaks allowlist — documented TEST-ONLY fixtures only.
+#
+# contracts/receipt-schema/fixtures/dev-keys.test-only.json is an intentional,
+# contract-pinned fixture: fixed Ed25519 development key pairs used ONLY to
+# regenerate the frozen receipt conformance vectors byte-for-byte (see
+# contracts/receipt.md, "Schema contract"). The file self-classifies as
+# TEST-ONLY and is never operational. Rotating these keys would break the
+# frozen conformance suite, which is a contract violation. Anything outside
+# this exact path must NOT be added here.
+
+[allowlist]
+paths = [
+  '''contracts/receipt-schema/fixtures/dev-keys\.test-only\.json''',
+]
