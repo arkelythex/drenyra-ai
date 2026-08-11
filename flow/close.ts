@@ -15,6 +15,7 @@
  */
 
 import { CandidateLifecycle } from "../candidates/lifecycle.js";
+import { isValidRuc, isValidPeriod } from "../candidates/types.js";
 import type { Candidate, MaterialityInput, Reversibility } from "../candidates/types.js";
 import { runGuardianReview, type GuardianReport } from "../guardian/index.js";
 import { buildSignedReceipt, type ReceiptKeyPair, type SignedReceipt } from "../receipts/index.js";
@@ -75,19 +76,16 @@ export interface ClosePackage {
 	risks: readonly string[];
 }
 
-const RUC_RE = /^\d{11}$/;
-const PERIOD_RE = /^\d{6}$/;
-
 /** Run the monthly close vertical. Deterministic; never mutates external state. */
 export async function runMonthlyClose(input: MonthlyCloseInput): Promise<ClosePackage> {
 	const { scope } = input;
 	const risks: string[] = [];
 
 	// 1. Preflight: the scope freezes before any work (Design 02 §6.1).
-	if (!RUC_RE.test(scope.ruc)) {
+	if (!isValidRuc(scope.ruc)) {
 		return fail(`invalid RUC "${scope.ruc}" (must be 11 digits)`, scope);
 	}
-	if (!PERIOD_RE.test(scope.period)) {
+	if (!isValidPeriod(scope.period)) {
 		return fail(`invalid fiscal period "${scope.period}" (must be YYYYMM)`, scope);
 	}
 
