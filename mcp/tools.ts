@@ -15,8 +15,20 @@ import { validateLedger } from "../ledger/index.js";
 import type { LedgerEntry, LedgerManifest } from "../ledger/index.js";
 import type { McpTool } from "./protocol.js";
 
+/**
+ * Common declared capability facts shared with the CLI surface (consumer
+ * port). Supplied at composition time by `cmd/declared-surface.ts`; the MCP
+ * library never reads package files or imports `cmd/`.
+ */
+export interface DeclaredCapabilities {
+	version: string;
+	contracts: readonly { name: string; version: string; status: string }[];
+	jurisdictions: readonly string[];
+	adapters: readonly string[];
+}
+
 /** Declared capabilities (mirrors `drenyra-ai capabilities show`). */
-export function capabilitiesTool(): McpTool {
+export function capabilitiesTool(declared: DeclaredCapabilities): McpTool {
 	return {
 		name: "capabilities",
 		description:
@@ -27,19 +39,7 @@ export function capabilitiesTool(): McpTool {
 			additionalProperties: false,
 		},
 		handler() {
-			return {
-				version: "0.2.0",
-				contracts: [
-					{ name: "mission-protocol", version: "0.1", status: "FROZEN" },
-					{ name: "candidate", version: "0.1", status: "FROZEN" },
-					{ name: "receipt", version: "0.1", status: "FROZEN" },
-					{ name: "gate", version: "0.1", status: "FROZEN" },
-					{ name: "ledger", version: "0.1", status: "FROZEN" },
-					{ name: "recovery", version: "0.1", status: "FROZEN" },
-				],
-				jurisdictions: ["PE"],
-				adapters: [],
-			};
+			return declared;
 		},
 	};
 }

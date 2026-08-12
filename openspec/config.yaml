@@ -1,7 +1,7 @@
 schema: spec-driven
 
 context: |
-  Stack: TypeScript 5.7 ESM (Node >= 22), Bun package manager (bun.lock, CI uses bun), Vitest 2.1.
+  Stack: TypeScript 7.0 ESM (Node >= 22), Bun package manager (bun.lock, CI uses bun, bun 1.3), Vitest 4.1.
   Architecture: Drenyra-AI is the AI advisory orchestration layer; Drenyra Core retains deterministic
   authority over accounting decisions. Layered verifiable-accounting runtime — contracts/ (normative,
   versioned) -> library modules (receipts, ledger [audit-only], missions, candidates, review, gates,
@@ -9,7 +9,7 @@ context: |
   (thin CLI adapters). No reverse imports; never depends on Drenyra, Drenyra Pi, or Drenyra Engram.
   Target 16-program Peru v1 roadmap adds modules tenant/, evidence/, ingest/, policy/, and journal/ over
   phased slices; ledger/ remains audit-only. SUNAT-facing capabilities are in scope per slice.
-  Testing: Vitest — 463 tests across 25 files; frozen conformance vectors under contracts/__tests__;
+  Testing: Vitest 4.1 — 647 tests across 52 files (3 pre-existing failures in cmd/__tests__/cli.test.ts as of this init; app code untouched); frozen conformance vectors under contracts/__tests__;
   packed-artifact and install verification via scripts.
   Style: strict TS (no any, const-object types, flat interfaces); commands/output/adapters separated;
   money as BigInt cents; version/sequence numbers as JSON integers; fail-closed gates; English artifacts.
@@ -17,7 +17,7 @@ context: |
 session:
   execution_mode: automatic
   delivery_strategy: auto-forecast
-  review_budget_lines: 400
+  review_budget_lines: 300
 
 strict_tdd: true
 
@@ -51,7 +51,7 @@ rules:
     - Make fail-closed behavior explicit; document decisions with rationale
   tasks:
     - Group by phase with hierarchical numbering; keep tasks completable in one session
-    - Stay inside the 400 changed-line review budget; forecast when chained PRs may be needed
+    - Stay inside the 300 changed-line review budget; forecast when chained PRs may be needed
   apply:
     tdd: true
     test_command: bun run test

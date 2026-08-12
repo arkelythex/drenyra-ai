@@ -42,7 +42,9 @@
     "brand:ecosystem": "node scripts/brand-ecosystem-status.mjs",
     "skills:conformance": "bun run scripts/skills-conformance.mjs",
     "prepare": "node scripts/build.mjs",
-    "verify:package": "node scripts/build.mjs && bun run test && node scripts/verify-package-files.mjs",
+    "release:generate": "node scripts/sbom.mjs && node scripts/checksums.mjs",
+    "verify:release-integrity": "node scripts/verify-release-integrity.mjs",
+    "verify:package": "node scripts/build.mjs && bun run test && node scripts/verify-package-files.mjs && bun run release:generate && bun run verify:release-integrity",
     "prepack": "bun run verify:package",
     "prepublishOnly": "bun run typecheck && bun run verify:package && node scripts/verify-packed-install.mjs"
   },

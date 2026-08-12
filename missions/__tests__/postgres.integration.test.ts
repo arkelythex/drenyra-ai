@@ -102,10 +102,22 @@ describe("PostgreSQL integration (real)", () => {
 		if (!available) return;
 		const store = new PostgresIdempotencyStore(POOL);
 		const key = `key_it_${Date.now()}`;
-		await store.put({ key, payloadHash: "h1", status: "COMPLETED", result: { ok: true }, expiresAt: Date.now() + 60000 });
+		await store.put({
+			key,
+			payloadHash: "h1",
+			status: "COMPLETED",
+			result: { ok: true },
+			expiresAt: Date.now() + 60000,
+		});
 		expect((await store.get(key))?.status).toBe("COMPLETED");
 		const expiredKey = `expired_${Date.now()}`;
-		await store.put({ key: expiredKey, payloadHash: "h2", status: "COMPLETED", result: null, expiresAt: Date.now() - 1 });
+		await store.put({
+			key: expiredKey,
+			payloadHash: "h2",
+			status: "COMPLETED",
+			result: null,
+			expiresAt: Date.now() - 1,
+		});
 		// expired rows are treated as absent
 		expect(await store.get(expiredKey)).toBeUndefined();
 	});

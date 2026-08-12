@@ -19,11 +19,26 @@ import {
 	ledgerValidateTool,
 } from "../../mcp/index.js";
 import { nodeStdioLines, runMcpStdio } from "../../mcp/index.js";
+import { getDeclaredCapabilities } from "../declared-surface.js";
+
+/**
+ * Side-effect-free production MCP server factory: sources the shared
+ * declaration once for handshake metadata and the capabilities tool, so
+ * tests can inspect the production handshake without opening stdio.
+ */
+export function createDrenyraMcpServer(): McpServer {
+	const declared = getDeclaredCapabilities();
+	const server = new McpServer({
+		name: "drenyra-ai",
+		version: declared.version,
+	});
+	server.registerTool(capabilitiesTool(declared));
+	server.registerTool(ledgerValidateTool());
+	return server;
+}
 
 export function mcpServeCommand(): Promise<number> {
-	const server = new McpServer({ name: "drenyra-ai", version: "0.2.0" });
-	server.registerTool(capabilitiesTool());
-	server.registerTool(ledgerValidateTool());
+	const server = createDrenyraMcpServer();
 	const { readLine, writeLine, close } = nodeStdioLines(
 		{ createInterface },
 		{ stdin: process.stdin, stdout: process.stdout },

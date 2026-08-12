@@ -1,15 +1,23 @@
 import { describe, expect, it } from "vitest";
+import { getDeclaredCapabilities } from "../../cmd/declared-surface.js";
 import {
 	McpServer,
 	runMcpStdio,
 	capabilitiesTool,
 	type LineReader,
 	type LineWriter,
+	type DeclaredCapabilities,
 } from "../index.js";
 
+/** Production shared declaration; also proves the tool reports the package version. */
+const TEST_DECLARED: DeclaredCapabilities = getDeclaredCapabilities();
+
 function makeServer(): McpServer {
-	const server = new McpServer({ name: "drenyra-ai", version: "0.2.0" });
-	server.registerTool(capabilitiesTool());
+	const server = new McpServer({
+		name: "drenyra-ai",
+		version: TEST_DECLARED.version,
+	});
+	server.registerTool(capabilitiesTool(TEST_DECLARED));
 	return server;
 }
 

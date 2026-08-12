@@ -14,7 +14,9 @@ describe("BASE_PE_SKILLS (Peru layer)", () => {
 			registry.register(skill);
 		}
 		for (const skill of BASE_PE_SKILLS) {
-			expect(registry.resolveAt(skill.id, "2026-07-15").version).toBe(skill.version);
+			expect(registry.resolveAt(skill.id, "2026-07-15").version).toBe(
+				skill.version,
+			);
 		}
 	});
 

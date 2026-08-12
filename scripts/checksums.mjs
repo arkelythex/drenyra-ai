@@ -10,34 +10,49 @@
  */
 
 import { createHash } from "node:crypto";
-import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
-import { join, relative, sep } from "node:path";
+import { lstatSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = join(process.cwd(), "dist");
+const root = join(dirname(dirname(fileURLToPath(import.meta.url))), "dist");
 
 /** Walk a directory recursively, returning file paths. */
 function walk(dir, out = []) {
 	for (const entry of readdirSync(dir)) {
 		const path = join(dir, entry);
-		if (statSync(path).isDirectory()) {
+		const stat = lstatSync(path);
+		if (stat.isSymbolicLink())
+			throw new Error(`refusing symlink: ${relative(root, path)}`);
+		if (stat.isDirectory()) {
 			walk(path, out);
-		} else {
+		} else if (stat.isFile()) {
 			out.push(path);
+		} else {
+			throw new Error(`unsupported entry type: ${relative(root, path)}`);
 		}
 	}
 	return out;
 }
 
-const files = walk(root).sort();
-const lines = [];
-for (const file of files) {
-	const hash = createHash("sha256").update(readFileSync(file)).digest("hex");
-	// Portable relative path (POSIX separators) so the manifest is stable.
-	const rel = relative(root, file).split(sep).join("/");
-	lines.push(`${hash}  ${rel}`);
+try {
+	const files = walk(root)
+		.map((file) => relative(root, file).split(sep).join("/"))
+		.filter((rel) => rel !== "checksums.txt")
+		.sort();
+	const lines = [];
+	for (const rel of files) {
+		const hash = createHash("sha256")
+			.update(readFileSync(join(root, rel)))
+			.digest("hex");
+		lines.push(`${hash}  ${rel}`);
+	}
+	const manifest = lines.join("\n") + "\n";
+	writeFileSync(join(root, "checksums.txt"), manifest);
+	console.log(`checksums: ${files.length} files -> dist/checksums.txt`);
+	console.log(manifest);
+} catch (error) {
+	console.error(
+		`checksums: ${error instanceof Error ? error.message : String(error)}`,
+	);
+	process.exit(1);
 }
-const manifest = lines.join("\n") + "\n";
-writeFileSync(join(root, "checksums.txt"), manifest);
-console.log(`checksums: ${files.length} files -> dist/checksums.txt`);
-console.log(manifest);

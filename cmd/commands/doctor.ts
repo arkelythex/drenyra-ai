@@ -9,14 +9,15 @@
  * Strictly read-only ecosystem health check (Design 03 "doctor"): runtime
  * version, Node engine, frozen contract presence, CLI surface, and store
  * reachability. Never mutates anything. Exit 0 healthy, exit 1 with a JSON
- * report of failing checks.
+ * report of failing checks. Package assets (version, engine, contracts)
+ * resolve from the installed package location, never the caller's cwd; the
+ * mission-store check stays cwd-relative (caller-selected dev adapter).
  */
 
 import { existsSync } from "node:fs";
-import { createRequire } from "node:module";
 import { resolve } from "node:path";
-
-const require = createRequire(import.meta.url);
+import { getPackageMetadata } from "../adapters/package-metadata.js";
+import { DECLARED_CONTRACT_FILES } from "../declared-surface.js";
 
 interface HealthCheck {
 	name: string;
@@ -24,24 +25,23 @@ interface HealthCheck {
 	detail: string;
 }
 
-function packageInfo(): { version: string; engines?: { node?: string } } {
-	try {
-		return require("../../package.json") as {
-			version: string;
-			engines?: { node?: string };
-		};
-	} catch {
-		return { version: "unknown" };
-	}
-}
-
 export function doctorCommand(): number {
 	const checks: HealthCheck[] = [];
-	const pkg = packageInfo();
+
+	// Package identity; a resolution/metadata failure degrades the version and
+	// contracts checks below and never falls back to cwd or a stale literal.
+	let metadata:
+		| { version: string; engines?: { node?: string }; packageRoot: string }
+		| undefined;
+	try {
+		metadata = getPackageMetadata();
+	} catch {
+		// package root or manifest unavailable: checks below fail closed
+	}
 
 	// Node engine.
 	const nodeMajor = Number(process.versions.node.split(".")[0] ?? 0);
-	const required = pkg.engines?.node ?? ">=22";
+	const required = metadata?.engines?.node ?? ">=22";
 	const nodeOk = nodeMajor >= 22;
 	checks.push({
 		name: "node-engine",
@@ -54,23 +54,18 @@ export function doctorCommand(): number {
 	// Runtime version.
 	checks.push({
 		name: "version",
-		ok: pkg.version !== "unknown",
-		detail: pkg.version,
+		ok: metadata?.version !== undefined,
+		detail: metadata?.version ?? "unknown",
 	});
 
-	// Frozen contracts present.
-	const contractsDir = resolve(process.cwd(), "contracts");
-	const frozen = [
-		"mission-protocol.md",
-		"candidate.md",
-		"receipt.md",
-		"gate.md",
-		"ledger.md",
-		"recovery.md",
-	];
-	const missingContracts = frozen.filter(
-		(file) => !existsSync(resolve(contractsDir, file)),
-	);
+	// Frozen contracts present (relative to the installed package root).
+	const missingContracts =
+		metadata === undefined
+			? [...DECLARED_CONTRACT_FILES]
+			: DECLARED_CONTRACT_FILES.filter(
+					(file) =>
+						!existsSync(resolve(metadata.packageRoot, "contracts", file)),
+				);
 	checks.push({
 		name: "contracts",
 		ok: missingContracts.length === 0,

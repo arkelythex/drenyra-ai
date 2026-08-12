@@ -207,3 +207,9 @@ SHA-256 over concatenated current contents (in order) of the 13 implementation-c
 ```
 
 Attempt token `sha256:05b3783cd3adb867318031f04da7ae5e8085a8556537bd29f28d2da6548fde2e` was parent-acquired; no attempt acquire/settle performed by this phase (per delegation instructions).
+
+---
+
+## PAUSED — parent decision 2026-08-12
+
+**Status:** PAUSED by explicit user decision (ecosystem-first strategy). Slice 1A (tenant authority) complete and documented; slice 2 advanced de facto (RUC checksum in flow/guardian/candidates, commits 6f6223b, 09afdb9); 81 of 100 tasks unchecked in tasks.md (known discipline drift, not a full inventory of implemented work). Resumed in Phase 4 (v1.0) when real consumers require the remaining slices. No new implementation under this change while paused.

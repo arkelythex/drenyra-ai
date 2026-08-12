@@ -12,28 +12,11 @@
  * no float is ever used for money; schema/version strings are plain text.
  */
 
-import { accessSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { getPackageRoot } from "./package-metadata.js";
 
-function findPackageRoot(from: string): string {
-	let dir = from;
-	for (;;) {
-		try {
-			accessSync(join(dir, "package.json"));
-			return dir;
-		} catch {
-			// continue walking up
-		}
-		const parent = dirname(dir);
-		if (parent === dir) {
-			throw new Error("drenyra-ai package root not found");
-		}
-		dir = parent;
-	}
-}
-
-const PACKAGE_ROOT = findPackageRoot(dirname(fileURLToPath(import.meta.url)));
+const PACKAGE_ROOT = getPackageRoot();
 
 /**
  * Load a JSON schema from `<packageRoot>/contracts/<relativePath>`.

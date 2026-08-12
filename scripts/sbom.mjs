@@ -12,28 +12,40 @@
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = dirname(dirname(fileURLToPath(import.meta.url)));
 
 let manifest;
+let deps;
 try {
-	manifest = JSON.parse(
-		readFileSync(join(process.cwd(), "package.json"), "utf8"),
-	);
+	manifest = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+	if (typeof manifest.name !== "string" || typeof manifest.version !== "string")
+		throw new Error("package.json must declare string name and version");
+	deps = manifest.dependencies ?? {};
+	if (deps === null || typeof deps !== "object" || Array.isArray(deps))
+		throw new Error(
+			"package.json dependencies must be an object of string ranges",
+		);
+	for (const version of Object.values(deps))
+		if (typeof version !== "string")
+			throw new Error("package.json dependencies must declare string versions");
 } catch (error) {
 	console.error(
-		`sbom: cannot read package.json: ${error instanceof Error ? error.message : String(error)}`,
+		`sbom: ${error instanceof Error ? error.message : String(error)}`,
 	);
 	process.exit(1);
 }
 
-const components = Object.entries(manifest.dependencies ?? {}).map(
-	([name, version]) => ({
+const components = Object.entries(deps)
+	.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+	.map(([name, version]) => ({
 		type: "library",
 		name,
 		version,
 		scope: "required",
-	}),
-);
+	}));
 
 const sbom = {
 	bomFormat: "CycloneDX",
@@ -45,7 +57,6 @@ const sbom = {
 			name: manifest.name,
 			version: manifest.version,
 		},
-		timestamp: new Date().toISOString(),
 	},
 	components,
 	dependencies: [
@@ -56,6 +67,6 @@ const sbom = {
 	],
 };
 
-const out = join(process.cwd(), "dist", "sbom.json");
+const out = join(root, "dist", "sbom.json");
 writeFileSync(out, JSON.stringify(sbom, null, 2) + "\n");
 console.log(`sbom: ${components.length} components -> dist/sbom.json`);

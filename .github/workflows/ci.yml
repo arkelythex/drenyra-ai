@@ -82,7 +82,8 @@ jobs:
           node-version: "22"
       - run: bun install --frozen-lockfile
       # Build dist, run the full suite, verify the packaged file manifest.
-      - run: bun run verify:package
+      - name: Verify package and release-integrity evidence
+        run: bun run verify:package
       # Prove the PUBLISHED artifact works: npm pack -> install .tgz -> run
       # the bin under plain Node and resolve the library entry.
       - run: node scripts/verify-packed-install.mjs

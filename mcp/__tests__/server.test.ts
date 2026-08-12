@@ -1,9 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { McpServer, capabilitiesTool, ledgerValidateTool } from "../index.js";
+import { getDeclaredCapabilities } from "../../cmd/declared-surface.js";
+import {
+	McpServer,
+	capabilitiesTool,
+	ledgerValidateTool,
+	type DeclaredCapabilities,
+} from "../index.js";
+
+/** Production shared declaration; also proves the tool reports the package version. */
+const TEST_DECLARED: DeclaredCapabilities = getDeclaredCapabilities();
 
 function makeServer(): McpServer {
-	const server = new McpServer({ name: "drenyra-ai", version: "0.2.0" });
-	server.registerTool(capabilitiesTool());
+	const server = new McpServer({
+		name: "drenyra-ai",
+		version: TEST_DECLARED.version,
+	});
+	server.registerTool(capabilitiesTool(TEST_DECLARED));
 	server.registerTool(ledgerValidateTool());
 	return server;
 }
@@ -20,10 +32,14 @@ describe("McpServer", () => {
 			}),
 		);
 		const parsed = JSON.parse(response!) as {
-			result: { protocolVersion: string; serverInfo: { name: string } };
+			result: {
+				protocolVersion: string;
+				serverInfo: { name: string; version: string };
+			};
 		};
 		expect(parsed.result.protocolVersion).toBeTruthy();
 		expect(parsed.result.serverInfo.name).toBe("drenyra-ai");
+		expect(parsed.result.serverInfo.version).toBe(TEST_DECLARED.version);
 	});
 
 	it("lists registered tools", async () => {
@@ -53,10 +69,13 @@ describe("McpServer", () => {
 			result: { content: Array<{ text: string }> };
 		};
 		const content = JSON.parse(parsed.result.content[0]!.text) as {
-			contracts: unknown[];
+			version: string;
+			contracts: Array<{ name: string; version: string; status: string }>;
 			jurisdictions: string[];
 		};
+		expect(content.version).toBe(TEST_DECLARED.version);
 		expect(content.contracts).toHaveLength(6);
+		expect(content.contracts).toEqual(TEST_DECLARED.contracts);
 		expect(content.jurisdictions).toEqual(["PE"]);
 	});
 
