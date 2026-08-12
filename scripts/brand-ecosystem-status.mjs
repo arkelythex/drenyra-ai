@@ -12,7 +12,14 @@
  *   node scripts/brand-ecosystem-status.mjs        # human table + exit code
  *   node scripts/brand-ecosystem-status.mjs --json # machine-readable
  *
+ * Sibling root (where the five sibling repositories are looked up):
+ *   DRENYRA_ECOSYSTEM_ROOT (non-empty, wins over --root; whitespace-only is
+ *   treated as unset), else --root <dir> (relative roots resolve from the
+ *   working directory), else the current `..` sibling layout.
+ *
  * Exit code 0 = every repo has a passing banner (freeze-ready); 1 = pending.
+ * An absent sibling repository is reported as SIBLING_MISSING (never as
+ * missing banner content) and still fails the gate.
  */
 import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync } from "node:fs";
@@ -23,6 +30,21 @@ const HERE = resolve(fileURLToPath(new URL(".", import.meta.url)));
 const ROOT = resolve(HERE, "..");
 const CHECKER = join(HERE, "brand-conformance.mjs");
 
+/**
+ * Sibling-root precedence: non-empty DRENYRA_ECOSYSTEM_ROOT > --root <dir>
+ * > the existing `..` sibling layout. Relative roots resolve from the cwd.
+ */
+function resolveSiblingRoot() {
+	const env = (process.env.DRENYRA_ECOSYSTEM_ROOT ?? "").trim();
+	if (env) return resolve(env);
+	const flagIndex = process.argv.indexOf("--root");
+	const flag = flagIndex !== -1 ? process.argv[flagIndex + 1] : "";
+	if (flag && !flag.startsWith("-")) return resolve(flag);
+	return resolve(ROOT, "..");
+}
+
+const SIBLING_ROOT = resolveSiblingRoot();
+
 const REPOS = [
 	{
 		name: "drenyra-ai",
@@ -31,17 +53,17 @@ const REPOS = [
 	},
 	{
 		name: "drenyra-command-center",
-		dir: join(ROOT, "..", "drenyra-command-center"),
+		dir: join(SIBLING_ROOT, "drenyra-command-center"),
 		banner: "assets/branding/drenyra-banner.png",
 	},
 	{
 		name: "drenyra-pi",
-		dir: join(ROOT, "..", "drenyra-pi"),
+		dir: join(SIBLING_ROOT, "drenyra-pi"),
 		banner: "assets/branding/drenyra-pi-banner.png",
 	},
 	{
 		name: "drenyra-engram",
-		dir: join(ROOT, "..", "drenyra-engram"),
+		dir: join(SIBLING_ROOT, "drenyra-engram"),
 		banner: "assets/branding/drenyra-engram-banner.png",
 		legacy: [
 			"drenyra-engram-banner-1.png",
@@ -51,12 +73,12 @@ const REPOS = [
 	},
 	{
 		name: "drenyra-skills",
-		dir: join(ROOT, "..", "drenyra-skills"),
+		dir: join(SIBLING_ROOT, "drenyra-skills"),
 		banner: "assets/branding/drenyra-skills-banner.png",
 	},
 	{
 		name: "drenyra-guardian-angel",
-		dir: join(ROOT, "..", "drenyra-guardian-angel"),
+		dir: join(SIBLING_ROOT, "drenyra-guardian-angel"),
 		banner: "assets/branding/drenyra-guardian-angel-banner.png",
 	},
 ];
@@ -80,12 +102,19 @@ function runChecker(bannerPath) {
 		);
 	}
 	const asset =
+		// checker ROOT-relative asset paths; the sibling root is not used here
 		report.assets.find((a) => resolve(ROOT, "..", a.file) === bannerPath) ??
 		report.assets[0];
 	return asset;
 }
 
 function statusFor(repo) {
+	if (!existsSync(repo.dir)) {
+		return {
+			state: "SIBLING_MISSING",
+			detail: `sibling repository not found at ${repo.dir}; place ${repo.name} there or rerun with --root <ecosystem-root>`,
+		};
+	}
 	const abs = join(repo.dir, repo.banner);
 	if (existsSync(abs)) {
 		const asset = runChecker(abs);

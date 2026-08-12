@@ -13,6 +13,12 @@
  *   bun run skills:conformance -- --json # machine-readable
  *   bun run skills:conformance -- --manifest <path>  # override manifest path (CI)
  *
+ * Sibling root for the default manifest (<root>/drenyra-skills/skills/registry.json):
+ *   DRENYRA_ECOSYSTEM_ROOT (non-empty, wins over --root; whitespace-only is
+ *   treated as unset), else --root <dir> (relative roots resolve from the
+ *   working directory), else the current `..` sibling layout. --manifest
+ *   always selects the manifest directly, independent of the resolved root.
+ *
  * Exit 0 = no drift (the content repo and the runtime agree), 1 = drift.
  */
 import { readFileSync } from "node:fs";
@@ -21,20 +27,29 @@ import { fileURLToPath } from "node:url";
 import { BASE_PE_SKILLS } from "../skills/pe.ts";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const MANIFEST_PATH = join(
-	ROOT,
-	"..",
-	"drenyra-skills",
-	"skills",
-	"registry.json",
-);
 const args = process.argv.slice(2);
+const jsonFlag = args.includes("--json");
+
+/**
+ * Sibling-root precedence: non-empty DRENYRA_ECOSYSTEM_ROOT > --root <dir>
+ * > the existing `..` sibling layout. Relative roots resolve from the cwd.
+ */
+function resolveSiblingRoot() {
+	const env = (process.env.DRENYRA_ECOSYSTEM_ROOT ?? "").trim();
+	if (env) return resolve(env);
+	const flagIndex = args.indexOf("--root");
+	const flag = flagIndex !== -1 ? args[flagIndex + 1] : "";
+	if (flag && !flag.startsWith("-")) return resolve(flag);
+	return resolve(ROOT, "..");
+}
+
+const SIBLING_ROOT = resolveSiblingRoot();
+const DEFAULT_MANIFEST = join(SIBLING_ROOT, "drenyra-skills", "skills", "registry.json");
 const manifestFlag = args.indexOf("--manifest");
 const manifestPath =
 	manifestFlag !== -1 && args[manifestFlag + 1]
 		? resolve(args[manifestFlag + 1])
-		: MANIFEST_PATH;
-const jsonFlag = args.includes("--json");
+		: DEFAULT_MANIFEST;
 
 const COMPARE_FIELDS = [
 	"version",
@@ -53,9 +68,22 @@ let manifest;
 try {
 	manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
 } catch (error) {
-	console.error(
-		`skills-conformance: cannot read ${manifestPath}: ${error.message}`,
-	);
+	const hint = `place drenyra-skills under ${SIBLING_ROOT}, or run bun run scripts/skills-conformance.mjs --manifest <readable-registry.json>`;
+	if (jsonFlag) {
+		const report = {
+			contract: "skills-registry",
+			manifest: manifestPath,
+			pass: false,
+			problems: [`cannot read manifest: ${error.message}`],
+			hint,
+		};
+		process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+	} else {
+		console.error(
+			`skills-conformance: cannot read ${manifestPath}: ${error.message}`,
+		);
+		console.error(`hint: ${hint}`);
+	}
 	process.exit(1);
 }
 
