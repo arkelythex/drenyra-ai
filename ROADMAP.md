@@ -12,6 +12,20 @@
 
 > **Live gap analysis:** what is built vs. what remains for v1.0 → [2026-08-10 v1 Gap Analysis](docs/roadmaps/2026-08-10-v1-gap-analysis.md)
 
+## Program alignment
+
+The [Drenyra Dominion Program](openspec/programs/drenyra-dominion/README.md) fixes the ecosystem's vision, authority, contracts, waves, and gates; this roadmap tracks this repository's local delivery against it.
+
+| Roadmap work | Dominion wave | Related SDDs |
+| --- | --- | --- |
+| Phase 0–1 — identity and frozen contracts | 0 — Constitution | SDD-000, SDD-010 |
+| Phase 2c–3 — hybrid orchestration, configurator, agent runtime | 1 — Universal runtime | SDD-020, SDD-030, SDD-040 |
+| Phase 3 — Drenyra Skills, Drenyra Guardian Angel | 2 — Fiscal intelligence | SDD-070, SDD-080, SDD-090 |
+| Phase 4 — flagship monthly close via Command Center | 3 — Flagship product | SDD-050, SDD-060, SDD-100 |
+| Phase 4 — v1.0 production and commercial readiness | 4 — Production | SDD-110 |
+
+The active `fiscal-authority-kernel` OpenSpec change seeds the SDD-040 (RDA v2) and SDD-050 (monthly close) capabilities; gateway and correction work maps to SDD-030 (organic routing) and SDD-040.
+
 ## At a glance
 
 | Phase | Focus | Status |

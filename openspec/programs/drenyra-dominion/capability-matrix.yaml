@@ -1,0 +1,159 @@
+# Capability Matrix — Drenyra Dominion Program
+# First capability matrix against the REAL state of each repository (Gate 0).
+# Status: DRAFT (v0.1) · Generated 2026-08-11 · Recheck at each program checkpoint.
+# Legend: implemented | partial | planned | absent
+
+program:
+  id: drenyra-dominion
+  version: 0.1
+  stage: private
+
+repositories:
+  - name: drenyra-ai
+    role: authority-core
+    package: drenyra-ai
+    version: 0.2.0
+    license: proprietary
+    status: pre-alpha
+    source_of_truth_for:
+      - contracts
+      - missions
+      - candidates
+      - gates
+      - receipts
+      - ledger
+    capabilities:
+      frozen-contracts: implemented      # six v0.1 contracts FROZEN
+      mission-lifecycle-15-states: implemented
+      candidate-identity-materiality: implemented
+      proportional-review-r0-r3: implemented
+      receipts-ed25519: implemented
+      audit-ledger-hash-chain: implemented
+      lifecycle-gates: implemented
+      crash-recovery: implemented
+      tenant-core: implemented            # tenant-core + tenant-isolation shipped
+      tenant-isolation: implemented
+      evidence-lifecycle: partial         # fiscal-authority-kernel slice 1B in progress
+      journal-lifecycle: partial          # fiscal-authority-kernel slice 1C in progress
+      pe-policy-cdr-composition: partial  # fiscal-authority-kernel slices 1D/1E in progress
+      adapters-ERP-SUNAT-banks: planned   # SDD-110
+      open-spec-program: implemented      # this program directory
+    active_changes:
+      - fiscal-authority-kernel   # in progress (tenant, evidence, journal, policy, CDR)
+      - bounded-agent-roles
+      - drenyra-ecosystem-cleanup # archived 2026-08-11
+    tests: 640
+
+  - name: drenyra-command-center
+    role: command-center
+    package: "@drenyra/main"
+    version: "workspace (packages 0.1.0–1.0.0)"
+    license: proprietary (app) — ecosystem private
+    status: in-development
+    capabilities:
+      web-app: implemented
+      packages-ai: implemented
+      packages-domain: implemented
+      packages-fiscal-approval: partial
+      packages-mission-client: partial
+      packages-fiscal-compliance-pipeline: partial
+      packages-phase-gatekeeper: partial
+      packages-workspace-*: partial
+      core-projection-status-nextaction: planned    # SDD-100
+      evidence-room: planned                         # SDD-100
+      decision-queue-r2-r3: planned                  # SDD-100
+      close-package: planned                         # SDD-050/100
+      control-center-autonomy: planned               # SDD-100
+    active_changes: []
+    tests: 209
+
+  - name: drenyra-pi
+    role: agentic-runtime
+    package: drenyra-pi
+    version: 0.0.1-prealpha.1
+    license: proprietary
+    status: pre-alpha
+    capabilities:
+      persona-startup-panel: partial
+      drenyra-commands: partial
+      pi-subagents: partial
+      model-routing: partial
+      packaged-skills: partial
+      rda-chains: partial
+      tool-safety-broad-deny: partial
+      engram-integration: partial
+      pinned-ai-runtime: partial
+      configurator-install-doctor-sync: planned      # SDD-020
+    active_changes: []
+    tests: partial
+
+  - name: drenyra-engram
+    role: institutional-memory
+    package: drenyra-engram
+    version: 0.0.1-prealpha.1 (Go 1.26, module arkelythex/drenyra-engram)
+    license: Apache-2.0 (open component)
+    status: alpha (v0.7.0 local-first EvidenceObject delivered)
+    capabilities:
+      scope-first-sqlite: implemented
+      ed25519-receipts: implemented
+      offline-verification: implemented
+      cli-http-mcp: partial
+      lifecycle-vigencia: implemented
+      provenance: implemented
+      non-authorization-boundary: implemented
+      memory-never-authorizes: implemented
+      evidence-object-worm: implemented
+      cross-tenant-isolation: implemented
+    active_changes:
+      - audit-register-closure
+    tests: go-test-suite (40+ baseline, growing)
+
+  - name: drenyra-skills
+    role: knowledge-content
+    package: none (content-only)
+    version: registry 0.x
+    license: proprietary
+    status: pre-alpha
+    capabilities:
+      skill-format-template: implemented
+      registry-manifest-schema: implemented
+      pe-igv-validate: implemented
+      normative-sources: partial
+      vigencia-versioning: planned                   # SDD-070
+      checksum-signature: planned                    # SDD-070
+      rollback: planned                              # SDD-070
+      latam-policy-packs: planned                    # future
+    active_changes: []
+    tests: conformance via drenyra-ai skills:conformance
+
+  - name: drenyra-guardian-angel
+    role: independent-verification
+    package: none (scaffolding)
+    version: n/a
+    license: proprietary
+    status: pre-alpha (scaffolding)
+    capabilities:
+      posture-docs: partial
+      verification-lenses: planned                   # SDD-090
+      read-only-frozen-candidates: planned           # SDD-090
+      refutation-dual-review: planned                # SDD-090
+      findings-resolution: planned                   # SDD-090
+    active_changes: []
+    tests: none yet
+
+invariants:
+  - no-component-approves-itself
+  - state-owned-by-provider
+  - review-after-freeze
+  - memory-never-authorizes
+  - skills-immutable-during-mission
+  - contracts-frozen-v0.1
+  - money-bigint-cents
+  - unknown-reconciles-before-retry
+
+wave_readiness:
+  wave-0-constitution: in-progress    # contracts frozen; program docs drafted
+  wave-1-universal-runtime: pending   # blocked by Gate 0 (SDD-020)
+  wave-2-fiscal-intelligence: pending
+  wave-3-flagship-product: pending    # UX exploration may start
+  wave-4-production: pending

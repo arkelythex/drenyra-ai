@@ -11,6 +11,14 @@
 
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no float is ever used for money; version/sequence numbers are JSON integers, never floats.
 
+## Drenyra Dominion Program
+
+Drenyra AI participates in the [Drenyra Dominion Program](../openspec/programs/drenyra-dominion/README.md), the federated program master that fixes vision, authority, contracts, dependencies, gates, and sequencing across every Drenyra repository. The program master lives in `openspec/programs/drenyra-dominion/`; each repository holds only its local changes plus a reference to it — full specs are never copied into participant repos.
+
+The program gates apply to every drenyra-ai change: conformance with the authority model, no duplicated normative functions across repositories, explicit producer–consumer contracts, no moving branches, no monetary floats, no memory-as-evidence, UNKNOWN reconciliation for external execution, migration and rollback, and the review budget.
+
+The open-core transition is registered as an **intention** in [charter.md §9](../openspec/programs/drenyra-dominion/charter.md#9-open-core-transition) — not a contractual promise. The private stage continues until a formal, conditions-based decision.
+
 ## Community development model
 
 | Mechanism | Purpose |

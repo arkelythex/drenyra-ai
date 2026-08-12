@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "drenyra-dominion/program-lock.schema.json",
+  "title": "Drenyra Dominion Program Lock",
+  "description": "Reproducible ecosystem composition: fixes repositories, commit SHAs, package versions, contracts consumed/produced, skills, storage schemas, compatibility, conformance status, and artifacts for one integrated checkpoint.",
+  "type": "object",
+  "required": ["program", "lockVersion", "stage", "generatedAt", "status", "repositories", "waves"],
+  "properties": {
+    "program": { "type": "string", "const": "drenyra-dominion" },
+    "lockVersion": { "type": "integer", "minimum": 1 },
+    "stage": { "type": "string", "enum": ["private", "open-core"] },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "generatedBy": { "type": "string" },
+    "status": { "type": "string", "enum": ["baseline", "candidate", "promoted", "superseded"] },
+    "repositories": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "role", "commitSha"],
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": "string" },
+          "commitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+          "package": { "type": ["string", "null"] },
+          "version": { "type": ["string", "null"] },
+          "license": { "type": "string" },
+          "contracts": {
+            "type": "object",
+            "properties": {
+              "consumed": { "type": "array", "items": { "type": "string" } },
+              "produced": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "skills": { "type": "array", "items": { "type": "string" } },
+          "storageSchemas": { "type": "array", "items": { "type": "string" } },
+          "compatibility": {
+            "type": "object",
+            "properties": {
+              "mcp": { "type": "boolean" },
+              "sdk": { "type": "boolean" },
+              "cli": { "type": "boolean" }
+            }
+          },
+          "conformance": {
+            "type": "object",
+            "properties": {
+              "status": { "type": "string" },
+              "tests": { "type": "integer", "minimum": 0 }
+            }
+          },
+          "activeChanges": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "checksums": { "type": "object" },
+    "waves": {
+      "type": "object",
+      "properties": {
+        "wave-0-constitution": { "type": "string" },
+        "wave-1-universal-runtime": { "type": "string" },
+        "wave-2-fiscal-intelligence": { "type": "string" },
+        "wave-3-flagship-product": { "type": "string" },
+        "wave-4-production": { "type": "string" }
+      }
+    }
+  }
+}

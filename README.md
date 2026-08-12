@@ -317,6 +317,20 @@ docs/               Architecture, trust-model, and dependency documentation
 
 **Direction rule:** Drenyra AI may integrate Drenyra Engram and is consumed by Drenyra and Drenyra Pi. It never depends on Drenyra or Drenyra Pi, and Drenyra Pi never leaks into Drenyra AI's contracts. External systems — ERP, SUNAT, banks — connect through adapters and evidence, never through privileged access.
 
+### Drenyra Dominion Program
+
+Drenyra AI is the **authority core** of the [Drenyra Dominion Program](openspec/programs/drenyra-dominion/README.md), the federated program master that fixes vision, authority, contracts, dependencies, gates, and sequencing across every Drenyra repository. A single master SDD is complemented by implementable vertical SDDs: each vertical delivers a complete capability that may traverse the repositories it needs (for example, the monthly close spans this repo, Drenyra Pi, and Drenyra Command Center) while every repository keeps its ownership and boundaries.
+
+| SDD | Role in this repository |
+| --- | --- |
+| [SDD-000](openspec/programs/drenyra-dominion/sdds/sdd-000-dominion/README.md) | North Star, frontiers, authority, taxonomy, and domain criteria |
+| [SDD-010](openspec/programs/drenyra-dominion/sdds/sdd-010-contracts/README.md) | Ecosystem contracts and release train — multi-repo compatibility and coordinated releases |
+| [SDD-030](openspec/programs/drenyra-dominion/sdds/sdd-030-routing/README.md) | Organic accounting work routing from evidence and risk |
+| [SDD-040](openspec/programs/drenyra-dominion/sdds/sdd-040-rda-v2/README.md) | Receipt-Driven Accounting v2 — frozen candidates, proportional review, bounded correction |
+| [SDD-090](openspec/programs/drenyra-dominion/sdds/sdd-090-guardian/README.md) | Independent, adversarial, strictly read-only verification |
+
+This repository holds only its local change plus a reference to the master program — full specs are never copied here, because they would diverge. The [program README](openspec/programs/drenyra-dominion/README.md) is the source of truth.
+
 ---
 
 ## Documentation
@@ -336,6 +350,7 @@ docs/               Architecture, trust-model, and dependency documentation
 | Storage and persistence | [Storage Model](docs/architecture/storage-model.md) |
 | Change or extend a contract | [Contracts](contracts/README.md) — change policy, conformance suites, migration path |
 | Track the plan | [ROADMAP](ROADMAP.md) and [CHANGELOG](CHANGELOG.md) |
+| Read the ecosystem program (master SDD, waves, gates, program-lock) | [Drenyra Dominion Program](openspec/programs/drenyra-dominion/README.md) — program source of truth |
 | Contribute | [CONTRIBUTING](CONTRIBUTING.md), [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md), [SECURITY](SECURITY.md) |
 
 ---

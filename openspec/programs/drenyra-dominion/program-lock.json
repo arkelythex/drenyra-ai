@@ -1,0 +1,127 @@
+{
+  "$schema": "drenyra-dominion/program-lock.schema.json",
+  "program": "drenyra-dominion",
+  "lockVersion": 1,
+  "stage": "private",
+  "generatedAt": "2026-08-11T00:00:00Z",
+  "generatedBy": "Gate 0 — capability inventory (see gate-0.md)",
+  "status": "baseline",
+  "repositories": [
+    {
+      "name": "drenyra-ai",
+      "role": "authority-core",
+      "commitSha": "cf87bd432717624138f6d57235199926b5ed04e6",
+      "package": "drenyra-ai",
+      "version": "0.2.0",
+      "license": "proprietary",
+      "contracts": {
+        "consumed": [],
+        "produced": [
+          "mission-protocol@0.1",
+          "candidate@0.1",
+          "receipt@0.1",
+          "gate@0.1",
+          "ledger@0.1",
+          "recovery@0.1"
+        ]
+      },
+      "skills": [],
+      "storageSchemas": ["mission-store", "receipt-store", "ledger-store"],
+      "compatibility": { "mcp": false, "sdk": true, "cli": true },
+      "conformance": { "status": "passing", "tests": 640 },
+      "activeChanges": ["fiscal-authority-kernel", "bounded-agent-roles"]
+    },
+    {
+      "name": "drenyra-command-center",
+      "role": "command-center",
+      "commitSha": "7964823114c33cc3963938a3e9a4897c9897a27f",
+      "package": "@drenyra/main",
+      "version": "workspace-0.1",
+      "license": "private-ecosystem",
+      "contracts": {
+        "consumed": ["candidate@0.1", "receipt@0.1", "gate@0.1", "mission-protocol@0.1", "ledger@0.1"],
+        "produced": []
+      },
+      "skills": [],
+      "storageSchemas": ["app-store"],
+      "compatibility": { "mcp": false, "sdk": false, "cli": true },
+      "conformance": { "status": "passing", "tests": 209 },
+      "activeChanges": []
+    },
+    {
+      "name": "drenyra-pi",
+      "role": "agentic-runtime",
+      "commitSha": "c158286b237364fbd06b07f5f87c0e3bc03d19cb",
+      "package": "drenyra-pi",
+      "version": "0.0.1-prealpha.1",
+      "license": "proprietary",
+      "contracts": {
+        "consumed": ["mission-protocol@0.1", "candidate@0.1", "receipt@0.1"],
+        "produced": []
+      },
+      "skills": ["packaged-skills-draft"],
+      "storageSchemas": [],
+      "compatibility": { "mcp": false, "sdk": false, "cli": false },
+      "conformance": { "status": "passing", "tests": 0 },
+      "activeChanges": []
+    },
+    {
+      "name": "drenyra-engram",
+      "role": "institutional-memory",
+      "commitSha": "6b795494c6407196a538145c132ba63fc9c96a1b",
+      "package": "drenyra-engram",
+      "version": "0.0.1-prealpha.1",
+      "license": "apache-2.0",
+      "contracts": {
+        "consumed": [],
+        "produced": ["memory@0.1", "scope@0.1", "lifecycle@0.1", "provenance@0.1"]
+      },
+      "skills": [],
+      "storageSchemas": ["sqlite-scope-first", "evidence-object-worm"],
+      "compatibility": { "mcp": true, "sdk": false, "cli": true },
+      "conformance": { "status": "passing", "tests": 40 },
+      "activeChanges": ["audit-register-closure"]
+    },
+    {
+      "name": "drenyra-skills",
+      "role": "knowledge-content",
+      "commitSha": "315b2f64b0e7206e1be8c1f1a8432b5fce944e4e",
+      "package": null,
+      "version": "registry-0.x",
+      "license": "proprietary",
+      "contracts": { "consumed": [], "produced": ["skill-registry@0.x"] },
+      "skills": ["pe-igv-validate"],
+      "storageSchemas": ["skill-registry-json"],
+      "compatibility": { "mcp": false, "sdk": false, "cli": false },
+      "conformance": { "status": "conformance-via-drenyra-ai", "tests": 0 },
+      "activeChanges": []
+    },
+    {
+      "name": "drenyra-guardian-angel",
+      "role": "independent-verification",
+      "commitSha": "ef9f485d4bd9abb569e284fcf93c8351b44fbcdf",
+      "package": null,
+      "version": null,
+      "license": "proprietary",
+      "contracts": {
+        "consumed": ["candidate@0.1", "receipt@0.1", "gate@0.1", "ledger@0.1", "recovery@0.1"],
+        "produced": []
+      },
+      "skills": [],
+      "storageSchemas": [],
+      "compatibility": { "mcp": false, "sdk": false, "cli": false },
+      "conformance": { "status": "scaffolding", "tests": 0 },
+      "activeChanges": []
+    }
+  ],
+  "checksums": {
+    "note": "Computed at promotion time by the federated integration runner; baseline lock records SHAs only."
+  },
+  "waves": {
+    "wave-0-constitution": "in-progress",
+    "wave-1-universal-runtime": "pending",
+    "wave-2-fiscal-intelligence": "pending",
+    "wave-3-flagship-product": "pending",
+    "wave-4-production": "pending"
+  }
+}
