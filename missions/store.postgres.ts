@@ -13,6 +13,14 @@
  *
  * Integration tests require a running PostgreSQL (DATABASE_URL); unit tests
  * verify the SQL and parameter mapping with a fake pool.
+ *
+ * SQL policy (decided 2026-08-11, Option A): raw SQL is INTENTIONAL in this
+ * adapter — a database adapter is the one layer where SQL is the domain.
+ * Queries are parameterized (no string interpolation of values), covered by
+ * the fake-pool unit tests AND the real PostgreSQL integration suite, and a
+ * query-builder refactor would add a dependency and regression risk without
+ * a correctness gain. The no-sql-in-code lens rule is treated as opinionated
+ * here; its findings on this file are tracked as flagged, not blockers.
  */
 
 import type { Pool } from "pg";

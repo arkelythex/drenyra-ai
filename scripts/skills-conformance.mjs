@@ -20,21 +20,21 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { BASE_PE_SKILLS } from "../skills/pe.ts";
 
-    const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
-    const MANIFEST_PATH = join(
-    	ROOT,
-    	"..",
-    	"drenyra-skills",
-    	"skills",
-    	"registry.json",
-    );
-    const args = process.argv.slice(2);
-    const manifestFlag = args.indexOf("--manifest");
-    const manifestPath =
-    	manifestFlag !== -1 && args[manifestFlag + 1]
-    		? resolve(args[manifestFlag + 1])
-    		: MANIFEST_PATH;
-    const jsonFlag = args.includes("--json");
+const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const MANIFEST_PATH = join(
+	ROOT,
+	"..",
+	"drenyra-skills",
+	"skills",
+	"registry.json",
+);
+const args = process.argv.slice(2);
+const manifestFlag = args.indexOf("--manifest");
+const manifestPath =
+	manifestFlag !== -1 && args[manifestFlag + 1]
+		? resolve(args[manifestFlag + 1])
+		: MANIFEST_PATH;
+const jsonFlag = args.includes("--json");
 
 const COMPARE_FIELDS = [
 	"version",

@@ -19,16 +19,24 @@
  * Loading tolerates legacy files without storeSchemaVersion (treated as 0).
  */
 
-import { readFileSync, writeFileSync, openSync, closeSync, fsyncSync, renameSync, unlinkSync } from "node:fs";
+import {
+	readFileSync,
+	writeFileSync,
+	openSync,
+	closeSync,
+	fsyncSync,
+	renameSync,
+	unlinkSync,
+} from "node:fs";
 import { dirname, basename, join } from "node:path";
 import { randomUUID } from "node:crypto";
 import {
-  InMemoryIdempotencyStore,
-  InMemoryMissionEventStore,
-  InMemoryMissionStore,
-  type IdempotencyRecord,
-  type MissionEvent,
-  type MissionSnapshot,
+	InMemoryIdempotencyStore,
+	InMemoryMissionEventStore,
+	InMemoryMissionStore,
+	type IdempotencyRecord,
+	type MissionEvent,
+	type MissionSnapshot,
 } from "../../missions/index.js";
 
 /** Version of the on-disk store shape written by this adapter. */
@@ -39,68 +47,70 @@ export const DEFAULT_STORE_PATH = "./drenyra-missions.json";
 
 /** Persisted store file shape. */
 export interface MissionStoreFile {
-  storeSchemaVersion: number;
-  missions: MissionSnapshot[];
-  events: MissionEvent[];
-  idempotency: IdempotencyRecord[];
+	storeSchemaVersion: number;
+	missions: MissionSnapshot[];
+	events: MissionEvent[];
+	idempotency: IdempotencyRecord[];
 }
 
 /** The three in-memory stores the MissionRuntime depends on. */
 export interface MissionRuntimeStores {
-  missions: InMemoryMissionStore;
-  events: InMemoryMissionEventStore;
-  idempotency: InMemoryIdempotencyStore;
+	missions: InMemoryMissionStore;
+	events: InMemoryMissionEventStore;
+	idempotency: InMemoryIdempotencyStore;
 }
 
 function buildEmptyStores(): MissionRuntimeStores {
-  return {
-    missions: new InMemoryMissionStore(),
-    events: new InMemoryMissionEventStore(),
-    idempotency: new InMemoryIdempotencyStore(),
-  };
+	return {
+		missions: new InMemoryMissionStore(),
+		events: new InMemoryMissionEventStore(),
+		idempotency: new InMemoryIdempotencyStore(),
+	};
 }
 
 function isEnoent(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    (error as { code?: unknown }).code === "ENOENT"
-  );
+	return (
+		typeof error === "object" &&
+		error !== null &&
+		(error as { code?: unknown }).code === "ENOENT"
+	);
 }
 
 function loadStoreFile(filePath: string): MissionStoreFile {
-  let raw: unknown;
-  try {
-    raw = JSON.parse(readFileSync(filePath, "utf-8")) as unknown;
-  } catch (error) {
-    throw new Error(`cannot parse mission store ${filePath}: ${error instanceof Error ? error.message : String(error)}`);
-  }
-  if (typeof raw !== "object" || raw === null) {
-    throw new Error(`${filePath} must be an object`);
-  }
-  const record = raw as Record<string, unknown>;
-  const missions = record.missions;
-  const events = record.events;
-  const idempotency = record.idempotency;
-  if (
-    !Array.isArray(missions) ||
-    !Array.isArray(events) ||
-    !Array.isArray(idempotency)
-  ) {
-    throw new Error(
-      `${filePath} must be { missions, events, idempotency } arrays`,
-    );
-  }
-  const storeSchemaVersion =
-    typeof record.storeSchemaVersion === "number"
-      ? record.storeSchemaVersion
-      : 0;
-  return {
-    storeSchemaVersion,
-    missions: missions as MissionSnapshot[],
-    events: events as MissionEvent[],
-    idempotency: idempotency as IdempotencyRecord[],
-  };
+	let raw: unknown;
+	try {
+		raw = JSON.parse(readFileSync(filePath, "utf-8")) as unknown;
+	} catch (error) {
+		throw new Error(
+			`cannot parse mission store ${filePath}: ${error instanceof Error ? error.message : String(error)}`,
+		);
+	}
+	if (typeof raw !== "object" || raw === null) {
+		throw new Error(`${filePath} must be an object`);
+	}
+	const record = raw as Record<string, unknown>;
+	const missions = record.missions;
+	const events = record.events;
+	const idempotency = record.idempotency;
+	if (
+		!Array.isArray(missions) ||
+		!Array.isArray(events) ||
+		!Array.isArray(idempotency)
+	) {
+		throw new Error(
+			`${filePath} must be { missions, events, idempotency } arrays`,
+		);
+	}
+	const storeSchemaVersion =
+		typeof record.storeSchemaVersion === "number"
+			? record.storeSchemaVersion
+			: 0;
+	return {
+		storeSchemaVersion,
+		missions: missions as MissionSnapshot[],
+		events: events as MissionEvent[],
+		idempotency: idempotency as IdempotencyRecord[],
+	};
 }
 
 /**
@@ -108,9 +118,9 @@ function loadStoreFile(filePath: string): MissionStoreFile {
  * (same filesystem, so rename is atomic), with a discoverable .tmp pattern.
  */
 export function buildTempPath(filePath: string): string {
-  const dir = dirname(filePath);
-  const base = basename(filePath);
-  return join(dir, `${base}.tmp.${process.pid}.${randomUUID()}`);
+	const dir = dirname(filePath);
+	const base = basename(filePath);
+	return join(dir, `${base}.tmp.${process.pid}.${randomUUID()}`);
 }
 
 /**
@@ -122,46 +132,46 @@ export function buildTempPath(filePath: string): string {
  * best-effort because opening a directory for fsync is POSIX-only.
  */
 export async function writeFileAtomic(
-  filePath: string,
-  data: string,
+	filePath: string,
+	data: string,
 ): Promise<void> {
-  const tmpPath = buildTempPath(filePath);
-  let fd: number | undefined;
-  try {
-    fd = openSync(tmpPath, "w", 0o644);
-    writeFileSync(fd, data, "utf-8");
-    fsyncSync(fd);
-    closeSync(fd);
-    fd = undefined;
-    renameSync(tmpPath, filePath);
-    // Best-effort parent-directory fsync (POSIX): guarantees the rename itself
-    // is durable. Not fatal when unsupported (e.g. Windows or odd filesystems).
-    let dirFd: number | undefined;
-    try {
-      dirFd = openSync(dirname(filePath), "r");
-      fsyncSync(dirFd);
-    } catch {
-      // best-effort only
-    } finally {
-      if (dirFd !== undefined) {
-        closeSync(dirFd);
-      }
-    }
-  } catch (error) {
-    if (fd !== undefined) {
-      try {
-        closeSync(fd);
-      } catch {
-        // already closed or unusable
-      }
-    }
-    try {
-      unlinkSync(tmpPath);
-    } catch {
-      // temp file may never have been created
-    }
-    throw error;
-  }
+	const tmpPath = buildTempPath(filePath);
+	let fd: number | undefined;
+	try {
+		fd = openSync(tmpPath, "w", 0o644);
+		writeFileSync(fd, data, "utf-8");
+		fsyncSync(fd);
+		closeSync(fd);
+		fd = undefined;
+		renameSync(tmpPath, filePath);
+		// Best-effort parent-directory fsync (POSIX): guarantees the rename itself
+		// is durable. Not fatal when unsupported (e.g. Windows or odd filesystems).
+		let dirFd: number | undefined;
+		try {
+			dirFd = openSync(dirname(filePath), "r");
+			fsyncSync(dirFd);
+		} catch {
+			// best-effort only
+		} finally {
+			if (dirFd !== undefined) {
+				closeSync(dirFd);
+			}
+		}
+	} catch (error) {
+		if (fd !== undefined) {
+			try {
+				closeSync(fd);
+			} catch {
+				// already closed or unusable
+			}
+		}
+		try {
+			unlinkSync(tmpPath);
+		} catch {
+			// temp file may never have been created
+		}
+		throw error;
+	}
 }
 
 /**
@@ -170,53 +180,50 @@ export async function writeFileAtomic(
  * atomically.
  */
 export class MissionFileStore {
-  public readonly filePath: string;
+	public readonly filePath: string;
 
-  constructor(filePath: string) {
-    this.filePath = filePath;
-  }
+	constructor(filePath: string) {
+		this.filePath = filePath;
+	}
 
-  /** Loads the file (or starts empty on ENOENT) into fresh in-memory stores. */
-  async hydrate(): Promise<MissionRuntimeStores> {
-    let file: MissionStoreFile;
-    try {
-      file = loadStoreFile(this.filePath);
-    } catch (error) {
-      if (isEnoent(error)) {
-        file = {
-          storeSchemaVersion: STORE_SCHEMA_VERSION,
-          missions: [],
-          events: [],
-          idempotency: [],
-        };
-      } else {
-        throw error;
-      }
-    }
-    const stores = buildEmptyStores();
-    for (const snapshot of file.missions) {
-      await stores.missions.save(snapshot);
-    }
-    for (const event of file.events) {
-      await stores.events.append(event);
-    }
-    for (const record of file.idempotency) {
-      await stores.idempotency.put(record);
-    }
-    return stores;
-  }
+	/** Loads the file (or starts empty on ENOENT) into fresh in-memory stores. */
+	async hydrate(): Promise<MissionRuntimeStores> {
+		let file: MissionStoreFile;
+		try {
+			file = loadStoreFile(this.filePath);
+		} catch (error) {
+			if (isEnoent(error)) {
+				file = {
+					storeSchemaVersion: STORE_SCHEMA_VERSION,
+					missions: [],
+					events: [],
+					idempotency: [],
+				};
+			} else {
+				throw error;
+			}
+		}
+		const stores = buildEmptyStores();
+		for (const snapshot of file.missions) {
+			await stores.missions.save(snapshot);
+		}
+		for (const event of file.events) {
+			await stores.events.append(event);
+		}
+		for (const record of file.idempotency) {
+			await stores.idempotency.put(record);
+		}
+		return stores;
+	}
 
-  /** Serializes the in-memory stores and writes them atomically. */
-  async persist(stores: MissionRuntimeStores): Promise<void> {
-    const file: MissionStoreFile = {
-      storeSchemaVersion: STORE_SCHEMA_VERSION,
-      missions: await stores.missions.list(),
-      events: stores.events.all(),
-      idempotency: stores.idempotency.all(),
-    };
-    await writeFileAtomic(
-      this.filePath,
-      JSON.stringify(file, null, 2) + "\n",
-    );
-  }
+	/** Serializes the in-memory stores and writes them atomically. */
+	async persist(stores: MissionRuntimeStores): Promise<void> {
+		const file: MissionStoreFile = {
+			storeSchemaVersion: STORE_SCHEMA_VERSION,
+			missions: await stores.missions.list(),
+			events: stores.events.all(),
+			idempotency: stores.idempotency.all(),
+		};
+		await writeFileAtomic(this.filePath, JSON.stringify(file, null, 2) + "\n");
+	}
 }

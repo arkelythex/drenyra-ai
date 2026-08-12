@@ -17,20 +17,20 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 function findPackageRoot(from: string): string {
-  let dir = from;
-  for (;;) {
-    try {
-      accessSync(join(dir, "package.json"));
-      return dir;
-    } catch {
-      // continue walking up
-    }
-    const parent = dirname(dir);
-    if (parent === dir) {
-      throw new Error("drenyra-ai package root not found");
-    }
-    dir = parent;
-  }
+	let dir = from;
+	for (;;) {
+		try {
+			accessSync(join(dir, "package.json"));
+			return dir;
+		} catch {
+			// continue walking up
+		}
+		const parent = dirname(dir);
+		if (parent === dir) {
+			throw new Error("drenyra-ai package root not found");
+		}
+		dir = parent;
+	}
 }
 
 const PACKAGE_ROOT = findPackageRoot(dirname(fileURLToPath(import.meta.url)));
@@ -39,12 +39,12 @@ const PACKAGE_ROOT = findPackageRoot(dirname(fileURLToPath(import.meta.url)));
  * Load a JSON schema from `<packageRoot>/contracts/<relativePath>`.
  */
 export function loadContractJson(relativePath: string): unknown {
-  const filePath = join(PACKAGE_ROOT, "contracts", relativePath);
-  try {
-    return JSON.parse(readFileSync(filePath, "utf8")) as unknown;
-  } catch (error) {
-    throw new Error(
-      `cannot parse contract JSON ${filePath}: ${error instanceof Error ? error.message : String(error)}`,
-    );
-  }
+	const filePath = join(PACKAGE_ROOT, "contracts", relativePath);
+	try {
+		return JSON.parse(readFileSync(filePath, "utf8")) as unknown;
+	} catch (error) {
+		throw new Error(
+			`cannot parse contract JSON ${filePath}: ${error instanceof Error ? error.message : String(error)}`,
+		);
+	}
 }
