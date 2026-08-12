@@ -39,7 +39,12 @@ const PACKAGE_ROOT = findPackageRoot(dirname(fileURLToPath(import.meta.url)));
  * Load a JSON schema from `<packageRoot>/contracts/<relativePath>`.
  */
 export function loadContractJson(relativePath: string): unknown {
-  return JSON.parse(
-    readFileSync(join(PACKAGE_ROOT, "contracts", relativePath), "utf8"),
-  ) as unknown;
+  const filePath = join(PACKAGE_ROOT, "contracts", relativePath);
+  try {
+    return JSON.parse(readFileSync(filePath, "utf8")) as unknown;
+  } catch (error) {
+    throw new Error(
+      `cannot parse contract JSON ${filePath}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
 }

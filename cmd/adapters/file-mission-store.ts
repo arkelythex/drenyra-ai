@@ -69,7 +69,12 @@ function isEnoent(error: unknown): boolean {
 }
 
 function loadStoreFile(filePath: string): MissionStoreFile {
-  const raw = JSON.parse(readFileSync(filePath, "utf-8")) as unknown;
+  let raw: unknown;
+  try {
+    raw = JSON.parse(readFileSync(filePath, "utf-8")) as unknown;
+  } catch (error) {
+    throw new Error(`cannot parse mission store ${filePath}: ${error instanceof Error ? error.message : String(error)}`);
+  }
   if (typeof raw !== "object" || raw === null) {
     throw new Error(`${filePath} must be an object`);
   }

@@ -10,7 +10,12 @@ import { readFileSync } from "node:fs";
 
 /** Parses a UTF-8 JSON file into an unknown value (throws on IO/parse errors). */
 export function readJsonFile(filePath: string): unknown {
-  return JSON.parse(readFileSync(filePath, "utf-8")) as unknown;
+  const raw = readFileSync(filePath, "utf-8");
+  try {
+    return JSON.parse(raw) as unknown;
+  } catch (error) {
+    throw new Error(`cannot parse JSON in ${filePath}: ${error instanceof Error ? error.message : String(error)}`);
+  }
 }
 
 /** Pretty-prints any JSON-serializable value to stdout (2-space indent). */
