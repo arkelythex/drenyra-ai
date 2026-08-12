@@ -1,119 +1,88 @@
 # Apply Progress — Reproducible Lint Gate, Slice A
 
-## Status: BLOCKED — preflight/overlap guard failed (design-mandated stop)
+## Prior attempt (history — preserved, not overwritten)
+
+### Status: BLOCKED — preflight/overlap guard failed (design-mandated stop)
 
 The first implementation task (preflight/overlap guard) is a hard abort gate in the
 approved artifacts: tasks.md task 1 ("Abort if overlap is detected") and design.md
-preflight step 1 ("Abort if any of the four owned files has unrelated edits, or if
-uncommitted/active-change work exists under the lint allowlist such that baseline
-evidence would measure WIP. Do not ignore active paths in Biome to work around
-overlap. ... current Git state is decisive").
+preflight step 1. The previous Git state failed that guard on both conditions (owned
+files carried unrelated uncommitted edits, and WIP existed under the lint allowlist).
+No file was edited, no task checkbox was changed, and the record persisted the blocked
+preflight evidence verbatim. Full prior evidence is retained in the git history of this
+file; resolution was the parent committing the unrelated WIP, leaving the tree clean.
 
-The current Git state fails that guard on both conditions. **No file was edited, no
-command was run that mutates anything, and no task checkbox was changed.** This
-record is written only to persist the blocked preflight evidence.
+---
 
-## Evidence (captured verbatim)
+## Current attempt — Status: IMPLEMENTED (ready for parent review)
 
-`git status --porcelain` (truncated to relevant rows; full set recorded below):
+Strict TDD: RED → GREEN → TRIANGULATE → REFACTOR, differential lint proof (no Vitest
+unit, per approved tasks). All 17 implementation-owned tasks complete and checked.
 
-```text
- M .github/workflows/ci.yml
- M cmd/__tests__/capabilities-doctor.test.ts
- M cmd/adapters/schema-loader.ts
- M cmd/commands/capabilities.ts
- M cmd/commands/doctor.ts
- M cmd/commands/mcp-serve.ts
- M mcp/__tests__/server.test.ts
- M mcp/__tests__/stdio.test.ts
- M mcp/tools.ts
- M missions/__tests__/postgres.integration.test.ts
- M openspec/changes/fiscal-authority-kernel/apply-progress.md
- M openspec/config.yaml
- M openspec/programs/drenyra-dominion/capability-matrix.yaml
- M package.json
- M scripts/checksums.mjs
- M scripts/sbom.mjs
- M skills/__tests__/pe-skills.test.ts
- ?? cmd/adapters/package-metadata.ts
- ?? cmd/declared-surface.ts
- ?? openspec/changes/gentle-ai-quality-parity/
- ?? openspec/changes/release-integrity-evidence/
- ?? openspec/changes/reproducible-lint-gate/
- ?? scripts/__tests__/
- ?? scripts/verify-release-integrity.mjs
-```
+## TDD Cycle Evidence
 
-`git diff --stat` summary: 17 files changed, 297 insertions(+), 166 deletions(-)
-(scope: release-integrity-evidence and gentle-ai-quality-parity WIP, plus
-pre-existing WIP docs/tests).
+| Step | Command | Result | Evidence |
+|------|---------|--------|----------|
+| Preflight (task 1) | `git status --porcelain`, `git diff --stat` | Empty output; clean tree | Owned files (`package.json`, `bun.lock`, `biome.json` absent, `.github/workflows/ci.yml`) all clean; no WIP under allowlist |
+| Baseline typecheck (task 2) | `bun run typecheck` | exit 0 | `tsc --noEmit` clean |
+| Baseline test (task 2) | `bun run test` | exit 1, 3 failed / 655 passed / 658 total | Exactly the known three failures in `cmd/__tests__/cli.test.ts` |
+| Initial policy check (task 3/9) | `bun run lint` | exit 0, "Version: 2.3.15", "Checked 158 files in 35ms. No fixes applied." | Green baseline on unchanged tree; initial lint baseline findings recorded verbatim (clean) |
+| GREEN — pin + lockfile (tasks 4/5) | `bun install` with Bun 1.3.11 | exit 0; lockfile +19 lines, 0 deletions | Only Biome entries added (root devDependency, biome pkg, 8 platform CLI optional packages, integrity hashes); no unrelated re-resolution, no lockfile-version change, no hand-edits |
+| GREEN — policy + script + CI (tasks 6/7/8) | file edits | — | `biome.json` exact design policy; `"lint": "biome --version && biome lint"`; isolated `lint` job after `typecheck`, before `test`, mirroring existing convention (pins 11d5960a/0c5077e5, bun 1.3.11, frozen install, `bun run lint`) |
+| Reproducibility (task 10) | `bun install --frozen-lockfile` (Bun 1.3.11) | exit 0, "no changes" | `sha256sum bun.lock package.json` identical before/after; re-run `bun run lint` exit 0 |
+| RED proof (task 11) | temp unused import in `missions/runtime.ts` + `bun run lint` | exit 1 | `missions/runtime.ts:33:13 lint/correctness/noUnusedImports` "This import is unused."; no fix applied |
+| Restore → GREEN (task 12) | revert temp import + `bun run lint` | exit 0 | `sha256sum missions/runtime.ts` identical before/after; git clean for all source paths; lint "Version: 2.3.15 … No fixes applied." |
+| Scope probe (task 13) | temp `openspec/changes/reproducible-lint-gate/scratch-probe.ts` with `debugger;` + `==` + `bun run lint` | exit 0, 0 mentions of scratch-probe | Out-of-scope violations not reported; scratch file deleted, not retained; no ignore added |
+| Non-root cwd lint (parent prompt) | `cd cmd && bun run lint` | exit 0, Version 2.3.15, 158 files | Biome resolves root config from subdirectory |
+| No-churn proof (task 14) | `git diff --numstat`, `git diff --summary`, non-allowlist diff check | no source/test/script/doc content or mode change | Only allowlist paths + this change's OpenSpec artifacts changed; no formatter or write-capable command ever executed (all lint runs printed "No fixes applied") |
+| Preservation (task 15) | `bun run typecheck` + `bun run test` | typecheck exit 0; test exit 1, same 3 failed / 655 passed / 658 total, same three test names | No added, hidden, or removed outcome |
+| Budget (task 16) | authored additions+deletions excluding `bun.lock` | 58 lines | package.json 2 + biome.json 44 + ci.yml 12 = 58 <= 300 (forecast 68–88) |
+| Rollback boundary (task 17) | documented | one bounded work unit | delete `biome.json`; remove `lint` script and `@biomejs/biome` devDependency; revert only Biome `bun.lock` entries; remove CI `lint` job. No application bytes require restoration |
 
-### Failure condition 1 — owned files carry unrelated uncommitted edits
+## Files changed (final changed-path set)
 
-- `package.json` — modified: adds `release:generate`, `verify:release-integrity`
-  scripts and extends `verify:package` (release-integrity-evidence WIP, unrelated to
-  this slice).
-- `.github/workflows/ci.yml` — modified: renames the package-job step to
-  "Verify package and release-integrity evidence" (release-integrity-evidence WIP,
-  unrelated to this slice).
-- `bun.lock` — clean (no edits). `biome.json` — absent (as expected).
+- `package.json` — +2 lines: `"@biomejs/biome": "2.3.15"` devDependency (exact, range-free), `"lint": "biome --version && biome lint"` script; all else byte-for-byte unchanged
+- `bun.lock` — +19 lines: root `devDependencies` entry for `@biomejs/biome@2.3.15`, `@biomejs/biome` package entry with 8 platform-specific optional CLI deps, integrity/resolution metadata (generated by Bun 1.3.11; no unrelated re-resolution)
+- `biome.json` — new (44 lines): `$schema` 2.3.15; positive `files.includes` allowlist (20 entries, exactly per design); `formatter.enabled: false`; `linter.enabled: true`, `rules.recommended: false`, `correctness.noUnusedImports: "error"`, `suspicious.noDebugger/noDoubleEquals/noDuplicateObjectKeys: "error"`; no console rule; no per-file ignores; no `lint:fix`
+- `.github/workflows/ci.yml` — +12 lines: isolated `lint` job after `typecheck`, before `test`; existing jobs/triggers/permissions/pins untouched
+- `openspec/changes/reproducible-lint-gate/tasks.md` — this change's own artifact: 17 checkbox updates
+- `openspec/changes/reproducible-lint-gate/apply-progress.md` — this record
 
-Editing these owned files on top of unrelated uncommitted edits would entangle this
-slice's diff with another change's diff, violating the scope boundary ("final
-authored diff MUST contain only package.json, bun.lock, biome.json, and
-.github/workflows/ci.yml" for THIS slice's changes) and the "no WIP file content
-may change" rule.
+No source, test, script, or documentation file content changed. No formatter or
+write-capable Biome command was run at any stage.
 
-### Failure condition 2 — WIP under the lint allowlist would be measured by baseline evidence
+## Verification commands run
 
-The lint allowlist includes `cmd/**/*.ts`, `missions/**/*.ts`, `skills/**/*.ts`,
-`scripts/*.mjs`, `evidence/**/*.ts`, etc. Uncommitted WIP under those paths today:
+- `bun run typecheck` → exit 0 (baseline and post-apply identical)
+- `bun run test` → exit 1; 3 failed | 655 passed (658); the same three `cmd/__tests__/cli.test.ts` failures as baseline: "mission apply: real intent handlers by default > executes without --demo…", "mission apply: real intent handlers by default > accepts --demo as a compatibility flag…", "mission real-handler lifecycle end-to-end > drives start -> staged executes -> gated approval -> finalize to COMPLETED"
+- `bun install --frozen-lockfile` (Bun 1.3.11) → exit 0, lockfile/manifest unchanged (sha256-verified)
+- `bun run lint` (repo root and `cmd/` non-root cwd) → exit 0, Version 2.3.15, 158 files, "No fixes applied"
 
-- `cmd/__tests__/capabilities-doctor.test.ts`, `cmd/adapters/schema-loader.ts`,
-  `cmd/commands/capabilities.ts`, `cmd/commands/doctor.ts`, `cmd/commands/mcp-serve.ts`
-  (modified), `cmd/adapters/package-metadata.ts`, `cmd/declared-surface.ts` (untracked)
-  — gentle-ai-quality-parity Slice A WIP.
-- `missions/__tests__/postgres.integration.test.ts` (modified) — pre-existing WIP.
-- `scripts/checksums.mjs`, `scripts/sbom.mjs` (modified),
-  `scripts/__tests__/`, `scripts/verify-release-integrity.mjs` (untracked) —
-  release-integrity-evidence WIP.
-- `skills/__tests__/pe-skills.test.ts` (modified) — pre-existing WIP.
+## Deviations from design
 
-A `bun run lint` baseline against this tree would measure WIP content, so the
-"green on the unchanged tree" proof and the RED/GREEN differential would not
-represent the committed baseline. Ignoring those paths in `biome.json` to work
-around the overlap is explicitly prohibited.
-
-## Decision
-
-**STOP before editing** (status `blocked`, `next_recommended: parent-lifecycle`).
-No implementation work was started; no tasks were completed; no persisted task
-checkbox changed (all 17 implementation-owned rows remain `- [ ]`; the 3
-parent-owned rows are untouched).
-
-## Required resolution options for the parent
-
-1. Commit or stash the unrelated uncommitted work (release-integrity-evidence and
-   gentle-ai-quality-parity WIP, including the `package.json` and `ci.yml` edits) so
-   the owned files and allowlisted paths are clean, then re-launch apply; or
-2. Explicitly authorize apply against the dirty tree with a documented scope
-   amendment to the preflight guard (requires amending the approved tasks/design).
-
-## Commands run (all read-only)
-
-- `git status --porcelain`, `git diff --stat`, `git diff package.json`,
-  `git diff .github/workflows/ci.yml`, `git branch --show-current`,
-  `git log --oneline -5`
-- `gentle-ai sdd-status reproducible-lint-gate --cwd . --json --instructions`
-  (authoritative native status: `applyState: ready`; task-level preflight guard
-  overrides to blocked per approved artifacts)
-
-## Files changed
-
-None (apply-progress.md itself is this change's own artifact record, which is
-expected under `openspec/changes/reproducible-lint-gate/`).
+None. Actual authored budget (58) is below the 68–88 forecast; all other design
+contracts matched exactly. The CI YAML was written in full via the file writer after
+an edit-tool YAML auto-fix misindented the block; the final diff was verified to be
+only the intended lint job insertion (12 lines, no other change).
 
 ## Remaining tasks
 
-All 17 implementation-owned tasks remain unchecked, starting with:
-`- [ ] Preflight / overlap guard: ... Abort if overlap is detected. <!-- sdd-owner: implementation -->`
+None. All 17 implementation-owned tasks are `- [x]`. Three parent-owned rows remain
+unchecked (bounded review of the four-file config diff; verify final authored
+changed-line count <= 300 and CI equivalence; lifecycle gate before merging) —
+deferred to the parent by ownership boundary.
+
+## Workload / PR boundary
+
+Single PR slice; forecast Low budget risk, no chained PRs. Final authored count 58
+lines excluding lock churn (19). Rollback boundary documented above.
+
+## Structured status consumed
+
+Native `gentle-ai sdd-status reproducible-lint-gate --cwd . --json --instructions`:
+`applyState: ready`, `nextRecommended: apply`, no blocked reasons, artifactStore
+`openspec` (authoritative), `actionContext.mode: repo-local`, allowedEditRoots
+`/home/dreamcoder08/Documents/PROYECTOS/drenyra-ai`. Attempt token
+`sha256:221b3516a9c236e7c59cfaff1e26c9a3b3cb84ac7954e405977401aa57123bb9` was
+provided by the parent; parent settles with the prior failed evidence revision.
+No commit, push, review, or settle performed by this phase.
