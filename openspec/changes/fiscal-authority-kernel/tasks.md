@@ -169,16 +169,16 @@ Branch `fiscal-authority/candidate-ordering`. Depends on 1A–1C. Files: `fiscal
 
 ### 1D-3 Exact subject and unreachable premature inspection (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — write failing tests: the candidate inspection/freeze receives the exact reconciled subject bytes (spies capture byte identity; a stale/different byte array is never passed); no public adapter method exposes construction/propose/inspect independently; an ordering test proves premature inspection is unreachable. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement the ordered flow: validate scope → core validate → reconcile → build exact subject bytes → existing `CandidateLifecycle.propose` with those bytes and the frozen `{ ruc, period }` candidate scope projection and materiality input → existing `CandidateLifecycle.inspect` with the same byte reference; return the inspected candidate, exact bytes, and bound evidence; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — assert `inspect` mismatch (SUBJECT_MUTATED) leaves only a local snapshot that is not returned as a successful fiscal result; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: the candidate inspection/freeze receives the exact reconciled subject bytes (spies capture byte identity; a stale/different byte array is never passed); no public adapter method exposes construction/propose/inspect independently; an ordering test proves premature inspection is unreachable. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement the ordered flow: validate scope → core validate → reconcile → build exact subject bytes → existing `CandidateLifecycle.propose` with those bytes and the frozen `{ ruc, period }` candidate scope projection and materiality input → existing `CandidateLifecycle.inspect` with the same byte reference; return the inspected candidate, exact bytes, and bound evidence; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — assert `inspect` mismatch (SUBJECT_MUTATED) leaves only a local snapshot that is not returned as a successful fiscal result; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1D-4 Frozen lifecycle preserved
 
-- [ ] Add a test proving a candidate created through the fiscal flow follows the existing correction path with the at-most-one-correction rule unchanged; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] Run the frozen candidate conformance suite (`contracts/__tests__/candidate-conformance.test.ts`) unchanged and green; assert no candidate contract addendum or version bump exists. <!-- sdd-owner: implementation -->
-- [ ] Add a test proving the flow completes within the library layer with no ingest module or SUNAT transport dependency. <!-- sdd-owner: implementation -->
+- [x] Add a test proving a candidate created through the fiscal flow follows the existing correction path with the at-most-one-correction rule unchanged; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] Run the frozen candidate conformance suite (`contracts/__tests__/candidate-conformance.test.ts`) unchanged and green; assert no candidate contract addendum or version bump exists. <!-- sdd-owner: implementation -->
+- [x] Add a test proving the flow completes within the library layer with no ingest module or SUNAT transport dependency. <!-- sdd-owner: implementation -->
 
 ### 1D-5 Exports and wiring
 

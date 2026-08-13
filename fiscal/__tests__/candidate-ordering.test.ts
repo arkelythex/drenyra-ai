@@ -3,15 +3,32 @@
  * no float is ever used for money in drenyra-ai; no monetary amount is ever a
  * JavaScript Number; sequence/index/version fields are JSON integers, never floats.
  */
-/** Candidate ordering tests (1D-1/1D-2): spies prove validation precedes construction
- * and reconciliation precedes inspection/freeze. */
+/** Candidate ordering tests (1D-1..1D-4): spies prove validation precedes construction
+ * and reconciliation precedes inspection/freeze; 1D-3/1D-4 wire the real
+ * CandidateLifecycle and prove byte identity, unreachable premature inspection,
+ * SUBJECT_MUTATED fail-closed handling, and frozen one-correction preservation. */
 import { describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
 import { acceptEvidence } from "../../evidence/index.js";
 import type { AcceptedEvidence } from "../../evidence/index.js";
 import { TenantScopeError, tenantScopeKey, validateTenantScope, type ValidatedTenantScope } from "../../tenant-core/index.js";
-import type { Candidate, MaterialityInput, ProposeInput } from "../../candidates/index.js";
+import {
+	CandidateError,
+	CandidateErrorCode,
+	CandidateLifecycle,
+	computeSubjectHash,
+	type Candidate,
+	type MaterialityInput,
+	type ProposeInput,
+} from "../../candidates/index.js";
 import { FiscalCandidateOrderingAdapter } from "../candidate-ordering.js";
-import { FISCAL_ERROR, FiscalError, type FiscalErrorCode, type FiscalFlowInput } from "../types.js";
+import {
+	CandidateLifecyclePort,
+	FISCAL_ERROR,
+	FiscalError,
+	type FiscalErrorCode,
+	type FiscalFlowInput,
+} from "../types.js";
 
 const SCOPE = validateTenantScope({ companyId: "acme", ruc: "20123456789", period: "202607" });
 const OTHER_SCOPE = validateTenantScope({ companyId: "zeta", ruc: "20601234567", period: "202607" });
@@ -73,6 +90,34 @@ function rejectionCode(run: () => unknown): FiscalErrorCode | undefined {
 	return undefined;
 }
 
+/** Returns the CandidateError code thrown by `run`, or undefined for other errors. */
+function candidateErrorCode(run: () => unknown): CandidateErrorCode | undefined {
+	try {
+		run();
+	} catch (error) {
+		const candidate = error as CandidateError;
+		if (candidate instanceof CandidateError) return candidate.code;
+	}
+	return undefined;
+}
+
+/** Concrete wiring harness: the adapter's port spies delegate to the REAL
+ *  CandidateLifecycle so the frozen freeze point and one-correction rule run. */
+function concreteHarness(options: { subject?: Uint8Array } = {}) {
+	const bytes = options.subject ?? new TextEncoder().encode("subject-bytes");
+	const lifecycle = new CandidateLifecycle();
+	const adapter = new FiscalCandidateOrderingAdapter(
+		{ validate: () => VALIDATED },
+		{ reconcile: () => [accept()] },
+		{ build: () => bytes },
+		{
+			propose: (input: ProposeInput): Candidate => lifecycle.propose(input),
+			inspect: (candidate: Candidate, subject: Uint8Array): Candidate => lifecycle.inspect(candidate, subject),
+		},
+	);
+	return { adapter, bytes, lifecycle };
+}
+
 describe("1D-1 — validation before subject construction", () => {
 	it("unvalidated fiscal input cannot form a subject: no construction, flow fails closed", () => {
 		const { adapter, build, propose, inspect } = harness();
@@ -124,9 +169,130 @@ describe("1D-2 — reconciliation before freeze", () => {
 		expect(rejectionCode(() => adapter.run(flowInput(SCOPE)))).toBe(FISCAL_ERROR.MISSING_RECONCILIATION_EVIDENCE);
 	});
 
-	it("reconciliation evidence from another scope fails closed (TRIANGULATE)", () => {
-		const { adapter, inspect } = harness({ reconcileWith: () => [accept(OTHER_SCOPE)] });
-		expect(rejectionCode(() => adapter.run(flowInput(SCOPE)))).toBe(FISCAL_ERROR.RECONCILIATION_SCOPE_MISMATCH);
-		expect(inspect).not.toHaveBeenCalled();
-	});
-});
+    	it("reconciliation evidence from another scope fails closed (TRIANGULATE)", () => {
+    		const { adapter, inspect } = harness({ reconcileWith: () => [accept(OTHER_SCOPE)] });
+    		expect(rejectionCode(() => adapter.run(flowInput(SCOPE)))).toBe(FISCAL_ERROR.RECONCILIATION_SCOPE_MISMATCH);
+    		expect(inspect).not.toHaveBeenCalled();
+    	});
+    });
+
+    describe("1D-3 — exact subject and unreachable premature inspection", () => {
+    	it("passes the exact reconciled subject bytes to inspection: same byte reference, never a stale or different array", () => {
+    		const lifecycle = new CandidateLifecycle();
+    		const bytes = new TextEncoder().encode("subject-bytes");
+    		const propose = vi.fn((input: ProposeInput): Candidate => lifecycle.propose(input));
+    		const inspect = vi.fn((candidate: Candidate, subject: Uint8Array): Candidate =>
+    			lifecycle.inspect(candidate, subject),
+    		);
+    		const adapter = new FiscalCandidateOrderingAdapter(
+    			{ validate: () => VALIDATED },
+    			{ reconcile: () => [accept()] },
+    			{ build: () => bytes },
+    			{ propose, inspect },
+    		);
+    		const result = adapter.run(flowInput(SCOPE));
+    		// propose: exact bytes + frozen { ruc, period } projection + unchanged materiality.
+    		expect(propose.mock.calls[0][0].subject).toBe(bytes);
+    		expect(propose.mock.calls[0][0].scope).toEqual({ ruc: SCOPE.ruc, period: SCOPE.period });
+    		expect("companyId" in propose.mock.calls[0][0].scope).toBe(false);
+    		expect(propose.mock.calls[0][0].materialityInput).toBe(MATERIALITY);
+    		// inspect receives the SAME byte reference — never a rebuilt, stale, or substituted array.
+    		expect(inspect.mock.calls[0][1]).toBe(bytes);
+    		expect(inspect.mock.calls[0][1]).toBe(propose.mock.calls[0][0].subject);
+    		// The real lifecycle froze exactly those bytes; the inspected result is consistent.
+    		expect(result.candidate.status).toBe("inspected");
+    	});
+
+        	it("CandidateLifecyclePort delegates propose/inspect to the frozen lifecycle unchanged", () => {
+        		const port = new CandidateLifecyclePort(new CandidateLifecycle());
+        		const bytes = new TextEncoder().encode("subject-bytes");
+        		const proposed = port.propose({ subject: bytes, scope: { ruc: SCOPE.ruc, period: SCOPE.period }, materialityInput: MATERIALITY });
+        		expect(proposed.status).toBe("proposed");
+        		expect(port.inspect(proposed, bytes).status).toBe("inspected");
+        	});
+
+        	it("exposes only the ordered run — no public propose/inspect/build/construct", () => {
+        		const surface = concreteHarness().adapter as unknown as Record<string, unknown>;
+        		expect(typeof surface.run).toBe("function");
+        		for (const method of ["propose", "inspect", "build", "construct"]) {
+        			expect(surface[method]).toBeUndefined();
+        		}
+        	});
+
+    	it("premature inspection is unreachable: the concrete lifecycle runs only after validation and reconciliation (ordering)", () => {
+    		const calls: string[] = [];
+    		const validate = vi.fn((): FiscalPayload => { calls.push("validate"); return VALIDATED; });
+    		const reconcile = vi.fn((): readonly AcceptedEvidence[] => { calls.push("reconcile"); return [accept()]; });
+    		const build = vi.fn((): Uint8Array => { calls.push("build"); return new TextEncoder().encode("subject-bytes"); });
+    		// No candidate port passed: the adapter wires the real CandidateLifecycle itself.
+    		const adapter = new FiscalCandidateOrderingAdapter({ validate }, { reconcile }, { build });
+    		const result = adapter.run(flowInput(SCOPE));
+    		expect(calls).toEqual(["validate", "reconcile", "build"]);
+    		expect(result.candidate.status).toBe("inspected");
+    		expect(result.candidate.subjectHash).toBe(computeSubjectHash(result.subject));
+    		// The freeze point is unreachable before reconciliation: missing evidence never
+    		// reaches construction, so the real lifecycle never runs.
+    		const blocked = new FiscalCandidateOrderingAdapter({ validate }, { reconcile: () => [] }, { build });
+    		expect(() => blocked.run(flowInput(SCOPE))).toThrow(FiscalError);
+    		expect(build).toHaveBeenCalledTimes(1);
+    	});
+
+    	it("inspect mismatch (SUBJECT_MUTATED) leaves only a local snapshot, never a fiscal result (TRIANGULATE)", () => {
+    		const lifecycle = new CandidateLifecycle();
+    		const bytes = new TextEncoder().encode("subject-bytes");
+    		const adapter = new FiscalCandidateOrderingAdapter(
+    			{ validate: () => VALIDATED },
+    			{ reconcile: () => [accept()] },
+    			{ build: () => bytes },
+    			{
+    				// Simulate a downstream port corrupting the exact bytes after hashing: the
+    				// real freeze point must reject the mutated subject, not return a result.
+    				propose: (input: ProposeInput): Candidate => {
+    					const proposed = lifecycle.propose(input);
+    					bytes.set(new TextEncoder().encode("MUTATED-BYTES"));
+    					return proposed;
+    				},
+    				inspect: (candidate: Candidate, subject: Uint8Array): Candidate => lifecycle.inspect(candidate, subject),
+    			},
+    		);
+    		expect(candidateErrorCode(() => adapter.run(flowInput(SCOPE)))).toBe(CandidateErrorCode.SUBJECT_MUTATED);
+    	});
+    });
+
+    describe("1D-4 — frozen lifecycle preserved", () => {
+    	it("a fiscal-flow candidate follows the existing correction path; the at-most-one rule is unchanged", () => {
+    		const { adapter, lifecycle, bytes } = concreteHarness();
+    		let candidate = adapter.run(flowInput(SCOPE)).candidate; // inspected via the real lifecycle
+    		candidate = lifecycle.submitForReview(candidate);
+    		const corrected = lifecycle.correct(candidate, { subject: "subject-bytes-v2", reason: "Fix reconciled amount" });
+    		expect(corrected.status).toBe("corrected");
+    		expect(corrected.corrections).toHaveLength(1);
+    		expect(corrected.corrections[0].fromHash).toBe(computeSubjectHash(bytes));
+    		expect(corrected.corrections[0].toHash).toBe(computeSubjectHash("subject-bytes-v2"));
+    		expect(corrected.id).not.toBe(candidate.id);
+    		// Corrected subjects must pass re-inspection before further review (fail-closed).
+    		const reSubmitted = lifecycle.submitForReview(lifecycle.inspect(corrected, "subject-bytes-v2"));
+    		expect(candidateErrorCode(() => lifecycle.correct(reSubmitted, { subject: "subject-bytes-v3", reason: "Second correction" }))).toBe(
+    			CandidateErrorCode.CORRECTION_BUDGET_EXCEEDED,
+    		);
+    	});
+
+    	it("preserves the frozen candidate contract: no addendum and no version bump", () => {
+    		const contract = readFileSync(new URL("../../contracts/candidate.md", import.meta.url), "utf8");
+    		expect(contract).toContain("> Version: 0.1 · Status: FROZEN");
+    		expect(contract).toContain("FROZEN at v0.1");
+    	});
+
+    	it("completes within the library layer with no ingest module or SUNAT transport dependency", () => {
+    		const result = concreteHarness().adapter.run(flowInput(SCOPE));
+    		expect(result.candidate.status).toBe("inspected");
+    		expect(result.subject).toBeInstanceOf(Uint8Array);
+    		expect(tenantScopeKey(result.scope)).toBe(tenantScopeKey(SCOPE));
+    		// Static proof: the fiscal sources import no ingest or SUNAT transport surface.
+    		const sources = ["../candidate-ordering.ts", "../types.ts"]
+    			.map((path) => readFileSync(new URL(path, import.meta.url), "utf8"))
+    			.join("\n");
+    		expect(sources).not.toMatch(/from\s+["'][^"']*ingest\//);
+    		expect(sources).not.toMatch(/sunat|transport/gi);
+    	});
+    });
