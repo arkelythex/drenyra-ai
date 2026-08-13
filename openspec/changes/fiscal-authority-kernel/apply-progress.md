@@ -517,3 +517,87 @@ Attempt token `sha256:c0ddccecd6eb722a463c921236e23f0d8e0e35317b355842f2bc9a651c
 ## Evidence revision for settlement
 `dd12c5445c6642dd67dc9cdf98155577d41a855a33a711b62f7ca5887a7d737c`
 
+## Work unit 1d-candidate-ordering-batch-1 — 1D-1 + 1D-2 (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative; objective `1d-candidate-ordering-1` (max 300 changed lines, 1 attempt) — parent owns ledger accounting.
+**Scope:** only `fiscal/types.ts`, `fiscal/candidate-ordering.ts`, `fiscal/__tests__/candidate-ordering.test.ts`, tasks.md (6 rows -> [x]), this section. 1D-3/1D-4/1D-5, `fiscal/index.ts`, scanner, wiring untouched.
+## Files changed
+| Path | Status | Lines |
+| fiscal/types.ts | new | 61 |
+| fiscal/candidate-ordering.ts | new | 68 |
+| fiscal/__tests__/candidate-ordering.test.ts | new | 132 |
+| tasks.md | 6 rows `- [ ]` -> `- [x]` | 12 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1D-1 validation | 1 file failed, 0 tests (modules ../candidate-ordering.js + ../types.js absent) | 7/7 | spy order validate->reconcile->build->propose->inspect; builder receives exactly the validated input (toBe VALIDATED); core-throw stops before any candidate call | full suite 734 |
+| 1D-2 reconciliation | same RED run | >=1 same-scope gate; MISSING_RECONCILIATION_EVIDENCE / RECONCILIATION_SCOPE_MISMATCH | other-scope evidence fails closed, inspect never reached | typecheck/build clean |
+## Test commands and exact results
+- `bunx vitest run fiscal/__tests__/candidate-ordering.test.ts` — RED 1 failed/0 tests -> GREEN 7 passed
+- `bun run test` — 58 files, 734 passed (727 + 7); `bun run typecheck` clean; `bun run build` clean; strict `tsc --ignoreConfig` over the 3 fiscal files — exit 0
+## Deviations from design
+- Evidence copies (never shares) the input scope reference, so same-scope assertions use `scopeKey` equality; the adapter runs the full ordered flow through the candidate port seam (propose + inspect) in this batch, with 1D-3 wiring the real `CandidateLifecycle` and adding byte-identity tests.
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1D-3 (4 rows), 1D-4 (3 rows), 1D-5 (1 row) — 8 unchecked
+## Workload / PR boundary
+- Batch: 1D-1 + 1D-2, branch `fiscal-authority/candidate-ordering` boundary (parent owns branch/commits). Changed lines: fiscal 261 + tasks 12 + this section <= 300 cap.
+- Rollback boundary: delete the 3 fiscal files; revert the 6 tasks.md checkboxes; no wiring/scanner change to revert.
+## Evidence revision for settlement
+`7e855010a9d37335f292f6f8458bb55af5c8b2afc03261258a64b287d2a194b5`
+
+## Work unit 1d-candidate-ordering-batch-2 — 1D-3 + 1D-4 (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative; objective `1d-candidate-ordering-2` (max 300 changed lines, 1 attempt) — parent owns ledger accounting.
+**Scope:** only `fiscal/types.ts`, `fiscal/candidate-ordering.ts`, `fiscal/__tests__/candidate-ordering.test.ts`, tasks.md (7 rows -> [x]), this section. 1D-5 (`fiscal/index.ts`, exports, wiring, scanner), `contracts/**`, and all other files untouched (contracts/candidate.md is only read by a test).
+## Files changed
+| Path | Status | Lines |
+| fiscal/types.ts | modified | +22 |
+| fiscal/candidate-ordering.ts | modified | +24 |
+| fiscal/__tests__/candidate-ordering.test.ts | modified | +186 |
+| tasks.md | 7 rows `- [ ]` -> `- [x]` | 14 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1D-3 concrete wiring | 2 failed/13 passed: CandidateLifecyclePort absent + 3-arg default wiring missing (candidatePort undefined) | CandidateLifecyclePort wrapper + adapter default `new CandidateLifecyclePort(new CandidateLifecycle())`; 15/15 | SUBJECT_MUTATED: downstream in-place byte corruption after hashing -> real inspect throws, no fiscal result returned | full suite 742 |
+| 1D-4 frozen lifecycle | same RED run | correction path via real lifecycle: submitForReview -> correct (lineage, new id) -> re-inspect -> second correct throws CORRECTION_BUDGET_EXCEEDED; contract version pinned (0.1 FROZEN); no ingest/SUNAT import in fiscal sources | ordering: default-wired adapter completes validate->reconcile->build then real propose->inspect; missing evidence never reaches construction | conformance 16/16, typecheck/build clean |
+## Test commands and exact results
+- `bunx vitest run fiscal/__tests__/candidate-ordering.test.ts` — RED 2 failed/13 passed -> GREEN 15/15
+- `bun run test` — 58 files, 742 passed (734 + 8); `bunx vitest run contracts/__tests__/candidate-conformance.test.ts` — 16/16 frozen, unchanged
+- `bun run typecheck` — clean; `bun run build` — clean; strict `tsc --ignoreConfig` over the 3 fiscal files (mandatory flags) — exit 0
+- `git diff --stat HEAD` — fiscal 232 changed (211 ins / 21 del) + tasks 14 + this section <= 300 cap
+## Deviations from design
+- The candidate port stays injectable for spies; the concrete `CandidateLifecyclePort` wrapper is the default wiring, and the adapter never subclasses or modifies the frozen lifecycle. SUBJECT_MUTATED propagates as the real CandidateError (fail-closed), matching the design's "local snapshot not returned as a successful fiscal result".
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1D-5 exports and wiring (fiscal/index.ts, root/package/tsconfig wiring, scanner extension) — 1 unchecked row
+## Workload / PR boundary
+- Batch: 1D-3 + 1D-4, branch `fiscal-authority/candidate-ordering` boundary (parent owns branch/commits). Changed lines: fiscal 232 + tasks 14 + this section <= 300 cap (ledger counts the full worktree diff incl. OpenSpec artifacts).
+- Rollback boundary: revert the 3 fiscal files and the 7 tasks.md checkboxes; batch-1 surface (1D-1/1D-2) remains intact.
+## Evidence revision for settlement
+`973fdaf0893129174f37a7ea845d184e142b0f98175f84694d4dd03adb255c38`
+## Work unit 1d-candidate-ordering-batch-3 — 1D-5 exports and wiring (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: `bun run test` authoritative (wiring batch; coverage-first RED per the 1B-2/1C-3 precedent); objective `1d-candidate-ordering-3` (max 300 changed lines, 1 attempt) — parent owns ledger accounting.
+**Scope:** only `fiscal/index.ts` (new), root `index.ts` (+1 export line), `package.json` (`./fiscal` export), `tsconfig.json` + `tsconfig.build.json` (`fiscal` includes), `tenant-isolation/__tests__/import-boundaries.test.ts` (MODULE_DIRS + APPROVED_TARGETS + fiscal triangulation), tasks.md (1D-5 row -> [x]), this section. fiscal core (types/candidate-ordering + 15 tests), contracts, and all other files untouched.
+## Files changed
+| Path | Status | Lines |
+| fiscal/index.ts | new | 18 |
+| index.ts | +1 additive export line | 1 |
+| package.json | +1 additive export line | 1 |
+| tsconfig.json | +1 include entry | 1 |
+| tsconfig.build.json | +1 include entry | 1 |
+| tenant-isolation/__tests__/import-boundaries.test.ts | MODULE_DIRS + APPROVED_TARGETS + fiscal triangulation | +36/-1 |
+| tasks.md | 1D-5 row `- [ ]` -> `- [x]` | 2 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1D-5 wiring | coverage-first RED: adding `fiscal` to MODULE_DIRS fails (`no approved targets declared for module dir "fiscal"`, 1 failed/8 passed) — the scanner cannot yet express the fiscal boundary; wiring gap proven (no fiscal/index.ts, no dist/fiscal/, no `./fiscal` export, no tsconfig includes) | fiscal/index.ts (FiscalCandidateOrderingAdapter + types + FISCAL_ERROR/FiscalError + port types, nothing foreign) + root/package/tsconfig/tsconfig.build wiring; scanner 9/9, typecheck clean (now covers fiscal/) | fiscal triangulation: rejects ledger/missions/gates/agents/cmd/ingest, allows internal/tenant-core/evidence/candidates (and journal per task row), rejects `../ledger/index.js` from fiscal/index.ts | full suite 745, typecheck clean, build clean, dist/fiscal/ emitted, runtime exports = FiscalCandidateOrderingAdapter + FISCAL_ERROR + FiscalError + CandidateLifecyclePort, zero foreign names |
+## Test commands and exact results
+- `bunx vitest run tenant-isolation/__tests__/import-boundaries.test.ts` — RED 1 failed/8 passed -> GREEN 9/9 -> TRIANGULATE 11/11
+- `bun run test` — 58 files, 745 passed (742 baseline + 3 new scanner tests)
+- `bun run typecheck` — clean (exit 0; now covers fiscal/ via tsconfig include)
+- `bun run build` — clean (exit 0); dist/fiscal/ emitted (index/types/candidate-ordering .js + .d.ts)
+- `git diff --stat HEAD` + untracked fiscal/index.ts — 61 changed lines total <= 300 cap
+- dist/fiscal/index.js runtime export check — FiscalCandidateOrderingAdapter (function), FISCAL_ERROR, FiscalError, CandidateLifecyclePort; foreign names (CandidateLifecycle/Candidate/MaterialityInput/ProposeInput/evidence names): NONE
+## Deviations from design
+- Task row 1D-5 says `tenant/`; per the rescoped layout the approved tenant dependency is `tenant-core` (same deviation as 1B-5/1C-3). APPROVED_TARGETS fiscal = ["fiscal", "tenant-core", "evidence", "journal", "candidates"]; real imports of fiscal/ non-test sources are tenant-core/evidence/candidates/internal only — "journal" is sanctioned per the task row but unused; the allowlist still rejects every high-level layer. collectSourceFiles skips `__tests__`, so fiscal/__tests__/candidate-ordering.test.ts is not scanned (confirmed).
+## Remaining tasks (unchecked, persisted in tasks.md)
+- Slice 1D fully complete (15/15 rows). Slice 1E implementation rows (18) unchecked; 7 parent-owned chain lifecycle gates unchecked.
+## Workload / PR boundary
+- Batch: 1D-5 (final of Slice 1D), branch `fiscal-authority/candidate-ordering` boundary (parent owns branch/commits and the chained-PR gate). Changed lines ~61 <= 300 cap.
+- Rollback boundary: remove `fiscal/index.ts`, the 5 wiring additions (root index.ts export, package.json `./fiscal`, tsconfig.json + tsconfig.build.json includes, scanner extension), revert the tasks.md checkbox; fiscal core (types/candidate-ordering + tests) remains intact.
+## Evidence revision for settlement
+`11b7887e9c722460b3b7548831ce82a692996cd58290836c535073f8adb9dfb6`

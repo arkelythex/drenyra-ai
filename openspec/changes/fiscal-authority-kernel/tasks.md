@@ -157,32 +157,32 @@ Branch `fiscal-authority/candidate-ordering`. Depends on 1A–1C. Files: `fiscal
 
 ### 1D-1 Validation before subject construction (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — in `fiscal/__tests__/candidate-ordering.test.ts`, write failing tests with spies: unvalidated fiscal input cannot form a subject (no construction, flow fails closed); validated input constructs the subject with exactly that input; `CoreValidator` throwing stops the flow before any candidate call. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement `fiscal/types.ts` (`CoreValidator`, `Reconciler`, `FiscalSubjectBuilder` ports, fiscal-flow input/output interfaces) and `fiscal/candidate-ordering.ts` `FiscalCandidateOrderingAdapter` running deterministic core validation first; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — in `fiscal/__tests__/candidate-ordering.test.ts`, write failing tests with spies: unvalidated fiscal input cannot form a subject (no construction, flow fails closed); validated input constructs the subject with exactly that input; `CoreValidator` throwing stops the flow before any candidate call. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement `fiscal/types.ts` (`CoreValidator`, `Reconciler`, `FiscalSubjectBuilder` ports, fiscal-flow input/output interfaces) and `fiscal/candidate-ordering.ts` `FiscalCandidateOrderingAdapter` running deterministic core validation first; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1D-2 Reconciliation before freeze (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — write failing tests: the freeze point is unreachable without bound reconciliation evidence; with reconciliation evidence bound to the same scope, inspection proceeds only after the evidence is bound; at least one accepted reconciliation artifact bound to the same scope is required. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement reconciliation step in the adapter (require ≥1 accepted evidence artifact bound to the same validated scope before subject construction); run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — assert reconciliation evidence from another scope fails closed; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: the freeze point is unreachable without bound reconciliation evidence; with reconciliation evidence bound to the same scope, inspection proceeds only after the evidence is bound; at least one accepted reconciliation artifact bound to the same scope is required. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement reconciliation step in the adapter (require ≥1 accepted evidence artifact bound to the same validated scope before subject construction); run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — assert reconciliation evidence from another scope fails closed; run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1D-3 Exact subject and unreachable premature inspection (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — write failing tests: the candidate inspection/freeze receives the exact reconciled subject bytes (spies capture byte identity; a stale/different byte array is never passed); no public adapter method exposes construction/propose/inspect independently; an ordering test proves premature inspection is unreachable. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement the ordered flow: validate scope → core validate → reconcile → build exact subject bytes → existing `CandidateLifecycle.propose` with those bytes and the frozen `{ ruc, period }` candidate scope projection and materiality input → existing `CandidateLifecycle.inspect` with the same byte reference; return the inspected candidate, exact bytes, and bound evidence; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — assert `inspect` mismatch (SUBJECT_MUTATED) leaves only a local snapshot that is not returned as a successful fiscal result; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: the candidate inspection/freeze receives the exact reconciled subject bytes (spies capture byte identity; a stale/different byte array is never passed); no public adapter method exposes construction/propose/inspect independently; an ordering test proves premature inspection is unreachable. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement the ordered flow: validate scope → core validate → reconcile → build exact subject bytes → existing `CandidateLifecycle.propose` with those bytes and the frozen `{ ruc, period }` candidate scope projection and materiality input → existing `CandidateLifecycle.inspect` with the same byte reference; return the inspected candidate, exact bytes, and bound evidence; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — assert `inspect` mismatch (SUBJECT_MUTATED) leaves only a local snapshot that is not returned as a successful fiscal result; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1D-4 Frozen lifecycle preserved
 
-- [ ] Add a test proving a candidate created through the fiscal flow follows the existing correction path with the at-most-one-correction rule unchanged; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] Run the frozen candidate conformance suite (`contracts/__tests__/candidate-conformance.test.ts`) unchanged and green; assert no candidate contract addendum or version bump exists. <!-- sdd-owner: implementation -->
-- [ ] Add a test proving the flow completes within the library layer with no ingest module or SUNAT transport dependency. <!-- sdd-owner: implementation -->
+- [x] Add a test proving a candidate created through the fiscal flow follows the existing correction path with the at-most-one-correction rule unchanged; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] Run the frozen candidate conformance suite (`contracts/__tests__/candidate-conformance.test.ts`) unchanged and green; assert no candidate contract addendum or version bump exists. <!-- sdd-owner: implementation -->
+- [x] Add a test proving the flow completes within the library layer with no ingest module or SUNAT transport dependency. <!-- sdd-owner: implementation -->
 
 ### 1D-5 Exports and wiring
 
-- [ ] Add `fiscal/index.ts` public exports; add root `index.ts` re-export, `package.json` `"./fiscal"` export, `tsconfig.json` `"fiscal"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `fiscal/` imports only `tenant/`, `evidence/`, `journal/`, and `candidates/`; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
+- [x] Add `fiscal/index.ts` public exports; add root `index.ts` re-export, `package.json` `"./fiscal"` export, `tsconfig.json` `"fiscal"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `fiscal/` imports only `tenant/`, `evidence/`, `journal/`, and `candidates/`; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
 
 ## Slice 1E — PE policy and CDR successor composition
 

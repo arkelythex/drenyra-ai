@@ -19,7 +19,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "..", "..");
 
 /** Top-level dirs owned by the fiscal-authority program chain (additive). */
-const MODULE_DIRS = ["tenant-core", "tenant-isolation", "evidence", "journal"] as const;
+const MODULE_DIRS = ["tenant-core", "tenant-isolation", "evidence", "journal", "fiscal"] as const;
 
 /**
  * Approved relative-import targets per module dir (top-level dir names under the
@@ -32,6 +32,7 @@ const APPROVED_TARGETS: Readonly<Record<string, readonly string[]>> = {
 	"tenant-isolation": ["tenant-core", "tenant-isolation"],
 	evidence: ["evidence", "tenant-core", "receipts"],
 	journal: ["journal", "tenant-core", "evidence", "receipts"],
+	fiscal: ["fiscal", "tenant-core", "evidence", "journal", "candidates"],
 } as const;
 
 const RELATIVE_IMPORT =
@@ -178,6 +179,40 @@ describe("fiscal-authority import boundaries", () => {
     					'import { validateLedger } from "../ledger/index.js";',
     					"journal",
     				).length,
+    			).toBe(1);
+    		});
+    		it("rejects the audit ledger and high-level layers from the fiscal layer", () => {
+    			const fiscalFile = join(repoRoot, "fiscal/candidate-ordering.ts");
+    			for (const layer of ["ledger", "missions", "gates", "agents", "cmd", "ingest"]) {
+    	    	    	    	const violations = moduleBoundaryViolations(
+    	    	    	    	    	fiscalFile,
+    	    	    	    	    	`import { x } from "../${layer}/index.js";`,
+    	    	    	    	    	"fiscal",
+    	    	    	    	);
+    	    	    	    	expect(violations).toEqual([
+    	    	    	    	    	`fiscal/candidate-ordering.ts imports "../${layer}/index.js" (${layer}/), which is outside fiscal's approved dependencies`,
+    	    	    	    	]);
+    			}
+    		});
+    		it("allows fiscal's approved dependencies and rejects an unapproved sibling", () => {
+    			expect(
+    	    	    	    	moduleBoundaryViolations(
+    	    	    	    	    	join(repoRoot, "fiscal/index.ts"),
+    	    	    	    	    	[
+    	    	    	    	    	    	'export * from "./types.js";',
+    	    	    	    	    	    	'import { validateTenantScope } from "../tenant-core/index.js";',
+    	    	    	    	    	    	'import { acceptEvidence } from "../evidence/index.js";',
+    	    	    	    	    	    	'import { CandidateLifecycle } from "../candidates/index.js";',
+    	    	    	    	    	].join("\n"),
+    	    	    	    	    	"fiscal",
+    	    	    	    	),
+    			).toEqual([]);
+    			expect(
+    	    	    	    	moduleBoundaryViolations(
+    	    	    	    	    	join(repoRoot, "fiscal/index.ts"),
+    	    	    	    	    	'import { validateLedger } from "../ledger/index.js";',
+    	    	    	    	    	"fiscal",
+    	    	    	    	).length,
     			).toBe(1);
     		});
     	});

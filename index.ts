@@ -16,6 +16,7 @@ export * from "./missions/index.js";
 export * from "./candidates/index.js";
 export * from "./evidence/index.js";
 export * from "./journal/index.js";
+export * from "./fiscal/index.js";
 export * from "./review/index.js";
 export * from "./gates/index.js";
 export * from "./recovery/index.js";
