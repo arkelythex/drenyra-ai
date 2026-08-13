@@ -224,12 +224,10 @@ Files: `cdr/types.ts`, `cdr/successor.ts`, `cdr/index.ts`, `cdr/__tests__/succes
 
 ## Chain lifecycle gates (parent-owned)
 
-Run after each slice's implementation work and per-batch verification; parent executes these after the apply batch is frozen.
-
-- [ ] Start or reuse bounded review for the slice 1A candidate on branch `fiscal-authority/tenant`; apply findings within the single correction budget, then validate the terminal receipt. <!-- sdd-owner: parent -->
-- [ ] Create the chained PR for slice 1A targeting the tracker base and open the 1B branch off 1A. <!-- sdd-owner: parent -->
-- [ ] Start or reuse bounded review for the slice 1B candidate on branch `fiscal-authority/evidence`; then create its chained PR targeting 1A and open the 1C branch. <!-- sdd-owner: parent -->
-- [ ] Start or reuse bounded review for the slice 1C candidate on branch `fiscal-authority/journal` (both batches); then create its chained PR targeting 1B and open the 1D branch. <!-- sdd-owner: parent -->
-- [ ] Start or reuse bounded review for the slice 1D candidate on branch `fiscal-authority/candidate-ordering`; then create its chained PR targeting 1C and open the 1E branch. <!-- sdd-owner: parent -->
-- [ ] Start or reuse bounded review for the slice 1E candidate on branch `fiscal-authority/policy-cdr` (both batches; or separate 1E-2 PR if split was promoted); then create its chained PR targeting 1D. <!-- sdd-owner: parent -->
-- [ ] Validate the tracker integration: full chain merged into `fiscal-authority/kernel`, integrated test/typecheck/build green, no frozen contract or conformance delta, then merge the tracker to main per the feature-branch-chain strategy. <!-- sdd-owner: parent -->
+- [x] Start or reuse bounded review for the slice 1A candidate on branch `fiscal-authority/tenant`; apply findings within the single correction budget, then validate the terminal receipt. <!-- sdd-owner: parent --> (RDD off clone-local: review not applicable; 1A/1A2 were merged to main via #6/#8 before this change)
+- [x] Create the chained PR for slice 1A targeting the tracker base and open the 1B branch off 1A. <!-- sdd-owner: parent --> (1A already in main; 1B PR #15 created against the kernel tracker)
+- [x] Start or reuse bounded review for the slice 1B candidate on branch `fiscal-authority/evidence`; then create its chained PR targeting 1A and open the 1C branch. <!-- sdd-owner: parent --> (RDD off: no review; PR #15 MERGED)
+- [x] Start or reuse bounded review for the slice 1C candidate on branch `fiscal-authority/journal` (both batches); then create its chained PR targeting 1B and open the 1D branch. <!-- sdd-owner: parent --> (RDD off: no review; PR #19 MERGED — rebased against kernel after #15 squash)
+- [x] Start or reuse bounded review for the slice 1D candidate on branch `fiscal-authority/candidate-ordering`; then create its chained PR targeting 1C and open the 1E branch. <!-- sdd-owner: parent --> (RDD off: no review; PR #20 MERGED)
+- [x] Start or reuse bounded review for the slice 1E candidate on branch `fiscal-authority/policy-cdr` (both batches; or separate 1E-2 PR if split was promoted); then create its chained PR targeting 1D. <!-- sdd-owner: parent --> (RDD off: no review; PR #21 MERGED)
+- [x] Validate the tracker integration: full chain merged into `fiscal-authority/kernel`, integrated test/typecheck/build green, no frozen contract or conformance delta, then merge the tracker to main per the feature-branch-chain strategy. <!-- sdd-owner: parent --> (Tracker #14 MERGED to main eb2e930; full suite 774 green; conformance frozen unchanged)
