@@ -4,7 +4,7 @@
   "lockVersion": 1,
   "stage": "private",
   "generatedAt": "2026-08-12T00:00:00Z",
-  "generatedBy": "Phase B \u2014 lock update after clean worktree commit for command-center (docs/drenyra-dominion-program)",
+  "generatedBy": "Phase B \u2014 lock update after Phase A documentary commits (delivery-sequence.md)",
   "status": "candidate",
   "repositories": [
     {
@@ -48,7 +48,7 @@
     {
       "name": "drenyra-command-center",
       "role": "command-center",
-      "commitSha": "4db2c1aa3ab8e6ab7e60eac737f0b376dc29ec07",
+      "commitSha": "291e4bb82d07194c84ce5e9f6c805bbcde2ecd9a",
       "package": "@drenyra/main",
       "version": "workspace-0.1",
       "license": "private-ecosystem",
