@@ -192,16 +192,16 @@ Branch `fiscal-authority/policy-cdr`. Depends on 1A–1D. Two apply batches: 1E-
 
 Files: `policy/types.ts`, `policy/pe-policy.ts`, `policy/index.ts`, `policy/__tests__/pe-policy.test.ts`, wiring.
 
-- [ ] RED — in `policy/__tests__/pe-policy.test.ts`, write failing tests: `FiscalJurisdiction` PE is evaluated; a non-PE jurisdiction is not auto-accepted and fails closed; an unknown/unsupported jurisdiction fails closed and is never treated as PE by default. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement `policy/types.ts` (PE jurisdiction const object, policy subject, restricted outcome, `ALLOW`/`BLOCK`/`ESCALATE` const-backed decision type) and `policy/pe-policy.ts` restriction-only evaluation (no ALLOW grants authority); run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — add unknown-jurisdiction and non-PE boundary cases; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] RED — write failing tests: a journal transition whose materiality exceeds the PE threshold is blocked or escalated, never silently permitted (reuse existing BigInt-cent thresholds, e.g. `HIGH_VALUE_CENTS` from `candidates/materiality.ts`); a CDR outcome policy restricts is blocked before any approval or receipt is produced; insufficient bound evidence blocks or escalates with no auto-accept. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement policy evaluation over journal and CDR outcomes with fail-closed defaults; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] RED — write failing tests proving policy is a precondition: on `BLOCK` or `ESCALATE`, journal transition ports, mission command ports, candidate lifecycle ports, and outcome-producing receipt issuer ports are never invoked (spy assertions). <!-- sdd-owner: implementation -->
-- [ ] GREEN — enforce the mandatory composition order in `policy/pe-policy.ts`: derive the proposed outcome as immutable input, evaluate policy, stop before any snapshot/transition/candidate/receipt on block or escalation, and only on `ALLOW` delegate to the owning authority primitive which still performs its own validation; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] Add `policy/index.ts` public exports; add root `index.ts` re-export, `package.json` `"./policy"` export, `tsconfig.json` `"policy"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `policy/` imports only candidate materiality types, accepted evidence types, and journal outcome types; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
+- [x] RED — in `policy/__tests__/pe-policy.test.ts`, write failing tests: `FiscalJurisdiction` PE is evaluated; a non-PE jurisdiction is not auto-accepted and fails closed; an unknown/unsupported jurisdiction fails closed and is never treated as PE by default. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement `policy/types.ts` (PE jurisdiction const object, policy subject, restricted outcome, `ALLOW`/`BLOCK`/`ESCALATE` const-backed decision type) and `policy/pe-policy.ts` restriction-only evaluation (no ALLOW grants authority); run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — add unknown-jurisdiction and non-PE boundary cases; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: a journal transition whose materiality exceeds the PE threshold is blocked or escalated, never silently permitted (reuse existing BigInt-cent thresholds, e.g. `HIGH_VALUE_CENTS` from `candidates/materiality.ts`); a CDR outcome policy restricts is blocked before any approval or receipt is produced; insufficient bound evidence blocks or escalates with no auto-accept. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement policy evaluation over journal and CDR outcomes with fail-closed defaults; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests proving policy is a precondition: on `BLOCK` or `ESCALATE`, journal transition ports, mission command ports, candidate lifecycle ports, and outcome-producing receipt issuer ports are never invoked (spy assertions). <!-- sdd-owner: implementation -->
+- [x] GREEN — enforce the mandatory composition order in `policy/pe-policy.ts`: derive the proposed outcome as immutable input, evaluate policy, stop before any snapshot/transition/candidate/receipt on block or escalation, and only on `ALLOW` delegate to the owning authority primitive which still performs its own validation; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] Add `policy/index.ts` public exports; add root `index.ts` re-export, `package.json` `"./policy"` export, `tsconfig.json` `"policy"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `policy/` imports only candidate materiality types, accepted evidence types, and journal outcome types; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
 
 ### 1E-2 CDR — successor mission composition
 

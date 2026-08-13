@@ -601,3 +601,38 @@ Attempt token `sha256:c0ddccecd6eb722a463c921236e23f0d8e0e35317b355842f2bc9a651c
 - Rollback boundary: remove `fiscal/index.ts`, the 5 wiring additions (root index.ts export, package.json `./fiscal`, tsconfig.json + tsconfig.build.json includes, scanner extension), revert the tasks.md checkbox; fiscal core (types/candidate-ordering + tests) remains intact.
 ## Evidence revision for settlement
 `11b7887e9c722460b3b7548831ce82a692996cd58290836c535073f8adb9dfb6`
+
+## Work unit 1e-policy-batch-1 — 1E-1 policy PE restriction surface + exports/wiring (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative; objective `1e-policy-1` (max 300 changed lines, 1 attempt) — parent owns ledger accounting.
+**Scope:** only `policy/types.ts`, `policy/pe-policy.ts`, `policy/index.ts`, `policy/__tests__/pe-policy.test.ts` (new), root `index.ts` (+1), `package.json` (`./policy`), `tsconfig.json` + `tsconfig.build.json` (`policy` includes), `tenant-isolation/__tests__/import-boundaries.test.ts` (MODULE_DIRS + APPROVED_TARGETS + policy triangulation), tasks.md (10 rows -> [x]), this section. 1E-2 (`cdr/**`) untouched and out of scope.
+## Files changed
+| Path | Status | Lines |
+| policy/types.ts | new | 61 |
+| policy/pe-policy.ts | new | 54 |
+| policy/index.ts | new | 9 |
+| policy/__tests__/pe-policy.test.ts | new | 84 |
+| wiring (root index.ts, package.json, tsconfig.json, tsconfig.build.json) | +1 additive line each | 4 |
+| tenant-isolation/__tests__/import-boundaries.test.ts | MODULE_DIRS + APPROVED_TARGETS + policy triangulation | +32/-2 |
+| tasks.md | 10 rows `- [ ]` -> `- [x]` | 20 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1E-1 rows 1-6 (evaluator) | 1 file failed, 0 tests (module ../index.js absent) | 10/10 focused; full suite 755 | unknown/non-PE jurisdiction variants, HIGH_VALUE_CENTS boundary (+1n), malformed input, scope mismatch, empty evidence | full suite green after lean trim |
+| 1E-1 rows 7-9 (precondition) | same RED run (govern absent) | spy proofs: BLOCK stops journal port; ESCALATE stops mission/candidate/receipt ports; ALLOW delegates exactly once | frozen subject passed to authority unchanged | full suite 758 |
+| 1E-1 row 10 (wiring) | scanner coverage-first RED: policy in MODULE_DIRS, no approved targets (1 failed/11 passed) | APPROVED_TARGETS policy = [policy, candidates, evidence, journal]; scanner 14/14 | policy triangulation: rejects ledger/missions/gates/agents/cmd/ingest; allows candidates/evidence/journal/internal | typecheck/build clean, dist/policy/ emitted |
+## Test commands and exact results
+- `bunx vitest run policy/__tests__/pe-policy.test.ts` — RED 1 failed/0 tests -> GREEN/TRIANGULATE 10/10
+- `bunx vitest run tenant-isolation/__tests__/import-boundaries.test.ts` — RED 1 failed/11 passed -> GREEN 14/14
+- `bun run test` — 59 files, 758 passed (745 baseline + 10 policy + 3 scanner); `bun run typecheck` clean; `bun run build` clean; dist/policy/ emitted; runtime exports = FISCAL_JURISDICTION, POLICY_DECISION, POLICY_REASON, PolicyError, evaluatePePolicy, govern, zero foreign names
+## Deviations from design
+- Task row 1E-1-10 says `tenant/`; per the rescoped layout the scanner lives in `tenant-isolation/` (same deviation as 1B-5/1C-3/1D-5). APPROVED_TARGETS policy = [policy, candidates, evidence, journal]; real policy imports are candidates (`HIGH_VALUE_CENTS`) + evidence (type) only — journal is sanctioned per the task row but unused; the allowlist still rejects every high-level layer.
+- PolicySubject is outcome-agnostic (jurisdiction, valueCents, evidence, scopeKey): one immutable subject feeds both journal-materiality and CDR restriction evaluation; `govern` is the composition-order primitive (evaluate -> stop on BLOCK/ESCALATE -> delegate on ALLOW), which the 1E-2 cdr batch wires into the real mission/candidate/receipt flow.
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1E-2 CDR successor composition — 21 rows unchecked (next batch); 7 parent-owned chain lifecycle gates unchecked
+## Workload / PR boundary
+- Batch: 1E-1, branch `fiscal-authority/policy-cdr` boundary (parent owns branch/commits and the chained-PR gate). Changed lines: policy 208 + wiring/scanner 36 + tasks 20 + this section 35 = 299 <= 300 cap (ledger counts the full worktree diff incl. OpenSpec artifacts).
+- Rollback boundary: remove `policy/` (4 files), the 4 wiring additions, the scanner extension; revert the 10 tasks.md checkboxes.
+## Evidence revision for settlement
+SHA-256 over concatenated current contents (in order) of the 7 implementation-candidate files (`policy/types.ts`, `policy/pe-policy.ts`, `policy/index.ts`, `index.ts`, `package.json`, `tsconfig.json`, `tenant-isolation/__tests__/import-boundaries.test.ts`):
+```
+b57d444bbeeaa622f1b87f0e4dd8a917bb4271e98897413fabdc891771ecf058
+```
