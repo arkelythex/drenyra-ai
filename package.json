@@ -25,6 +25,7 @@
     "./evidence": "./dist/evidence/index.js",
     "./journal": "./dist/journal/index.js",
     "./fiscal": "./dist/fiscal/index.js",
+    "./policy": "./dist/policy/index.js",
     "./review": "./dist/review/index.js",
     "./gates": "./dist/gates/index.js",
     "./recovery": "./dist/recovery/index.js",
