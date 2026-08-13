@@ -84,3 +84,36 @@ None functional. `scripts/lib/bun-lockfile.mjs` implements the tasks.md allowlis
 ## Workload / PR boundary
 
 Single PR, no chaining (`Chained PRs recommended: No`; `Decision needed before apply: No`; `400-line budget risk: Low`). Changed lines 274 ≤ 300, no size exception needed. No commit, push, review, or attempt settle performed (parent-owned).
+
+## Continuation run (apply verification, no code changes authored)
+
+Native status consumed (`gentle-ai sdd-status resolved-sbom-fidelity --cwd . --json`): `applyState: ready`, `nextRecommended: apply`, `verify/archive: blocked`, `blockedReasons: []`. The two remaining unchecked task rows are Task 8, both `<!-- sdd-owner: parent -->` (bounded review + delivery gate) — preserved byte-for-byte and deferred; `sdd-apply` MUST NOT execute bounded-review, receipt, or delivery-gate lifecycle actions. All 25 implementation-owned rows (Tasks 1–7) were already `- [x]` and committed at HEAD `293523d`; the working tree was clean, so this run authored **zero** new code changes and updated no checkboxes.
+
+Verification re-run evidence:
+
+| Command | Result |
+|---|---|
+| `bunx vitest run scripts/__tests__/release-integrity.test.ts` | 12/12 passed |
+| `node scripts/sbom.mjs && node scripts/checksums.mjs && node scripts/verify-release-integrity.mjs` (real repo) | 19 components; checksums and SBOM verified; exit 0 |
+| Two generations from identical inputs (`node scripts/sbom.mjs` x2, 1s apart) | `657ea86f8d7b824e8a361e0a8cc8aa121ae41a74a098b6cbb4e9ac3583ed37ce` both runs — byte-identical |
+| `git status --porcelain` / `git diff HEAD --stat` | clean; no tracked changes beyond committed HEAD |
+
+Native attempt settled exactly once (token `sha256:09977…963b4`, work unit `complete-pending-sbom-tasks`, request id `settle-resolved-sbom-apply-20260812-1`): outcome `passed` — evidence revision `sha256:fa121037477655c444074e3c4600a54d3305a0beaf12cfb982dac85f5a62a2a3` (HEAD tree at `293523d`), harness `reused` (existing vitest suite), no cleanup needed (tree clean, no temp artifacts). Diagnosis records that the apply scope is complete and the two remaining rows are parent-owned lifecycle actions.
+
+Engram persistence: `mem_search`/`mem_save` for topic `sdd/resolved-sbom-fidelity/apply-progress` could not reach the Engram HTTP server at `http://127.0.0.1:7437` (same as the prior run); OpenSpec file store remains authoritative and complete.
+
+## Lifecycle resolution (parent-owned, post-apply)
+
+Task 8 resolved by the parent after ordinary-policy verification passed. Bounded review was not started: native immutable review transport is unsupported in this runtime (`immutable_review_transport_unsupported`). Receipt-driven development was disabled for this clone by explicit user authorization; no review lifecycle was invoked and no review was re-enabled. Delivery therefore proceeded under ordinary repository policy, which passed.
+
+Verifier evidence (exact):
+
+- Focused suite (`bunx vitest run scripts/__tests__/release-integrity.test.ts`): 12/12 passed.
+- Real release chain (`node scripts/sbom.mjs && node scripts/checksums.mjs && node scripts/verify-release-integrity.mjs`): exit 0.
+- Determinism: two generations from identical inputs byte-identical, SBOM SHA-256 `657ea86f8d7b824e8a361e0a8cc8aa121ae41a74a098b6cbb4e9ac3583ed37ce`.
+- Typecheck (`bun run typecheck`): exit 0.
+- Package-file verification (`node scripts/verify-package-files.mjs`): exit 0.
+- Full suite (`bun run test`): 668 passed / 3 known baseline failures in `cmd/__tests__/cli.test.ts`.
+- Change budget: 274/300 changed lines; single-PR/no-chain resolution (size-exception not needed).
+
+Both Task 8 parent-owned checkboxes in `tasks.md` are marked complete; the change is ready to archive.

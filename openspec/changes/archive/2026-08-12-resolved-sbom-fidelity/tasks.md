@@ -96,5 +96,5 @@ Verified ground truth (do not re-litigate):
 
 ### Task 8 — Post-apply bounded review and lifecycle gate
 
-- [ ] Start or reuse a bounded review of the four allowlisted paths against the corrected release-integrity spec, confirming strict TDD order, the `optionalPeers` string-array shape, determinism, fail-closed behavior, and the ≤300-line budget; record the review result. <!-- sdd-owner: parent -->
-- [ ] Apply the resolved review/delivery gate (single PR, no chaining, size-exception) and confirm the change is ready to archive only after the review allows it. <!-- sdd-owner: parent -->
+- [x] Start or reuse a bounded review of the four allowlisted paths against the corrected release-integrity spec, confirming strict TDD order, the `optionalPeers` string-array shape, determinism, fail-closed behavior, and the ≤300-line budget; record the review result. <!-- sdd-owner: parent -->
+- [x] Apply the resolved review/delivery gate (single PR, no chaining, size-exception) and confirm the change is ready to archive only after the review allows it. <!-- sdd-owner: parent -->
