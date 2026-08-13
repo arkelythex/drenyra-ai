@@ -81,6 +81,11 @@ function loadStoreFile(filePath: string): MissionStoreFile {
 	try {
 		raw = JSON.parse(readFileSync(filePath, "utf-8")) as unknown;
 	} catch (error) {
+		if (isEnoent(error)) {
+			// Preserve the native ENOENT so hydrate() can recognize a missing
+			// store and start from empty stores instead of failing.
+			throw error;
+		}
 		throw new Error(
 			`cannot parse mission store ${filePath}: ${error instanceof Error ? error.message : String(error)}`,
 		);
