@@ -19,7 +19,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "..", "..");
 
 /** Top-level dirs owned by the fiscal-authority program chain (additive). */
-const MODULE_DIRS = ["tenant-core", "tenant-isolation", "evidence"] as const;
+const MODULE_DIRS = ["tenant-core", "tenant-isolation", "evidence", "journal"] as const;
 
 /**
  * Approved relative-import targets per module dir (top-level dir names under the
@@ -31,6 +31,7 @@ const APPROVED_TARGETS: Readonly<Record<string, readonly string[]>> = {
 	"tenant-core": ["tenant-core"],
 	"tenant-isolation": ["tenant-core", "tenant-isolation"],
 	evidence: ["evidence", "tenant-core", "receipts"],
+	journal: ["journal", "tenant-core", "evidence", "receipts"],
 } as const;
 
 const RELATIVE_IMPORT =
@@ -143,7 +144,41 @@ describe("fiscal-authority import boundaries", () => {
 					].join("\n"),
 					"evidence",
 				),
-			).toEqual([]);
-		});
-	});
-});
+    			).toEqual([]);
+    		});
+    		it("rejects the audit ledger and high-level layers from the journal layer", () => {
+    			const journalFile = join(repoRoot, "journal/journal.ts");
+    			for (const layer of ["ledger", "missions", "candidates", "agents", "cmd", "ingest"]) {
+    				const violations = moduleBoundaryViolations(
+    					journalFile,
+    					`import { x } from "../${layer}/index.js";`,
+    					"journal",
+    				);
+    				expect(violations).toEqual([
+    					`journal/journal.ts imports "../${layer}/index.js" (${layer}/), which is outside journal's approved dependencies`,
+    				]);
+    			}
+    		});
+    		it("allows journal's approved dependencies and rejects an unapproved sibling", () => {
+    			expect(
+    				moduleBoundaryViolations(
+    					join(repoRoot, "journal/index.ts"),
+    					[
+    						'import { record } from "./journal.js";',
+    						'import { validateTenantScope } from "../tenant-core/index.js";',
+    						'import { acceptEvidence } from "../evidence/index.js";',
+    						'import { computeEvidenceHash } from "../receipts/index.js";',
+    					].join("\n"),
+    					"journal",
+    				),
+    			).toEqual([]);
+    			expect(
+    				moduleBoundaryViolations(
+    					join(repoRoot, "journal/index.ts"),
+    					'import { validateLedger } from "../ledger/index.js";',
+    					"journal",
+    				).length,
+    			).toBe(1);
+    		});
+    	});
+    });

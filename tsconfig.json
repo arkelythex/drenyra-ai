@@ -38,6 +38,7 @@
     "contracts/__tests__",
     "vitest.config.ts",
     "evidence",
+    "journal",
     "skills",
     "security",
     "guardian",
