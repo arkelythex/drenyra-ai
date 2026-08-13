@@ -454,3 +454,34 @@ Attempt token `sha256:c0ddccecd6eb722a463c921236e23f0d8e0e35317b355842f2bc9a651c
 - Rollback boundary: delete the 4 journal files; no wiring/scanner change to revert.
 ## Evidence revision for settlement
 `07bf08d167ff6e5b5f75fc584960b4d13bba56e536b5be6460ca253804157c7f`
+---
+
+## Work unit 1c-journal-batch-2 — 1C-2 receipts, corrections, status axes, ledger boundary (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative.
+**Scope:** only `journal/types.ts`, `journal/journal.ts`, `journal/__tests__/journal.test.ts`, tasks.md (13 rows -> [x]), this section. 1C-3 (`journal/index.ts` + wiring + scanner), validate.ts, and all other files untouched.
+## Files changed
+| Path | Status | Lines |
+| journal/types.ts | modified | +33 |
+| journal/journal.ts | modified | +30 |
+| journal/__tests__/journal.test.ts | modified | +177 |
+| tasks.md | 13 rows `- [ ]` -> `- [x]` | 26 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| post + issuer port | 7 failed/14 passed (post/supersede/revoke/JOURNAL_ACTION absent) | 21/21 | receipt-failure leaves prior RECORDED snapshot untouched | full suite 724 green |
+| supersede/revoke | same RED run | E2 linked via supersedesEntryId, prior ref-identical; reversal entry id `revoke:<id>` | unbalanced successor throws with 0 receipts; append-only snapshot equality | typecheck/build clean |
+| status independence | same RED run | JournalEntry carries only JournalStatus; no fiscal type in any signature | both directions (journal changes/fiscal constant; fiscal changes/journal constant) | strict tsc exit 0 |
+| ledger boundary | same RED run | post/supersede/revoke return SignedReceipt (re-exported from receipts/); no journal export surface added | ledger accepts RECEIPT_RECORDED with journal receiptHash; rejects JournalEntry-shaped payload | frozen receipt 16 + ledger 29 conformance green |
+## Test commands and exact results
+- `bunx vitest run journal/__tests__/journal.test.ts` — RED 7 failed/14 passed -> GREEN 21/21 -> TRIANGULATE 22/22
+- `bunx vitest run contracts/__tests__/receipt-conformance.test.ts contracts/__tests__/ledger-conformance.test.ts` — 2 files, 45 passed (frozen, unchanged)
+- `bun run test` — 57 files, 724 passed (714 + 10); `bun run typecheck` — clean; `bun run build` — clean; strict `tsc --ignoreConfig` over the 4 journal files — exit 0
+## Deviations from design
+- `post` returns `{ entry, receipt }` (JournalPostResult) so the POST receipt is auditable; design's "POSTED snapshot" is `result.entry`. Supersede successor status = POSTED; reversal entry status = REVOKED with reversed lines (design does not pin these).
+- `JOURNAL_ACTION` const added for the receipt-issue context (design's port had no signature).
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1C-3 exports and wiring (journal/index.ts, root/package/tsconfig wiring, scanner extension) — 1 unchecked row
+## Workload / PR boundary
+- Batch: 1C-2, branch `fiscal-authority/journal` boundary. Changed lines: journal 240 + tasks 26 + this section <= 300 cap (ledger counts the full worktree diff incl. OpenSpec artifacts).
+- Rollback boundary: revert the 3 journal files and the 13 tasks.md checkboxes; 1C-1 surface (validate.ts, record) untouched except additive functions.
+## Evidence revision for settlement
+`673c906a8ccc0031afa8408feaae032af5ae3619c4691dcdb3ede27609c540ea`
