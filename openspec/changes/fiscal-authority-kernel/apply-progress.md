@@ -664,3 +664,40 @@ SHA-256 over concatenated current contents (in order) of `cdr/types.ts`, `cdr/su
 ```
 c109c4e21bec647ca155ed05ce51196881fc945a2dc0248e58a26faa5542e704
 ```
+
+## Work unit 1e-cdr-2-batch-2 — 1E-2 CDR successor composition, steps 8-13 + fail-closed recovery + wiring (rows 7-14 complete)
+**Status:** openspec store, applyState ready -> batch complete; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative; objective `1e-cdr-2-batch-2` (max 400 changed lines total, 1 attempt).
+**Scope:** only `cdr/types.ts`, `cdr/successor.ts`, `cdr/index.ts`, `cdr/__tests__/successor.test.ts`, root `index.ts` (+1), `package.json` (`./cdr`), `tsconfig.json` + `tsconfig.build.json` (`cdr` includes), `tenant-isolation/__tests__/import-boundaries.test.ts` (cdr scanner), tasks.md (1E-2 rows 7-14 -> [x]), this section.
+## Files changed
+| Path | Status | Lines |
+| cdr/types.ts | extended: candidate/receipt ports, candidate-B result, 3 fail-closed codes | +47/-9 |
+| cdr/successor.ts | extended: steps 8-13, approval-drive + approve, retry resume | +109/-20 |
+| cdr/__tests__/successor.test.ts | extended: 7 new materialization/fail-closed tests + flow updates | +136/-13 |
+| cdr/index.ts | unchanged (already exports types + composer) | 0 |
+| wiring (root index.ts, package.json, tsconfig.json, tsconfig.build.json) | +1 additive line each | 4 |
+| tenant-isolation/__tests__/import-boundaries.test.ts | MODULE_DIRS + APPROVED_TARGETS cdr + triangulation | +34/-6 |
+| tasks.md | 8 rows `- [ ]` -> `- [x]` | 16 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1E-2 rows 7-12 (steps 8-13 + fail-closed) | 8 failed/6 passed (result.candidateB undefined, ports missing) | 14/14 focused; full suite 774 | materialization never before gates/receipt/approval (spy); receipt binds intended hash, not mismatched subject; retry resumes from reconciled RUNNING and produces B | unused import trimmed; typecheck clean |
+| 1E-2 row 13 (wiring) | scanner RED 1 failed/14 passed (cdr in MODULE_DIRS, no APPROVED_TARGETS) | scanner 16/16 (cdr allowlist = cdr, tenant-core, evidence, policy, fiscal, missions, candidates, gates, receipts) | cdr triangulation: allows approved deps, rejects ledger | brace-dedup in scanner edit |
+| 1E-2 row 14 (regression) | n/a | full suite 774 (765 baseline + 7 cdr + 2 scanner), frozen 140/140 | typecheck clean, build clean, dist/cdr/ emitted | n/a |
+## Test commands and exact results
+- `bunx vitest run cdr/__tests__/successor.test.ts` — RED 8 failed/6 passed -> GREEN/TRIANGULATE 14/14
+- `bunx vitest run tenant-isolation/__tests__/import-boundaries.test.ts` — RED 1 failed/14 passed -> GREEN 16/16
+- `bun run test` — 60 files, 774 passed (765 baseline + 9 new); `bunx vitest run contracts/__tests__/` — 140/140 frozen, unchanged
+- `bun run typecheck` clean; `bun run build` clean; dist/cdr/ emitted; `git diff --stat HEAD` total = cdr 277/-53 + tasks 16 + this section <= 400 cap
+## Deviations from design
+- Mission approval needs the existing approval flow (RUNNING -> AWAITING_APPROVAL -> APPROVED); step 8 therefore drives one extra `execute` (idempotency key `:approval-drive`, expected = executeSteps.length+2) before `approve` (:approve, expected +1). Versions are input-derived so retries replay identical payloads. The mission receipt is built and verified by the receipt seam (the library MissionRuntime persists receiptId/receiptHash only via the API layer), binding computeEvidenceHash as its evidenceHash.
+- Reconcile step accepts APPROVED/AWAITING_APPROVAL on retry so a retry resumes from the immutable reconciled successor result instead of failing.
+- APPROVED_TARGETS cdr includes `fiscal` (sanctioned by the task row) though no cdr file imports it — same sanctioned-but-unused precedent as policy/journal; the scanner still rejects every high-level layer.
+- `compose` now returns the post-approval mission snapshot (APPROVED v7, 7 events); batch-1 assertions for status/version/events/callCount were updated to the completed flow.
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1E-2 fully checked (14/14). Parent-owned chain lifecycle gates (7 rows) remain unchecked in tasks.md.
+## Workload / PR boundary
+- Batch: 1E-2 rows 7-14, branch `fiscal-authority/policy-cdr` boundary (parent owns branch/commits and the chained-PR gate). Changed lines: cdr 330 + tasks 16 + this section <= 400 cap. Rollback: revert cdr/ extensions, 4 wiring additions, scanner cdr entry, 8 tasks.md checkboxes.
+## Evidence revision for settlement
+SHA-256 over concatenated current contents (in order) of `cdr/types.ts`, `cdr/successor.ts`, `cdr/index.ts`:
+```
+80ed18f8b142b40ece7c13623272112566c131ad031eac6970a90634f1d0b558
+```
