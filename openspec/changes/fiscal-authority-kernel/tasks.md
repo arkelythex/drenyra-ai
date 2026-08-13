@@ -89,23 +89,23 @@ Branch `fiscal-authority/evidence`. Depends on 1A. Files: `evidence/types.ts`, `
 
 ### 1B-1 Provenance requirement (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — in `evidence/__tests__/accept.test.ts`, write failing tests: acceptance of a submission with missing provenance is rejected, malformed provenance is rejected, and rejection produces no artifact and no downstream-capable partial object. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement `evidence/types.ts` (`EvidenceProvenance` with stable source id, observed timestamp, source kind, content reference; `EvidenceSubmission`; origin constants; rejection codes; immutable `AcceptedEvidence`) and `evidence/accept.ts` narrowing + provenance validation; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — add provenance field-boundary cases (empty source id, structurally invalid timestamp, unknown source kind) asserting fail-closed rejection; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — in `evidence/__tests__/accept.test.ts`, write failing tests: acceptance of a submission with missing provenance is rejected, malformed provenance is rejected, and rejection produces no artifact and no downstream-capable partial object. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement the accepted-evidence surface: `evidence/accept.ts` (`AcceptedEvidence` preserving existing `id`/`evidenceHash` + canonical `identity`) delegating narrowing + provenance validation to the existing `registerEvidence` authority; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — add provenance field-boundary cases (empty source id, structurally invalid timestamp, unknown source kind) asserting fail-closed rejection; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1B-2 Memory is never evidence (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — write failing tests: advisory/memory-shaped input (memory reference, advisory claim, conversation-shaped object) is rejected during unknown-input narrowing and cannot satisfy an evidence requirement. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement memory exclusion in the `evidence/accept.ts` narrowing step before any other check; memory kinds are absent from the accepted const-object types; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — add a compile-time/runtime shape test proving no accepted type carries a memory marker; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: advisory/memory-shaped input (memory reference, advisory claim, conversation-shaped object) is rejected during unknown-input narrowing and cannot satisfy an evidence requirement. <!-- sdd-owner: implementation -->
+- [x] GREEN — memory exclusion flows through the `evidence/accept.ts` delegation to the existing authority narrowing before any other check; memory kinds stay absent from the accepted const-object types; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — add a compile-time/runtime shape test proving no accepted type carries a memory marker; run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1B-3 Canonical evidence identity (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — write failing tests: `AcceptedEvidence.identity` equals `computeEvidenceHash([item])` from `receipts/` for the same `EvidenceItem`; two items with identical content and provenance have equal identities. <!-- sdd-owner: implementation -->
-- [ ] GREEN — compute identity in `evidence/accept.ts` via `computeEvidenceHash([item])` from `receipts/verify.ts` as the single source of canonical identity; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — change the `EvidenceItem` content and assert the re-accepted identity differs (H2 ≠ H1); assert the original accepted artifact is unchanged (deep immutability, no in-place mutation); run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] REFACTOR — run `bun run test`; run the frozen receipt conformance suite (`contracts/__tests__/receipt-conformance.test.ts`) unchanged and green. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: `AcceptedEvidence.identity` equals `computeEvidenceHash([item])` from `receipts/` for the same `EvidenceItem`; two items with identical content and provenance have equal identities. <!-- sdd-owner: implementation -->
+- [x] GREEN — compute identity in `evidence/accept.ts` via `computeEvidenceHash([...items])` from `receipts/verify.ts` as the single source of canonical identity; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — change the `EvidenceItem` content and assert the re-accepted identity differs (H2 ≠ H1); assert the original accepted artifact is unchanged (deep immutability, no in-place mutation); run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] REFACTOR — run `bun run test`; run the frozen receipt conformance suite (`contracts/__tests__/receipt-conformance.test.ts`) unchanged and green. <!-- sdd-owner: implementation -->
 
 ### 1B-4 Tenant binding and composition
 
