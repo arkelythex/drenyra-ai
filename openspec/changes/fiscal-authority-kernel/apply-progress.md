@@ -517,3 +517,28 @@ Attempt token `sha256:c0ddccecd6eb722a463c921236e23f0d8e0e35317b355842f2bc9a651c
 ## Evidence revision for settlement
 `dd12c5445c6642dd67dc9cdf98155577d41a855a33a711b62f7ca5887a7d737c`
 
+## Work unit 1d-candidate-ordering-batch-1 — 1D-1 + 1D-2 (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative; objective `1d-candidate-ordering-1` (max 300 changed lines, 1 attempt) — parent owns ledger accounting.
+**Scope:** only `fiscal/types.ts`, `fiscal/candidate-ordering.ts`, `fiscal/__tests__/candidate-ordering.test.ts`, tasks.md (6 rows -> [x]), this section. 1D-3/1D-4/1D-5, `fiscal/index.ts`, scanner, wiring untouched.
+## Files changed
+| Path | Status | Lines |
+| fiscal/types.ts | new | 61 |
+| fiscal/candidate-ordering.ts | new | 68 |
+| fiscal/__tests__/candidate-ordering.test.ts | new | 132 |
+| tasks.md | 6 rows `- [ ]` -> `- [x]` | 12 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1D-1 validation | 1 file failed, 0 tests (modules ../candidate-ordering.js + ../types.js absent) | 7/7 | spy order validate->reconcile->build->propose->inspect; builder receives exactly the validated input (toBe VALIDATED); core-throw stops before any candidate call | full suite 734 |
+| 1D-2 reconciliation | same RED run | >=1 same-scope gate; MISSING_RECONCILIATION_EVIDENCE / RECONCILIATION_SCOPE_MISMATCH | other-scope evidence fails closed, inspect never reached | typecheck/build clean |
+## Test commands and exact results
+- `bunx vitest run fiscal/__tests__/candidate-ordering.test.ts` — RED 1 failed/0 tests -> GREEN 7 passed
+- `bun run test` — 58 files, 734 passed (727 + 7); `bun run typecheck` clean; `bun run build` clean; strict `tsc --ignoreConfig` over the 3 fiscal files — exit 0
+## Deviations from design
+- Evidence copies (never shares) the input scope reference, so same-scope assertions use `scopeKey` equality; the adapter runs the full ordered flow through the candidate port seam (propose + inspect) in this batch, with 1D-3 wiring the real `CandidateLifecycle` and adding byte-identity tests.
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1D-3 (4 rows), 1D-4 (3 rows), 1D-5 (1 row) — 8 unchecked
+## Workload / PR boundary
+- Batch: 1D-1 + 1D-2, branch `fiscal-authority/candidate-ordering` boundary (parent owns branch/commits). Changed lines: fiscal 261 + tasks 12 + this section <= 300 cap.
+- Rollback boundary: delete the 3 fiscal files; revert the 6 tasks.md checkboxes; no wiring/scanner change to revert.
+## Evidence revision for settlement
+`7e855010a9d37335f292f6f8458bb55af5c8b2afc03261258a64b287d2a194b5`
