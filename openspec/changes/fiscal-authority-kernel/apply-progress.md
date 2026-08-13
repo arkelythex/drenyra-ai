@@ -601,3 +601,103 @@ Attempt token `sha256:c0ddccecd6eb722a463c921236e23f0d8e0e35317b355842f2bc9a651c
 - Rollback boundary: remove `fiscal/index.ts`, the 5 wiring additions (root index.ts export, package.json `./fiscal`, tsconfig.json + tsconfig.build.json includes, scanner extension), revert the tasks.md checkbox; fiscal core (types/candidate-ordering + tests) remains intact.
 ## Evidence revision for settlement
 `11b7887e9c722460b3b7548831ce82a692996cd58290836c535073f8adb9dfb6`
+
+## Work unit 1e-policy-batch-1 — 1E-1 policy PE restriction surface + exports/wiring (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative; objective `1e-policy-1` (max 300 changed lines, 1 attempt) — parent owns ledger accounting.
+**Scope:** only `policy/types.ts`, `policy/pe-policy.ts`, `policy/index.ts`, `policy/__tests__/pe-policy.test.ts` (new), root `index.ts` (+1), `package.json` (`./policy`), `tsconfig.json` + `tsconfig.build.json` (`policy` includes), `tenant-isolation/__tests__/import-boundaries.test.ts` (MODULE_DIRS + APPROVED_TARGETS + policy triangulation), tasks.md (10 rows -> [x]), this section. 1E-2 (`cdr/**`) untouched and out of scope.
+## Files changed
+| Path | Status | Lines |
+| policy/types.ts | new | 61 |
+| policy/pe-policy.ts | new | 54 |
+| policy/index.ts | new | 9 |
+| policy/__tests__/pe-policy.test.ts | new | 84 |
+| wiring (root index.ts, package.json, tsconfig.json, tsconfig.build.json) | +1 additive line each | 4 |
+| tenant-isolation/__tests__/import-boundaries.test.ts | MODULE_DIRS + APPROVED_TARGETS + policy triangulation | +32/-2 |
+| tasks.md | 10 rows `- [ ]` -> `- [x]` | 20 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1E-1 rows 1-6 (evaluator) | 1 file failed, 0 tests (module ../index.js absent) | 10/10 focused; full suite 755 | unknown/non-PE jurisdiction variants, HIGH_VALUE_CENTS boundary (+1n), malformed input, scope mismatch, empty evidence | full suite green after lean trim |
+| 1E-1 rows 7-9 (precondition) | same RED run (govern absent) | spy proofs: BLOCK stops journal port; ESCALATE stops mission/candidate/receipt ports; ALLOW delegates exactly once | frozen subject passed to authority unchanged | full suite 758 |
+| 1E-1 row 10 (wiring) | scanner coverage-first RED: policy in MODULE_DIRS, no approved targets (1 failed/11 passed) | APPROVED_TARGETS policy = [policy, candidates, evidence, journal]; scanner 14/14 | policy triangulation: rejects ledger/missions/gates/agents/cmd/ingest; allows candidates/evidence/journal/internal | typecheck/build clean, dist/policy/ emitted |
+## Test commands and exact results
+- `bunx vitest run policy/__tests__/pe-policy.test.ts` — RED 1 failed/0 tests -> GREEN/TRIANGULATE 10/10
+- `bunx vitest run tenant-isolation/__tests__/import-boundaries.test.ts` — RED 1 failed/11 passed -> GREEN 14/14
+- `bun run test` — 59 files, 758 passed (745 baseline + 10 policy + 3 scanner); `bun run typecheck` clean; `bun run build` clean; dist/policy/ emitted; runtime exports = FISCAL_JURISDICTION, POLICY_DECISION, POLICY_REASON, PolicyError, evaluatePePolicy, govern, zero foreign names
+## Deviations from design
+- Task row 1E-1-10 says `tenant/`; per the rescoped layout the scanner lives in `tenant-isolation/` (same deviation as 1B-5/1C-3/1D-5). APPROVED_TARGETS policy = [policy, candidates, evidence, journal]; real policy imports are candidates (`HIGH_VALUE_CENTS`) + evidence (type) only — journal is sanctioned per the task row but unused; the allowlist still rejects every high-level layer.
+- PolicySubject is outcome-agnostic (jurisdiction, valueCents, evidence, scopeKey): one immutable subject feeds both journal-materiality and CDR restriction evaluation; `govern` is the composition-order primitive (evaluate -> stop on BLOCK/ESCALATE -> delegate on ALLOW), which the 1E-2 cdr batch wires into the real mission/candidate/receipt flow.
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1E-2 CDR successor composition — 21 rows unchecked (next batch); 7 parent-owned chain lifecycle gates unchecked
+## Workload / PR boundary
+- Batch: 1E-1, branch `fiscal-authority/policy-cdr` boundary (parent owns branch/commits and the chained-PR gate). Changed lines: policy 208 + wiring/scanner 36 + tasks 20 + this section 35 = 299 <= 300 cap (ledger counts the full worktree diff incl. OpenSpec artifacts).
+- Rollback boundary: remove `policy/` (4 files), the 4 wiring additions, the scanner extension; revert the 10 tasks.md checkboxes.
+## Evidence revision for settlement
+SHA-256 over concatenated current contents (in order) of the 7 implementation-candidate files (`policy/types.ts`, `policy/pe-policy.ts`, `policy/index.ts`, `index.ts`, `package.json`, `tsconfig.json`, `tenant-isolation/__tests__/import-boundaries.test.ts`):
+```
+b57d444bbeeaa622f1b87f0e4dd8a917bb4271e98897413fabdc891771ecf058
+```
+## Work unit 1e-cdr-batch-2 — 1E-2 CDR successor composition, steps 1-7 (rows 1-6 complete)
+**Status:** openspec store, applyState ready -> batch complete; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative; objective `1e-cdr-2` (max 400 changed lines, 1 attempt).
+**Scope:** only `cdr/types.ts`, `cdr/successor.ts`, `cdr/index.ts`, `cdr/__tests__/successor.test.ts` (new), tasks.md (1E-2 rows 1-6 -> [x]), this section. No wiring (root/package/tsconfig/scanner) this batch; scanner untouched.
+## Files changed
+| Path | Status | Lines |
+| cdr/types.ts | new | 63 |
+| cdr/successor.ts | new | 140 |
+| cdr/index.ts | new | 8 |
+| cdr/__tests__/successor.test.ts | new | 149 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1E-2 rows 1-6 | 1 failed suite, 0 tests (../successor.js absent) | 7/7 focused; full suite 765 | scope/receipt/policy fail closed before mission creation; gates in order stop on first non-allowed; binding/reconcile/terminal mismatch stop; replay/conflict triangulated | compacted cdr 611 -> 360 lines for the 400 cap |
+## Test commands and exact results
+- `bunx vitest run cdr/__tests__/successor.test.ts` — RED 1 failed/0 tests -> GREEN/TRIANGULATE 7/7
+- `bun run test` — 60 files, 765 passed (758 baseline + 7); `bunx vitest run contracts/__tests__/` — 140/140 frozen, unchanged
+- `bun run typecheck` clean; `bun run build` clean; strict `tsc --ignoreConfig` over the 4 cdr files (mandatory flags) — exit 0
+- `wc -l cdr/**` 360 + tasks 12 + this section <= 400 cap
+## Deviations from design
+- The candidate/receipt port types and `CdrCandidateBResult` named by the GREEN row are deferred to the steps 8-13 batch (unused by steps 1-7; would break the 400-line cap); types.ts extends additively next batch.
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1E-2 rows 7-13 (steps 8-13: candidate-B materialization, second approval, separate receipt, fail-closed recovery) plus wiring/regression rows 14-15 — 9 rows; 7 parent-owned chain lifecycle gates unchecked
+## Workload / PR boundary
+- Batch: 1E-2 rows 1-6, branch `fiscal-authority/policy-cdr` boundary (parent owns branch/commits and the chained-PR gate). Changed lines: cdr 360 + tasks 12 + this section <= 400 cap. Rollback: remove `cdr/` (4 files) + revert the 6 checkboxes.
+## Evidence revision for settlement
+SHA-256 over concatenated current contents (in order) of `cdr/types.ts`, `cdr/successor.ts`, `cdr/index.ts`:
+```
+c109c4e21bec647ca155ed05ce51196881fc945a2dc0248e58a26faa5542e704
+```
+
+## Work unit 1e-cdr-2-batch-2 — 1E-2 CDR successor composition, steps 8-13 + fail-closed recovery + wiring (rows 7-14 complete)
+**Status:** openspec store, applyState ready -> batch complete; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative; objective `1e-cdr-2-batch-2` (max 400 changed lines total, 1 attempt).
+**Scope:** only `cdr/types.ts`, `cdr/successor.ts`, `cdr/index.ts`, `cdr/__tests__/successor.test.ts`, root `index.ts` (+1), `package.json` (`./cdr`), `tsconfig.json` + `tsconfig.build.json` (`cdr` includes), `tenant-isolation/__tests__/import-boundaries.test.ts` (cdr scanner), tasks.md (1E-2 rows 7-14 -> [x]), this section.
+## Files changed
+| Path | Status | Lines |
+| cdr/types.ts | extended: candidate/receipt ports, candidate-B result, 3 fail-closed codes | +47/-9 |
+| cdr/successor.ts | extended: steps 8-13, approval-drive + approve, retry resume | +109/-20 |
+| cdr/__tests__/successor.test.ts | extended: 7 new materialization/fail-closed tests + flow updates | +136/-13 |
+| cdr/index.ts | unchanged (already exports types + composer) | 0 |
+| wiring (root index.ts, package.json, tsconfig.json, tsconfig.build.json) | +1 additive line each | 4 |
+| tenant-isolation/__tests__/import-boundaries.test.ts | MODULE_DIRS + APPROVED_TARGETS cdr + triangulation | +34/-6 |
+| tasks.md | 8 rows `- [ ]` -> `- [x]` | 16 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1E-2 rows 7-12 (steps 8-13 + fail-closed) | 8 failed/6 passed (result.candidateB undefined, ports missing) | 14/14 focused; full suite 774 | materialization never before gates/receipt/approval (spy); receipt binds intended hash, not mismatched subject; retry resumes from reconciled RUNNING and produces B | unused import trimmed; typecheck clean |
+| 1E-2 row 13 (wiring) | scanner RED 1 failed/14 passed (cdr in MODULE_DIRS, no APPROVED_TARGETS) | scanner 16/16 (cdr allowlist = cdr, tenant-core, evidence, policy, fiscal, missions, candidates, gates, receipts) | cdr triangulation: allows approved deps, rejects ledger | brace-dedup in scanner edit |
+| 1E-2 row 14 (regression) | n/a | full suite 774 (765 baseline + 7 cdr + 2 scanner), frozen 140/140 | typecheck clean, build clean, dist/cdr/ emitted | n/a |
+## Test commands and exact results
+- `bunx vitest run cdr/__tests__/successor.test.ts` — RED 8 failed/6 passed -> GREEN/TRIANGULATE 14/14
+- `bunx vitest run tenant-isolation/__tests__/import-boundaries.test.ts` — RED 1 failed/14 passed -> GREEN 16/16
+- `bun run test` — 60 files, 774 passed (765 baseline + 9 new); `bunx vitest run contracts/__tests__/` — 140/140 frozen, unchanged
+- `bun run typecheck` clean; `bun run build` clean; dist/cdr/ emitted; `git diff --stat HEAD` total = cdr 277/-53 + tasks 16 + this section <= 400 cap
+## Deviations from design
+- Mission approval needs the existing approval flow (RUNNING -> AWAITING_APPROVAL -> APPROVED); step 8 therefore drives one extra `execute` (idempotency key `:approval-drive`, expected = executeSteps.length+2) before `approve` (:approve, expected +1). Versions are input-derived so retries replay identical payloads. The mission receipt is built and verified by the receipt seam (the library MissionRuntime persists receiptId/receiptHash only via the API layer), binding computeEvidenceHash as its evidenceHash.
+- Reconcile step accepts APPROVED/AWAITING_APPROVAL on retry so a retry resumes from the immutable reconciled successor result instead of failing.
+- APPROVED_TARGETS cdr includes `fiscal` (sanctioned by the task row) though no cdr file imports it — same sanctioned-but-unused precedent as policy/journal; the scanner still rejects every high-level layer.
+- `compose` now returns the post-approval mission snapshot (APPROVED v7, 7 events); batch-1 assertions for status/version/events/callCount were updated to the completed flow.
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1E-2 fully checked (14/14). Parent-owned chain lifecycle gates (7 rows) remain unchecked in tasks.md.
+## Workload / PR boundary
+- Batch: 1E-2 rows 7-14, branch `fiscal-authority/policy-cdr` boundary (parent owns branch/commits and the chained-PR gate). Changed lines: cdr 330 + tasks 16 + this section <= 400 cap. Rollback: revert cdr/ extensions, 4 wiring additions, scanner cdr entry, 8 tasks.md checkboxes.
+## Evidence revision for settlement
+SHA-256 over concatenated current contents (in order) of `cdr/types.ts`, `cdr/successor.ts`, `cdr/index.ts`:
+```
+80ed18f8b142b40ece7c13623272112566c131ad031eac6970a90634f1d0b558
+```
