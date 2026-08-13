@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /**
  * Release integrity — verify dist/checksums.txt self-consistency and SBOM
- * coverage of declared runtime dependencies. Consistency evidence, not
- * authenticity: checksums detect mismatch, they are not signatures.
+ * fidelity to the Bun-lockfile-resolved required-runtime graph. Consistency
+ * evidence, not authenticity: checksums detect mismatch, not signatures.
  */
 import { createHash } from "node:crypto";
 import { lstatSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveRuntimeGraph } from "./lib/bun-lockfile.mjs";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const dist = join(root, "dist");
@@ -33,10 +34,7 @@ function packagedFiles() {
 }
 
 try {
-	const manifest = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-	if (typeof manifest.name !== "string" || typeof manifest.version !== "string")
-		throw new Error("package.json must declare string name and version");
-
+	const { root: meta, direct, nodes } = resolveRuntimeGraph(root);
 	const sbom = JSON.parse(readFileSync(join(dist, "sbom.json"), "utf8"));
 	if (
 		sbom.bomFormat !== "CycloneDX" ||
@@ -44,18 +42,44 @@ try {
 		!Array.isArray(sbom.components)
 	)
 		throw new Error("sbom.json must be CycloneDX 1.5 with a components array");
-	const components = new Map();
+	if (sbom.metadata?.component?.name !== meta.name || sbom.metadata?.component?.version !== meta.version || sbom.metadata?.component?.["bom-ref"] !== meta.name)
+		throw new Error(`sbom.json root metadata mismatch: ${meta.name}`);
+	const byName = new Map();
 	for (const component of sbom.components) {
 		if (typeof component?.name !== "string")
 			throw new Error("sbom.json has a component without a name");
-		if (components.has(component.name))
+		if (byName.has(component.name))
 			throw new Error(`sbom.json duplicate component: ${component.name}`);
-		components.set(component.name, component);
+		byName.set(component.name, component);
 	}
-	for (const [name, version] of Object.entries(manifest.dependencies ?? {})) {
-		const component = components.get(name);
-		if (component?.type !== "library" || component.version !== version)
-			throw new Error(`sbom.json missing or mismatched dependency: ${name}`);
+	const expectedNodes = new Map(nodes.map((node) => [node.name, node]));
+	const missing = [...expectedNodes.keys()].filter((name) => !byName.has(name));
+	const extra = [...byName.keys()].filter((name) => !expectedNodes.has(name));
+	if (missing.length || extra.length) throw new Error(`sbom.json component drift: missing ${missing.join(",")} extra ${extra.join(",")}`);
+	for (const node of nodes) {
+		const component = byName.get(node.name);
+		if (component?.type !== "library" || component.version !== node.version || component.scope !== "required" || component["bom-ref"] !== node.name)
+			throw new Error(`sbom.json component mismatch: ${node.name} expected ${node.version}`);
+		const props = (component.properties ?? []).filter((p) => p?.name === "drenyra:resolution");
+		if (props.length !== 1 || props[0].value !== (node.direct ? "direct" : "transitive"))
+			throw new Error(`sbom.json classification mismatch: ${node.name}`);
+	}
+	const deps = new Map();
+	for (const entry of sbom.dependencies ?? []) {
+		if (typeof entry?.ref !== "string" || !Array.isArray(entry.dependsOn))
+			throw new Error("sbom.json has a malformed dependency entry");
+		if (deps.has(entry.ref)) throw new Error(`sbom.json duplicate dependency ref: ${entry.ref}`);
+		const sorted = [...entry.dependsOn].sort();
+		for (let i = 1; i < sorted.length; i++)
+			if (sorted[i] === sorted[i - 1]) throw new Error(`sbom.json duplicate edge: ${entry.ref}`);
+		deps.set(entry.ref, sorted);
+	}
+	const expectedDeps = [{ ref: meta.name, dependsOn: direct }, ...nodes.map((node) => ({ ref: node.name, dependsOn: node.dependsOn }))];
+	if (deps.size !== expectedDeps.length) throw new Error(`sbom.json dependency drift: ${deps.size} entries, expected ${expectedDeps.length}`);
+	for (const entry of expectedDeps) {
+		const actual = deps.get(entry.ref);
+		if (!actual || JSON.stringify(actual) !== JSON.stringify(entry.dependsOn))
+			throw new Error(`sbom.json dependency drift: ${entry.ref}`);
 	}
 
 	const records = readFileSync(join(dist, "checksums.txt"), "utf8").split("\n");

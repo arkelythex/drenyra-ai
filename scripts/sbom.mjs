@@ -5,20 +5,22 @@
  * never floats.
  */
 /**
- * Release integrity — minimal SBOM (Design 05 "SBOM generation"). Derived from
- * the package manifest: name, version, and every runtime dependency with its
- * declared version. Written to dist/sbom.json so the published artifact carries
+ * Release integrity — resolved SBOM (Design 05 "SBOM generation"). Derived from
+ * the Bun lockfile: exact locked versions and the complete required-runtime
+ * closure. Written to dist/sbom.json so the published artifact carries
  * a software bill of materials.
  */
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveRuntimeGraph } from "./lib/bun-lockfile.mjs";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 
 let manifest;
 let deps;
+let graph;
 try {
 	manifest = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 	if (typeof manifest.name !== "string" || typeof manifest.version !== "string")
@@ -31,6 +33,7 @@ try {
 	for (const version of Object.values(deps))
 		if (typeof version !== "string")
 			throw new Error("package.json dependencies must declare string versions");
+	graph = resolveRuntimeGraph(root);
 } catch (error) {
 	console.error(
 		`sbom: ${error instanceof Error ? error.message : String(error)}`,
@@ -38,14 +41,9 @@ try {
 	process.exit(1);
 }
 
-const components = Object.entries(deps)
-	.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
-	.map(([name, version]) => ({
-		type: "library",
-		name,
-		version,
-		scope: "required",
-	}));
+const components = graph.nodes.map(({ name, version, direct }) => ({
+	type: "library", "bom-ref": name, name, version, scope: "required",
+	properties: [{ name: "drenyra:resolution", value: direct ? "direct" : "transitive" }] }));
 
 const sbom = {
 	bomFormat: "CycloneDX",
@@ -54,6 +52,7 @@ const sbom = {
 	metadata: {
 		component: {
 			type: "library",
+			"bom-ref": manifest.name,
 			name: manifest.name,
 			version: manifest.version,
 		},
@@ -62,11 +61,19 @@ const sbom = {
 	dependencies: [
 		{
 			ref: manifest.name,
-			dependsOn: components.map((component) => component.name),
+			dependsOn: graph.direct,
 		},
+		...graph.nodes.map((node) => ({ ref: node.name, dependsOn: node.dependsOn })),
 	],
 };
 
 const out = join(root, "dist", "sbom.json");
-writeFileSync(out, JSON.stringify(sbom, null, 2) + "\n");
+try {
+	if (!existsSync(join(root, "dist"))) throw new Error(`missing dist/ directory: ${join(root, "dist")}`);
+	writeFileSync(`${out}.tmp`, JSON.stringify(sbom, null, 2) + "\n");
+	renameSync(`${out}.tmp`, out);
+} catch (error) {
+	rmSync(`${out}.tmp`, { force: true });
+	console.error(`sbom: ${error instanceof Error ? error.message : String(error)}`); process.exit(1);
+}
 console.log(`sbom: ${components.length} components -> dist/sbom.json`);
