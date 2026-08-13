@@ -23,6 +23,7 @@
     "./missions": "./dist/missions/index.js",
     "./candidates": "./dist/candidates/index.js",
     "./evidence": "./dist/evidence/index.js",
+    "./journal": "./dist/journal/index.js",
     "./review": "./dist/review/index.js",
     "./gates": "./dist/gates/index.js",
     "./recovery": "./dist/recovery/index.js",

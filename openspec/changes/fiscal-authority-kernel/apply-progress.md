@@ -425,4 +425,95 @@ SHA-256 over concatenated current contents (in order) of the 2 implementation-ca
 
 Attempt token `sha256:c0ddccecd6eb722a463c921236e23f0d8e0e35317b355842f2bc9a651c919213` was parent-acquired; this phase settled it exactly once via the runtime's prescribed continuation (`sdd-attempt finish`, request id `batch2-1b4-1b5-finish-01`, outcome passed, evidence revision recorded). The `--remediates-evidence-revision` flag was rejected by the runtime (no failed verification on record; batch-1 revision 57c912e3 was passed, not failed) and correctly omitted. RDD remains disabled clone-local; no receipt claimed.
 
-**Budget flag — parent decision required (ledger):** the runtime ledger counts changed lines as the gross worktree diff vs the begin candidate tree, including the mandatory OpenSpec artifacts; ordinal 4 recorded `changed_lines: 432` > `max_changed_lines: 300`, so the attempt finished passed but with `changed_line_budget_exceeded: true` and the objective now reports `decision_required: true, next_action: reset` (same shape as ordinal 2's maintainer-authorized reset). The batch's implementation files alone are 320 gross / 200 net authored lines; the remaining ~112 counted lines are the tasks.md checkbox updates and this apply-progress section, which are mandatory phase outputs and cannot be removed. Per delegation, this phase performed no reset (parent-owned) and no second settle (single-settle contract honored). Parent options: authorize a reset of the gen-4 objective (precedent: ordinal 2), or accept the overage as a size exception for the 1B-5 scanner extension.
+**Budget flag — parent decision required (ledger):** the runtime ledger counts changed lines as the gross worktree diff vs the begin candidate tree, including the mandatory OpenSpec artifacts; ordinal 4 recorded `changed_lines: 432` > `max_changed_lines: 300`, so the attempt finished passed but with `changed_line_budget_exceeded: true` and the objective now reports `decision_required: true, next_action: reset` (same shape as ordinal 2's maintainer-authorized reset). The batch's implementation files alone are 320 gross / 200 net authored lines; the remaining ~112 counted lines are the tasks.md checkbox updates and this apply-progress section, which are mandatory phase outputs and cannot be removed. Per delegation, this phase performed no reset (parent-owned) and no second settle (single-settle contract honored). Parent options: authorize a reset of the gen-4 objective (precedent: ordinal 2), or accept the overage as a size exception for the 1B-5 scanner extension
+---
+
+## Work unit 1c-journal-batch-1 (batch 1 of Slice 1C) — 1C-1 amount/balance/binding (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase).
+**Scope:** only `journal/types.ts`, `journal/validate.ts`, `journal/journal.ts`, `journal/__tests__/journal.test.ts`, tasks.md (7 rows -> [x]), this apply-progress. 1C-2/1C-3, wiring, scanner untouched. Engram batch summary saved.
+## Files changed
+| Path | Status | Lines |
+| journal/types.ts | new | 57 |
+| journal/validate.ts | new | 72 |
+| journal/journal.ts | new | 24 |
+| journal/__tests__/journal.test.ts | new | 101 |
+| tasks.md | 7 rows `- [ ]` -> `- [x]` | 14 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1C-1 amounts/balance | 1 file failed, 0 tests (module ../journal.js absent) | 12/12 | -1n, 0n, "1.50"/"100", multi-line sums, no-entry-state on every rejection | full suite 714 green |
+| 1C-1 binding | same RED run | MISSING_EVIDENCE / EVIDENCE_SCOPE_MISMATCH / INVALID_SCOPE | frozen entry/lines/scope; mutation throws TypeError | typecheck/build clean |
+## Test commands and exact results
+- `bunx vitest run journal/__tests__/journal.test.ts` — RED 1 failed/0 tests -> GREEN 12 passed
+- `bun run test` — 57 files, 714 passed (702 + 12); `bun run typecheck` — clean; `bun run build` — clean; focused `tsc --ignoreConfig` over the 4 journal files — clean (repo-wide journal typecheck/build wiring is 1C-3)
+
+## Deviations from design
+- `JournalRecordInput.scope` typed `unknown` + runtime revalidation (mirrors `EvidenceInput.scope`); entry carries a fresh branded scope copy. Empty-lines guard implemented in `validateRecord`; dedicated test trimmed for the 300-line cap.
+
+## Workload / PR boundary
+- Batch: 1C-1, branch `fiscal-authority/journal` boundary (parent owns branch/commits). Total changed lines: source+tests 254 + tasks 14 + this section 28 <= 300 cap.
+- Rollback boundary: delete the 4 journal files; no wiring/scanner change to revert.
+## Evidence revision for settlement
+`07bf08d167ff6e5b5f75fc584960b4d13bba56e536b5be6460ca253804157c7f`
+---
+
+## Work unit 1c-journal-batch-2 — 1C-2 receipts, corrections, status axes, ledger boundary (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative.
+**Scope:** only `journal/types.ts`, `journal/journal.ts`, `journal/__tests__/journal.test.ts`, tasks.md (13 rows -> [x]), this section. 1C-3 (`journal/index.ts` + wiring + scanner), validate.ts, and all other files untouched.
+## Files changed
+| Path | Status | Lines |
+| journal/types.ts | modified | +33 |
+| journal/journal.ts | modified | +30 |
+| journal/__tests__/journal.test.ts | modified | +177 |
+| tasks.md | 13 rows `- [ ]` -> `- [x]` | 26 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| post + issuer port | 7 failed/14 passed (post/supersede/revoke/JOURNAL_ACTION absent) | 21/21 | receipt-failure leaves prior RECORDED snapshot untouched | full suite 724 green |
+| supersede/revoke | same RED run | E2 linked via supersedesEntryId, prior ref-identical; reversal entry id `revoke:<id>` | unbalanced successor throws with 0 receipts; append-only snapshot equality | typecheck/build clean |
+| status independence | same RED run | JournalEntry carries only JournalStatus; no fiscal type in any signature | both directions (journal changes/fiscal constant; fiscal changes/journal constant) | strict tsc exit 0 |
+| ledger boundary | same RED run | post/supersede/revoke return SignedReceipt (re-exported from receipts/); no journal export surface added | ledger accepts RECEIPT_RECORDED with journal receiptHash; rejects JournalEntry-shaped payload | frozen receipt 16 + ledger 29 conformance green |
+## Test commands and exact results
+- `bunx vitest run journal/__tests__/journal.test.ts` — RED 7 failed/14 passed -> GREEN 21/21 -> TRIANGULATE 22/22
+- `bunx vitest run contracts/__tests__/receipt-conformance.test.ts contracts/__tests__/ledger-conformance.test.ts` — 2 files, 45 passed (frozen, unchanged)
+- `bun run test` — 57 files, 724 passed (714 + 10); `bun run typecheck` — clean; `bun run build` — clean; strict `tsc --ignoreConfig` over the 4 journal files — exit 0
+## Deviations from design
+- `post` returns `{ entry, receipt }` (JournalPostResult) so the POST receipt is auditable; design's "POSTED snapshot" is `result.entry`. Supersede successor status = POSTED; reversal entry status = REVOKED with reversed lines (design does not pin these).
+- `JOURNAL_ACTION` const added for the receipt-issue context (design's port had no signature).
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1C-3 exports and wiring (journal/index.ts, root/package/tsconfig wiring, scanner extension) — 1 unchecked row
+## Workload / PR boundary
+- Batch: 1C-2, branch `fiscal-authority/journal` boundary. Changed lines: journal 240 + tasks 26 + this section <= 300 cap (ledger counts the full worktree diff incl. OpenSpec artifacts).
+- Rollback boundary: revert the 3 journal files and the 13 tasks.md checkboxes; 1C-1 surface (validate.ts, record) untouched except additive functions.
+## Evidence revision for settlement
+`673c906a8ccc0031afa8408feaae032af5ae3619c4691dcdb3ede27609c540ea`
+## Work unit 1c-journal-batch-3 — 1C-3 exports and wiring (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: `bun run test` authoritative (wiring batch; coverage-first RED per the 1B-2 precedent).
+**Scope:** only `journal/index.ts` (new), root `index.ts` (+1 export line), `package.json` (`./journal` export), `tsconfig.json` + `tsconfig.build.json` (`journal` includes), `tenant-isolation/__tests__/import-boundaries.test.ts` (scanner MODULE_DIRS + APPROVED_TARGETS + journal triangulation), tasks.md (1C-3 row -> [x]), this section. Ledger, receipts, evidence, tenant-core, frozen conformance suites, and all other files untouched.
+## Files changed
+| Path | Status | Lines |
+| journal/index.ts | new | 12 |
+| index.ts | +1 additive export line | 1 |
+| package.json | +1 additive export line | 1 |
+| tsconfig.json | +1 include entry | 1 |
+| tsconfig.build.json | +1 include entry | 1 |
+| tenant-isolation/__tests__/import-boundaries.test.ts | MODULE_DIRS + APPROVED_TARGETS + journal triangulation | +45/-5 |
+| tasks.md | 1 row `- [ ]` -> `- [x]` | 1 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1C-3 wiring | coverage-first RED: journal was unscanned; after MODULE_DIRS extension the 3 existing journal sources scan clean (6/6) — the gap is the missing public entry (no journal/index.ts, no dist/journal/, no `./journal` export, no tsconfig includes, all proven) | journal/index.ts (record/post/supersede/revoke + types + consts, no ledger export) + root/package/tsconfig wiring; scanner 6/6, typecheck clean (now covers journal/) | journal triangulation: rejects ledger/missions/candidates/agents/cmd/ingest, allows tenant-core/evidence/receipts/internal, rejects `../ledger/index.js` from journal/index.ts | full suite 727, typecheck clean, build clean, dist/journal/ emitted, runtime exports = record/post/supersede/revoke + JOURNAL_* consts + JournalError, zero ledger names |
+## Test commands and exact results
+- `bunx vitest run tenant-isolation/__tests__/import-boundaries.test.ts` — RED 6/6 (existing journal sources conform; wiring gap proven by missing entry file/build emit/export/includes) -> GREEN 6/6 -> TRIANGULATE 8/8
+- `bun run test` — 57 files, 727 passed (724 baseline + 3 new scanner tests)
+- `bun run typecheck` — clean (exit 0; now covers journal/ via tsconfig include)
+- `bun run build` — clean (exit 0); dist/journal/ emitted (index/types/validate/journal .js + .d.ts)
+- `git diff --stat HEAD` + untracked journal/index.ts — ~97 changed lines total <= 300 cap
+- dist/journal/index.js runtime export check — record/post/supersede/revoke + JOURNAL_SIDE/STATUS/ERROR/ACTION + JournalError; ledger-ish exports: NONE
+## Deviations from design
+- Task row 1C-3 says `tenant/`; per the rescoped layout the approved tenant dependency is `tenant-core` (same deviation as 1B-5). journal/index.ts re-exports types (incl. the SignedReceipt type via types.ts) that resolve through receipts/ and tenant-core/evidence/, which ARE approved targets — no scanner false positive.
+## Remaining tasks (unchecked, persisted in tasks.md)
+- Slice 1C fully complete (25/25 rows). Slices 1D (15) and 1E (18) implementation rows unchecked; 7 parent-owned chain lifecycle gates unchecked.
+## Workload / PR boundary
+- Batch: 1C-3 (final of Slice 1C), branch `fiscal-authority/journal` boundary (parent owns branch/commits and the chained-PR gate). Changed lines ~97 <= 300 cap.
+- Rollback boundary: remove `journal/index.ts`, the 4 wiring additions (root index.ts export, package.json `./journal`, tsconfig.json + tsconfig.build.json includes), and the scanner extension; journal core (types/validate/journal + tests) remains intact.
+## Evidence revision for settlement
+`dd12c5445c6642dd67dc9cdf98155577d41a855a33a711b62f7ca5887a7d737c`
+

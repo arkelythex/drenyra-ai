@@ -123,33 +123,33 @@ Branch `fiscal-authority/journal`. Depends on 1A–1B. Files: `journal/types.ts`
 
 ### 1C-1 Amount, balance, and binding (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — in `journal/__tests__/journal.test.ts`, write failing tests: a line with fractional-cent amount `0.01` (number) is rejected while `100n` BigInt cents is accepted; an entry with debits `500n` / credits `400n` is rejected with no entry state; a balanced `500n`/`500n` entry is recorded. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement `journal/types.ts` (`JOURNAL_SIDE`, `JOURNAL_STATUS` const objects + extracted types, `JournalLine`, `JournalEntry` with `scope`, `lines`, `evidence`, `status`, `supersedesEntryId?`) and `journal/validate.ts` (BigInt-cent guard rejecting `number`/decimal strings/negatives, balance check, empty-lines check); implement `record` in `journal/journal.ts` returning a frozen `RECORDED` entry; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — add amount boundary cases (negative, `0n`, decimal string) and multi-line balance sums; assert rejected input creates no entry; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] RED — write failing tests: a balanced BigInt-cents entry with no bound evidence is rejected; evidence bound to a different tenant scope is rejected; an invalid scope is rejected. <!-- sdd-owner: implementation -->
-- [ ] GREEN — enforce entry binding in `journal/validate.ts` (≥1 accepted evidence artifact, evidence scope equals entry scope); run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — in `journal/__tests__/journal.test.ts`, write failing tests: a line with fractional-cent amount `0.01` (number) is rejected while `100n` BigInt cents is accepted; an entry with debits `500n` / credits `400n` is rejected with no entry state; a balanced `500n`/`500n` entry is recorded. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement `journal/types.ts` (`JOURNAL_SIDE`, `JOURNAL_STATUS` const objects + extracted types, `JournalLine`, `JournalEntry` with `scope`, `lines`, `evidence`, `status`, `supersedesEntryId?`) and `journal/validate.ts` (BigInt-cent guard rejecting `number`/decimal strings/negatives, balance check, empty-lines check); implement `record` in `journal/journal.ts` returning a frozen `RECORDED` entry; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — add amount boundary cases (negative, `0n`, decimal string) and multi-line balance sums; assert rejected input creates no entry; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: a balanced BigInt-cents entry with no bound evidence is rejected; evidence bound to a different tenant scope is rejected; an invalid scope is rejected. <!-- sdd-owner: implementation -->
+- [x] GREEN — enforce entry binding in `journal/validate.ts` (≥1 accepted evidence artifact, evidence scope equals entry scope); run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1C-2 Receipts, corrections, status axes, ledger boundary (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — write failing tests: `post` issues a signed receipt (deterministic fake `JournalReceiptIssuer`) and returns a `POSTED` snapshot; when receipt issuance fails, the transition fails and journal state is unchanged (atomic at the function boundary). <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement `JournalReceiptIssuer` port in `journal/types.ts` and `post` in `journal/journal.ts` issuing the signed receipt before returning the `POSTED` snapshot; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — assert no material journal change occurs without a receipt (receipt-failure path leaves the prior snapshot untouched); run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] RED — write failing tests: `supersede` creates a new balanced entry E2 linked to E1, leaves E1 unchanged, and produces a signed receipt; direct in-place mutation of a recorded entry is impossible (no update operation on `JournalEntry`); `revoke` creates an explicit reversal entry with a signed receipt and never edits historical lines. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement `supersede` (new entry + unchanged old snapshot in a separate transition result + receipt) and `revoke` (explicit reversal entry + receipt) in `journal/journal.ts`; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — assert append-only semantics: supersede/revoke never mutate prior lines or status of historical entries; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] RED — write failing tests for status independence in both directions: journal status transitions while a held fiscal-workflow snapshot stays constant; the held fiscal-workflow snapshot changes while journal status stays constant; the journal functions accept and return no fiscal-state transition. <!-- sdd-owner: implementation -->
-- [ ] GREEN — keep `JournalEntry` carrying only `JournalStatus`; no journal function accepts or returns a fiscal status; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] RED — write failing tests for the audit-only boundary: a journal action produces a `SignedReceipt`; the audit ledger (`ledger/`) accepts only receipt-shaped records and rejects an entry-shaped payload (a `JournalEntry`-shaped object is not a valid `LedgerEntry` and fails ledger structural validation). <!-- sdd-owner: implementation -->
-- [ ] GREEN — expose journal actions returning `SignedReceipt` without exporting any ledger-write API from `journal/index.ts`; prove the ledger-boundary rejection using the existing `ledger/` types and validation; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — run `bun run test`; run the frozen receipt and ledger conformance suites unchanged and green. <!-- sdd-owner: implementation -->
-- [ ] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: `post` issues a signed receipt (deterministic fake `JournalReceiptIssuer`) and returns a `POSTED` snapshot; when receipt issuance fails, the transition fails and journal state is unchanged (atomic at the function boundary). <!-- sdd-owner: implementation -->
+- [x] GREEN — implement `JournalReceiptIssuer` port in `journal/types.ts` and `post` in `journal/journal.ts` issuing the signed receipt before returning the `POSTED` snapshot; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — assert no material journal change occurs without a receipt (receipt-failure path leaves the prior snapshot untouched); run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: `supersede` creates a new balanced entry E2 linked to E1, leaves E1 unchanged, and produces a signed receipt; direct in-place mutation of a recorded entry is impossible (no update operation on `JournalEntry`); `revoke` creates an explicit reversal entry with a signed receipt and never edits historical lines. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement `supersede` (new entry + unchanged old snapshot in a separate transition result + receipt) and `revoke` (explicit reversal entry + receipt) in `journal/journal.ts`; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — assert append-only semantics: supersede/revoke never mutate prior lines or status of historical entries; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests for status independence in both directions: journal status transitions while a held fiscal-workflow snapshot stays constant; the held fiscal-workflow snapshot changes while journal status stays constant; the journal functions accept and return no fiscal-state transition. <!-- sdd-owner: implementation -->
+- [x] GREEN — keep `JournalEntry` carrying only `JournalStatus`; no journal function accepts or returns a fiscal status; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests for the audit-only boundary: a journal action produces a `SignedReceipt`; the audit ledger (`ledger/`) accepts only receipt-shaped records and rejects an entry-shaped payload (a `JournalEntry`-shaped object is not a valid `LedgerEntry` and fails ledger structural validation). <!-- sdd-owner: implementation -->
+- [x] GREEN — expose journal actions returning `SignedReceipt` without exporting any ledger-write API from `journal/index.ts`; prove the ledger-boundary rejection using the existing `ledger/` types and validation; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — run `bun run test`; run the frozen receipt and ledger conformance suites unchanged and green. <!-- sdd-owner: implementation -->
+- [x] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1C-3 Exports and wiring
 
-- [ ] Add `journal/index.ts` exposing only the journal API (no ledger export); add root `index.ts` re-export, `package.json` `"./journal"` export, `tsconfig.json` `"journal"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `journal/` imports only `tenant/`, `evidence/`, and `receipts/`; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
+- [x] Add `journal/index.ts` exposing only the journal API (no ledger export); add root `index.ts` re-export, `package.json` `"./journal"` export, `tsconfig.json` `"journal"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `journal/` imports only `tenant/`, `evidence/`, and `receipts/`; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
 
 ## Slice 1D — Candidate ordering adapter
 
