@@ -1,11 +1,13 @@
 /**
- * Static import-boundary guard for the new fiscal-authority modules.
+ * Static import-boundary guard for the fiscal-authority program chain.
  *
  * Scans every non-test TypeScript file under the declared module directories
- * and fails on any forbidden edge: an import resolving outside the program's
- * own new-module directories (reverse imports into existing modules) or any
- * `agents/`, `cmd/`, or `ingest/` path. Later slices extend the directory
- * list.
+ * and fails on any forbidden edge: a relative import whose resolved top-level
+ * target is not in that module's approved-dependency allowlist. Each module may
+ * import only its own subtree plus the explicitly approved dependencies
+ * (`receipts/` and `tenant-core/` for the evidence layer); any other target —
+ * especially high-level layers (`agents/`, `cmd/`, `ingest/`, `ledger/`,
+ * `missions/`, `candidates/`, `gates/`, ...) — is rejected fail-closed.
  */
 
 import { describe, expect, it } from "vitest";
@@ -16,11 +18,20 @@ import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "..", "..");
 
-/** Directories owned by the fiscal-authority program chain (additive). */
-const MODULE_DIRS = ["tenant-core", "tenant-isolation"] as const;
+/** Top-level dirs owned by the fiscal-authority program chain (additive). */
+const MODULE_DIRS = ["tenant-core", "tenant-isolation", "evidence"] as const;
 
-/** Forbidden path segments in any relative import of a new module. */
-const FORBIDDEN_SEGMENTS = ["agents", "cmd", "ingest"] as const;
+/**
+ * Approved relative-import targets per module dir (top-level dir names under the
+ * repo root). Every entry includes the module's own subtree; sibling program
+ * modules are added only when that edge is sanctioned by the design. High-level
+ * layers are absent from every list and therefore always rejected.
+ */
+const APPROVED_TARGETS: Readonly<Record<string, readonly string[]>> = {
+	"tenant-core": ["tenant-core"],
+	"tenant-isolation": ["tenant-core", "tenant-isolation"],
+	evidence: ["evidence", "tenant-core", "receipts"],
+} as const;
 
 const RELATIVE_IMPORT =
 	/\bfrom\s+["'](\.[^"']+)["']|import\s*\(\s*["'](\.[^"']+)["']\s*\)/g;
@@ -48,48 +59,91 @@ function relativeImports(source: string): string[] {
 	return imports;
 }
 
-/** True when the resolved path lives under one of the program module dirs. */
-function isWithinProgramModules(resolved: string): boolean {
-	for (const mod of MODULE_DIRS) {
-		const moduleDir = resolve(repoRoot, mod);
-		if (resolved === moduleDir || resolved.startsWith(moduleDir + sep)) {
-			return true;
+/** Top-level repo-root directory a relative specifier resolves into. */
+function importTarget(filePath: string, specifier: string): string {
+	const resolved = resolve(dirname(filePath), specifier);
+	const rel = relative(repoRoot, resolved);
+	if (rel === "" || rel.startsWith("..")) return "<outside>";
+	return rel.split(sep)[0];
+}
+
+/**
+ * Pure boundary check: returns the violation strings for one source file under
+ * one module dir. Used by the per-module scan and by the synthetic
+ * violation-detection triangulation cases below.
+ */
+function moduleBoundaryViolations(
+	filePath: string,
+	source: string,
+	moduleDir: string,
+): string[] {
+	const approved = APPROVED_TARGETS[moduleDir];
+	if (approved === undefined) {
+		throw new Error(`no approved targets declared for module dir "${moduleDir}"`);
+	}
+	const violations: string[] = [];
+	const relFile = relative(repoRoot, filePath);
+	for (const specifier of relativeImports(source)) {
+		const target = importTarget(filePath, specifier);
+		if (!approved.includes(target)) {
+			violations.push(
+				`${relFile} imports "${specifier}" (${target}/), which is outside ${moduleDir}'s approved dependencies`,
+			);
 		}
 	}
-	return false;
+	return violations;
 }
 
 describe("fiscal-authority import boundaries", () => {
 	for (const mod of MODULE_DIRS) {
-		it(`${mod}/ imports only program modules and never agents, cmd, or ingest`, () => {
+		it(`${mod}/ imports only its approved dependencies and never a high-level layer`, () => {
 			const moduleDir = resolve(repoRoot, mod);
 			const files = collectSourceFiles(moduleDir);
 			expect(files.length).toBeGreaterThan(0);
 
 			const violations: string[] = [];
 			for (const file of files) {
-				const source = readFileSync(file, "utf8");
-				const relFile = relative(repoRoot, file);
-				for (const specifier of relativeImports(source)) {
-					for (const forbidden of FORBIDDEN_SEGMENTS) {
-						if (
-							specifier.includes(`/${forbidden}/`) ||
-							specifier.includes(`${forbidden}/`)
-						) {
-							violations.push(
-								`${relFile} imports forbidden path "${specifier}"`,
-							);
-						}
-					}
-					const resolved = resolve(dirname(file), specifier);
-					if (!isWithinProgramModules(resolved)) {
-						violations.push(
-							`${relFile} escapes the program modules via "${specifier}"`,
-						);
-					}
-				}
+				violations.push(
+					...moduleBoundaryViolations(file, readFileSync(file, "utf8"), mod),
+				);
 			}
 			expect(violations).toEqual([]);
 		});
 	}
+
+	describe("violation detection (TRIANGULATE)", () => {
+		it("rejects forbidden high-level layer imports from the evidence layer", () => {
+			const evidenceFile = join(repoRoot, "evidence/authority/authority.ts");
+			for (const layer of ["agents", "cmd", "ingest"]) {
+				const violations = moduleBoundaryViolations(
+					evidenceFile,
+				`import { x } from "../../${layer}/index.js";`,
+				"evidence",
+			);
+				expect(violations).toEqual([
+					`evidence/authority/authority.ts imports "../../${layer}/index.js" (${layer}/), which is outside evidence's approved dependencies`,
+				]);
+			}
+		});
+		it("rejects an unapproved sibling and allows the approved dependencies", () => {
+			expect(
+				moduleBoundaryViolations(
+					join(repoRoot, "tenant-isolation/read.ts"),
+					'import { acceptEvidence } from "../evidence/index.js";',
+					"tenant-isolation",
+				).length,
+			).toBe(1);
+			expect(
+				moduleBoundaryViolations(
+					join(repoRoot, "evidence/accept.ts"),
+					[
+						'import { computeEvidenceHash } from "../receipts/index.js";',
+						'import { validateTenantScope } from "../tenant-core/index.js";',
+						'import { registerEvidence } from "./authority/index.js";',
+					].join("\n"),
+					"evidence",
+				),
+			).toEqual([]);
+		});
+	});
 });
