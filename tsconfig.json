@@ -39,6 +39,7 @@
     "vitest.config.ts",
     "evidence",
     "journal",
+    "fiscal",
     "skills",
     "security",
     "guardian",

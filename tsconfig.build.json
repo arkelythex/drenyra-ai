@@ -25,6 +25,7 @@
     "index.ts",
     "evidence",
     "journal",
+    "fiscal",
     "skills",
     "security",
     "guardian",

@@ -182,7 +182,7 @@ Branch `fiscal-authority/candidate-ordering`. Depends on 1A–1C. Files: `fiscal
 
 ### 1D-5 Exports and wiring
 
-- [ ] Add `fiscal/index.ts` public exports; add root `index.ts` re-export, `package.json` `"./fiscal"` export, `tsconfig.json` `"fiscal"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `fiscal/` imports only `tenant/`, `evidence/`, `journal/`, and `candidates/`; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
+- [x] Add `fiscal/index.ts` public exports; add root `index.ts` re-export, `package.json` `"./fiscal"` export, `tsconfig.json` `"fiscal"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `fiscal/` imports only `tenant/`, `evidence/`, `journal/`, and `candidates/`; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
 
 ## Slice 1E — PE policy and CDR successor composition
 
