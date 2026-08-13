@@ -109,13 +109,13 @@ Branch `fiscal-authority/evidence`. Depends on 1A. Files: `evidence/types.ts`, `
 
 ### 1B-4 Tenant binding and composition
 
-- [ ] RED — write failing tests: acceptance requires an explicit validated tenant scope; evidence bound to a different scope is rejected by the binding check; accepted evidence can bind a journal-style consumer using only existing receipt primitives. <!-- sdd-owner: implementation -->
-- [ ] GREEN — require and retain the `ValidatedTenantScope` on every `AcceptedEvidence`; expose the immutable accepted surface from `evidence/index.ts`; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — prove the receipt contract and its conformance vectors are unchanged after binding (no receipt field additions); run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: acceptance requires an explicit validated tenant scope; evidence bound to a different scope is rejected by the binding check; accepted evidence can bind a journal-style consumer using only existing receipt primitives. <!-- sdd-owner: implementation -->
+- [x] GREEN — require and retain the `ValidatedTenantScope` on every `AcceptedEvidence`; expose the immutable accepted surface from `evidence/index.ts`; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — prove the receipt contract and its conformance vectors are unchanged after binding (no receipt field additions); run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1B-5 Exports and wiring
 
-- [ ] Add `evidence/index.ts` public exports; add root `index.ts` re-export, `package.json` `"./evidence"` export, `tsconfig.json` `"evidence"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `evidence/` imports only `tenant/` and `receipts/`; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
+- [x] Add `evidence/index.ts` public exports; add root `index.ts` re-export, `package.json` `"./evidence"` export, `tsconfig.json` `"evidence"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `evidence/` imports only `tenant/` and `receipts/`; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
 
 ## Slice 1C — Accounting journal
 
