@@ -542,3 +542,31 @@ Attempt token `sha256:c0ddccecd6eb722a463c921236e23f0d8e0e35317b355842f2bc9a651c
 - Rollback boundary: delete the 3 fiscal files; revert the 6 tasks.md checkboxes; no wiring/scanner change to revert.
 ## Evidence revision for settlement
 `7e855010a9d37335f292f6f8458bb55af5c8b2afc03261258a64b287d2a194b5`
+
+## Work unit 1d-candidate-ordering-batch-2 — 1D-3 + 1D-4 (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative; objective `1d-candidate-ordering-2` (max 300 changed lines, 1 attempt) — parent owns ledger accounting.
+**Scope:** only `fiscal/types.ts`, `fiscal/candidate-ordering.ts`, `fiscal/__tests__/candidate-ordering.test.ts`, tasks.md (7 rows -> [x]), this section. 1D-5 (`fiscal/index.ts`, exports, wiring, scanner), `contracts/**`, and all other files untouched (contracts/candidate.md is only read by a test).
+## Files changed
+| Path | Status | Lines |
+| fiscal/types.ts | modified | +22 |
+| fiscal/candidate-ordering.ts | modified | +24 |
+| fiscal/__tests__/candidate-ordering.test.ts | modified | +186 |
+| tasks.md | 7 rows `- [ ]` -> `- [x]` | 14 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1D-3 concrete wiring | 2 failed/13 passed: CandidateLifecyclePort absent + 3-arg default wiring missing (candidatePort undefined) | CandidateLifecyclePort wrapper + adapter default `new CandidateLifecyclePort(new CandidateLifecycle())`; 15/15 | SUBJECT_MUTATED: downstream in-place byte corruption after hashing -> real inspect throws, no fiscal result returned | full suite 742 |
+| 1D-4 frozen lifecycle | same RED run | correction path via real lifecycle: submitForReview -> correct (lineage, new id) -> re-inspect -> second correct throws CORRECTION_BUDGET_EXCEEDED; contract version pinned (0.1 FROZEN); no ingest/SUNAT import in fiscal sources | ordering: default-wired adapter completes validate->reconcile->build then real propose->inspect; missing evidence never reaches construction | conformance 16/16, typecheck/build clean |
+## Test commands and exact results
+- `bunx vitest run fiscal/__tests__/candidate-ordering.test.ts` — RED 2 failed/13 passed -> GREEN 15/15
+- `bun run test` — 58 files, 742 passed (734 + 8); `bunx vitest run contracts/__tests__/candidate-conformance.test.ts` — 16/16 frozen, unchanged
+- `bun run typecheck` — clean; `bun run build` — clean; strict `tsc --ignoreConfig` over the 3 fiscal files (mandatory flags) — exit 0
+- `git diff --stat HEAD` — fiscal 232 changed (211 ins / 21 del) + tasks 14 + this section <= 300 cap
+## Deviations from design
+- The candidate port stays injectable for spies; the concrete `CandidateLifecyclePort` wrapper is the default wiring, and the adapter never subclasses or modifies the frozen lifecycle. SUBJECT_MUTATED propagates as the real CandidateError (fail-closed), matching the design's "local snapshot not returned as a successful fiscal result".
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1D-5 exports and wiring (fiscal/index.ts, root/package/tsconfig wiring, scanner extension) — 1 unchecked row
+## Workload / PR boundary
+- Batch: 1D-3 + 1D-4, branch `fiscal-authority/candidate-ordering` boundary (parent owns branch/commits). Changed lines: fiscal 232 + tasks 14 + this section <= 300 cap (ledger counts the full worktree diff incl. OpenSpec artifacts).
+- Rollback boundary: revert the 3 fiscal files and the 7 tasks.md checkboxes; batch-1 surface (1D-1/1D-2) remains intact.
+## Evidence revision for settlement
+`973fdaf0893129174f37a7ea845d184e142b0f98175f84694d4dd03adb255c38`
