@@ -485,3 +485,35 @@ Attempt token `sha256:c0ddccecd6eb722a463c921236e23f0d8e0e35317b355842f2bc9a651c
 - Rollback boundary: revert the 3 journal files and the 13 tasks.md checkboxes; 1C-1 surface (validate.ts, record) untouched except additive functions.
 ## Evidence revision for settlement
 `673c906a8ccc0031afa8408feaae032af5ae3619c4691dcdb3ede27609c540ea`
+## Work unit 1c-journal-batch-3 — 1C-3 exports and wiring (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: `bun run test` authoritative (wiring batch; coverage-first RED per the 1B-2 precedent).
+**Scope:** only `journal/index.ts` (new), root `index.ts` (+1 export line), `package.json` (`./journal` export), `tsconfig.json` + `tsconfig.build.json` (`journal` includes), `tenant-isolation/__tests__/import-boundaries.test.ts` (scanner MODULE_DIRS + APPROVED_TARGETS + journal triangulation), tasks.md (1C-3 row -> [x]), this section. Ledger, receipts, evidence, tenant-core, frozen conformance suites, and all other files untouched.
+## Files changed
+| Path | Status | Lines |
+| journal/index.ts | new | 12 |
+| index.ts | +1 additive export line | 1 |
+| package.json | +1 additive export line | 1 |
+| tsconfig.json | +1 include entry | 1 |
+| tsconfig.build.json | +1 include entry | 1 |
+| tenant-isolation/__tests__/import-boundaries.test.ts | MODULE_DIRS + APPROVED_TARGETS + journal triangulation | +45/-5 |
+| tasks.md | 1 row `- [ ]` -> `- [x]` | 1 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1C-3 wiring | coverage-first RED: journal was unscanned; after MODULE_DIRS extension the 3 existing journal sources scan clean (6/6) — the gap is the missing public entry (no journal/index.ts, no dist/journal/, no `./journal` export, no tsconfig includes, all proven) | journal/index.ts (record/post/supersede/revoke + types + consts, no ledger export) + root/package/tsconfig wiring; scanner 6/6, typecheck clean (now covers journal/) | journal triangulation: rejects ledger/missions/candidates/agents/cmd/ingest, allows tenant-core/evidence/receipts/internal, rejects `../ledger/index.js` from journal/index.ts | full suite 727, typecheck clean, build clean, dist/journal/ emitted, runtime exports = record/post/supersede/revoke + JOURNAL_* consts + JournalError, zero ledger names |
+## Test commands and exact results
+- `bunx vitest run tenant-isolation/__tests__/import-boundaries.test.ts` — RED 6/6 (existing journal sources conform; wiring gap proven by missing entry file/build emit/export/includes) -> GREEN 6/6 -> TRIANGULATE 8/8
+- `bun run test` — 57 files, 727 passed (724 baseline + 3 new scanner tests)
+- `bun run typecheck` — clean (exit 0; now covers journal/ via tsconfig include)
+- `bun run build` — clean (exit 0); dist/journal/ emitted (index/types/validate/journal .js + .d.ts)
+- `git diff --stat HEAD` + untracked journal/index.ts — ~97 changed lines total <= 300 cap
+- dist/journal/index.js runtime export check — record/post/supersede/revoke + JOURNAL_SIDE/STATUS/ERROR/ACTION + JournalError; ledger-ish exports: NONE
+## Deviations from design
+- Task row 1C-3 says `tenant/`; per the rescoped layout the approved tenant dependency is `tenant-core` (same deviation as 1B-5). journal/index.ts re-exports types (incl. the SignedReceipt type via types.ts) that resolve through receipts/ and tenant-core/evidence/, which ARE approved targets — no scanner false positive.
+## Remaining tasks (unchecked, persisted in tasks.md)
+- Slice 1C fully complete (25/25 rows). Slices 1D (15) and 1E (18) implementation rows unchecked; 7 parent-owned chain lifecycle gates unchecked.
+## Workload / PR boundary
+- Batch: 1C-3 (final of Slice 1C), branch `fiscal-authority/journal` boundary (parent owns branch/commits and the chained-PR gate). Changed lines ~97 <= 300 cap.
+- Rollback boundary: remove `journal/index.ts`, the 4 wiring additions (root index.ts export, package.json `./journal`, tsconfig.json + tsconfig.build.json includes), and the scanner extension; journal core (types/validate/journal + tests) remains intact.
+## Evidence revision for settlement
+`dd12c5445c6642dd67dc9cdf98155577d41a855a33a711b62f7ca5887a7d737c`
+

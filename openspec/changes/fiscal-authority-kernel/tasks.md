@@ -149,7 +149,7 @@ Branch `fiscal-authority/journal`. Depends on 1A–1B. Files: `journal/types.ts`
 
 ### 1C-3 Exports and wiring
 
-- [ ] Add `journal/index.ts` exposing only the journal API (no ledger export); add root `index.ts` re-export, `package.json` `"./journal"` export, `tsconfig.json` `"journal"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `journal/` imports only `tenant/`, `evidence/`, and `receipts/`; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
+- [x] Add `journal/index.ts` exposing only the journal API (no ledger export); add root `index.ts` re-export, `package.json` `"./journal"` export, `tsconfig.json` `"journal"` include; extend `tenant/__tests__/import-boundaries.test.ts` asserting `journal/` imports only `tenant/`, `evidence/`, and `receipts/`; run `bun run test`, `bun run typecheck`, `bun run build`. <!-- sdd-owner: implementation -->
 
 ## Slice 1D — Candidate ordering adapter
 
