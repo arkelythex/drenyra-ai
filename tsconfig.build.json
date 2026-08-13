@@ -24,6 +24,7 @@
     "cmd",
     "index.ts",
     "evidence",
+    "journal",
     "skills",
     "security",
     "guardian",
