@@ -636,3 +636,31 @@ SHA-256 over concatenated current contents (in order) of the 7 implementation-ca
 ```
 b57d444bbeeaa622f1b87f0e4dd8a917bb4271e98897413fabdc891771ecf058
 ```
+## Work unit 1e-cdr-batch-2 — 1E-2 CDR successor composition, steps 1-7 (rows 1-6 complete)
+**Status:** openspec store, applyState ready -> batch complete; parent owns ledger settlement (no acquire/settle by this phase). Strict TDD: RED -> GREEN -> TRIANGULATE -> REFACTOR, `bun run test` authoritative; objective `1e-cdr-2` (max 400 changed lines, 1 attempt).
+**Scope:** only `cdr/types.ts`, `cdr/successor.ts`, `cdr/index.ts`, `cdr/__tests__/successor.test.ts` (new), tasks.md (1E-2 rows 1-6 -> [x]), this section. No wiring (root/package/tsconfig/scanner) this batch; scanner untouched.
+## Files changed
+| Path | Status | Lines |
+| cdr/types.ts | new | 63 |
+| cdr/successor.ts | new | 140 |
+| cdr/index.ts | new | 8 |
+| cdr/__tests__/successor.test.ts | new | 149 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1E-2 rows 1-6 | 1 failed suite, 0 tests (../successor.js absent) | 7/7 focused; full suite 765 | scope/receipt/policy fail closed before mission creation; gates in order stop on first non-allowed; binding/reconcile/terminal mismatch stop; replay/conflict triangulated | compacted cdr 611 -> 360 lines for the 400 cap |
+## Test commands and exact results
+- `bunx vitest run cdr/__tests__/successor.test.ts` — RED 1 failed/0 tests -> GREEN/TRIANGULATE 7/7
+- `bun run test` — 60 files, 765 passed (758 baseline + 7); `bunx vitest run contracts/__tests__/` — 140/140 frozen, unchanged
+- `bun run typecheck` clean; `bun run build` clean; strict `tsc --ignoreConfig` over the 4 cdr files (mandatory flags) — exit 0
+- `wc -l cdr/**` 360 + tasks 12 + this section <= 400 cap
+## Deviations from design
+- The candidate/receipt port types and `CdrCandidateBResult` named by the GREEN row are deferred to the steps 8-13 batch (unused by steps 1-7; would break the 400-line cap); types.ts extends additively next batch.
+## Remaining tasks (unchecked, persisted in tasks.md)
+- 1E-2 rows 7-13 (steps 8-13: candidate-B materialization, second approval, separate receipt, fail-closed recovery) plus wiring/regression rows 14-15 — 9 rows; 7 parent-owned chain lifecycle gates unchecked
+## Workload / PR boundary
+- Batch: 1E-2 rows 1-6, branch `fiscal-authority/policy-cdr` boundary (parent owns branch/commits and the chained-PR gate). Changed lines: cdr 360 + tasks 12 + this section <= 400 cap. Rollback: remove `cdr/` (4 files) + revert the 6 checkboxes.
+## Evidence revision for settlement
+SHA-256 over concatenated current contents (in order) of `cdr/types.ts`, `cdr/successor.ts`, `cdr/index.ts`:
+```
+c109c4e21bec647ca155ed05ce51196881fc945a2dc0248e58a26faa5542e704
+```
