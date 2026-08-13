@@ -157,15 +157,15 @@ Branch `fiscal-authority/candidate-ordering`. Depends on 1A–1C. Files: `fiscal
 
 ### 1D-1 Validation before subject construction (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — in `fiscal/__tests__/candidate-ordering.test.ts`, write failing tests with spies: unvalidated fiscal input cannot form a subject (no construction, flow fails closed); validated input constructs the subject with exactly that input; `CoreValidator` throwing stops the flow before any candidate call. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement `fiscal/types.ts` (`CoreValidator`, `Reconciler`, `FiscalSubjectBuilder` ports, fiscal-flow input/output interfaces) and `fiscal/candidate-ordering.ts` `FiscalCandidateOrderingAdapter` running deterministic core validation first; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — in `fiscal/__tests__/candidate-ordering.test.ts`, write failing tests with spies: unvalidated fiscal input cannot form a subject (no construction, flow fails closed); validated input constructs the subject with exactly that input; `CoreValidator` throwing stops the flow before any candidate call. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement `fiscal/types.ts` (`CoreValidator`, `Reconciler`, `FiscalSubjectBuilder` ports, fiscal-flow input/output interfaces) and `fiscal/candidate-ordering.ts` `FiscalCandidateOrderingAdapter` running deterministic core validation first; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1D-2 Reconciliation before freeze (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — write failing tests: the freeze point is unreachable without bound reconciliation evidence; with reconciliation evidence bound to the same scope, inspection proceeds only after the evidence is bound; at least one accepted reconciliation artifact bound to the same scope is required. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement reconciliation step in the adapter (require ≥1 accepted evidence artifact bound to the same validated scope before subject construction); run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — assert reconciliation evidence from another scope fails closed; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: the freeze point is unreachable without bound reconciliation evidence; with reconciliation evidence bound to the same scope, inspection proceeds only after the evidence is bound; at least one accepted reconciliation artifact bound to the same scope is required. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement reconciliation step in the adapter (require ≥1 accepted evidence artifact bound to the same validated scope before subject construction); run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — assert reconciliation evidence from another scope fails closed; run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1D-3 Exact subject and unreachable premature inspection (RED → GREEN → TRIANGULATE → REFACTOR)
 
