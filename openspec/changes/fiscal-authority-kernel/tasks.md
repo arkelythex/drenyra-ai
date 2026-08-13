@@ -123,13 +123,13 @@ Branch `fiscal-authority/journal`. Depends on 1A–1B. Files: `journal/types.ts`
 
 ### 1C-1 Amount, balance, and binding (RED → GREEN → TRIANGULATE → REFACTOR)
 
-- [ ] RED — in `journal/__tests__/journal.test.ts`, write failing tests: a line with fractional-cent amount `0.01` (number) is rejected while `100n` BigInt cents is accepted; an entry with debits `500n` / credits `400n` is rejected with no entry state; a balanced `500n`/`500n` entry is recorded. <!-- sdd-owner: implementation -->
-- [ ] GREEN — implement `journal/types.ts` (`JOURNAL_SIDE`, `JOURNAL_STATUS` const objects + extracted types, `JournalLine`, `JournalEntry` with `scope`, `lines`, `evidence`, `status`, `supersedesEntryId?`) and `journal/validate.ts` (BigInt-cent guard rejecting `number`/decimal strings/negatives, balance check, empty-lines check); implement `record` in `journal/journal.ts` returning a frozen `RECORDED` entry; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — add amount boundary cases (negative, `0n`, decimal string) and multi-line balance sums; assert rejected input creates no entry; run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] RED — write failing tests: a balanced BigInt-cents entry with no bound evidence is rejected; evidence bound to a different tenant scope is rejected; an invalid scope is rejected. <!-- sdd-owner: implementation -->
-- [ ] GREEN — enforce entry binding in `journal/validate.ts` (≥1 accepted evidence artifact, evidence scope equals entry scope); run `bun run test`. <!-- sdd-owner: implementation -->
-- [ ] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — in `journal/__tests__/journal.test.ts`, write failing tests: a line with fractional-cent amount `0.01` (number) is rejected while `100n` BigInt cents is accepted; an entry with debits `500n` / credits `400n` is rejected with no entry state; a balanced `500n`/`500n` entry is recorded. <!-- sdd-owner: implementation -->
+- [x] GREEN — implement `journal/types.ts` (`JOURNAL_SIDE`, `JOURNAL_STATUS` const objects + extracted types, `JournalLine`, `JournalEntry` with `scope`, `lines`, `evidence`, `status`, `supersedesEntryId?`) and `journal/validate.ts` (BigInt-cent guard rejecting `number`/decimal strings/negatives, balance check, empty-lines check); implement `record` in `journal/journal.ts` returning a frozen `RECORDED` entry; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — add amount boundary cases (negative, `0n`, decimal string) and multi-line balance sums; assert rejected input creates no entry; run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] REFACTOR — run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] RED — write failing tests: a balanced BigInt-cents entry with no bound evidence is rejected; evidence bound to a different tenant scope is rejected; an invalid scope is rejected. <!-- sdd-owner: implementation -->
+- [x] GREEN — enforce entry binding in `journal/validate.ts` (≥1 accepted evidence artifact, evidence scope equals entry scope); run `bun run test`. <!-- sdd-owner: implementation -->
+- [x] TRIANGULATE — run `bun run test`. <!-- sdd-owner: implementation -->
 
 ### 1C-2 Receipts, corrections, status axes, ledger boundary (RED → GREEN → TRIANGULATE → REFACTOR)
 

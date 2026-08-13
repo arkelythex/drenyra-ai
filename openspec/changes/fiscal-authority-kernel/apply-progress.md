@@ -425,4 +425,32 @@ SHA-256 over concatenated current contents (in order) of the 2 implementation-ca
 
 Attempt token `sha256:c0ddccecd6eb722a463c921236e23f0d8e0e35317b355842f2bc9a651c919213` was parent-acquired; this phase settled it exactly once via the runtime's prescribed continuation (`sdd-attempt finish`, request id `batch2-1b4-1b5-finish-01`, outcome passed, evidence revision recorded). The `--remediates-evidence-revision` flag was rejected by the runtime (no failed verification on record; batch-1 revision 57c912e3 was passed, not failed) and correctly omitted. RDD remains disabled clone-local; no receipt claimed.
 
-**Budget flag — parent decision required (ledger):** the runtime ledger counts changed lines as the gross worktree diff vs the begin candidate tree, including the mandatory OpenSpec artifacts; ordinal 4 recorded `changed_lines: 432` > `max_changed_lines: 300`, so the attempt finished passed but with `changed_line_budget_exceeded: true` and the objective now reports `decision_required: true, next_action: reset` (same shape as ordinal 2's maintainer-authorized reset). The batch's implementation files alone are 320 gross / 200 net authored lines; the remaining ~112 counted lines are the tasks.md checkbox updates and this apply-progress section, which are mandatory phase outputs and cannot be removed. Per delegation, this phase performed no reset (parent-owned) and no second settle (single-settle contract honored). Parent options: authorize a reset of the gen-4 objective (precedent: ordinal 2), or accept the overage as a size exception for the 1B-5 scanner extension.
+**Budget flag — parent decision required (ledger):** the runtime ledger counts changed lines as the gross worktree diff vs the begin candidate tree, including the mandatory OpenSpec artifacts; ordinal 4 recorded `changed_lines: 432` > `max_changed_lines: 300`, so the attempt finished passed but with `changed_line_budget_exceeded: true` and the objective now reports `decision_required: true, next_action: reset` (same shape as ordinal 2's maintainer-authorized reset). The batch's implementation files alone are 320 gross / 200 net authored lines; the remaining ~112 counted lines are the tasks.md checkbox updates and this apply-progress section, which are mandatory phase outputs and cannot be removed. Per delegation, this phase performed no reset (parent-owned) and no second settle (single-settle contract honored). Parent options: authorize a reset of the gen-4 objective (precedent: ordinal 2), or accept the overage as a size exception for the 1B-5 scanner extension
+---
+
+## Work unit 1c-journal-batch-1 (batch 1 of Slice 1C) — 1C-1 amount/balance/binding (batch complete)
+**Status:** openspec store, applyState ready -> batch complete; actionContext repo-local, allowedEditRoots [repo-root]; parent owns ledger settlement (no acquire/settle by this phase).
+**Scope:** only `journal/types.ts`, `journal/validate.ts`, `journal/journal.ts`, `journal/__tests__/journal.test.ts`, tasks.md (7 rows -> [x]), this apply-progress. 1C-2/1C-3, wiring, scanner untouched. Engram batch summary saved.
+## Files changed
+| Path | Status | Lines |
+| journal/types.ts | new | 57 |
+| journal/validate.ts | new | 72 |
+| journal/journal.ts | new | 24 |
+| journal/__tests__/journal.test.ts | new | 101 |
+| tasks.md | 7 rows `- [ ]` -> `- [x]` | 14 |
+## TDD Cycle Evidence
+| Task | RED | GREEN | TRIANGULATE | REFACTOR |
+| 1C-1 amounts/balance | 1 file failed, 0 tests (module ../journal.js absent) | 12/12 | -1n, 0n, "1.50"/"100", multi-line sums, no-entry-state on every rejection | full suite 714 green |
+| 1C-1 binding | same RED run | MISSING_EVIDENCE / EVIDENCE_SCOPE_MISMATCH / INVALID_SCOPE | frozen entry/lines/scope; mutation throws TypeError | typecheck/build clean |
+## Test commands and exact results
+- `bunx vitest run journal/__tests__/journal.test.ts` — RED 1 failed/0 tests -> GREEN 12 passed
+- `bun run test` — 57 files, 714 passed (702 + 12); `bun run typecheck` — clean; `bun run build` — clean; focused `tsc --ignoreConfig` over the 4 journal files — clean (repo-wide journal typecheck/build wiring is 1C-3)
+
+## Deviations from design
+- `JournalRecordInput.scope` typed `unknown` + runtime revalidation (mirrors `EvidenceInput.scope`); entry carries a fresh branded scope copy. Empty-lines guard implemented in `validateRecord`; dedicated test trimmed for the 300-line cap.
+
+## Workload / PR boundary
+- Batch: 1C-1, branch `fiscal-authority/journal` boundary (parent owns branch/commits). Total changed lines: source+tests 254 + tasks 14 + this section 28 <= 300 cap.
+- Rollback boundary: delete the 4 journal files; no wiring/scanner change to revert.
+## Evidence revision for settlement
+`07bf08d167ff6e5b5f75fc584960b4d13bba56e536b5be6460ca253804157c7f`
