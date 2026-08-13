@@ -10,13 +10,13 @@
  * hash are compared unchanged after completion. */
 import { describe, expect, it, vi } from "vitest";
 import { AccountingMissionStatus, InMemoryIdempotencyStore, InMemoryMissionEventStore, InMemoryMissionStore, IntentRegistryImpl, MissionEventType, MissionRuntime, type ExternalSystemResolver, type IntentHandler, type MissionSnapshot } from "../../missions/index.js";
-import type { Gate, GateContext } from "../../gates/index.js";
-import { CandidateLifecycle, HIGH_VALUE_CENTS, type MaterialityInput } from "../../candidates/index.js";
-import { buildSignedReceipt, generateReceiptKeyPair } from "../../receipts/index.js";
+import { GateRunner, type Gate, type GateContext } from "../../gates/index.js";
+import { CandidateLifecycle, HIGH_VALUE_CENTS, candidateIdentity, type MaterialityInput } from "../../candidates/index.js";
+import { buildSignedReceipt, computeEvidenceHash, generateReceiptKeyPair, verifySignedReceipt } from "../../receipts/index.js";
 import { acceptEvidence, type AcceptedEvidence } from "../../evidence/index.js";
 import { validateTenantScope } from "../../tenant-core/index.js";
 import { CdrSuccessorComposer } from "../successor.js";
-import { CDR_ERROR, MissionRuntimePort, type CdrSuccessorInput } from "../types.js";
+import { CDR_ERROR, CandidatePort, MissionRuntimePort, ReceiptPort, type CdrSuccessorInput } from "../types.js";
 
 const S = AccountingMissionStatus;
 const SCOPE = validateTenantScope({ companyId: "acme", ruc: "20123456789", period: "202607" });
@@ -32,6 +32,8 @@ const LIFECYCLE = new CandidateLifecycle();
 const PROPOSED_A = LIFECYCLE.propose({ subject: A_SUBJECT, scope: { ruc: SCOPE.ruc, period: SCOPE.period }, materialityInput: MATERIALITY });
 const CANDIDATE_A = LIFECYCLE.accept(LIFECYCLE.submitForReview(LIFECYCLE.inspect(PROPOSED_A, A_SUBJECT)), { reviewer: "reviewer-a", reason: "verified" });
 const RECEIPT_A = buildSignedReceipt({ missionId: "mission-a", companyId: SCOPE.companyId, actorId: "reviewer-a", decision: "APPROVE", proposalVersion: CANDIDATE_A.version, evidenceHash: EVIDENCE_A.identity, previousStatus: "reviewing", newStatus: "accepted", payloadHash: CANDIDATE_A.subjectHash, timestamp: "2026-08-02T12:00:00.000Z" }, generateReceiptKeyPair("key-a"));
+const MATERIALITY_B: MaterialityInput = { value: 5_000_00n, reversibility: "reversible", jurisdiction: "PE" };
+const KEY_B = generateReceiptKeyPair("key-b");
 
 const executedResolver = (): ExternalSystemResolver => ({ resolve: async () => ({ outcome: "executed", evidence: { identifier: "SUNAT-202607-001", state: "accepted", provenance: "SUNAT", moment: "2026-08-01T00:00:00.000Z", responseHash: "f".repeat(64) } }) });
 const notExecutedResolver = (): ExternalSystemResolver => ({ resolve: async () => ({ outcome: "not-executed" }) });
@@ -50,16 +52,17 @@ function advanceToUnknown(status: AccountingMissionStatus): AccountingMissionSta
 	}
 }
 
-function harness(over: { valueCents?: bigint; stableIdentifier?: string; resolver?: ExternalSystemResolver; executeSteps?: readonly number[]; expectedStatus?: AccountingMissionStatus; missionId?: string } = {}) {
+function harness(over: { valueCents?: bigint; stableIdentifier?: string; resolver?: ExternalSystemResolver; executeSteps?: readonly number[]; expectedStatus?: AccountingMissionStatus; missionId?: string; evidence?: readonly AcceptedEvidence[] } = {}) {
 	const store = new InMemoryMissionStore();
 	const events = new InMemoryMissionEventStore();
 	const idempotency = new InMemoryIdempotencyStore();
 	const registry = new IntentRegistryImpl();
-	const handler: IntentHandler & { callCount: number } = { intent: "compliance-check", callCount: 0, async execute(mission: MissionSnapshot) { handler.callCount += 1; const next = advanceToUnknown(mission.status); return next === null ? null : { ...mission, status: next }; } };
+	const handler: IntentHandler & { callCount: number } = { intent: "compliance-check", callCount: 0, async execute(mission: MissionSnapshot) { handler.callCount += 1; if (handler.callCount >= 4 && mission.status === S.RUNNING) return { ...mission, status: S.AWAITING_APPROVAL }; const next = advanceToUnknown(mission.status); return next === null ? null : { ...mission, status: next }; } };
 	registry.register(handler);
 	const runtime = new MissionRuntime({ store, events, idempotency, registry });
-	const input: CdrSuccessorInput = { scope: SCOPE, candidateA: CANDIDATE_A, approvalA: { approverId: "reviewer-a", at: "2026-08-02T12:00:00.000Z" }, receiptA: RECEIPT_A, evidence: [EVIDENCE_A], operationId: OPERATION_ID, idempotencyKey: IDEMPOTENCY_KEY, valueCents: over.valueCents ?? 5_000_00n, expectedStatus: over.expectedStatus ?? S.RUNNING, executeSteps: over.executeSteps ?? [1, 2, 3], missionId: over.missionId, reconcile: { stableIdentifier: over.stableIdentifier ?? OPERATION_ID, system: "SUNAT", resolver: over.resolver ?? executedResolver() } };
-	return { composer: new CdrSuccessorComposer(new MissionRuntimePort(runtime, store)), runtime, store, events, handler, input };
+	const missionPort = new MissionRuntimePort(runtime, store);
+	const input: CdrSuccessorInput = { scope: SCOPE, candidateA: CANDIDATE_A, approvalA: { approverId: "reviewer-a", at: "2026-08-02T12:00:00.000Z" }, receiptA: RECEIPT_A, evidence: over.evidence ?? [EVIDENCE_A], operationId: OPERATION_ID, idempotencyKey: IDEMPOTENCY_KEY, valueCents: over.valueCents ?? 5_000_00n, expectedStatus: over.expectedStatus ?? S.RUNNING, executeSteps: over.executeSteps ?? [1, 2, 3], missionId: over.missionId, reconcile: { stableIdentifier: over.stableIdentifier ?? OPERATION_ID, system: "SUNAT", resolver: over.resolver ?? executedResolver() }, candidateBReviewer: "reviewer-b", materiality: MATERIALITY_B, receiptKeyPairB: KEY_B };
+	return { composer: new CdrSuccessorComposer(missionPort), missionPort, runtime, store, events, handler, input };
 }
 
 describe("CdrSuccessorComposer — steps 1-5 (successor mission)", () => {
@@ -70,8 +73,8 @@ describe("CdrSuccessorComposer — steps 1-5 (successor mission)", () => {
 		const startSpy = vi.spyOn(h.runtime, "start");
 		const result = await h.composer.compose(h.input, []);
 		expect(result.mission.intent).toBe("compliance-check");
-		expect(result.mission.status).toBe(S.RUNNING);
-		expect(result.mission.version).toBe(5);
+		expect(result.mission.status).toBe(S.APPROVED);
+		expect(result.mission.version).toBe(7);
 		// The link is encoded in the existing mission input instruction — no mission field added.
 		expect(startSpy).toHaveBeenCalledWith({ companyId: SCOPE.companyId, fiscalPeriod: SCOPE.period, intent: "compliance-check", input: { instruction: expect.stringContaining(OPERATION_ID) } });
 		expect(result.link).toEqual({ candidateAId: CANDIDATE_A.id, subjectHash: CANDIDATE_A.subjectHash, approvalReceiptHash: RECEIPT_A.receiptHash, operationId: OPERATION_ID, evidenceIds: [EVIDENCE_A.identity] });
@@ -79,10 +82,10 @@ describe("CdrSuccessorComposer — steps 1-5 (successor mission)", () => {
 		expect(result.reconciliation?.decision).toBe("record");
 		expect(result.reconciliation?.evidence?.identifier).toBe("SUNAT-202607-001");
 		expect(result.replayed).toBe(false);
-		expect(h.handler.callCount).toBe(3);
+		expect(h.handler.callCount).toBe(4);
 		const log = await h.events.list(result.mission.id);
-		expect(log).toHaveLength(5);
-		expect(log.at(-1)?.eventType).toBe(MissionEventType.RECONCILED);
+		expect(log).toHaveLength(7);
+		expect(log.at(-1)?.eventType).toBe(MissionEventType.APPROVAL_DECIDED);
 		// Candidate A's identity/status, approval, receipt, version, subject hash unchanged.
 		expect(CANDIDATE_A).toEqual(aBefore);
 		expect(CANDIDATE_A.id).toBe(aBefore.id);
@@ -137,13 +140,116 @@ describe("CdrSuccessorComposer — steps 6-7 (reconcile, gates, idempotency)", (
 		expect(run2.replayed).toBe(true);
 		expect(run2.mission).toEqual(run1.mission);
 		expect(run2.link).toEqual(run1.link);
-		expect(h.handler.callCount).toBe(3);
-		expect(await h.events.list(run1.mission.id)).toHaveLength(5);
+		expect(h.handler.callCount).toBe(4);
+		expect(await h.events.list(run1.mission.id)).toHaveLength(7);
 	});
 
 	it("a different payload with the same idempotency key fails closed", async () => {
 		const h = harness();
 		const run1 = await h.composer.compose(h.input, []);
 		await expect(h.composer.compose({ ...h.input, missionId: run1.mission.id, executeSteps: [2, 3, 4] }, [])).rejects.toMatchObject({ code: CDR_ERROR.IDEMPOTENCY_CONFLICT });
+	});
+});
+
+describe("CdrSuccessorComposer — steps 8-13 (candidate-B materialization)", () => {
+	it("materializes candidate B with its own identity, approval, and signed receipt after mission approval", async () => {
+		const h = harness();
+		const aBefore = { ...CANDIDATE_A };
+		const receiptAHashBefore = RECEIPT_A.receiptHash;
+		const result = await h.composer.compose(h.input, []);
+		// Step 8: mission approval through existing primitives (RUNNING -> AWAITING_APPROVAL -> APPROVED), bound evidence verified.
+		expect(result.mission.status).toBe(S.APPROVED);
+		expect(result.mission.version).toBe(7);
+		expect(result.missionReceipt.content.missionId).toBe(result.mission.id);
+		expect(result.missionReceipt.content.evidenceHash).toBe(computeEvidenceHash([ITEM]));
+		expect(verifySignedReceipt(result.missionReceipt).valid).toBe(true);
+		// Candidate B exists only with its own approval decision and signed receipt.
+		expect(result.candidateB.status).toBe("accepted");
+		expect(result.candidateB.id).toBe(candidateIdentity(result.candidateB.subjectHash, { ruc: SCOPE.ruc, period: SCOPE.period }));
+		expect(result.approvalB).toMatchObject({ approverId: "reviewer-b" });
+		expect(verifySignedReceipt(result.receiptB).valid).toBe(true);
+		expect(result.receiptB.content.payloadHash).toBe(result.candidateB.subjectHash);
+		// B's receipt differs from A's: receipt hash, mission id, payload hash, signature boundary.
+		expect(result.receiptB.receiptHash).not.toBe(RECEIPT_A.receiptHash);
+		expect(result.receiptB.content.missionId).not.toBe(RECEIPT_A.content.missionId);
+		expect(result.receiptB.content.payloadHash).not.toBe(RECEIPT_A.content.payloadHash);
+		expect(result.receiptB.signerKeyId).not.toBe(RECEIPT_A.signerKeyId);
+		expect(result.receiptB.signature).not.toBe(RECEIPT_A.signature);
+		// Candidate A's approval and receipt are unchanged.
+		expect(CANDIDATE_A).toEqual(aBefore);
+		expect(RECEIPT_A.receiptHash).toBe(receiptAHashBefore);
+		// The explicit A->B link is expressible through application input and evidence (no protocol extension).
+		expect(result.aToB).toEqual({ candidateAId: CANDIDATE_A.id, candidateBId: result.candidateB.id, operationId: OPERATION_ID, successorMissionId: result.mission.id });
+		expect(result.link.evidenceIds).toEqual([EVIDENCE_A.identity]);
+	});
+
+	it("candidate-B materialization never occurs before gates, mission receipt checks, approval decision, and receipt issuance/verification succeed", async () => {
+		const h = harness();
+		const candidatePort = new CandidatePort();
+		const propose = vi.spyOn(candidatePort, "propose");
+		const composer = new CdrSuccessorComposer(h.missionPort, new GateRunner(), candidatePort);
+		await expect(composer.compose(h.input, [{ name: "approval", evaluate: async () => ({ gate: "approval", verdict: "blocked", reason: "denied" }) }])).rejects.toMatchObject({ code: CDR_ERROR.GATE_BLOCKED });
+		expect(propose).not.toHaveBeenCalled();
+	});
+
+	it("mission receipt verification failure keeps the mission as an audit fact and produces no candidate B", async () => {
+		const h = harness();
+		const receiptPort = new ReceiptPort();
+		vi.spyOn(receiptPort, "verify").mockReturnValue(false);
+		const composer = new CdrSuccessorComposer(h.missionPort, new GateRunner(), new CandidatePort(), receiptPort);
+		await expect(composer.compose(h.input, [])).rejects.toMatchObject({ code: CDR_ERROR.MISSION_RECEIPT_INVALID });
+		const [mission] = await h.store.list();
+		expect(mission.status).toBe(S.APPROVED);
+		expect((await h.events.list(mission.id)).at(-1)?.eventType).toBe(MissionEventType.APPROVAL_DECIDED);
+	});
+
+	it("candidate-B receipt verification failure returns no candidate B and calls no candidate lifecycle method", async () => {
+		const h = harness();
+		const receiptPort = new ReceiptPort();
+		const verify = vi.spyOn(receiptPort, "verify");
+		verify.mockReturnValueOnce(true).mockReturnValueOnce(false);
+		const candidatePort = new CandidatePort();
+		const propose = vi.spyOn(candidatePort, "propose");
+		const composer = new CdrSuccessorComposer(h.missionPort, new GateRunner(), candidatePort, receiptPort);
+		await expect(composer.compose(h.input, [])).rejects.toMatchObject({ code: CDR_ERROR.CANDIDATE_B_RECEIPT_INVALID });
+		expect(propose).not.toHaveBeenCalled();
+		const [mission] = await h.store.list();
+		expect(mission.status).toBe(S.APPROVED);
+	});
+
+	it("candidate materialization/identity mismatch returns no candidate B and the signed receipt cannot authorize a different subject", async () => {
+		const h = harness();
+		const receiptPort = new ReceiptPort();
+		const signSpy = vi.spyOn(receiptPort, "sign");
+		const candidatePort = new CandidatePort();
+		vi.spyOn(candidatePort, "propose").mockImplementation((input) => {
+			const proposed = new CandidatePort().propose(input);
+			return { ...proposed, id: "candidate-b-mismatch", subjectHash: "0".repeat(64) };
+		});
+		const composer = new CdrSuccessorComposer(h.missionPort, new GateRunner(), candidatePort, receiptPort);
+		await expect(composer.compose(h.input, [])).rejects.toMatchObject({ code: CDR_ERROR.CANDIDATE_B_IDENTITY_MISMATCH });
+		// The immutable receipt from the failed attempt binds the intended subject hash, not the mismatched one.
+		const bReceipt = signSpy.mock.results.at(-1)?.value.content;
+		expect(bReceipt.payloadHash).not.toBe("0".repeat(64));
+		const [mission] = await h.store.list();
+		expect(mission.status).toBe(S.APPROVED);
+	});
+
+	it("insufficient evidence fails closed before mission creation and leaves no successor mission", async () => {
+		const h = harness({ evidence: [] });
+		await expect(h.composer.compose(h.input, [])).rejects.toMatchObject({ code: CDR_ERROR.POLICY_BLOCKED });
+		expect(await h.store.list()).toHaveLength(0);
+	});
+
+	it("retry after a blocked gate resumes from the reconciled result, produces candidate B, and never alters candidate A", async () => {
+		const h = harness();
+		const aBefore = { ...CANDIDATE_A };
+		await expect(h.composer.compose(h.input, [{ name: "approval", evaluate: async () => ({ gate: "approval", verdict: "blocked", reason: "denied" }) }])).rejects.toMatchObject({ code: CDR_ERROR.GATE_BLOCKED });
+		const [missionAfterBlock] = await h.store.list();
+		expect(missionAfterBlock.status).toBe(S.RUNNING);
+		const result = await h.composer.compose({ ...h.input, missionId: missionAfterBlock.id }, []);
+		expect(result.candidateB.status).toBe("accepted");
+		expect(result.mission.status).toBe(S.APPROVED);
+		expect(CANDIDATE_A).toEqual(aBefore);
 	});
 });

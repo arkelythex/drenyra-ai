@@ -19,7 +19,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "..", "..");
 
 /** Top-level dirs owned by the fiscal-authority program chain (additive). */
-const MODULE_DIRS = ["tenant-core", "tenant-isolation", "evidence", "journal", "fiscal", "policy"] as const;
+const MODULE_DIRS = ["tenant-core", "tenant-isolation", "evidence", "journal", "fiscal", "policy", "cdr"] as const;
 
 /**
  * Approved relative-import targets per module dir (top-level dir names under the
@@ -34,6 +34,7 @@ const APPROVED_TARGETS: Readonly<Record<string, readonly string[]>> = {
 	journal: ["journal", "tenant-core", "evidence", "receipts"],
 	fiscal: ["fiscal", "tenant-core", "evidence", "journal", "candidates"],
 	policy: ["policy", "candidates", "evidence", "journal"],
+	cdr: ["cdr", "tenant-core", "evidence", "policy", "fiscal", "missions", "candidates", "gates", "receipts"],
 } as const;
 
 const RELATIVE_IMPORT =
@@ -241,7 +242,30 @@ describe("fiscal-authority import boundaries", () => {
     	    	    	    	    	].join("\n"),
     	    	    	    	    	"policy",
     	    	    	    	),
-    			).toEqual([]);
-    		});
-    	});
-});
+        			).toEqual([]);
+        		});
+            	it("allows only cdr's approved dependencies and rejects the audit ledger", () => {
+        		expect(
+        	    	    	moduleBoundaryViolations(
+        	    	    	    	join(repoRoot, "cdr/successor.ts"),
+        	    	    	    	[
+        	    	    	    	    	'import { candidateIdentity } from "../candidates/index.js";',
+        	    	    	    	    	'import { computeEvidenceHash } from "../receipts/index.js";',
+        	    	    	    	    	'import { evaluatePePolicy } from "../policy/index.js";',
+        	    	    	    	    	'import { GateRunner } from "../gates/index.js";',
+        	    	    	    	    	'import { MissionRuntime } from "../missions/index.js";',
+        	    	    	    	    	'import { CdrSuccessorComposer } from "./successor.js";',
+        	    	    	    	].join("\n"),
+        	    	    	    	"cdr",
+        	    	    	),
+        	    	).toEqual([]);
+        		expect(
+        	    	    	moduleBoundaryViolations(
+        	    	    	    	join(repoRoot, "cdr/index.ts"),
+        	    	    	    	'import { validateLedger } from "../ledger/index.js";',
+        	    	    	    	"cdr",
+        	    	    	).length,
+        	    	).toBe(1);
+        	});
+        	});
+    });
