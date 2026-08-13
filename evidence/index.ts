@@ -20,3 +20,4 @@
 
 export * from "./identity/index.js";
 export * from "./authority/index.js";
+export * from "./accept.js";
