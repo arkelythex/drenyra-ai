@@ -4,10 +4,11 @@
  * JavaScript Number; sequence/index/version fields are JSON integers, never floats.
  */
 /**
- * Candidate ordering domain types (1D-1/1D-2): explicit ports and fiscal-flow
- * input/output envelopes. */
+ * Candidate ordering domain types (1D-1..1D-3): explicit ports and fiscal-flow
+ * input/output envelopes; 1D-3 adds the concrete CandidateLifecycle port so the
+ * adapter wires the frozen lifecycle by default. */
+import { CandidateLifecycle, type Candidate, type MaterialityInput, type ProposeInput } from "../candidates/index.js";
 import type { AcceptedEvidence } from "../evidence/index.js";
-import type { Candidate, MaterialityInput, ProposeInput } from "../candidates/index.js";
 import type { ValidatedTenantScope } from "../tenant-core/index.js";
 
 export const FISCAL_ERROR = {
@@ -43,6 +44,21 @@ export interface FiscalSubjectBuilder<TValidated> {
 export interface FiscalCandidatePort {
 	propose(input: ProposeInput): Candidate;
 	inspect(candidate: Candidate, subject: Uint8Array): Candidate;
+}
+
+/**
+ * Concrete candidate port (1D-3): thin wrapper around the frozen
+ * CandidateLifecycle. The adapter never subclasses or modifies that lifecycle. */
+export class CandidateLifecyclePort implements FiscalCandidatePort {
+	constructor(private readonly lifecycle: CandidateLifecycle) {}
+
+	propose(input: ProposeInput): Candidate {
+		return this.lifecycle.propose(input);
+	}
+
+	inspect(candidate: Candidate, subject: Uint8Array): Candidate {
+		return this.lifecycle.inspect(candidate, subject);
+	}
 }
 
 /** Fiscal-flow envelope: explicit scope (validated at runtime) + payload + materiality. */

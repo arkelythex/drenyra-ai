@@ -4,16 +4,22 @@
  * JavaScript Number; sequence/index/version fields are JSON integers, never floats.
  */
 /**
- * FiscalCandidateOrderingAdapter (1D-1/1D-2) — application ordering only:
+ * FiscalCandidateOrderingAdapter (1D-1..1D-3) — application ordering only:
  * validate scope → core validate → reconcile (≥1 artifact, same scope) → build
- * subject → propose → inspect; any failing step closes the flow. */
+ * exact subject bytes → CandidateLifecycle.propose (frozen { ruc, period }
+ * projection + materiality) → CandidateLifecycle.inspect with the same byte
+ * reference; any failing step closes the flow. 1D-3 wires the concrete
+ * CandidateLifecycle by default; no public method exposes construction,
+ * propose, or inspect independently. */
 import {
 	sameTenantScope,
 	validateTenantScope,
 	type ValidatedTenantScope,
 } from "../tenant-core/index.js";
 import type { AcceptedEvidence } from "../evidence/index.js";
+import { CandidateLifecycle } from "../candidates/index.js";
 import {
+	CandidateLifecyclePort,
 	FISCAL_ERROR,
 	FiscalError,
 	type CoreValidator,
@@ -25,12 +31,14 @@ import {
 } from "./types.js";
 
 export class FiscalCandidateOrderingAdapter<TInput, TValidated> {
-	constructor(
-		private readonly coreValidator: CoreValidator<TInput, TValidated>,
-		private readonly reconciler: Reconciler<TValidated>,
-		private readonly subjectBuilder: FiscalSubjectBuilder<TValidated>,
-		private readonly candidatePort: FiscalCandidatePort,
-	) {}
+constructor(
+private readonly coreValidator: CoreValidator<TInput, TValidated>,
+private readonly reconciler: Reconciler<TValidated>,
+private readonly subjectBuilder: FiscalSubjectBuilder<TValidated>,
+private readonly candidatePort: FiscalCandidatePort = new CandidateLifecyclePort(
+new CandidateLifecycle(),
+),
+) {}
 
 	run(input: FiscalFlowInput<TInput>): FiscalFlowResult<TValidated> {
 		const scope = validateTenantScope(input.scope);
