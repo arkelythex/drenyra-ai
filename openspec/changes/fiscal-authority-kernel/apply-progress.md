@@ -213,3 +213,216 @@ Attempt token `sha256:05b3783cd3adb867318031f04da7ae5e8085a8556537bd29f28d2da654
 ## PAUSED — parent decision 2026-08-12
 
 **Status:** PAUSED by explicit user decision (ecosystem-first strategy). Slice 1A (tenant authority) complete and documented; slice 2 advanced de facto (RUC checksum in flow/guardian/candidates, commits 6f6223b, 09afdb9); 81 of 100 tasks unchecked in tasks.md (known discipline drift, not a full inventory of implemented work). Resumed in Phase 4 (v1.0) when real consumers require the remaining slices. No new implementation under this change while paused.
+
+---
+
+## Work unit 1b-evidence-accept-conformance (batch 1) — 1B-1..1B-3, wrap-and-expose (batch complete)
+
+**Status consumed (openspec store, authoritative):**
+
+```yaml
+schemaName: spec-driven
+changeName: fiscal-authority-kernel
+artifactStore: openspec
+applyState: ready (fresh narrow correction after native runtime reset; orphaned attempt closed by parent)
+actionContext:
+  mode: repo-local
+  workspaceRoot: /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai
+  allowedEditRoots: [repo-root]
+nextRecommended: parent-lifecycle (after batch freeze; RDD disabled clone-local, no receipt claimed)
+```
+
+**Conformance direction (resolved by parent):** wrap-and-expose. The evidence authority behavior already exists in this branch (commit 3785e27, `evidence/identity` + `evidence/authority`); this batch does NOT restructure to the design's `evidence/types.ts` layout. Instead it adds a thin accepted-evidence surface that delegates to `registerEvidence` unchanged, preserving `id` and `evidenceHash` and adding the canonical receipt-hash-based `identity`.
+
+**Delivery decision (resolved by parent, no per-slice ask):** auto-chain, feature-branch-chain; batch cap 300 changed lines; this batch = 268 authored lines (51 `accept.ts` + 216 test + 1 wiring line in `evidence/index.ts`). No commit, push, PR, review, or reset performed.
+
+**Scope honored:** only `evidence/accept.ts` (new), `evidence/__tests__/accept.test.ts` (new), `evidence/index.ts` (+1 export line), plus task checkboxes and this apply-progress. Frozen receipt contracts/vectors, persistence, ingest, SUNAT transport, `agents/`/`cmd/`, and the batch-2 boundary scanner (`tenant-isolation/__tests__/import-boundaries.test.ts`) are untouched.
+
+## Completed tasks (persisted checkboxes verified `[x]` in tasks.md)
+
+| Task | Summary |
+| --- | --- |
+| 1B-1 RED | `evidence/__tests__/accept.test.ts` written first: missing provenance → `MISSING_PROVENANCE`, malformed provenance (non-object, invalid timestamp) → `MALFORMED_PROVENANCE`, rejection yields no artifact / no downstream-capable partial object. Suite failed to load (`../accept.js` absent) — RED recorded (1 file failed, 0 tests ran). |
+| 1B-1 GREEN | `evidence/accept.ts` — `AcceptedEvidence` (extends `RegisteredEvidence`; preserves `id`, `scope`, `scopeKey`, `items`, `evidenceHash`, `provenance`; adds `readonly identity`) and `acceptEvidence(input: unknown)` delegating the full fail-closed pipeline to `registerEvidence`; `evidence/index.ts` re-exports `./accept.js`. Focused suite 10/10. |
+| 1B-1 TRIANGULATE | Provenance field boundaries: whitespace-only source, structurally invalid timestamp `2026-13-99`, unknown source kind `hearsay` — all fail closed `MALFORMED_PROVENANCE`. |
+| 1B-1 REFACTOR | Full suite green (see commands below). |
+| 1B-2 RED | Memory/advisory rejection tests written before the surface existed (fail at import): `memory`/`engram`/`recall` → `MEMORY_SHAPED`; `advisory`/`llm`/`assistant`/`chat` → `ADVISORY_SHAPED`; memory-shaped input cannot satisfy an evidence requirement. |
+| 1B-2 GREEN | Memory exclusion flows through the `acceptEvidence` → `registerEvidence` narrowing before any other check (delegated, behavior unchanged); memory/advisory kinds remain absent from the accepted const-object channel types. |
+| 1B-2 TRIANGULATE | Shape proof: `EVIDENCE_CHANNEL` values contain no `MEMORY_SHAPED_MARKERS`/`ADVISORY_SHAPED_MARKERS`; an accepted artifact's `provenance.channel` is always an evidence channel at runtime. |
+| 1B-3 RED | `AcceptedEvidence.identity === computeEvidenceHash([item])` (frozen receipt primitive); two identical submissions → equal `identity` and `id`; `id` and `evidenceHash` preserved. |
+| 1B-3 GREEN | `identity = computeEvidenceHash([...registered.items])` computed in `evidence/accept.ts` from `receipts/verify.ts` as the single source of canonical identity. |
+| 1B-3 TRIANGULATE | Content change (label restated) → H2 ≠ H1 with `identity` equal to the re-computed receipt hash; original accepted artifact deep-immutable (`Object.isFrozen` on record/items/provenance/scope, frozen-array push throws); original keeps its identity after a second acceptance with different content. |
+| 1B-3 REFACTOR | Frozen receipt conformance suite (`contracts/__tests__/receipt-conformance.test.ts`, 16 tests) unchanged and green; full suite, typecheck, build green. |
+
+## Files changed (work unit 1b-evidence-accept-conformance)
+
+| Path | Status | Lines |
+| --- | --- | ---: |
+| `evidence/accept.ts` | new | 51 |
+| `evidence/__tests__/accept.test.ts` | new | 216 |
+| `evidence/index.ts` | +1 additive export line | 1 |
+| **Batch total** | | **268** (< 300 cap ✓) |
+
+No root `index.ts`, `package.json`, or `tsconfig.json` change needed: the existing `export * from "./evidence/index.js"` wiring already propagates the new surface.
+
+## Test commands and exact results
+
+- `bunx vitest run evidence/__tests__/accept.test.ts` — RED: 1 file failed (module load, `../accept.js` absent) → GREEN: 10/10 → TRIANGULATE: 17/17
+- `bunx vitest run evidence` — **3 files, 48 tests passed** (31 baseline + 17 new)
+- `bunx vitest run contracts/__tests__/receipt-conformance.test.ts` — **1 file, 16 tests passed** (frozen, unchanged)
+- `bun run test` (full suite) — **56 files, 690 tests passed** (673 baseline + 17 new accept tests)
+- `bun run typecheck` — clean (exit 0)
+- `bun run build` — clean (exit 0); `dist/evidence/` includes `accept.js` + `accept.d.ts`
+
+## TDD Cycle Evidence
+
+| Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1B-1 | `evidence/__tests__/accept.test.ts` | Unit | ✅ 673/673 baseline | ✅ 1 file failed (module absent) | ✅ 4/4 | ✅ 3 boundary cases | ✅ 673+4 green |
+| 1B-2 | `evidence/__tests__/accept.test.ts` | Unit | ✅ 673/673 baseline | ✅ same RED run (module absent) | ✅ 3/3 | ✅ shape proof (1 test) | ✅ 673+7 green |
+| 1B-3 | `evidence/__tests__/accept.test.ts` | Unit | ✅ 673/673 baseline | ✅ same RED run (module absent) | ✅ 3/3 | ✅ H2≠H1 + immutability (3 tests) | ✅ full suite 690, typecheck, build, receipt conformance 16/16 |
+
+### Test Summary
+
+- **Total tests written**: 17 (all in `evidence/__tests__/accept.test.ts`)
+- **Total tests passing**: 690 (full suite)
+- **Layers used**: Unit (17)
+- **Approval tests**: None — all new files
+- **Pure functions created**: `acceptEvidence`; `AcceptedEvidence` type
+
+## Deviations from design
+
+1. **Wrap-and-expose replaces the design's `evidence/types.ts` + `evidence/accept.ts` layout.** The evidence authority already exists on this branch (`evidence/identity/*`, `evidence/authority/*`, commit 3785e27) with the fail-closed pipeline, provenance shape validation, memory/advisory channel gates, scope binding, and deep-freeze behavior. Per the parent-resolved conformance direction, no restructure was performed; `evidence/accept.ts` is a thin delegation surface. Types (`EvidenceProvenance`, provenance shape, origin constants `EVIDENCE_CHANNEL`, rejection codes `EvidenceErrorCode`) already exist in `evidence/identity/*`.
+2. **`identity` and `evidenceHash` are equal in value** for the same accepted items because both are the frozen receipt primitive `computeEvidenceHash`. This is intended: the spec's "Identity matches canonical receipt hash" scenario requires exactly this equality, while the existing `id` keeps its distinct content-derived semantics (scope key + evidence hash + provenance). Tests assert both the equality and the preservation of `id`/`evidenceHash`.
+3. 1B-1/1B-2/1B-3 RED shared one coherent failing run (module `../accept.js` absent) because the delegated behaviors already exist inside `registerEvidence`; the batch RED is the missing accepted surface, which is the honest RED for wrap-and-expose.
+
+## Remaining tasks (unchecked, persisted in tasks.md)
+
+- 1B-4 Tenant binding and composition — 4 unchecked rows
+- 1B-5 Exports and wiring — 1 unchecked row
+- All Slice 1C implementation rows (journal) — 25 unchecked
+- All Slice 1D implementation rows (candidate ordering) — 15 unchecked
+- All Slice 1E implementation rows (policy/CDR) — 18 unchecked
+- Parent-owned chain lifecycle gates (review, chained PRs, tracker merge)
+
+## Workload / PR boundary
+
+- **Batch:** work unit `1b-evidence-accept-conformance` (rows 1B-1..1B-3), branch `fiscal-authority/evidence` boundary; 268 authored lines ≤ 300 cap.
+- **Budget:** ≤300 ✓ (268 actual). Program-wide High 400-line risk handled by the chained-PR plan; no size exception requested or used.
+- **Rollback boundary:** remove `evidence/accept.ts`, `evidence/__tests__/accept.test.ts`, and the one export line in `evidence/index.ts`; existing identity/authority modules remain intact.
+
+## Evidence revision for settlement
+
+SHA-256 over concatenated current contents (in order) of the 3 implementation-candidate files (`evidence/accept.ts`, `evidence/__tests__/accept.test.ts`, `evidence/index.ts`):
+
+```
+57c912e3fe74f9aa9bed4936ab455d4450696d33ace436d5cba4c7fe5659e6a8
+```
+
+Attempt token `sha256:0bb723b4f4d9f8db4bb815fc94d28c2d0c4d275c5c3731553286b0737a2ded2d` was parent-acquired; this phase settles it exactly once (outcome passed, `--remediates-evidence-revision sha256:e627d6faf71779263b1fb9e673fbefa0ad69fe806c7da023cbf6b9742f732e8d`). RDD remains disabled clone-local; no receipt claimed.
+
+---
+
+## Work unit 1b-evidence-accept-conformance (batch 2) — 1B-4 tenant binding/composition + 1B-5 boundary wiring (batch complete)
+
+**Status consumed (openspec store, authoritative):**
+
+```yaml
+schemaName: spec-driven
+changeName: fiscal-authority-kernel
+artifactStore: openspec
+applyState: ready (parent-native: apply ready, 30/100 tasks complete before this batch)
+actionContext:
+  mode: repo-local
+  workspaceRoot: /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai
+  allowedEditRoots: [repo-root]
+nextRecommended: parent-lifecycle (after batch freeze; RDD disabled clone-local, no receipt claimed)
+```
+
+**Delivery decision (resolved by parent):** isolated batch 2 of Slice 1B, rows 1B-4 and 1B-5 only; batch cap 300 source changed lines. No commit, push, PR, review, or reset performed; no attempt acquired (parent acquired the only attempt token).
+
+**Scope honored:** only `evidence/__tests__/accept.test.ts` (+169/−23 net +146) and `tenant-isolation/__tests__/import-boundaries.test.ts` (+91/−37 net +54) changed; task checkboxes and this apply-progress updated. Batch 1 evidence surface (`accept.ts`, `evidence/index.ts`, identity/authority layout), frozen receipt contracts/vectors, persistence, ingest, SUNAT, `agents/`/`cmd/`, and all other slices untouched.
+
+## Completed tasks (persisted checkboxes verified `[x]` in tasks.md)
+
+| Task | Summary |
+| --- | --- |
+| 1B-4 RED | Tests written first in `evidence/__tests__/accept.test.ts`: acceptance requires an explicit validated tenant scope (`INVALID_SCOPE` for missing and forged/unbranded scope), the binding check accepts the same scope and rejects a different one (`SCOPE_MISMATCH`) plus a forged one (`INVALID_SCOPE`), and a journal-style consumer binds accepted evidence using only existing receipt primitives. Coverage-first RED: all passed against the existing delegated authority (no production defect found — the required behavior already exists in `registerEvidence`/`assertEvidenceInScope`). |
+| 1B-4 GREEN | `AcceptedEvidence` retains `scope: ValidatedTenantScope` (via `RegisteredEvidence`), `evidence/index.ts` already re-exports the accepted surface — no production change needed; the 9 new tests prove both. |
+| 1B-4 TRIANGULATE | Accepted-surface key set is exactly the registered keys + `identity` (no receipt field additions); frozen receipt conformance suite `contracts/__tests__/receipt-conformance.test.ts` 16/16 unchanged; nested immutability proven at every level (see below). |
+| 1B-5 | `evidence/index.ts` public exports, root `index.ts` re-export, `package.json` `./evidence` export, `tsconfig.json` + `tsconfig.build.json` `evidence` includes all already present (pre-batch-1 wiring, verified in committed tree); the static boundary scanner extended to scan `evidence/` with a per-module approved-dependency allowlist (`receipts`, `tenant-core`, internal evidence modules) rejecting all high-level layers. |
+
+## Immutability coverage (nested state)
+
+Four new tests in the 1B-4 immutability describe:
+
+1. every nested node frozen — record, `items` array, every item object, `provenance`, `scope`;
+2. nested mutation attempts throw `TypeError` — `items.push`, item-field assignment, `delete provenance.source`, scope-field assignment, `identity` assignment;
+3. acceptance copies rather than mutates the input scope;
+4. accepted surface adds no receipt contract fields (key-set + hash proof).
+
+No immutability defect was found; batch 1 code (`accept.ts`, `evidence/index.ts`) was NOT touched, per the delegation's guard.
+
+## Files changed (work unit 1b-evidence-accept-conformance batch 2)
+
+| Path | Status | Net | Gross |
+| --- | --- | ---: | ---: |
+| `evidence/__tests__/accept.test.ts` | modified | +146 | 192 |
+| `tenant-isolation/__tests__/import-boundaries.test.ts` | modified | +54 | 128 |
+| **Batch total** | | **+200 authored** | **320 changed** |
+
+Accounting note: net authored = 200 ≤ 300 cap ✓ (the batch-1 convention counts authored lines). Gross changed = 320; 60 of those are deletions of the replaced naive boundary-check logic (the RED invalidated it: the old "program modules only" invariant rejects evidence's legitimate `receipts` dependency). Disclosed for the parent; all 200 authored lines are required coverage.
+
+## Test commands and exact results
+
+- `bunx vitest run evidence tenant-isolation` — RED (scanner): 1 failed, 2 passed (evidence escapes the old program-modules invariant via `receipts/`) → GREEN: 5/5 → after trims: **5 files, 67 tests passed**
+- `bunx vitest run contracts/__tests__/receipt-conformance.test.ts` — **1 file, 16 tests passed** (frozen, unchanged — 1B-4 TRIANGULATE)
+- `bun run test` (full suite) — **56 files, 702 tests passed** (690 batch-1 baseline + 12 new)
+- `bun run typecheck` — clean (exit 0)
+- `bun run build` — clean (exit 0)
+
+## TDD Cycle Evidence
+
+| Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1B-4 | `evidence/__tests__/accept.test.ts` | Unit | ✅ 690/690 baseline | ✅ coverage-first: binding/composition/immutability tests written first; all passed (no defect — delegated authority already enforces scope requirement, binding check, deep freeze) | ✅ 17→26 tests (9 new), no production change required | ✅ key-set (no receipt fields), nested-frozen nodes, mutation-throw, input-scope copy semantics | ✅ trimmed 2 duplicate tests, 26/26 + full suite green |
+| 1B-5 | `tenant-isolation/__tests__/import-boundaries.test.ts` | Unit | ✅ 690/690 baseline | ✅ added `evidence` to scanned dirs with old invariant → 1 failed (5 violations: receipts escapes) | ✅ per-module `APPROVED_TARGETS` allowlist — 3 module scans pass | ✅ synthetic fixtures: agents/cmd/ingest rejected from evidence, unapproved sibling rejected, approved receipts/tenant-core/internal allowed | ✅ compacted triangulation to table form; 5/5 |
+
+### Test Summary
+
+- **Total tests written**: 12 (9 accept binding/composition/immutability + 3 boundary scans/triangulation net-new)
+- **Total tests passing**: 702 (full suite)
+- **Layers used**: Unit (12)
+- **Approval tests**: None — test-file modifications only
+- **Pure functions created**: `importTarget`, `moduleBoundaryViolations` (test-scoped scanner helpers); production surface unchanged
+
+## Deviations from design
+
+1. **Boundary target is `tenant-core`, not `tenant/`.** Task row 1B-5 says "asserting `evidence/` imports only `tenant/` and `receipts/`"; per the rescoped layout the approved dependency is the `tenant-core` module (which is what `evidence/authority` actually imports), and the parent delegation explicitly authorized (`receipts`, `tenant-core`, internal evidence modules). The scanner enforces exactly that.
+2. **1B-4 required no production change.** The wrap-and-expose surface from batch 1 already requires the branded revalidated scope (`validateScopeValue`), exposes the binding check (`assertEvidenceInScope`, exported via `evidence/authority/index.js` → `evidence/index.js`), and deep-freezes the full nested graph. The batch's contribution is strict, persisted coverage proving those guarantees plus the composition seam — the honest outcome for wrap-and-expose, matching batch 1's RED framing.
+3. **Gross changed lines 320 vs the 300 cap.** Net authored 200 ≤ 300; the extra 60 gross lines are deletions of the old `isWithinProgramModules`/`FORBIDDEN_SEGMENTS` logic that the RED proved incapable of expressing evidence's legitimate `receipts` dependency. See accounting note above.
+
+## Remaining tasks (unchecked, persisted in tasks.md)
+
+- All Slice 1C implementation rows (journal) — 25 unchecked
+- All Slice 1D implementation rows (candidate ordering) — 15 unchecked
+- All Slice 1E implementation rows (policy/CDR) — 18 unchecked
+- Parent-owned chain lifecycle gates (review, chained PRs, tracker merge) — 7 unchecked
+
+## Workload / PR boundary
+
+- **Batch:** work unit `1b-evidence-accept-conformance` batch 2 (rows 1B-4..1B-5), branch `fiscal-authority/evidence` boundary; 200 authored lines ≤ 300 cap.
+- **Budget:** ≤300 ✓ (200 net authored; 320 gross disclosed). Program-wide High 400-line risk handled by the chained-PR plan; no size exception requested or used.
+- **Rollback boundary:** revert the two modified test files (`evidence/__tests__/accept.test.ts`, `tenant-isolation/__tests__/import-boundaries.test.ts`) to HEAD (42bd1d0); batch 1 evidence surface and wiring remain intact.
+
+## Evidence revision for settlement
+
+SHA-256 over concatenated current contents (in order) of the 2 implementation-candidate files (`evidence/__tests__/accept.test.ts`, `tenant-isolation/__tests__/import-boundaries.test.ts`):
+
+```
+1750ab3ba97f6f5937faf079fbc0668a608637dbfd27611eaaf5aa5bcf632e4a
+```
+
+Attempt token `sha256:c0ddccecd6eb722a463c921236e23f0d8e0e35317b355842f2bc9a651c919213` was parent-acquired; this phase settled it exactly once via the runtime's prescribed continuation (`sdd-attempt finish`, request id `batch2-1b4-1b5-finish-01`, outcome passed, evidence revision recorded). The `--remediates-evidence-revision` flag was rejected by the runtime (no failed verification on record; batch-1 revision 57c912e3 was passed, not failed) and correctly omitted. RDD remains disabled clone-local; no receipt claimed.
+
+**Budget flag — parent decision required (ledger):** the runtime ledger counts changed lines as the gross worktree diff vs the begin candidate tree, including the mandatory OpenSpec artifacts; ordinal 4 recorded `changed_lines: 432` > `max_changed_lines: 300`, so the attempt finished passed but with `changed_line_budget_exceeded: true` and the objective now reports `decision_required: true, next_action: reset` (same shape as ordinal 2's maintainer-authorized reset). The batch's implementation files alone are 320 gross / 200 net authored lines; the remaining ~112 counted lines are the tasks.md checkbox updates and this apply-progress section, which are mandatory phase outputs and cannot be removed. Per delegation, this phase performed no reset (parent-owned) and no second settle (single-settle contract honored). Parent options: authorize a reset of the gen-4 objective (precedent: ordinal 2), or accept the overage as a size exception for the 1B-5 scanner extension.
