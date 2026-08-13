@@ -701,3 +701,22 @@ SHA-256 over concatenated current contents (in order) of `cdr/types.ts`, `cdr/su
 ```
 80ed18f8b142b40ece7c13623272112566c131ad031eac6970a90634f1d0b558
 ```
+
+---
+
+## Delivery — chained PR chain (parent-owned gate, RDD disabled clone-local)
+
+**Status:** implementation complete (1A/1A2 tenant already in main; 1B-1E all slices implemented and committed locally). RDD is off clone-local, so delivery follows ordinary repository policy — no bounded-review receipts claimed; the review parts of the parent-owned task rows do not apply.
+
+**Chained PRs created (feature-branch-chain, tracker #14 draft/no-merge):**
+| PR | Branch | Base | Slice |
+| --- | --- | --- | --- |
+| #14 | fiscal-authority/kernel | main | tracker (draft, docs/chain file) |
+| #15 | fiscal-authority/evidence | fiscal-authority/kernel | 1B evidence (733 changed) |
+| #16 | fiscal-authority/journal | fiscal-authority/evidence | 1C journal (629 changed) |
+| #17 | fiscal-authority/candidate-ordering | fiscal-authority/journal | 1D candidate-ordering (607 changed) |
+| #18 | fiscal-authority/policy-cdr | fiscal-authority/candidate-ordering | 1E policy+cdr (950 changed) |
+
+**Chain hygiene:** each PR branch was built by cherry-picking the verified commits onto main (excluding cbcdc8e, the gentle-ai-quality-parity docs commit). The final branch tree equals the verified local tree byte-for-byte for all source files (774 tests green). Slice diffs vs immediate parents: 733/629/607/950 lines — larger than 400 because the SDD forecast defined slices at module boundaries (1B/1C/1D/1E), not line-count sub-batches; noted in each PR's Chain Context.
+
+**Pending (maintainer decision):** review/merge the chain in order (#15 → #16 → #17 → #18), then merge tracker #14 to main per the feature-branch-chain strategy; then archive this change via sdd-archive.
