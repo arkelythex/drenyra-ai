@@ -1,6 +1,8 @@
 <div align="center">
 
-<img width="1200" alt="Drenyra AI banner — Verifiable Accounting Agent Ecosystem" src="docs/assets/brand/drenyra-ai-banner.svg" />
+<img width="1200" alt="Drenyra AI flow — request → policy/evidence verification → immutable receipt" src="docs/assets/brand/drenyra-ai-flow-banner.svg" />
+
+<p><code>request → policy/evidence verification → immutable receipt</code></p>
 
 <h1>Drenyra AI</h1>
 
