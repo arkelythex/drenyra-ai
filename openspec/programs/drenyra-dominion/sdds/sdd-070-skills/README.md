@@ -64,6 +64,27 @@ guarantees that skills are immutable during an active mission.
 
 - Max 400 authored lines per review unit; larger changes via chained PRs.
 
+## Governance amendment — normative-source provenance, vigencia, pinning, and rollback (W3 only)
+
+Allocated to SDD-070 by the Dominion reconciliation (W3 only; not repeated in any
+other SDD). This is a governance requirement allocation (R14): it records future
+acceptance wording and does NOT claim the policy/skill supply-chain capabilities
+exist in full today (R17).
+
+- **Provenance:** every skill pack MUST be traceable to its normative source
+  (jurisdiction + instrument); skills track the norm, never create or replace law.
+- **Vigencia:** a skill applies only within its vigencia window (entered force ≤
+  applicability < lapsed); a fiscal update affects new missions only, never
+  retroactively.
+- **Pinning:** each mission pins skill versions, normative sources, vigencia,
+  checksum, and jurisdiction; pinned content is immutable for the active mission.
+- **Rollback:** revert to the previous signed pack version; started missions keep
+  their pinned versions — rollback never rewrites the past.
+- **No capability claim:** full normative-source tracking, vigencia versioning,
+  checksum/signature, and mission pinning are NOT claimed to exist today; their
+  `partial`/`planned` rows in the capability matrix are unchanged, and this
+  amendment promotes nothing to `implemented`.
+
 ## Progress
 
 - [ ] Exploration

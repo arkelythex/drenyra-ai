@@ -66,6 +66,33 @@ observability; professional pilots; and the open-core transition gate.
 
 - Max 400 authored lines per review unit; larger changes via chained PRs.
 
+## Governance amendment — restricted authority, credentials, observability, incident evidence, and production acceptance (W3 only)
+
+Allocated to SDD-110 by the Dominion reconciliation (W3 only; not repeated in any
+other SDD). This is a governance requirement allocation (R14): it records future
+acceptance wording and does NOT claim restricted adapters, KMS, production
+storage, or observability infrastructure exist today (R17).
+
+- **Restricted authority:** production adapters operate with the minimum external
+  authority, are versioned and idempotent with UNKNOWN reconciliation, and never
+  decide materiality or skip gates.
+- **Credentials:** key and credential lifecycle follows the KMS runbooks —
+  rotation, least-authority scope, and no credentials embedded in artifacts,
+  logs, or memory.
+- **Observability:** production operations are observable; incident, key,
+  migration, and recovery runbooks exist and are exercised, so failed or
+  duplicate executions are visible.
+- **Incident evidence:** every incident and its resolution is captured as
+  attributable, durable evidence (verifiable response), not narrative memory.
+- **Production acceptance:** entry to production requires the v1-definition pilot
+  acceptance criteria, conformance revalidation through `program-lock`
+  reproducibility, and a recorded open-core gate decision — a decision, not a
+  date.
+- **No capability claim:** restricted adapters, KMS, production storage, and
+  observability infrastructure are NOT claimed to exist today; their `planned`
+  rows in the capability matrix are unchanged, and this amendment promotes
+  nothing to `implemented`.
+
 ## Progress
 
 - [ ] Exploration

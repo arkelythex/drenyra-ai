@@ -62,6 +62,27 @@ the monthly-close capability.
 
 - Max 400 authored lines per review unit; larger changes via chained PRs.
 
+## Governance amendment — tenant-scoped least authority and segregation (W3 only)
+
+Allocated to SDD-060 by the Dominion reconciliation (W3 only; not repeated in any
+other SDD). This is a governance requirement allocation (R14): it records future
+acceptance wording and does NOT claim RBAC/ABAC, per-org policy/approval
+hierarchies, or per-org connectors exist today (R17).
+
+- **Least authority:** every operator, organization, role, and projection operates
+  with the minimum authority required for its own scope; authority is granted per
+  tenant/organization, never globally, and autonomy ceilings may only tighten.
+- **Tenant scope:** authorization decisions are scoped to the tenant and
+  organization they concern; 0 fiscal data crosses tenants without full context.
+- **Segregation of duties:** no single identity may both propose and approve the
+  same monthly-close step; the R3 distinct-approvers rule is a hard acceptance
+  criterion, never a default.
+- **No capability claim:** the RBAC/ABAC authorization engine, per-org policy and
+  approval hierarchies, and tenant-bound connectors are NOT claimed to exist
+  today; the `tenant-core`/`tenant-isolation` maturity already recorded in the
+  capability matrix is unchanged, and this amendment promotes nothing to
+  `implemented`.
+
 ## Progress
 
 - [ ] Exploration

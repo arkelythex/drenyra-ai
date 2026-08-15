@@ -1,8 +1,8 @@
 # Apply Progress — Dominion Program Status Reconciliation
 
-> **Updated (W2 batch):** 2026-08-15T00:06:08Z — W2 (composition and visibility)
-> applied in this batch; the W1 record below is preserved in full. See the W2
-> section at the end of this file.
+> **Updated (W3 batch):** 2026-08-15T00:26:01Z — W3 (governance allocation)
+> applied in this batch; the W1 and W2 records below are preserved in full. See
+> the W3 section at the end of this file.
 
 ## Work unit status
 
@@ -265,3 +265,85 @@ No production code, tests, or runtime artifacts exist for this unit (R17). The a
 - W2 changed lines: **165** (< 300). Cumulative forecast 480–630 across W1(262)+W2(165)+W3 — chained PRs required (stacked-to-main).
 - W2 → W3 dependency preserved (W3 amendments consume W1 vocabulary).
 - Rollback (W2): revert only the five W2 paths to the prior snapshot; prior lock retained as historical; no self-reference introduced.
+
+---
+
+## W3 — governance allocation (this batch)
+
+## Work unit status (W3)
+
+- **Unit:** W3 — governance allocation (only W3 applied in this batch; W1 and W2 records above preserved in full)
+- **Date (UTC):** 2026-08-15T00:26:01Z (edits + readback same session)
+- **Inspected revision:** `1480edf` (`1480edfaf5e2a1fc919717eec26146638dff4047`, branch `sdd/dominion-reconciliation-w2`, W2 commit) — W3 edits build on W2
+- **Runtime attempt token (W3):** `sha256:5e06f624673fcd6942062093dbaaf6e93bb76bf2156bd5b960244dcc14aaa92d` (parent-provided, already acquired)
+- **Delivery decision:** stacked-to-main (parent-resolved); W3 measured **102** changed lines (< 300)
+
+## W3 evidence note (no new register rows)
+
+W3 edits are governance wording only; they introduce no new current-state claims
+and therefore add no evidence-register rows. The test suite status is carried
+from the parent-provided evidence context for the current revision: 774/774
+green and typecheck clean at `549ed64`/`1480edf` (E-002/E-004 revision-bound
+corroboration + W2E-001/W2E-002). No fresh run was executed in this docs-only
+batch — no runtime artifact was touched (R17) — and Phase 4 re-runs `bun run
+test` / `bun run typecheck` at the merged candidate as final proof, per tasks.md.
+
+## Files changed (exact W3 allowlist; 5 paths)
+
+| Path | Change | Lines (adds+dels) |
+| --- | --- | --- |
+| `openspec/programs/drenyra-dominion/sdds/sdd-060-multi-operator/README.md` | Amendment 1 — tenant-scoped least authority + segregation governance section (W3 only); RBAC/ABAC NOT claimed to exist; `tenant-core`/`tenant-isolation` matrix maturity unchanged | 21 |
+| `openspec/programs/drenyra-dominion/sdds/sdd-070-skills/README.md` | Amendment 2 — normative-source provenance, vigencia, pinning, rollback governance section (W3 only); full supply-chain capabilities NOT claimed to exist | 21 |
+| `openspec/programs/drenyra-dominion/sdds/sdd-080-engram/README.md` | Amendment 3 (a) — non-authorizing context + separation of authority governance section (W3 only); no new capability claim | 16 |
+| `openspec/programs/drenyra-dominion/sdds/sdd-090-guardian/README.md` | Amendment 3 (b) — independent adversarial findings + non-approval governance section (W3 only); verification lenses NOT claimed to exist | 17 |
+| `openspec/programs/drenyra-dominion/sdds/sdd-110-production/README.md` | Amendment 4 — restricted authority, credentials, observability, incident evidence, production acceptance governance section (W3 only); connectors/KMS NOT claimed to exist | 27 |
+| **Total** | | **102** (< 300) |
+
+`git diff --name-only` shows exactly these 5 allowlisted paths plus the
+pre-existing user-modified protected `README.md` (hash unchanged from baseline;
+not part of W3). No W3 edit touches `sdd-010-contracts/README.md` (its
+evidence-precedence amendment landed in W1 only — R14).
+
+## W3 readback and integrity results
+
+- ✅ Amendment ownership: the 5 `## Governance amendment — … (W3 only)` headings occur exactly once each and only in their owning SDDs (grep across `openspec/`); each W3 amendment (060/070/080/090/110) appears nowhere else
+- ✅ `sdd-010-contracts/README.md` untouched (not in `git diff --name-only`; hash `48ec86c0…` unchanged)
+- ✅ No capability described as implemented: every amendment carries an explicit `**No capability claim:**` bullet stating the capability is NOT claimed to exist and that the amendment promotes nothing to `implemented`; no RBAC/ABAC, KMS, connectors, or policy/skill claim of existence
+- ✅ Protected-path hashes byte-identical to the W1 manifest (pre == post): `README.md` `94b6cd…`, `ecosystem-coherence.md` `a73452…`, `fiscal-authority-kernel/verify-report.md` `bee009…`, `status-and-evidence.md` `8c7a7de9…`, ecosystem-coherence change dir all 5 files unchanged
+- ✅ `status-and-evidence.md` byte-for-byte as W1 produced it (W1-owned; not edited)
+- ✅ Changed lines **102** < 300 (per-file: 060=21, 070=21, 080=16, 090=17, 110=27)
+- ✅ Exactly 12 canonical SDDs remain (SDD-000…SDD-110 by tens; directory enumeration)
+- ✅ All 5 edited files markdown-lint clean after each edit
+- ✅ W3 delivery verification (local): changed-path set = W3 allowlist exactly; evidence IDs and historical/current labels preserved in rendered text (GitHub-rendered re-check deferred to the PR gate per §5 of tasks.md; no commit/PR opened in this batch — task 6)
+
+### Strict TDD — docs-only rationale (W3)
+
+No production code, tests, or runtime artifacts exist for this unit (R17). The
+applicable verification is the structural readback above plus the unchanged green
+suite status at `549ed64`/`1480edf` (parent evidence context). No RED test can
+reference code this unit must not create. Phase 4 re-runs the suite at the
+merged candidate.
+
+## Deviations from design (W3)
+
+- None. Each amendment follows the design evidence-matrix allocation (rows 150–154): governance/acceptance wording only, explicit not-claimed-to-exist statement, no capability promotion. Amendment headings and bullets mirror the W1 SDD-010 amendment style for consistency.
+
+## Remaining tasks (exact unchecked lines in tasks.md)
+
+- Phase 4: catalog enumeration; protected hashes + `git diff --name-only` on merged candidate; `bun run test`/`bun run typecheck`; spec requirement pass/fail; Gate 0 SDD-020 confirmation (5 rows, lines 161–165)
+- Parent-owned: post-apply bounded review; open the 3 chained PRs W1→W2→W3; record SDD-020 blocked/permitted in Gate 0 (3 rows)
+
+## Workload / PR boundary (W3)
+
+- W3 changed lines: **102** (< 300). Cumulative W1(262) + W2(165) + W3(102) = **529**, inside the 480–630 forecast — chained PRs required (stacked-to-main, parent-resolved).
+- W3 consumed the W1 vocabulary/evidence register (E-IDs) and W2 capability-matrix maturity references; no runtime or authority state exists for this unit.
+- Rollback (W3): revert only the five amendment sections; no runtime or authority state to migrate.
+
+## Completion criteria mapping (W3-scope subset)
+
+| Req | Status |
+| --- | --- |
+| R14 governance amendment allocation | ✅ SDD-010 evidence-precedence amendment in W1 only; the 4 W3 amendments (5 SDDs: 060/070/080/090/110) in their owning SDDs only; no unit claims a capability is implemented |
+| R15 protected-path isolation | ✅ hashes byte-identical; no non-allowlisted path changed |
+| R17 no capability implementation | ✅ docs-only; every amendment states the capability is not claimed to exist |
+| R18 bounded evidence-backed edits | ✅ 102 lines < 300; no new current-state claims introduced; evidence status carried from parent context |
