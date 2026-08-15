@@ -9,7 +9,8 @@
 > ([status-and-evidence.md](../../status-and-evidence.md)); this SDD is recorded
 > `lifecycle:active` because the ratified constitution artifacts exist (charter,
 > authority model, dependency graph, capability matrix, gate record). It is NOT
-> `lifecycle:complete`: Gate 0 obligations (rows 3–4) and this SDD's
+> `lifecycle:complete`: Gate 0 rows 3–4 were satisfied 2026-08-15 (E-009..E-012,
+> [gate-0.md](../../gate-0.md) §4 permits SDD-020), but this SDD's
 > content-contract phases remain unreconciled. Lifecycle is never derived from
 > capability maturity (R3).
 
