@@ -2,7 +2,15 @@
 
 # SDD-020 — Universal Agent Configurator
 
-> Status: PLANNED · Wave: 1 · Depends on: SDD-010 · Feeds: SDD-100
+> Status: lifecycle:in-progress · Maturity: partial (upgrade/rollback + doctor depth implemented; hosts/pinning pending) · Wave: 1 · Depends on: SDD-010 · Feeds: SDD-100
+>
+> **Slice 1 delivered 2026-08-15** (change `sdd-020-configurator`, PRs #34/#35):
+> `configurator/managed-config.ts` library (manifest classification, legacy
+> hydration, SHA-256 assets, atomic plan/commit/rollback, diagnostics) + `upgrade
+> run`/`rollback run` commands + doctor diagnostics depth (drift/pin/prereq) +
+> install/sync delegation. Suite 798/798 green. Remaining (later slices): host
+> integration (Codex/Claude/OpenCode/Pi), per-host pinned runtime/model/tool, and
+> program-lock-aware install.
 
 ## Purpose
 
