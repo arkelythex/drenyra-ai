@@ -45,6 +45,7 @@ and boundaries.
 | [acceptance-matrix.md](acceptance-matrix.md) | Threat model, verification matrix, non-negotiable scenarios, v1 definition, commercial gate |
 | [program-lock.json](program-lock.json) | Reproducible ecosystem composition: repos, SHAs, versions, contracts, checksums |
 | [delivery-sequence.md](delivery-sequence.md) | Exact two-phase commit/PR sequence for federated checkpoints (solves the lock bootstrap problem) |
+| [ecosystem-coherence.md](ecosystem-coherence.md) | Ecosystem coherence program-master record: audited inconsistencies, evidence, owners, blocked decisions, propagation/readback log |
 
 ## SDD catalog
 
