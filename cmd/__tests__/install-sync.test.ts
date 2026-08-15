@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createHash } from "node:crypto";
 import {
 	mkdtempSync,
@@ -13,6 +13,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
 	detectHosts,
+	installCommand,
 	installIntegrations,
 	readInstallManifest,
 	type InstallManifest,
@@ -29,9 +30,47 @@ import {
 	renderPinnedAiRuntime,
 	type ManagedCompositionSnapshot,
 } from "../../configurator/managed-config.js";
+import type {
+	PromotedComposition,
+	PromotedCompositionRead,
+} from "../../configurator/promoted-composition.js";
 
 function repoRoot(): string {
 	return join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+}
+
+function packagedVersion(): string {
+	const manifest = JSON.parse(
+		readFileSync(join(repoRoot(), "package.json"), "utf8"),
+	) as { version: string };
+	return manifest.version;
+}
+
+function capture(fn: () => number): {
+	code: number;
+	stdout: string;
+	stderr: string;
+} {
+	const out: string[] = [];
+	const err: string[] = [];
+	const log = vi
+		.spyOn(console, "log")
+		.mockImplementation((...args: unknown[]) => {
+			out.push(args.map(String).join(" "));
+		});
+	const error = vi
+		.spyOn(console, "error")
+		.mockImplementation((...args: unknown[]) => {
+			err.push(args.map(String).join(" "));
+		});
+	let code = -1;
+	try {
+		code = fn();
+	} finally {
+		log.mockRestore();
+		error.mockRestore();
+	}
+	return { code, stdout: out.join("\n"), stderr: err.join("\n") };
 }
 
 function tempHome(): { dir: string; cleanup: () => void } {
@@ -225,6 +264,177 @@ describe("sync with a legacy manifest (SDD-020)", () => {
 	});
 });
     
+describe("install promoted-composition surfacing (SDD-020 slice C PR 2)", () => {
+	/** The canonical five-field manifest (promoted 0.4.0 checkpoint). */
+	const PROMOTED: PromotedComposition = {
+		version: "0.4.0",
+		verifiedRevision: "d440203183e24b2a0ecf773915888bb6072fc015",
+		hostArtifactSha256:
+			"2e3bd07241c250cf00653c346945108529d2fbba04a145bd9e38d938ae949a36",
+		setSha256:
+			"62f1aaa496307ba5f56894dcf6aef0ffac365ed6a303a8cb6fb0ef3b215ab3ea",
+		attestationTag: "drenyra-dominion-v0.4.0",
+	};
+
+	type InstallReport = {
+		status: string;
+		version: string;
+		packageVersion: string;
+		detectedHosts: Array<{ name: string; present: boolean }>;
+		configured: string[];
+		promotedComposition:
+			| {
+					state: "valid";
+					availability: "available";
+					versionRelationship: string;
+					composition: PromotedComposition;
+				}
+			| { state: "absent" | "invalid"; availability: "unavailable"; reason?: string };
+		note: string;
+	};
+
+	it("reports the installed package identity and the promoted composition, records the 0.4.0/0.4.1 skew as differs, and returns 0 (R3·1)", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			mkdirSync(join(dir, ".claude"), { recursive: true });
+			const read: PromotedCompositionRead = {
+				state: "valid",
+				composition: { ...PROMOTED },
+			};
+			const { code, stdout } = capture(() =>
+				installCommand(["--home", dir], { readPromotedComposition: () => read }),
+			);
+			expect(code).toBe(0);
+			const parsed = JSON.parse(stdout) as InstallReport;
+			expect(parsed.status).toBe("installed");
+			expect(parsed.version).toBe(packagedVersion());
+			expect(parsed.packageVersion).toBe(packagedVersion());
+			expect(parsed.promotedComposition).toEqual({
+				state: "valid",
+				availability: "available",
+				versionRelationship: "differs",
+				composition: PROMOTED,
+			});
+			// skew recorded, not gated: install still succeeds
+			const composition = (
+				parsed.promotedComposition as Extract<
+					InstallReport["promotedComposition"],
+					{ state: "valid" }
+				>
+			).composition;
+			expect(composition.version).toBe("0.4.0");
+			expect(composition.version).not.toBe(packagedVersion());
+			expect(
+				parsed.detectedHosts.some(
+					(h) => h.name === "claude-code" && h.present,
+				),
+			).toBe(true);
+			expect(parsed.note).toBeTruthy();
+		} finally {
+			cleanup();
+		}
+	});
+
+	it("reports matches when versions are equal without claiming more than the manifest (R3·2)", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			mkdirSync(join(dir, ".claude"), { recursive: true });
+			const read: PromotedCompositionRead = {
+				state: "valid",
+				composition: { ...PROMOTED, version: packagedVersion() },
+			};
+			const { code, stdout } = capture(() =>
+				installCommand(["--home", dir], { readPromotedComposition: () => read }),
+			);
+			expect(code).toBe(0);
+			const parsed = JSON.parse(stdout) as InstallReport;
+			expect(parsed.promotedComposition).toEqual({
+				state: "valid",
+				availability: "available",
+				versionRelationship: "matches",
+				composition: { ...PROMOTED, version: packagedVersion() },
+			});
+		} finally {
+			cleanup();
+		}
+	});
+
+	it("absent and invalid evidence each complete normally with availability unavailable, no promoted facts, and exit 0 (R3·2, R3·3)", () => {
+		for (const read of [
+			{ state: "absent" } as const,
+			{ state: "invalid", invalidReason: "not valid JSON" } as const,
+		]) {
+			const { dir, cleanup } = tempHome();
+			try {
+				mkdirSync(join(dir, ".claude"), { recursive: true });
+				const { code, stdout } = capture(() =>
+					installCommand(["--home", dir], {
+						readPromotedComposition: () => read,
+					}),
+				);
+				expect(code).toBe(0);
+				const parsed = JSON.parse(stdout) as InstallReport;
+				expect(parsed.promotedComposition.availability).toBe("unavailable");
+				expect(parsed.promotedComposition.state).toBe(
+					read.state === "absent" ? "absent" : "invalid",
+				);
+				expect("composition" in parsed.promotedComposition).toBe(false);
+				if (read.state === "invalid") {
+					expect(
+						(
+							parsed.promotedComposition as {
+							state: "invalid";
+							availability: "unavailable";
+							reason?: string;
+						}
+					).reason?.length,
+				).toBeGreaterThan(0);
+				}
+				// no promotion claim without a valid manifest
+				expect(stdout).not.toMatch(/0\.4\.0/);
+			} finally {
+				cleanup();
+			}
+		}
+	});
+
+	it("never labels the packaged version as promoted when the manifest differs, and leaves managed.json unchanged in every evidence state (R3·3, R3 persistence invariant)", () => {
+		for (const read of [
+			{ state: "valid", composition: { ...PROMOTED } } as const,
+			{ state: "absent" } as const,
+			{ state: "invalid", invalidReason: "malformed" } as const,
+		]) {
+			const { dir, cleanup } = tempHome();
+			try {
+				mkdirSync(join(dir, ".claude"), { recursive: true });
+				const { code, stdout } = capture(() =>
+					installCommand(["--home", dir], {
+						readPromotedComposition: () => read,
+					}),
+				);
+				expect(code).toBe(0);
+				const parsed = JSON.parse(stdout) as InstallReport;
+				// the packaged version is never the promoted version in the valid-skew case
+				if (parsed.promotedComposition.state === "valid") {
+					expect(parsed.promotedComposition.composition.version).not.toBe(
+						parsed.packageVersion,
+					);
+					expect(parsed.promotedComposition.versionRelationship).toBe("differs");
+				}
+				// managed.json keeps its exact shape: no promoted-composition field
+				const raw = readFileSync(join(dir, ".drenyra", "managed.json"), "utf8");
+				expect(raw).not.toMatch(/promot/i);
+				const manifest = readInstallManifest(dir)!;
+				expect(Object.keys(manifest).sort()).toEqual(
+					["assets", "composition", "hosts", "installedAt", "manager", "version"].sort(),
+				);
+			} finally {
+				cleanup();
+			}
+		}
+	});
+});
+
 describe("per-host pinned AI runtime (SDD-020 slice 2)", () => {
 	it("creates exactly one .drenyra-pinned-ai-runtime.json per present host, records kind/schemaVersion/host/runtime/model/tool with integer-or-semver versions, and rejects float versions", () => {
 		const { dir, cleanup } = tempHome();

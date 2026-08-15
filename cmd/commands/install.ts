@@ -40,6 +40,12 @@ import {
 	type ManagedCompositionSnapshot,
 	type ManagedHostPin,
 } from "../../configurator/managed-config.js";
+import {
+	readPromotedComposition,
+	type PromotedComposition,
+	type PromotedCompositionRead,
+	type VersionRelationship,
+} from "../../configurator/promoted-composition.js";
 
 export {
 	detectHosts,
@@ -134,20 +140,76 @@ export function installIntegrations(
 	return manifest;
 }
 
+/**
+ * Promoted-composition evidence reported by install (R3; D10). Absent/invalid
+ * evidence is reported unavailable with no promoted facts; a valid manifest
+ * adds the five facts and the packaged-versus-promoted relationship
+ * (`matches`/`differs`, never an ordering gate).
+ */
+export type PromotedCompositionReport =
+	| {
+			state: "valid";
+			availability: "available";
+			versionRelationship: VersionRelationship;
+			composition: PromotedComposition;
+		}
+	| { state: "absent"; availability: "unavailable" }
+	| { state: "invalid"; availability: "unavailable"; reason: string };
+
+export interface InstallCommandDeps {
+	/** Test seam: injected reader; production uses the real library reader. */
+	readPromotedComposition?: () => PromotedCompositionRead;
+}
+
+/** Report-only mapping of the read evidence (D10, D11): no gating. */
+function promotedCompositionReport(
+	read: PromotedCompositionRead,
+	packageVersion: string,
+): PromotedCompositionReport {
+	if (read.state === "absent") {
+		return { state: "absent", availability: "unavailable" };
+	}
+	if (read.state === "invalid") {
+		return {
+			state: "invalid",
+			availability: "unavailable",
+			reason: read.invalidReason,
+		};
+	}
+	return {
+		state: "valid",
+		availability: "available",
+		versionRelationship:
+			read.composition.version === packageVersion ? "matches" : "differs",
+		composition: read.composition,
+	};
+}
+
 /** The install command handler. */
-export function installCommand(args: string[]): number {
+export function installCommand(
+	args: string[],
+	deps: InstallCommandDeps = {},
+): number {
 	const home = homeFromArgs(args);
 	const manifest = installIntegrations(home);
 	const present = manifest.hosts.flatMap((host) =>
 		host.present ? [host.name] : [],
 	);
+	// Read-only promoted-composition evidence for the report; never persisted
+	// into managed.json and never gating install success (R3; D10).
+	const read = (deps.readPromotedComposition ?? readPromotedComposition)();
 	console.log(
 		JSON.stringify(
 			{
 				status: "installed",
 				version: manifest.version,
+				packageVersion: manifest.version,
 				detectedHosts: manifest.hosts,
 				configured: present,
+				promotedComposition: promotedCompositionReport(
+					read,
+					manifest.version,
+				),
 				note: "hosts are detected and configured; drenyra-ai never installs a host",
 			},
 			null,

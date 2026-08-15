@@ -8,3 +8,4 @@
  * runtime dependency.
  */
 export * from "./managed-config.js";
+export * from "./promoted-composition.js";

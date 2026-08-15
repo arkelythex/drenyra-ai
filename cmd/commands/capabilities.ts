@@ -27,7 +27,7 @@ export function capabilitiesCommand(): number {
 		skills: registry.list().map(({ checksum, ...skill }) => skill),
 		integrations: [
 			"MCP (planned)",
-			"Codex/Claude Code/OpenCode/Drenyra Pi (managed marker/skills/pin configuration)",
+			"Codex/Claude Code/OpenCode/Drenyra Pi (managed marker/skills/pin configuration with program-lock-aware install/doctor reporting)",
 		],
 	};
 	console.log(JSON.stringify(result, null, 2));

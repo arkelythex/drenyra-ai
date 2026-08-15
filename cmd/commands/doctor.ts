@@ -19,16 +19,30 @@ import { resolve } from "node:path";
 import { getPackageMetadata } from "../adapters/package-metadata.js";
 import { DECLARED_CONTRACT_FILES } from "../declared-surface.js";
 import { homeFromArgs, runConfigDiagnostics } from "../../configurator/managed-config.js";
+import {
+	programLockAwarenessDiagnostic,
+	readPromotedComposition,
+	type PromotedComposition,
+	type PromotedCompositionRead,
+	type VersionRelationship,
+} from "../../configurator/promoted-composition.js";
 
 interface HealthCheck {
 	name: string;
 	ok: boolean;
 	detail: string;
+	applicability?: "applicable" | "not-applicable" | "unverifiable";
+	manifestState?: "valid" | "absent" | "invalid";
+	packageVersion?: string;
+	versionRelationship?: VersionRelationship;
+	promotedComposition?: PromotedComposition;
 }
 
 export interface DoctorDeps {
 	/** Test seam: injected packaged version for the package-pin check. */
 	packagedVersion?: string;
+	/** Test seam: injected promoted-composition reader; production uses the real reader. */
+	readPromotedComposition?: () => PromotedCompositionRead;
 }
 
 export function doctorCommand(args: string[] = [], deps: DoctorDeps = {}): number {
@@ -113,6 +127,14 @@ export function doctorCommand(args: string[] = [], deps: DoctorDeps = {}): numbe
 	const home = homeFromArgs(args);
 	const packagedVersion = deps.packagedVersion ?? metadata?.version ?? "unknown";
 	checks.push(...runConfigDiagnostics(home, packagedVersion));
+
+	// Program-lock awareness (R4; D12): read the bundled promoted-composition
+	// evidence once and surface it as a dedicated check. Absent stays healthy
+	// (clean-checkout invariant); invalid fails closed as unverifiable; version
+	// skew is recorded as information and never fails the check. Never mutates
+	// disk.
+	const promotedRead = (deps.readPromotedComposition ?? readPromotedComposition)();
+	checks.push(programLockAwarenessDiagnostic(promotedRead, packagedVersion));
 
 	const failed = checks.filter((check) => !check.ok);
 	console.log(
