@@ -88,8 +88,8 @@ Notes:
 | Three CLI failures baseline | historical-snapshot | Superseded by green evidence; not current (E-007) |
 | 774/774 fiscal verification at `4975f4f` | verified-revision-bound | Current for `4975f4f` only (E-004); corroborated by fresh run E-002 |
 | Repository visibility PUBLIC | verified-current | Current for observation 2026-08-14T20:57:27Z (E-005) |
-| SDD-000 / SDD-010 lifecycle | current-claim | `lifecycle:active` — see SDD READMEs; Gate 0 obligations (rows 3–4) unreconciled |
-| Gate 0 rows 3–4 | current-claim | `pending` / `approved-pending-evidence`; SDD-020 blocked (gate-0.md §4) |
+| SDD-000 / SDD-010 lifecycle | current-claim | `lifecycle:active` — see SDD READMEs; Gate 0 rows 3–4 satisfied 2026-08-15 (E-009..E-012); SDD-000 content-contract phases and SDD-010 release-train remain (R3/R4) |
+| Gate 0 rows 3–4 | current-claim | `satisfied` 2026-08-15 (E-009..E-012); SDD-020 permitted (gate-0.md §4) |
 
 Related but non-duplicative: `ecosystem-coherence` exclusively owns its EC
 inconsistency inventory, governance-decision register, propagation units, and
