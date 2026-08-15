@@ -2,7 +2,16 @@
 
 # SDD-000 — Drenyra Dominion Program
 
-> Status: PLANNED · Wave: 0 · Depends on: — (program master) · Feeds: SDD-010
+> Status: lifecycle:active · Maturity: implemented (constitution foundations) · Wave: 0 · Depends on: — (program master) · Feeds: SDD-010
+>
+> **Status reconciliation (2026-08-14, evidence E-001/E-008):** the former
+> `PLANNED` label maps to `lifecycle:planned` under the five-axis vocabulary
+> ([status-and-evidence.md](../../status-and-evidence.md)); this SDD is recorded
+> `lifecycle:active` because the ratified constitution artifacts exist (charter,
+> authority model, dependency graph, capability matrix, gate record). It is NOT
+> `lifecycle:complete`: Gate 0 obligations (rows 3–4) and this SDD's
+> content-contract phases remain unreconciled. Lifecycle is never derived from
+> capability maturity (R3).
 
 ## Purpose
 
@@ -79,6 +88,11 @@ the program gates, waves, and Gate 0 that gate all downstream work.
 - Max 400 authored lines per review unit; larger changes via chained PRs.
 
 ## Progress
+
+> The checklist below tracks this SDD's content-contract phases; reconciliation
+> marks none complete (documentary presence alone never completes a phase or
+> gate — R4). Landed program foundations are exposed under the maturity axis
+> above, not by promoting lifecycle.
 
 - [ ] Exploration
 - [ ] Proposal
