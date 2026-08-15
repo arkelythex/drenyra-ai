@@ -11,7 +11,57 @@
     "stage": { "type": "string", "enum": ["private", "open-core"] },
     "generatedAt": { "type": "string", "format": "date-time" },
     "generatedBy": { "type": "string" },
-    "status": { "type": "string", "enum": ["baseline", "candidate", "promoted", "superseded"] },
+        "status": { "type": "string", "enum": ["baseline", "candidate", "promoted", "superseded"] },
+        "snapshot": {
+          "type": "object",
+          "description": "Historical lock snapshot wrapper: the generated lock content is a past checkpoint (historical-snapshot) until corroborated by stronger evidence; stale SHAs, versions, test totals, and conformance must not be presented as current.",
+          "properties": {
+            "temporalClass": { "type": "string", "enum": ["historical-snapshot", "current-claim", "unknown"] },
+            "capturedAt": { "type": "string", "format": "date-time" },
+            "note": { "type": "string" }
+          },
+          "required": ["temporalClass"]
+        },
+        "currentVerified": {
+          "type": "object",
+          "description": "Current verified composition (current-claim): revision-bound facts corroborated by evidence IDs; the host lock never self-references the commit that contains it (bootstrap rule).",
+          "properties": {
+            "temporalClass": { "type": "string", "enum": ["historical-snapshot", "current-claim", "unknown"] },
+            "inspectedRevision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+            "inspectedAt": { "type": "string", "format": "date-time" },
+            "evidence": { "type": "array", "items": { "type": "string" } },
+            "host": {
+              "type": "object",
+              "properties": {
+                "repository": { "type": "string" },
+                "role": { "type": "string" },
+                "version": { "type": ["string", "null"] },
+                "versionEvidence": { "type": "string" },
+                "license": { "type": ["string", "null"] },
+                "licenseEvidence": { "type": "string" },
+                "testTotal": { "type": "integer", "minimum": 0 },
+                "testEvidence": { "type": "string" },
+                "typecheck": { "type": "string" },
+                "typecheckEvidence": { "type": "string" },
+                "conformance": { "type": "string" },
+                "conformanceEvidence": { "type": "string" },
+                "githubVisibility": { "type": "string", "enum": ["PUBLIC", "PRIVATE", "unverified"] },
+                "visibilityEvidence": { "type": "string" },
+                "commitSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+                "note": { "type": "string" }
+              },
+              "required": ["repository"]
+            },
+            "siblingRepositories": {
+              "type": "object",
+              "properties": {
+                "temporalClass": { "type": "string", "enum": ["historical-snapshot", "current-claim", "unknown"] },
+                "note": { "type": "string" }
+              }
+            }
+          },
+          "required": ["temporalClass", "inspectedRevision"]
+        },
     "host": {
       "type": "object",
       "description": "Host-repo binding. programBaseCommit is the commit that introduces the program tree; the lock commit itself is never self-referenced (fixed externally by the release manifest / attestation).",
@@ -59,6 +109,8 @@
               "tests": { "type": "integer", "minimum": 0 }
             }
           },
+          "temporalClass": { "type": "string", "enum": ["historical-snapshot", "current-claim", "unknown"] },
+          "conformanceNote": { "type": "string" },
           "activeChanges": { "type": "array", "items": { "type": "string" } }
         }
       }

@@ -24,9 +24,28 @@ that contains it. For the host (`drenyra-ai`) it records `programBaseCommit`
 (the commit that introduces the program tree); the SHA of the final lock
 commit is fixed by an external attestation / release manifest.
 
-**Rule (external repos):** `repositories[].commitSha` always refers to the
-other five repositories' committed SHAs — these exist independently of the
-lock commit and are always verifiable.
+    **Rule (external repos):** `repositories[].commitSha` always refers to the
+    other five repositories' committed SHAs — these exist independently of the
+    lock commit and are always verifiable.
+
+## 1.1 Lock freshness, promotion, and readback (W2 reconciliation 2026-08-15)
+
+- **Freshness:** lock values are `historical-snapshot` until corroborated by
+  stronger evidence. `program-lock.json` separates the historical snapshot from
+  the `currentVerified` block (revision-bound facts), so stale SHAs, versions,
+  test totals, and conformance are never presented as current (R13).
+- **Promotion:** `status: candidate` → `promoted` requires a fresh or
+  revision-bound green verification over the EXACT inspected revision (e.g.
+  W2E-001: 774/774 at `6326eee`), per the evidence register
+  (`status-and-evidence.md` §3); a stale or unrelated green result does not
+  promote.
+- **Bootstrap:** the host lock never contains the SHA of the commit that
+  carries it. `currentVerified.host.commitSha` stays `null`; the lock commit
+  SHA is fixed externally by the release manifest / attestation (B5).
+- **Readback:** before promotion, validate `program-lock.json` against
+  `program-lock.schema.json`, parse `capability-matrix.yaml`, and resolve every
+  evidence ID against the register; a dangling ID or unsupported current claim
+  blocks promotion.
 
 ## 2. Two-phase federated release
 
@@ -91,6 +110,8 @@ valid as soon as possible.
 4. **Re-run the federated verification** (`gentle-ai-verify` equivalent, or
    the conformance CI + multi-repo journeys) over those exact SHAs:
    contracts conformance, per-repo suites, cross-tenant tests, link audit.
+   Freshness rule: only a green result over the exact recorded SHAs
+   supports promotion; a stale or unrelated result does not (§1.1).
 5. Push `drenyra-ai` first, then the remaining repos.
 6. Record commit B's SHA in the external **release manifest / attestation**
    (signed, out-of-tree or as a release artifact). This is what makes
