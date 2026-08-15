@@ -2,13 +2,20 @@
 
 # SDD-100 — Professional Command Center
 
-> Status: lifecycle:planned · Maturity: absent (not implemented; Command Center product experience pending) · Wave: 3 · Depends on: SDD-020, SDD-060, SDD-090 · Feeds: SDD-110
+> Status: lifecycle:in-progress · Maturity: partial (drenyra-ai Core projection surface slice A implemented; Command Center UI product still pending) · Wave: 3 · Depends on: SDD-020, SDD-060, SDD-090 · Feeds: SDD-110
 >
 > **Status note (2026-08-15):** under the five-axis vocabulary
 > ([status-and-evidence.md](../../status-and-evidence.md)) the former `PLANNED`
 > label maps to `lifecycle:planned`. This SDD is NOT implemented: the Command
 > Center product experience (SDD-100) is a future wave-3 deliverable consuming
 > SDD-020 configurator, SDD-060 multi-operator, and SDD-090 guardian capabilities.
+>
+> **Slice A note (2026-08-15):** the drenyra-ai contribution of SDD-100 — the Core
+> projection surface (`projection/` module: `status`/`eligibleTransitions`/`nextAction`/`deny`,
+> read-only, deterministic, never a second authority) — shipped as slice A via PR #58; change
+> record archived at `openspec/changes/archive/2026-08-15-sdd-100-command-center/`. The Command
+> Center UI product itself remains pending in the sibling `drenyra-command-center` repo; this
+> record stays `lifecycle:in-progress` (R3/R4: not promoted on presence alone).
 
 ## Purpose
 
@@ -87,11 +94,15 @@ it is never a second authority and never reconstructs the state machine.
 
 ## Progress
 
-- [ ] Exploration
-- [ ] Proposal
-- [ ] Specification (RFC 2119 + Given/When/Then)
-- [ ] Design
-- [ ] Tasks (vertical TDD units)
-- [ ] Apply (strict TDD)
-- [ ] Verification report
-- [ ] Archive report
+- [x] Exploration
+- [x] Proposal
+- [x] Specification (RFC 2119 + Given/When/Then)
+- [x] Design
+- [x] Tasks (vertical TDD units)
+- [x] Apply (strict TDD)
+- [x] Verification report
+- [x] Archive report
+
+> Progress reflects the drenyra-ai projection-surface slice A (PR #58, archived 2026-08-15); the
+> Command Center UI product work continues in `drenyra-command-center` and this record stays
+> `lifecycle:in-progress`.
