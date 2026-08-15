@@ -7,3 +7,4 @@
 
 export * from "./registry.js";
 export * from "./local.js";
+export * from "./connector.js";
