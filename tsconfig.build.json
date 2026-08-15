@@ -35,7 +35,8 @@
     "mcp",
     "adapters",
     "flow",
-    "projection"
+    "projection",
+    "authorization"
   ],
   "exclude": [
     "node_modules",

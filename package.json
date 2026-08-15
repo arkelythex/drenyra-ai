@@ -39,7 +39,8 @@
     "./mcp": "./dist/mcp/index.js",
     "./adapters": "./dist/adapters/index.js",
     "./flow": "./dist/flow/index.js",
-    "./projection": "./dist/projection/index.js"
+    "./projection": "./dist/projection/index.js",
+    "./authorization": "./dist/authorization/index.js"
   },
   "scripts": {
     "build": "node scripts/build.mjs",
