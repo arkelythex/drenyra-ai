@@ -34,7 +34,8 @@
     "guardian",
     "mcp",
     "adapters",
-    "flow"
+    "flow",
+    "projection"
   ],
   "exclude": [
     "node_modules",
