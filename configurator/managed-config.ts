@@ -37,27 +37,70 @@ import {
 import { basename, dirname, join, normalize } from "node:path";
 import { BASE_PE_SKILLS } from "../skills/index.js";
 
-/** Fixed managed-state location: `<home>/.drenyra/managed.json`. */
-export const MANAGED_DIR = ".drenyra";
-export const MANAGED_FILE = "managed.json";
-export const COMPOSITION_SCHEMA_VERSION = 1;
-
-/** The three known agent hosts and their home-relative config directories. */
-const HOST_DIR_MAP: Readonly<Record<HostName, string>> = {
-	codex: ".codex",
-	"claude-code": ".claude",
-	opencode: ".config/opencode",
-};
-
-/** Managed asset filenames inside a recorded-present host config directory. */
-const ASSET_FILENAMES = {
-	marker: ".drenyra-managed",
-	skills: ".drenyra-skills.json",
-} as const;
-
-export type HostName = "codex" | "claude-code" | "opencode";
-export type ManagedAssetName = keyof typeof ASSET_FILENAMES;
-export type AssetAction = "updated" | "created" | "preserved" | "missing";
+    /** Fixed managed-state location: `<home>/.drenyra/managed.json`. */
+    export const MANAGED_DIR = ".drenyra";
+    export const MANAGED_FILE = "managed.json";
+    export const COMPOSITION_SCHEMA_VERSION = 2;
+    
+    /** The three known agent hosts and their home-relative config directories. */
+    const HOST_DIR_MAP: Readonly<Record<HostName, string>> = {
+    	codex: ".codex",
+    	"claude-code": ".claude",
+    	opencode: ".config/opencode",
+    };
+    
+    /** Managed asset filenames inside a recorded-present host config directory. */
+    export const ASSET_FILENAMES = {
+    	marker: ".drenyra-managed",
+    	skills: ".drenyra-skills.json",
+    	pin: ".drenyra-pinned-ai-runtime.json",
+    } as const;
+    
+    export type HostName = "codex" | "claude-code" | "opencode";
+    export type ManagedAssetName = keyof typeof ASSET_FILENAMES;
+    export type AssetAction = "updated" | "created" | "preserved" | "missing";
+    
+    /**
+     * A pin version is a non-negative JSON integer or a semantic-version string.
+     * Authoring aid only; manifest parsing remains the runtime authority.
+     */
+    export type PinVersion = number | `${number}.${number}.${number}${string}`;
+    
+    /** One pinned component: an identifier plus an integer/semver version. */
+    export interface ComponentPin {
+    	id: string;
+    	version: PinVersion;
+    }
+    
+    /** The per-host pinned AI runtime record (R1). */
+    export interface PinnedAiRuntimeRecord {
+    	kind: "pinned-ai-runtime";
+    	/** JSON integer, never a float. */
+    	schemaVersion: 1;
+    	host: HostName;
+    	runtime: ComponentPin;
+    	model: ComponentPin;
+    	tool: ComponentPin;
+    }
+    
+    export type PinnedAiCompositionValues = Omit<
+    	PinnedAiRuntimeRecord,
+    	"kind" | "schemaVersion" | "host"
+    >;
+    
+    /** A managed pin entry: the semantic record plus its exact rendered bytes. */
+    export interface ManagedHostPin {
+    	record: PinnedAiRuntimeRecord;
+    	managedAsset: ManagedAssetBytes;
+    }
+    
+    /**
+     * Per-host managed pin ownership. A missing entry means Drenyra has no
+     * managed pin ownership for that host (pre-pin snapshot or foreign file).
+     */
+    export type PinnedComposition = Partial<
+    	Readonly<Record<HostName, ManagedHostPin>>
+    >;
 
 /** A detected agent host (library-owned; `install` delegates to this). */
 export interface DetectedHost {
@@ -82,6 +125,8 @@ export interface ManagedCompositionSnapshot {
 		marker: ManagedAssetBytes;
 		skills: ManagedAssetBytes;
 	};
+	/** Undefined means this snapshot predates per-host pin ownership. */
+	pinnedComposition?: PinnedComposition;
 }
 
 /** Versioned composition record persisted in the managed manifest. */
@@ -127,11 +172,16 @@ export class ManagedConfigError extends Error {
 	}
 }
 
-export interface HydratedSnapshot {
-	snapshot: ManagedCompositionSnapshot;
-	/** False only for a legacy manifest with no readable prior skills asset. */
-	skillsAvailable: boolean;
-}
+    export interface HydratedSnapshot {
+    	snapshot: ManagedCompositionSnapshot;
+    	/** False only for a legacy manifest with no readable prior skills asset. */
+    	skillsAvailable: boolean;
+    	/**
+    	 * True only when every recorded-present host has a valid managed pin
+    	 * entry. A partial or pre-pin map is never a transition source.
+    	 */
+    	pinsAvailable: boolean;
+    }
 
 export interface AssetResult {
 	host: HostName;
@@ -162,21 +212,161 @@ export interface TransitionHooks {
 
 export type TransitionNow = () => string;
 
-export interface ConfigDiagnostic {
+export interface BasicConfigDiagnostic {
 	name: "managed-state" | "managed-drift" | "package-pin" | "host-prerequisites";
 	ok: boolean;
 	detail: string;
 }
-
-const SEMVER_RE = /^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/;
-
-function isSemver(value: string): boolean {
-	return SEMVER_RE.test(value);
+    
+/** Per-host pin classification (R3; D6). */
+export type HostPinState = "managed" | "drift" | "foreign" | "absent";
+    
+export interface HostPinDiagnostic {
+	host: HostName;
+	state: HostPinState;
+	detail: string;
 }
-
-function invalid(reason: string): ManagedStateRead {
-	return { state: "invalid", invalidReason: reason };
+    
+export interface PinnedAiRuntimeDiagnostic {
+	name: "pinned-ai-runtime";
+	ok: boolean;
+	detail: string;
+	applicability: "applicable" | "not-applicable" | "unverifiable";
+	hosts: readonly HostPinDiagnostic[];
 }
+    
+export type ConfigDiagnostic = BasicConfigDiagnostic | PinnedAiRuntimeDiagnostic;
+
+    const SEMVER_RE = /^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/;
+    
+    function isSemver(value: string): boolean {
+    	return SEMVER_RE.test(value);
+    }
+    
+    /**
+     * Runtime pin-version authority: a non-negative JSON integer or a semver
+     * string (empty and non-semver identifiers are invalid; non-finite numbers
+     * and floats are rejected). TypeScript narrows authoring; parsing is the
+     * authority.
+     */
+    export function isPinVersion(value: unknown): value is PinVersion {
+    	if (typeof value === "number") {
+    		return Number.isInteger(value) && value >= 0;
+    	}
+    	return typeof value === "string" && SEMVER_RE.test(value);
+    }
+    
+    /**
+     * Package-owned deterministic pinned composition for every recognized host
+     * (R1, R2; D2). These are release data in the library constant — never
+     * derived from program-lock, network, host introspection, user input, or
+     * branch state. The exhaustive `Record<HostName, ...>` forces Slice B to
+     * add a reviewed `drenyra-pi` entry before it can compile.
+     */
+    export const PINNED_AI_COMPOSITION = deepFreeze({
+    	codex: {
+    		runtime: { id: "codex", version: 1 },
+    		model: { id: "codex-package-default", version: 1 },
+    		tool: { id: "drenyra-ai-host-tools", version: 1 },
+    	},
+    	"claude-code": {
+    		runtime: { id: "claude-code", version: 1 },
+    		model: { id: "claude-code-package-default", version: 1 },
+    		tool: { id: "drenyra-ai-host-tools", version: 1 },
+    	},
+    	opencode: {
+    		runtime: { id: "opencode", version: 1 },
+    		model: { id: "opencode-package-default", version: 1 },
+    		tool: { id: "drenyra-ai-host-tools", version: 1 },
+    	},
+    } as const satisfies Readonly<Record<HostName, PinnedAiCompositionValues>>);
+    
+    /** Recursively freeze release data so no caller can mutate package constants. */
+    function deepFreeze<T>(value: T): T {
+    	if (typeof value === "object" && value !== null) {
+    		for (const key of Object.keys(value)) {
+    			deepFreeze((value as Record<string, unknown>)[key]);
+    		}
+    		Object.freeze(value);
+    	}
+    	return value;
+    }
+    
+    /** The full semantic pin record for one host (canonical property order). */
+    export function pinnedAiRuntimeRecord(host: HostName): PinnedAiRuntimeRecord {
+    	// Copy every ComponentPin: records must never share object references with
+    	// the frozen package constant (mutation through one record would corrupt
+    	// every later render and the shared constant).
+    	return {
+    		kind: "pinned-ai-runtime",
+    		schemaVersion: 1,
+    		host,
+    		runtime: { ...PINNED_AI_COMPOSITION[host].runtime },
+    		model: { ...PINNED_AI_COMPOSITION[host].model },
+    		tool: { ...PINNED_AI_COMPOSITION[host].tool },
+    	};
+    }
+    
+    /**
+     * Deterministic pin bytes: the complete record, pretty-printed, no trailing
+     * newline (matches the marker/skills byte convention). One byte source for
+     * install, sync, transitions, tests, and doctor.
+     */
+    export function renderPinnedAiRuntime(host: HostName): string {
+    	return JSON.stringify(pinnedAiRuntimeRecord(host), null, 2);
+    }
+    
+    /** The managed pin entry (record + exact rendered bytes/hash) for a host. */
+    export function managedHostPin(host: HostName): ManagedHostPin {
+    	return {
+    		record: pinnedAiRuntimeRecord(host),
+    		managedAsset: hashManagedAsset(renderPinnedAiRuntime(host)),
+    	};
+    }
+    
+    function isComponentPin(raw: unknown): raw is ComponentPin {
+    	if (typeof raw !== "object" || raw === null) return false;
+    	const c = raw as Record<string, unknown>;
+    	return typeof c.id === "string" && isPinVersion(c.version);
+    }
+    
+    /**
+     * Strict schema-2 pin validation: map key equals record.host, the record
+     * renders exactly to the stored content, the SHA-256 recomputes, and every
+     * version passes `isPinVersion` (no floats, negatives, or non-semver).
+     */
+    function isPinnedComposition(raw: unknown): raw is PinnedComposition {
+    	if (typeof raw !== "object" || raw === null || Array.isArray(raw)) {
+    		return false;
+    	}
+    	const map = raw as Record<string, unknown>;
+    	for (const key of Object.keys(map)) {
+    		if (!isHostName(key)) return false;
+    		const entry = map[key];
+    		if (typeof entry !== "object" || entry === null) return false;
+    		const e = entry as Record<string, unknown>;
+    		if (typeof e.record !== "object" || e.record === null) return false;
+    		const record = e.record as Record<string, unknown>;
+    		if (record.kind !== "pinned-ai-runtime") return false;
+    		if (record.schemaVersion !== 1) return false;
+    		if (record.host !== key) return false; // map key must equal record.host
+    		if (
+    			!isComponentPin(record.runtime) ||
+    			!isComponentPin(record.model) ||
+    			!isComponentPin(record.tool)
+    		) {
+    			return false;
+    		}
+    		if (!isAssetBytes(e.managedAsset)) return false;
+    		// The record must render exactly to the stored managed content.
+    		if (e.managedAsset.content !== renderPinnedAiRuntime(key)) return false;
+    	}
+    	return true;
+    }
+    
+    function invalid(reason: string): ManagedStateRead {
+    	return { state: "invalid", invalidReason: reason };
+    }
 
 function isHostName(value: unknown): value is HostName {
 	return value === "codex" || value === "claude-code" || value === "opencode";
@@ -267,7 +457,15 @@ function isSnapshot(raw: unknown): raw is ManagedCompositionSnapshot {
 		return false;
 	}
 	const assets = s.managedAssets as Record<string, unknown>;
-	return isAssetBytes(assets.marker) && isAssetBytes(assets.skills);
+	if (!isAssetBytes(assets.marker) || !isAssetBytes(assets.skills)) {
+		return false;
+	}
+	// Schema-2 snapshots validate every present pin entry strictly; a missing
+	// pinnedComposition is a readable schema-1 (pre-pin) snapshot.
+	if (s.pinnedComposition !== undefined && !isPinnedComposition(s.pinnedComposition)) {
+		return false;
+	}
+	return true;
 }
 
 function validateComposition(
@@ -432,13 +630,44 @@ function readLegacySkillsContent(
 }
 
 /**
+ * True only when every recorded-present host has a valid managed pin entry
+ * in the snapshot (schema-2 with complete pins; pre-pin maps are never
+ * complete). Entries are already strictly validated by `classifyManifest`.
+ */
+function pinsComplete(
+	manifest: InstallManifest,
+	snapshot: ManagedCompositionSnapshot,
+): boolean {
+	const pinned = snapshot.pinnedComposition;
+	if (pinned === undefined) return false;
+	return manifest.hosts.every(
+		(h) => !h.present || pinned[h.name] !== undefined,
+	);
+}
+    
+/**
+ * Build the per-host managed pin entries for the present hosts from the
+ * executing package's constants (never from an old snapshot).
+ */
+function packagePinnedComposition(
+	manifest: InstallManifest,
+): PinnedComposition {
+	const entries: Partial<Record<HostName, ManagedHostPin>> = {};
+	for (const host of manifest.hosts) {
+		if (host.present) entries[host.name] = managedHostPin(host.name);
+	}
+	return entries;
+}
+    
+/**
  * Hydrate a validated current snapshot (no mutation). Current-schema manifests
  * use the recorded current snapshot. Legacy manifests derive it: package
  * version, sequence 0, installedAt as activation time, the deterministic
  * legacy marker bytes, and skills content read only from a present readable
  * managed skills asset. When `requireSkills` is true and no valid prior skills
  * copy exists, a real transition fails closed instead of inventing rollback
- * bytes.
+ * bytes. Pre-pin snapshots are never assigned pin content from current
+ * package constants (no historical pin bytes are fabricated).
  */
 export function hydrateCurrentSnapshot(
 	manifest: InstallManifest,
@@ -446,7 +675,11 @@ export function hydrateCurrentSnapshot(
 	requireSkills: boolean,
 ): HydratedSnapshot {
 	if (manifest.composition !== undefined) {
-		return { snapshot: manifest.composition.current, skillsAvailable: true };
+		return {
+			snapshot: manifest.composition.current,
+			skillsAvailable: true,
+			pinsAvailable: pinsComplete(manifest, manifest.composition.current),
+		};
 	}
 	const marker = hashManagedAsset(renderManagedMarker(manifest.installedAt));
 	const skillsContent = readLegacySkillsContent(manifest, homeDir);
@@ -468,6 +701,7 @@ export function hydrateCurrentSnapshot(
 			managedAssets: { marker, skills },
 		},
 		skillsAvailable: skillsContent !== null,
+		pinsAvailable: false,
 	};
 }
 
@@ -493,6 +727,7 @@ function planAssetTransitions(
 		if (!existsSync(configDir)) {
 			results.push({ host: host.name, asset: "marker", action: "missing" });
 			results.push({ host: host.name, asset: "skills", action: "missing" });
+			results.push({ host: host.name, asset: "pin", action: "missing" });
 			continue;
 		}
 		for (const asset of ["marker", "skills"] as const) {
@@ -520,17 +755,68 @@ function planAssetTransitions(
 				results.push({ host: host.name, asset, action: "preserved" });
 			}
 		}
+		// Per-host pin asset: compare disk ONLY against the recorded current
+		// bytes; a mismatch or read failure preserves the bytes. Transitions
+		// require complete prior pins, so a missing current entry is skipped
+		// defensively rather than invented.
+		const currentPin = current.pinnedComposition?.[host.name];
+		const targetPin = target.pinnedComposition?.[host.name];
+		if (currentPin === undefined || targetPin === undefined) continue;
+		const pinPath = join(configDir, ASSET_FILENAMES.pin);
+		if (!existsSync(pinPath)) {
+			writes.push({ path: pinPath, data: targetPin.managedAsset.content });
+			results.push({ host: host.name, asset: "pin", action: "created" });
+			continue;
+		}
+		let diskPin: string;
+		try {
+			diskPin = readFileSync(pinPath, "utf8");
+		} catch {
+			results.push({ host: host.name, asset: "pin", action: "preserved" });
+			continue;
+		}
+		if (diskPin === currentPin.managedAsset.content) {
+			writes.push({ path: pinPath, data: targetPin.managedAsset.content });
+			results.push({ host: host.name, asset: "pin", action: "updated" });
+		} else {
+			results.push({ host: host.name, asset: "pin", action: "preserved" });
+		}
 	}
 	return { writes, results };
 }
-
+    
+function samePinnedComposition(
+	a: ManagedCompositionSnapshot,
+	b: ManagedCompositionSnapshot,
+): boolean {
+	const pa = a.pinnedComposition;
+	const pb = b.pinnedComposition;
+	if (pa === undefined || pb === undefined) return pa === pb;
+	const hosts = new Set([...Object.keys(pa), ...Object.keys(pb)]);
+	for (const host of hosts) {
+		if (!isHostName(host)) return false;
+		const ea = pa[host];
+		const eb = pb[host];
+		if ((ea === undefined) !== (eb === undefined)) return false;
+		if (
+			ea !== undefined &&
+			eb !== undefined &&
+			ea.managedAsset.content !== eb.managedAsset.content
+		) {
+			return false;
+		}
+	}
+	return true;
+}
+    
 function sameManagedAssets(
 	a: ManagedCompositionSnapshot,
 	b: ManagedCompositionSnapshot,
 ): boolean {
 	return (
 		a.managedAssets.marker.content === b.managedAssets.marker.content &&
-		a.managedAssets.skills.content === b.managedAssets.skills.content
+		a.managedAssets.skills.content === b.managedAssets.skills.content &&
+		samePinnedComposition(a, b)
 	);
 }
 
@@ -583,6 +869,12 @@ export function planUpgrade(
 			"legacy managed manifest has no valid prior managed skills copy to preserve",
 		);
 	}
+	if (!hydrated.pinsAvailable) {
+		throw new ManagedConfigError(
+			"MANAGED_STATE_UNKNOWN",
+			"managed composition has no complete recorded per-host pin state to preserve",
+		);
+	}
 	const activatedAt = now();
 	const target: ManagedCompositionSnapshot = {
 		packageVersion: requestedVersion,
@@ -592,6 +884,7 @@ export function planUpgrade(
 			marker: hashManagedAsset(renderManagedMarker(activatedAt)),
 			skills: hashManagedAsset(renderManagedSkills()),
 		},
+		pinnedComposition: packagePinnedComposition(manifest),
 	};
 	const { writes, results } = planAssetTransitions(
 		manifest,
@@ -643,12 +936,18 @@ export function planRollback(homeDir: string): TransitionPlan {
 			"no previous managed composition recorded",
 		);
 	}
-	const current = composition.current;
-	const previous = composition.previous;
-	if (
-		current.packageVersion === previous.packageVersion &&
-		sameManagedAssets(current, previous)
-	) {
+    	const current = composition.current;
+    	const previous = composition.previous;
+    	if (!pinsComplete(manifest, current) || !pinsComplete(manifest, previous)) {
+    		throw new ManagedConfigError(
+    			"MANAGED_STATE_UNKNOWN",
+    			"rollback requires complete recorded per-host pin state in both current and previous compositions",
+    		);
+    	}
+    	if (
+    		current.packageVersion === previous.packageVersion &&
+    		sameManagedAssets(current, previous)
+    	) {
 		return {
 			status: "unchanged",
 			from: current.packageVersion,
@@ -825,34 +1124,141 @@ export function commitTransition(
 	}
 }
 
-/**
- * Read-only doctor configuration diagnostics (R3, D6): uses only stat/read/hash
- * and never transitions, syncs, installs, creates, or writes anything.
- * When no managed manifest exists every check passes as not-applicable so the
- * clean-checkout invariant (every check ok) holds.
- */
-export function runConfigDiagnostics(
-	homeDir: string,
-	packagedVersion: string,
-): ConfigDiagnostic[] {
-	const state = readManagedState(homeDir);
-	if (state.state === "absent") {
-		return [
-			{ name: "managed-state", ok: true, detail: "not applicable (no managed manifest)" },
-			{ name: "managed-drift", ok: true, detail: "not applicable (no managed manifest)" },
-			{ name: "package-pin", ok: true, detail: "not applicable (no managed manifest)" },
-			{ name: "host-prerequisites", ok: true, detail: "not applicable (no managed manifest)" },
-		];
-	}
-	if (state.state === "invalid") {
-		const reason = state.invalidReason ?? "unknown";
-		return [
-			{ name: "managed-state", ok: false, detail: `managed manifest invalid: ${reason}` },
-			{ name: "managed-drift", ok: false, detail: "cannot evaluate (managed manifest invalid)" },
-			{ name: "package-pin", ok: false, detail: "cannot evaluate (managed manifest invalid)" },
-			{ name: "host-prerequisites", ok: false, detail: "cannot evaluate (managed manifest invalid)" },
-		];
-	}
+    /**
+     * Read-only per-host pin classification (never creates/modifies/deletes any
+     * pin asset). Order per recorded-present host: managed entry + missing file
+     * → absent; managed entry + unreadable/unequal bytes → drift (preserved);
+     * managed entry + exact bytes → managed; no entry + pin file exists →
+     * foreign. A pre-pin snapshot stays not-applicable and healthy; an invalid
+     * manifest is handled by the caller as unverifiable.
+     */
+    function classifyPinnedRuntime(
+    	manifest: InstallManifest,
+    	homeDir: string,
+    ): PinnedAiRuntimeDiagnostic {
+    	const pinned = manifest.composition?.current.pinnedComposition;
+    	if (pinned === undefined) {
+    		// Pre-pin snapshot (schema 1): no pin ownership exists; never invent bytes.
+    		return {
+    			name: "pinned-ai-runtime",
+    			ok: true,
+    			detail: "not applicable (pre-pin managed composition)",
+    			applicability: "not-applicable",
+    			hosts: [],
+    		};
+    	}
+    	const hosts: HostPinDiagnostic[] = [];
+    	for (const host of manifest.hosts) {
+    		if (!host.present) continue;
+    		const entry = pinned[host.name];
+    		const pinPath = join(
+    			reDeriveHostConfigDir(homeDir, host.name),
+    			ASSET_FILENAMES.pin,
+    		);
+    		if (entry === undefined) {
+    			if (existsSync(pinPath)) {
+    				hosts.push({
+    					host: host.name,
+    					state: "foreign",
+    					detail: "user-authored; unmanaged; preserved; not adopted",
+    				});
+    			}
+    			continue;
+    		}
+    		if (!existsSync(pinPath)) {
+    			hosts.push({
+    				host: host.name,
+    				state: "absent",
+    				detail: "managed pin asset missing from host config directory",
+    			});
+    			continue;
+    		}
+    		let disk: string;
+    		try {
+    			disk = readFileSync(pinPath, "utf8");
+    		} catch {
+    			hosts.push({
+    				host: host.name,
+    				state: "drift",
+    				detail: "managed pin asset unreadable; bytes preserved, not overwritten",
+    			});
+    			continue;
+    		}
+    		if (disk === entry.managedAsset.content) {
+    			hosts.push({
+    				host: host.name,
+    				state: "managed",
+    				detail: "pin asset matches recorded managed bytes",
+    			});
+    		} else {
+    			hosts.push({
+    				host: host.name,
+    				state: "drift",
+    				detail: "pin asset differs from recorded managed bytes; preserved",
+    			});
+    		}
+    	}
+    	const healthy = hosts.every((h) => h.state === "managed");
+    	return {
+    		name: "pinned-ai-runtime",
+    		ok: healthy,
+    		detail:
+    			hosts.length === 0
+    				? "applicable (no recorded-present host has a pin state to evaluate)"
+    				: healthy
+    					? "all recorded-present hosts match their managed pin records"
+    					: `pin state failing for: ${hosts
+    							.filter((h) => h.state !== "managed")
+    							.map((h) => h.host)
+    							.join(", ")}`,
+    		applicability: "applicable",
+    		hosts,
+    	};
+    }
+    
+    /**
+     * Read-only doctor configuration diagnostics (R3, D6): uses only stat/read/hash
+     * and never transitions, syncs, installs, creates, or writes anything.
+     * When no managed manifest exists every check passes as not-applicable so the
+     * clean-checkout invariant (every check ok) holds. The pinned-ai-runtime
+     * check is appended after the four basic checks.
+     */
+    export function runConfigDiagnostics(
+    	homeDir: string,
+    	packagedVersion: string,
+    ): ConfigDiagnostic[] {
+    	const state = readManagedState(homeDir);
+    	if (state.state === "absent") {
+    		return [
+    			{ name: "managed-state", ok: true, detail: "not applicable (no managed manifest)" },
+    			{ name: "managed-drift", ok: true, detail: "not applicable (no managed manifest)" },
+    			{ name: "package-pin", ok: true, detail: "not applicable (no managed manifest)" },
+    			{ name: "host-prerequisites", ok: true, detail: "not applicable (no managed manifest)" },
+    			{
+    				name: "pinned-ai-runtime",
+    				ok: true,
+    				detail: "not applicable (no managed manifest)",
+    				applicability: "not-applicable",
+    				hosts: [],
+    			},
+    		];
+    	}
+    	if (state.state === "invalid") {
+    		const reason = state.invalidReason ?? "unknown";
+    		return [
+    			{ name: "managed-state", ok: false, detail: `managed manifest invalid: ${reason}` },
+    			{ name: "managed-drift", ok: false, detail: "cannot evaluate (managed manifest invalid)" },
+    			{ name: "package-pin", ok: false, detail: "cannot evaluate (managed manifest invalid)" },
+    			{ name: "host-prerequisites", ok: false, detail: "cannot evaluate (managed manifest invalid)" },
+    			{
+    				name: "pinned-ai-runtime",
+    				ok: false,
+    				detail: "cannot evaluate (managed manifest invalid)",
+    				applicability: "unverifiable",
+    				hosts: [],
+    			},
+    		];
+    	}
 	const manifest = state.manifest!;
 	const hydrated = hydrateCurrentSnapshot(manifest, homeDir, false);
 	const expected = hydrated.snapshot;
@@ -933,6 +1339,8 @@ export function runConfigDiagnostics(
 				? "all recorded-present host prerequisites present"
 				: `missing: ${missing.join(", ")}`,
 	};
-
-	return [managedState, managedDrift, packagePin, hostPrerequisites];
+    
+	const pinnedRuntime = classifyPinnedRuntime(manifest, homeDir);
+    
+	return [managedState, managedDrift, packagePin, hostPrerequisites, pinnedRuntime];
 }

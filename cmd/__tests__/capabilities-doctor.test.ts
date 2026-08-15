@@ -26,8 +26,10 @@ import {
 } from "../../mcp/index.js";
 import {
 	hashManagedAsset,
+	managedHostPin,
 	renderManagedMarker,
 	renderManagedSkills,
+	renderPinnedAiRuntime,
 } from "../../configurator/managed-config.js";
 
 function capture(fn: () => number): {
@@ -84,6 +86,23 @@ describe("capabilities show", () => {
 			true,
 		);
 		expect(parsed.skills.some((s) => s.checksum !== undefined)).toBe(false);
+	});
+    
+	it("no longer describes configured host integrations as merely planned, without claiming Pi host-serving or program-lock-aware install", () => {
+		const { code, stdout } = capture(capabilitiesCommand);
+		expect(code).toBe(0);
+		const parsed = JSON.parse(stdout) as { integrations: string[] };
+		const hostIntegration = parsed.integrations.find((i) => i.includes("Codex"));
+		expect(hostIntegration).toBeDefined();
+		// the configurator renders managed host markers/skills/pins: no longer planned
+		expect(hostIntegration).not.toContain("(planned)");
+		expect(hostIntegration).toContain("managed");
+		// still no Pi host-serving or program-lock-aware install claim
+		expect(hostIntegration).not.toMatch(/drenyra pi|pi host-serving|pi host\b/i);
+		expect(hostIntegration).not.toMatch(/program-lock/i);
+		// the MCP integration remains planned
+		const mcp = parsed.integrations.find((i) => i.includes("MCP"));
+		expect(mcp).toContain("(planned)");
 	});
 
 	it("CLI and MCP capabilities agree on the shared common fields (drift guard)", () => {
@@ -170,11 +189,62 @@ describe("doctor run", () => {
 	});
 });
 
-describe("doctor run: managed configuration diagnostics (SDD-020)", () => {
-	function tempHome(): { dir: string; cleanup: () => void } {
-		const dir = mkdtempSync(join(tmpdir(), "drenyra-doctor-config-"));
-		return { dir, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
-	}
+    describe("doctor run: managed configuration diagnostics (SDD-020)", () => {
+    	function tempHome(): { dir: string; cleanup: () => void } {
+    		const dir = mkdtempSync(join(tmpdir(), "drenyra-doctor-config-"));
+    		return { dir, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
+    	}
+    
+    	const HOST_DIR: Record<string, string> = {
+    		codex: ".codex",
+    		"claude-code": ".claude",
+    		opencode: ".config/opencode",
+    	};
+    	type FixtureHostName = "codex" | "claude-code" | "opencode";
+    
+    	function writeHostAssets(
+    		dir: string,
+    		activatedAt: string,
+    		hostName: FixtureHostName = "claude-code",
+    	): void {
+    		mkdirSync(join(dir, HOST_DIR[hostName]), { recursive: true });
+    		writeFileSync(
+    			join(dir, HOST_DIR[hostName], ".drenyra-managed"),
+    			renderManagedMarker(activatedAt),
+    		);
+    		writeFileSync(
+    			join(dir, HOST_DIR[hostName], ".drenyra-skills.json"),
+    			renderManagedSkills(),
+    		);
+    		writeFileSync(
+    			join(dir, HOST_DIR[hostName], ".drenyra-pinned-ai-runtime.json"),
+    			renderPinnedAiRuntime(hostName),
+    		);
+    	}
+    
+    	/** A schema-2 (pin-capable) manifest fixture with per-host managed pins. */
+    	function pinnedSchema(
+    		dir: string,
+    		version: string,
+    		activatedAt: string,
+    		hosts: Array<{ name: string; present: boolean }> = [
+    			{ name: "claude-code", present: true },
+    		],
+    		opts: { pinsFor?: FixtureHostName[] } = {},
+    	): Record<string, unknown> {
+    		const manifest = currentSchema(dir, version, activatedAt, hosts);
+    		(manifest.composition as Record<string, unknown>).schemaVersion = 2;
+    		const pinsFor =
+    			opts.pinsFor ??
+    			hosts.filter((h) => h.present).map((h) => h.name as FixtureHostName);
+    		const pinned: Record<string, unknown> = {};
+    		for (const name of pinsFor) {
+    			pinned[name] = managedHostPin(name);
+    		}
+    		(manifest.composition as { current: Record<string, unknown> }).current.pinnedComposition =
+    			pinned;
+    		return manifest;
+    	}
 
 	function currentSchema(
 		dir: string,
@@ -220,15 +290,6 @@ describe("doctor run: managed configuration diagnostics (SDD-020)", () => {
 			join(dir, ".drenyra", "managed.json"),
 			JSON.stringify(manifest, null, 2),
 		);
-	}
-
-	function writeHostAssets(dir: string, activatedAt: string): void {
-		mkdirSync(join(dir, ".claude"), { recursive: true });
-		writeFileSync(
-			join(dir, ".claude", ".drenyra-managed"),
-			renderManagedMarker(activatedAt),
-		);
-		writeFileSync(join(dir, ".claude", ".drenyra-skills.json"), renderManagedSkills());
 	}
 
 	function parseDoctor(stdout: string): {
@@ -392,16 +453,333 @@ describe("doctor run: managed configuration diagnostics (SDD-020)", () => {
 			expect(names).toContain("host-prerequisites");
 			const managedState = parsed.checks.find((c) => c.name === "managed-state");
 			expect(managedState?.ok).toBe(false);
-			// the pre-existing package checks are still emitted in order
-			expect(names.slice(0, 5)).toEqual([
-				"node-engine",
-				"version",
-				"contracts",
-				"cli",
-				"mission-store",
-			]);
-		} finally {
-			cleanup();
-		}
-	});
-});
+    			// the pre-existing package checks are still emitted in order
+    			expect(names.slice(0, 5)).toEqual([
+    				"node-engine",
+    				"version",
+    				"contracts",
+    				"cli",
+    				"mission-store",
+    			]);
+    		} finally {
+    			cleanup();
+    		}
+    	});
+    
+    	type PinCheck = {
+    		name: string;
+    		ok: boolean;
+    		detail: string;
+    		applicability: string;
+    		hosts: Array<{ host: string; state: string; detail: string }>;
+    	};
+    
+    	it("reports a managed pin: applicable and healthy, per-host state managed, outer report healthy/readonly, exit 0", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			writeHostAssets(dir, "2026-03-02T00:00:00.000Z");
+    			writeManifest(dir, pinnedSchema(dir, "1.4.0", "2026-03-02T00:00:00.000Z"));
+    			const { code, stdout } = capture(() =>
+    				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+    			);
+    			expect(code).toBe(0);
+    			const parsed = parseDoctor(stdout);
+    			expect(parsed.status).toBe("healthy");
+    			expect(parsed.readonly).toBe(true);
+    			const pin = parsed.checks.find((c) => c.name === "pinned-ai-runtime") as PinCheck;
+    			expect(pin.ok).toBe(true);
+    			expect(pin.applicability).toBe("applicable");
+    			expect(pin.hosts).toHaveLength(1);
+    			expect(pin.hosts[0]).toMatchObject({ host: "claude-code", state: "managed" });
+    		} finally {
+    			cleanup();
+    		}
+    	});
+    
+    	it("reports managed pin drift for unequal and unreadable bytes, leaves bytes unchanged, degraded, exit 1", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			writeHostAssets(dir, "2026-03-02T00:00:00.000Z");
+    			writeManifest(dir, pinnedSchema(dir, "1.4.0", "2026-03-02T00:00:00.000Z"));
+    			const pinPath = join(dir, ".claude", ".drenyra-pinned-ai-runtime.json");
+    			writeFileSync(pinPath, "tampered pin bytes");
+    
+    			const first = capture(() =>
+    				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+    			);
+    			expect(first.code).toBe(1);
+    			const firstParsed = parseDoctor(first.stdout);
+    			expect(firstParsed.status).toBe("degraded");
+    			const pin = firstParsed.checks.find(
+    				(c) => c.name === "pinned-ai-runtime",
+    			) as PinCheck;
+    			expect(pin.ok).toBe(false);
+    			expect(pin.applicability).toBe("applicable");
+    			expect(pin.hosts[0]).toMatchObject({ host: "claude-code", state: "drift" });
+    			expect(readFileSync(pinPath, "utf8")).toBe("tampered pin bytes");
+    
+    			// unreadable managed pin (path is a directory): still drift, preserved
+    			rmSync(pinPath);
+    			mkdirSync(pinPath);
+    			const second = capture(() =>
+    				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+    			);
+    			expect(second.code).toBe(1);
+    			const secondParsed = parseDoctor(second.stdout);
+    			const pin2 = secondParsed.checks.find(
+    				(c) => c.name === "pinned-ai-runtime",
+    			) as PinCheck;
+    			expect(pin2.ok).toBe(false);
+    			expect(pin2.hosts[0]).toMatchObject({ host: "claude-code", state: "drift" });
+    		} finally {
+    			cleanup();
+    		}
+    	});
+    
+    	it("reports a foreign pin distinctly (user-authored, unmanaged, preserved, not adopted), bytes unchanged, exit 1", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			mkdirSync(join(dir, ".claude"), { recursive: true });
+    			const pinPath = join(dir, ".claude", ".drenyra-pinned-ai-runtime.json");
+    			writeFileSync(pinPath, "user-authored pin bytes");
+    			// schema-2 manifest with NO managed entry for the present host
+    			writeManifest(
+    				dir,
+    				pinnedSchema(dir, "1.4.0", "2026-03-02T00:00:00.000Z", undefined, {
+    					pinsFor: [],
+    				}),
+    			);
+    			const { code, stdout } = capture(() =>
+    				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+    			);
+    			expect(code).toBe(1);
+    			const parsed = parseDoctor(stdout);
+    			expect(parsed.status).toBe("degraded");
+    			const pin = parsed.checks.find(
+    				(c) => c.name === "pinned-ai-runtime",
+    			) as PinCheck;
+    			expect(pin.ok).toBe(false);
+    			expect(pin.hosts[0]).toMatchObject({ host: "claude-code", state: "foreign" });
+    			expect(pin.hosts[0].detail).toContain("user-authored");
+    			expect(pin.hosts[0].detail).toContain("unmanaged");
+    			expect(pin.hosts[0].detail).toContain("preserved");
+    			expect(pin.hosts[0].detail).toContain("not adopted");
+    			expect(readFileSync(pinPath, "utf8")).toBe("user-authored pin bytes");
+    		} finally {
+    			cleanup();
+    		}
+    	});
+    
+    	it("reports an absent managed pin, creates nothing, exit 1", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			// marker/skills present but the recorded managed pin file is missing
+    			mkdirSync(join(dir, ".claude"), { recursive: true });
+    			writeFileSync(
+    				join(dir, ".claude", ".drenyra-managed"),
+    				renderManagedMarker("2026-03-02T00:00:00.000Z"),
+    			);
+    			writeFileSync(
+    				join(dir, ".claude", ".drenyra-skills.json"),
+    				renderManagedSkills(),
+    			);
+    			writeManifest(dir, pinnedSchema(dir, "1.4.0", "2026-03-02T00:00:00.000Z"));
+    			const pinPath = join(dir, ".claude", ".drenyra-pinned-ai-runtime.json");
+    			expect(existsSync(pinPath)).toBe(false);
+    
+    			const { code, stdout } = capture(() =>
+    				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+    			);
+    			expect(code).toBe(1);
+    			const parsed = parseDoctor(stdout);
+    			const pin = parsed.checks.find(
+    				(c) => c.name === "pinned-ai-runtime",
+    			) as PinCheck;
+    			expect(pin.ok).toBe(false);
+    			expect(pin.hosts[0]).toMatchObject({ host: "claude-code", state: "absent" });
+    			// doctor never creates the missing pin asset
+    			expect(existsSync(pinPath)).toBe(false);
+    		} finally {
+    			cleanup();
+    		}
+    	});
+    
+    	it("stays healthy and not-applicable for a pre-pin manifest and for no manifest, without writing anything", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			// pre-pin schema-1 manifest, host assets WITHOUT any pin file
+    			mkdirSync(join(dir, ".claude"), { recursive: true });
+    			writeFileSync(
+    				join(dir, ".claude", ".drenyra-managed"),
+    				renderManagedMarker("2026-03-02T00:00:00.000Z"),
+    			);
+    			writeFileSync(
+    				join(dir, ".claude", ".drenyra-skills.json"),
+    				renderManagedSkills(),
+    			);
+    			writeManifest(dir, currentSchema(dir, "1.4.0", "2026-03-02T00:00:00.000Z"));
+    			const { code, stdout } = capture(() =>
+    				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+    			);
+    			expect(code).toBe(0);
+    			const parsed = parseDoctor(stdout);
+    			expect(parsed.status).toBe("healthy");
+    			const pin = parsed.checks.find(
+    				(c) => c.name === "pinned-ai-runtime",
+    			) as PinCheck;
+    			expect(pin.ok).toBe(true);
+    			expect(pin.applicability).toBe("not-applicable");
+    			expect(pin.hosts).toEqual([]);
+    			expect(existsSync(join(dir, ".claude", ".drenyra-pinned-ai-runtime.json"))).toBe(
+    				false,
+    			);
+    		} finally {
+    			cleanup();
+    		}
+    	});
+    
+    	it("passes not-applicable healthy when no managed manifest exists", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			const { code, stdout } = capture(() =>
+    				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+    			);
+    			expect(code).toBe(0);
+    			const parsed = parseDoctor(stdout);
+    			const pin = parsed.checks.find(
+    				(c) => c.name === "pinned-ai-runtime",
+    			) as PinCheck;
+    			expect(pin.ok).toBe(true);
+    			expect(pin.applicability).toBe("not-applicable");
+    			expect(pin.hosts).toEqual([]);
+    		} finally {
+    			cleanup();
+    		}
+    	});
+    
+    	it("fails closed on an invalid pin record: managed-state fails, pin diagnostic unverifiable, full report emitted, exit 1", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			const m = pinnedSchema(dir, "1.4.0", "2026-03-02T00:00:00.000Z");
+    			// a float pin version makes the schema-2 manifest invalid
+    			(
+    				m.composition as {
+    					current: {
+    						pinnedComposition: Record<
+    							string,
+    							{ record: { runtime: { version: unknown } } }
+    						>;
+    					};
+    				}
+    			).current.pinnedComposition["claude-code"].record.runtime.version = 1.5;
+    			writeManifest(dir, m);
+    
+    			const { code, stdout } = capture(() =>
+    				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+    			);
+    			expect(code).toBe(1);
+    			const parsed = parseDoctor(stdout);
+    			expect(parsed.status).toBe("degraded");
+    			const managedState = parsed.checks.find((c) => c.name === "managed-state");
+    			expect(managedState?.ok).toBe(false);
+    			const pin = parsed.checks.find(
+    				(c) => c.name === "pinned-ai-runtime",
+    			) as PinCheck;
+    			expect(pin.ok).toBe(false);
+    			expect(pin.applicability).toBe("unverifiable");
+    			expect(pin.hosts).toEqual([]);
+    			// the full report is still emitted
+    			const names = parsed.checks.map((c) => c.name);
+    			expect(names).toContain("managed-drift");
+    			expect(names).toContain("package-pin");
+    			expect(names).toContain("host-prerequisites");
+    			expect(names).toContain("pinned-ai-runtime");
+    		} finally {
+    			cleanup();
+    		}
+    	});
+    
+    	it("names every recorded-present host in the matrix and fails the aggregate on any non-managed state", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			// claude-code managed, codex drift (present), opencode present:false
+    			writeHostAssets(dir, "2026-03-02T00:00:00.000Z", "claude-code");
+    			writeHostAssets(dir, "2026-03-02T00:00:00.000Z", "codex");
+    			writeFileSync(
+    				join(dir, ".codex", ".drenyra-pinned-ai-runtime.json"),
+    				"drifted codex pin",
+    			);
+    			writeManifest(
+    				dir,
+    				pinnedSchema(
+    					dir,
+    					"1.4.0",
+    					"2026-03-02T00:00:00.000Z",
+    					[
+    						{ name: "claude-code", present: true },
+    						{ name: "codex", present: true },
+    						{ name: "opencode", present: false },
+    					],
+    				),
+    			);
+    			const { code, stdout } = capture(() =>
+    				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+    			);
+    			expect(code).toBe(1);
+    			const parsed = parseDoctor(stdout);
+    			const pin = parsed.checks.find(
+    				(c) => c.name === "pinned-ai-runtime",
+    			) as PinCheck;
+    			expect(pin.ok).toBe(false);
+    			const states = new Map(pin.hosts.map((h) => [h.host, h.state]));
+    			// every recorded-present host is named; present:false is excluded
+    			expect(states.get("claude-code")).toBe("managed");
+    			expect(states.get("codex")).toBe("drift");
+    			expect(states.has("opencode")).toBe(false);
+    		} finally {
+    			cleanup();
+    		}
+    	});
+    
+    	it("stays healthy for a fully managed multi-host matrix and ignores present:false hosts with a foreign pin file", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			writeHostAssets(dir, "2026-03-02T00:00:00.000Z", "claude-code");
+    			writeHostAssets(dir, "2026-03-02T00:00:00.000Z", "codex");
+    			// a present:false host has a pin file on disk: it must be excluded
+    			mkdirSync(join(dir, ".config/opencode"), { recursive: true });
+    			writeFileSync(
+    				join(dir, ".config/opencode", ".drenyra-pinned-ai-runtime.json"),
+    				"unmanaged opencode pin",
+    			);
+    			writeManifest(
+    				dir,
+    				pinnedSchema(
+    					dir,
+    					"1.4.0",
+    					"2026-03-02T00:00:00.000Z",
+    					[
+    						{ name: "claude-code", present: true },
+    						{ name: "codex", present: true },
+    						{ name: "opencode", present: false },
+    					],
+    				),
+    			);
+    			const { code, stdout } = capture(() =>
+    				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+    			);
+    			expect(code).toBe(0);
+    			const parsed = parseDoctor(stdout);
+    			expect(parsed.status).toBe("healthy");
+    			const pin = parsed.checks.find(
+    				(c) => c.name === "pinned-ai-runtime",
+    			) as PinCheck;
+    			expect(pin.ok).toBe(true);
+    			expect(pin.hosts).toHaveLength(2);
+    			expect(pin.hosts.every((h) => h.state === "managed")).toBe(true);
+    			expect(pin.hosts.some((h) => h.host === "opencode")).toBe(false);
+    		} finally {
+    			cleanup();
+    		}
+    	});
+    });

@@ -23,17 +23,22 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createRequire } from "node:module";
 import {
+	ASSET_FILENAMES,
 	COMPOSITION_SCHEMA_VERSION,
 	MANAGED_DIR,
 	MANAGED_FILE,
 	detectHosts,
 	hashManagedAsset,
 	homeFromArgs,
+	managedHostPin,
 	readManagedState,
 	renderManagedMarker,
 	renderManagedSkills,
+	renderPinnedAiRuntime,
+	type HostName,
 	type InstallManifest,
 	type ManagedCompositionSnapshot,
+	type ManagedHostPin,
 } from "../../configurator/managed-config.js";
 
 export {
@@ -67,6 +72,17 @@ export function installIntegrations(
 	const hosts = detectHosts(homeDir);
 	const markerContent = renderManagedMarker(now);
 	const skillsContent = renderManagedSkills();
+	// Per-host managed pin entries: only hosts whose pin file we actually
+	// create get an entry. Existing bytes are preserved and recorded as
+	// unmanaged (never adopted by coincidence).
+	const pinEntries: Partial<Record<HostName, ManagedHostPin>> = {};
+	for (const host of hosts.filter((h) => h.present)) {
+		const pinPath = join(host.configDir, ASSET_FILENAMES.pin);
+		if (!existsSync(pinPath)) {
+			writeFileSync(pinPath, renderPinnedAiRuntime(host.name));
+			pinEntries[host.name] = managedHostPin(host.name);
+		}
+	}
 	const current: ManagedCompositionSnapshot = {
 		packageVersion: version(),
 		sequence: 0,
@@ -75,6 +91,7 @@ export function installIntegrations(
 			marker: hashManagedAsset(markerContent),
 			skills: hashManagedAsset(skillsContent),
 		},
+		pinnedComposition: pinEntries,
 	};
 	const managedDir = join(homeDir, MANAGED_DIR);
 	mkdirSync(managedDir, { recursive: true });
