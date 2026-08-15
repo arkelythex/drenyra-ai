@@ -33,3 +33,6 @@ coverage/
 
 # Local CodeGraph index
 .codegraph/
+
+# Local Pi runtime state
+.pi/
