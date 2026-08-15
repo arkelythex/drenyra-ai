@@ -38,12 +38,32 @@ interface HealthCheck {
 	promotedComposition?: PromotedComposition;
 }
 
-export interface DoctorDeps {
-	/** Test seam: injected packaged version for the package-pin check. */
-	packagedVersion?: string;
-	/** Test seam: injected promoted-composition reader; production uses the real reader. */
-	readPromotedComposition?: () => PromotedCompositionRead;
-}
+    export interface DoctorDeps {
+      /** Test seam: injected packaged version for the package-pin check. */
+      packagedVersion?: string;
+      /** Test seam: injected promoted-composition reader; production uses the real reader. */
+      readPromotedComposition?: () => PromotedCompositionRead;
+    }
+
+    /**
+     * CLI inventory reported by doctor (command-layer test seam only, not a
+     * package export). Kept in one place so the reachability report and the
+     * wiring smoke cannot drift apart.
+     */
+    export const DOCTOR_CLI_COMMANDS: readonly string[] = [
+      "receipt verify",
+      "ledger validate",
+      "mission start",
+      "mission apply",
+      "mission status",
+      "mission recover",
+      "project",
+      "candidate inspect",
+      "candidate verify",
+      "gate check",
+      "capabilities",
+      "doctor",
+    ];
 
 export function doctorCommand(args: string[] = [], deps: DoctorDeps = {}): number {
 	const checks: HealthCheck[] = [];
@@ -96,19 +116,7 @@ export function doctorCommand(args: string[] = [], deps: DoctorDeps = {}): numbe
 	});
 
 	// CLI surface.
-	const cliCommands = [
-		"receipt verify",
-		"ledger validate",
-		"mission start",
-		"mission apply",
-		"mission status",
-		"mission recover",
-		"candidate inspect",
-		"candidate verify",
-		"gate check",
-		"capabilities",
-		"doctor",
-	];
+	const cliCommands = DOCTOR_CLI_COMMANDS;
 	checks.push({
 		name: "cli",
 		ok: true,
