@@ -41,7 +41,8 @@ export interface ValidationIssue {
     | "MISSING_CONDITION"
     | "INVALID_STOP_REASON"
     | "INVALID_TRANSITION"
-    | "MISSION_MISMATCH";
+    | "MISSION_MISMATCH"
+    | "AMBIGUOUS_INPUT";
   readonly path: string;
 }
 

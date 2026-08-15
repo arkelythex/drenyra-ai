@@ -29,4 +29,8 @@ export * from "./guardian/index.js";
 export * from "./mcp/index.js";
 export * from "./adapters/index.js";
 export * from "./flow/index.js";
+// Explicit re-export resolves the star-export name clash between the routing
+// axis union and missions/reconciliation.ts (both named ExternalEvidence).
+// Routing has no package subpath, so the routing surface must resolve here.
+export type { ExternalEvidence } from "./routing/index.js";
 export * from "./routing/index.js";

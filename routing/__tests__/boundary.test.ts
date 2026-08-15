@@ -16,6 +16,7 @@ import {
 import {
   createWorkResult,
   createWorkUnit,
+  route,
   type JsonInteger,
   type Sha256Hash,
   type WorkResultInput,
@@ -28,6 +29,7 @@ const SHA256_EMPTY =
 const PRODUCTION_FILES = [
   "../types.ts",
   "../helpers.ts",
+  "../router.ts",
   "../index.ts",
 ];
 
@@ -61,6 +63,9 @@ describe("import boundary", () => {
         if (spec.startsWith("./") && line.startsWith("export")) {
           continue; // local re-export
         }
+        if (spec.startsWith("./") && line.startsWith("import type")) {
+          continue; // narrow exception: routing-local type-only import
+        }
         expect(line, `${file}: ${line}`).toMatch(/^import type/);
         expect(spec, `${file}: ${line}`).toMatch(/^\.\.\/(missions|candidates)\/index\.js$/);
       }
@@ -83,6 +88,22 @@ describe("import boundary", () => {
       VALID_TRANSITIONS.get(AccountingMissionStatus.QUEUED)?.has(AccountingMissionStatus.RUNNING),
     ).toBe(true);
     expect(() => validateTransition(AccountingMissionStatus.QUEUED, AccountingMissionStatus.COMPLETED)).toThrow();
+  });
+
+  it("proves the router holds no transition matrix or mission-state vocabulary", () => {
+    const source = readFileSync(new URL("../router.ts", import.meta.url), "utf8");
+    const forbidden = [
+      "VALID_TRANSITIONS",
+      "AccountingMissionStatus",
+      "validateTransition(",
+      "advanceWorkUnit",
+      "DRAFT",
+      "QUEUED",
+      "CanonicalTransitionValidator",
+    ];
+    for (const token of forbidden) {
+      expect(source, `router.ts contains ${token}`).not.toContain(token);
+    }
   });
 });
 
@@ -153,11 +174,35 @@ describe("surface proposes only", () => {
       },
       nextTransition: { from: unit.value.stage, to: AccountingMissionStatus.QUEUED },
     };
-    const result = createWorkResult(unit.value, resultInput, validateTransition);
-    expect(result.ok).toBe(true);
-    const after = new Map(
-      watched.map((d) => [d, readdirSync(new URL(`../../${d}/`, import.meta.url)).sort()]),
-    );
+        const result = createWorkResult(unit.value, resultInput, validateTransition);
+        expect(result.ok).toBe(true);
+        const routeResult = route({
+          scope: {
+            tenantId: "tenant-1",
+            ruc: "20123456789",
+            companyId: "company-1",
+            companyName: "Acme SAC",
+            period: "202607",
+            intent: "monthly-close",
+          },
+          requestedEffect: "read-only",
+          materiality: "R0",
+          reversibility: "reversible",
+          externalEvidence: "none",
+          durationAndInterruptibility: "immediate",
+          systemsInvolved: ["system-a"],
+          segregationOfDuties: "not-required",
+          regulatoryObligations: "none",
+          approval: "not-required",
+        });
+        expect(routeResult.ok).toBe(true);
+        if (!routeResult.ok) throw new Error("fixture");
+        expect(routeResult.value.kind).toBe("direct-analysis");
+        expect("id" in routeResult.value).toBe(false);
+        expect("missionId" in routeResult.value).toBe(false);
+        const after = new Map(
+          watched.map((d) => [d, readdirSync(new URL(`../../${d}/`, import.meta.url)).sort()]),
+        );
     for (const d of watched) {
       expect(after.get(d), d).toEqual(before.get(d));
     }
@@ -167,8 +212,14 @@ describe("surface proposes only", () => {
 });
 
 describe("deterministic and offline", () => {
-  it("uses no clock, randomness, network, transport or external service", () => {
-    const testFiles = ["work-unit.test.ts", "work-result.test.ts", "boundary.test.ts"];
+      it("uses no clock, randomness, network, transport or external service", () => {
+        const testFiles = [
+          "work-unit.test.ts",
+          "work-result.test.ts",
+          "boundary.test.ts",
+          "router.test.ts",
+          "../router.ts",
+        ];
     // Tokens are joined so the scanned sources cannot contain the literal token.
     const forbidden = [
       "Math." + "random",
