@@ -18,6 +18,7 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { getPackageMetadata } from "../adapters/package-metadata.js";
 import { DECLARED_CONTRACT_FILES } from "../declared-surface.js";
+import { homeFromArgs, runConfigDiagnostics } from "../../configurator/managed-config.js";
 
 interface HealthCheck {
 	name: string;
@@ -25,7 +26,12 @@ interface HealthCheck {
 	detail: string;
 }
 
-export function doctorCommand(): number {
+export interface DoctorDeps {
+	/** Test seam: injected packaged version for the package-pin check. */
+	packagedVersion?: string;
+}
+
+export function doctorCommand(args: string[] = [], deps: DoctorDeps = {}): number {
 	const checks: HealthCheck[] = [];
 
 	// Package identity; a resolution/metadata failure degrades the version and
@@ -101,6 +107,12 @@ export function doctorCommand(): number {
 		? "present"
 		: "absent (dev adapter, created on first use)";
 	checks.push({ name: "mission-store", ok: true, detail: storeState });
+
+	// Managed configuration diagnostics (read-only; appended after the package
+	// checks). The injected home uses the shared --home-else-$HOME rule.
+	const home = homeFromArgs(args);
+	const packagedVersion = deps.packagedVersion ?? metadata?.version ?? "unknown";
+	checks.push(...runConfigDiagnostics(home, packagedVersion));
 
 	const failed = checks.filter((check) => !check.ok);
 	console.log(

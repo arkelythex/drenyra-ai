@@ -4,17 +4,20 @@
  * JavaScript Number; sequence/index/version fields are JSON integers, never floats.
  */
 /**
- * `drenyra-ai sync` — refreshes managed assets (Design 03 "sync") without
- * overwriting foreign changes.
+ * `drenyra-ai sync` — refreshes managed assets (Design 03 "sync", SDD-020)
+ * without overwriting foreign changes.
  *
- * Each managed marker is compared against the expected content: a marker that
- * someone modified is PRESERVED and reported; only markers still matching the
- * managed state are refreshed. Never touches foreign config files.
+ * Each managed marker is compared against the expected content from the shared
+ * managed-state helpers (configurator/managed-config.ts): a marker that someone
+ * modified is PRESERVED and reported; only markers still matching the managed
+ * state are refreshed. Legacy manifests remain readable. Never touches foreign
+ * config files.
  */
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { detectHosts, readInstallManifest, homeFromArgs } from "./install.js";
+import { detectHosts, homeFromArgs } from "./install.js";
+import { expectedMarkerContent, readManagedState } from "../../configurator/managed-config.js";
 
 /** Result of syncing one managed marker. */
 export interface SyncResult {
@@ -23,15 +26,10 @@ export interface SyncResult {
 	reason: string;
 }
 
-/** Expected marker content for a managed host. */
-function expectedMarker(installedAt: string): string {
-	return JSON.stringify({ manager: "drenyra-ai", installedAt }, null, 2);
-}
-
 /** Sync managed markers; a foreign-modified marker is preserved, never clobbered. */
 export function syncManaged(homeDir: string): SyncResult[] {
-	const manifest = readInstallManifest(homeDir);
-	if (manifest === undefined) {
+	const state = readManagedState(homeDir);
+	if (state.state === "absent" || state.state === "invalid") {
 		return [
 			{
 				host: "*",
@@ -40,7 +38,9 @@ export function syncManaged(homeDir: string): SyncResult[] {
 			},
 		];
 	}
+	const manifest = state.manifest!;
 	const hosts = detectHosts(homeDir);
+	const expected = expectedMarkerContent(manifest);
 	const results: SyncResult[] = [];
 	for (const host of hosts) {
 		if (!host.present) {
@@ -52,7 +52,6 @@ export function syncManaged(homeDir: string): SyncResult[] {
 			continue;
 		}
 		const markerPath = join(host.configDir, ".drenyra-managed");
-		const expected = expectedMarker(manifest.installedAt);
 		if (existsSync(markerPath)) {
 			const current = readFileSync(markerPath, "utf8");
 			if (current === expected) {

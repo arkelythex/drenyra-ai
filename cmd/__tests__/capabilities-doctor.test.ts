@@ -11,7 +11,7 @@
  * frozen contracts from the installed package root regardless of cwd.
  */
 
-import { mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
@@ -24,6 +24,11 @@ import {
 	capabilitiesTool,
 	type DeclaredCapabilities,
 } from "../../mcp/index.js";
+import {
+	hashManagedAsset,
+	renderManagedMarker,
+	renderManagedSkills,
+} from "../../configurator/managed-config.js";
 
 function capture(fn: () => number): {
 	code: number;
@@ -161,6 +166,242 @@ describe("doctor run", () => {
 		} finally {
 			process.chdir(originalCwd);
 			rmSync(nonRoot, { recursive: true, force: true });
+		}
+	});
+});
+
+describe("doctor run: managed configuration diagnostics (SDD-020)", () => {
+	function tempHome(): { dir: string; cleanup: () => void } {
+		const dir = mkdtempSync(join(tmpdir(), "drenyra-doctor-config-"));
+		return { dir, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
+	}
+
+	function currentSchema(
+		dir: string,
+		version: string,
+		activatedAt: string,
+		hosts: Array<{ name: string; present: boolean }> = [
+			{ name: "claude-code", present: true },
+		],
+	): Record<string, unknown> {
+		return {
+			manager: "drenyra-ai",
+			version,
+			installedAt: "2026-03-01T00:00:00.000Z",
+			hosts: hosts.map(({ name, present }) => {
+				const dirFor =
+					name === "codex"
+						? ".codex"
+						: name === "claude-code"
+							? ".claude"
+							: ".config/opencode";
+				return { name, configDir: join(dir, dirFor), present };
+			}),
+			assets: ["skills"],
+			composition: {
+				schemaVersion: 1,
+				current: {
+					packageVersion: version,
+					sequence: 1,
+					activatedAt,
+					managedAssets: {
+						marker: hashManagedAsset(renderManagedMarker(activatedAt)),
+						skills: hashManagedAsset(renderManagedSkills()),
+					},
+				},
+				previous: null,
+			},
+		};
+	}
+
+	function writeManifest(dir: string, manifest: Record<string, unknown>): void {
+		mkdirSync(join(dir, ".drenyra"), { recursive: true });
+		writeFileSync(
+			join(dir, ".drenyra", "managed.json"),
+			JSON.stringify(manifest, null, 2),
+		);
+	}
+
+	function writeHostAssets(dir: string, activatedAt: string): void {
+		mkdirSync(join(dir, ".claude"), { recursive: true });
+		writeFileSync(
+			join(dir, ".claude", ".drenyra-managed"),
+			renderManagedMarker(activatedAt),
+		);
+		writeFileSync(join(dir, ".claude", ".drenyra-skills.json"), renderManagedSkills());
+	}
+
+	function parseDoctor(stdout: string): {
+		status: string;
+		readonly: boolean;
+		checks: Array<{ name: string; ok: boolean; detail?: string }>;
+	} {
+		return JSON.parse(stdout) as {
+			status: string;
+			readonly: boolean;
+			checks: Array<{ name: string; ok: boolean; detail?: string }>;
+		};
+	}
+
+	it("reports managed marker drift naming host:marker, stays read-only, leaves bytes unchanged, exits 1", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			writeHostAssets(dir, "2026-03-02T00:00:00.000Z");
+			writeManifest(dir, currentSchema(dir, "1.4.0", "2026-03-02T00:00:00.000Z"));
+			writeFileSync(join(dir, ".claude", ".drenyra-managed"), "tampered marker");
+
+			const { code, stdout } = capture(() =>
+				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+			);
+			expect(code).toBe(1);
+			const parsed = parseDoctor(stdout);
+			expect(parsed.status).toBe("degraded");
+			expect(parsed.readonly).toBe(true);
+			const drift = parsed.checks.find((c) => c.name === "managed-drift");
+			expect(drift?.ok).toBe(false);
+			expect(drift?.detail).toContain("claude-code:marker");
+			expect(readFileSync(join(dir, ".claude", ".drenyra-managed"), "utf8")).toBe(
+				"tampered marker",
+			);
+		} finally {
+			cleanup();
+		}
+	});
+
+	it("reports managed skills-asset drift naming host:skills", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			writeHostAssets(dir, "2026-03-02T00:00:00.000Z");
+			writeManifest(dir, currentSchema(dir, "1.4.0", "2026-03-02T00:00:00.000Z"));
+			writeFileSync(join(dir, ".claude", ".drenyra-skills.json"), "tampered skills");
+
+			const { code, stdout } = capture(() =>
+				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+			);
+			expect(code).toBe(1);
+			const parsed = parseDoctor(stdout);
+			expect(parsed.readonly).toBe(true);
+			const drift = parsed.checks.find((c) => c.name === "managed-drift");
+			expect(drift?.ok).toBe(false);
+			expect(drift?.detail).toContain("claude-code:skills");
+		} finally {
+			cleanup();
+		}
+	});
+
+	it("reports a package-pin mismatch stating both versions and exits 1", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			writeHostAssets(dir, "2026-03-01T00:00:00.000Z");
+			writeManifest(dir, currentSchema(dir, "1.2.3", "2026-03-01T00:00:00.000Z"));
+
+			const { code, stdout } = capture(() =>
+				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+			);
+			expect(code).toBe(1);
+			const parsed = parseDoctor(stdout);
+			const pin = parsed.checks.find((c) => c.name === "package-pin");
+			expect(pin?.ok).toBe(false);
+			expect(pin?.detail).toContain("1.2.3");
+			expect(pin?.detail).toContain("1.4.0");
+		} finally {
+			cleanup();
+		}
+	});
+
+	it("reports missing host prerequisites naming the exact missing item and creates nothing", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			// config dir entirely absent
+			writeManifest(dir, currentSchema(dir, "1.4.0", "2026-03-02T00:00:00.000Z"));
+			const first = capture(() =>
+				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+			);
+			expect(first.code).toBe(1);
+			const firstParsed = parseDoctor(first.stdout);
+			const prereq = firstParsed.checks.find((c) => c.name === "host-prerequisites");
+			expect(prereq?.ok).toBe(false);
+			expect(prereq?.detail).toContain("claude-code:config-dir");
+			expect(existsSync(join(dir, ".claude"))).toBe(false);
+
+			// config dir present but the managed marker removed
+			mkdirSync(join(dir, ".claude"), { recursive: true });
+			writeFileSync(join(dir, ".claude", ".drenyra-skills.json"), renderManagedSkills());
+			const second = capture(() =>
+				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+			);
+			expect(second.code).toBe(1);
+			const secondParsed = parseDoctor(second.stdout);
+			const prereq2 = secondParsed.checks.find((c) => c.name === "host-prerequisites");
+			expect(prereq2?.ok).toBe(false);
+			expect(prereq2?.detail).toContain("claude-code:marker");
+			// doctor never creates the missing asset
+			expect(existsSync(join(dir, ".claude", ".drenyra-managed"))).toBe(false);
+		} finally {
+			cleanup();
+		}
+	});
+
+	it("does not turn recorded present:false entries into missing-prerequisite failures", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			writeHostAssets(dir, "2026-03-02T00:00:00.000Z");
+			writeManifest(
+				dir,
+				currentSchema(
+					dir,
+					"1.4.0",
+					"2026-03-02T00:00:00.000Z",
+					[
+						{ name: "claude-code", present: true },
+						{ name: "codex", present: false },
+					],
+				),
+			);
+			// no .codex directory exists on disk
+			const { code, stdout } = capture(() =>
+				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+			);
+			expect(code).toBe(0);
+			const parsed = parseDoctor(stdout);
+			expect(parsed.status).toBe("healthy");
+			expect(parsed.readonly).toBe(true);
+			expect(parsed.checks.every((c) => c.ok)).toBe(true);
+		} finally {
+			cleanup();
+		}
+	});
+
+	it("fails managed-state closed on a malformed existing manifest while still emitting the full report", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			mkdirSync(join(dir, ".drenyra"), { recursive: true });
+			writeFileSync(join(dir, ".drenyra", "managed.json"), "{ not json");
+
+			const { code, stdout } = capture(() =>
+				doctorCommand(["--home", dir], { packagedVersion: "1.4.0" }),
+			);
+			expect(code).toBe(1);
+			const parsed = parseDoctor(stdout);
+			expect(parsed.status).toBe("degraded");
+			expect(parsed.readonly).toBe(true);
+			const names = parsed.checks.map((c) => c.name);
+			expect(names).toContain("managed-state");
+			expect(names).toContain("managed-drift");
+			expect(names).toContain("package-pin");
+			expect(names).toContain("host-prerequisites");
+			const managedState = parsed.checks.find((c) => c.name === "managed-state");
+			expect(managedState?.ok).toBe(false);
+			// the pre-existing package checks are still emitted in order
+			expect(names.slice(0, 5)).toEqual([
+				"node-engine",
+				"version",
+				"contracts",
+				"cli",
+				"mission-store",
+			]);
+		} finally {
+			cleanup();
 		}
 	});
 });
