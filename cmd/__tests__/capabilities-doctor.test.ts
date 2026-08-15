@@ -31,6 +31,10 @@ import {
 	renderManagedSkills,
 	renderPinnedAiRuntime,
 } from "../../configurator/managed-config.js";
+import type {
+	PromotedComposition,
+	PromotedCompositionRead,
+} from "../../configurator/promoted-composition.js";
 
 function capture(fn: () => number): {
 	code: number;
@@ -88,7 +92,7 @@ describe("capabilities show", () => {
 		expect(parsed.skills.some((s) => s.checksum !== undefined)).toBe(false);
 	});
     
-	it("names all four managed hosts (Codex, Claude Code, OpenCode, Drenyra Pi) without claiming Pi host-serving or program-lock-aware install", () => {
+	it("names all four managed hosts (Codex, Claude Code, OpenCode, Drenyra Pi) claiming program-lock-aware install/doctor reporting but never Pi host-serving", () => {
 		const { code, stdout } = capture(capabilitiesCommand);
 		expect(code).toBe(0);
 		const parsed = JSON.parse(stdout) as { integrations: string[] };
@@ -102,9 +106,9 @@ describe("capabilities show", () => {
 		expect(hostIntegration).toContain("Claude Code");
 		expect(hostIntegration).toContain("OpenCode");
 		expect(hostIntegration).toContain("Drenyra Pi");
-		// still no Pi host-serving or program-lock-aware install claim
+		// program-lock awareness is now claimed; Pi host-serving is still never claimed
 		expect(hostIntegration).not.toMatch(/host-serving/i);
-		expect(hostIntegration).not.toMatch(/program-lock/i);
+		expect(hostIntegration).toMatch(/program-lock-aware install\/doctor reporting/i);
 		// the MCP integration remains planned
 		const mcp = parsed.integrations.find((i) => i.includes("MCP"));
 		expect(mcp).toContain("(planned)");
@@ -898,6 +902,209 @@ describe("doctor run", () => {
     			).toBe(false);
     		} finally {
     			cleanup();
+    		}
+    	});
+    });
+    describe("doctor run: program-lock awareness (SDD-020 slice C PR 2)", () => {
+    	function tempHome(): { dir: string; cleanup: () => void } {
+            const dir = mkdtempSync(join(tmpdir(), "drenyra-doctor-pla-"));
+            return { dir, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
+    	}
+
+    	function parseReport(stdout: string): {
+            status: string;
+            readonly: boolean;
+            checks: Array<{ name: string; ok: boolean; detail?: string }>;
+    	} {
+            return JSON.parse(stdout) as {
+                status: string;
+                readonly: boolean;
+                checks: Array<{ name: string; ok: boolean; detail?: string }>;
+            };
+    	}
+
+    	const PROMOTED: PromotedComposition = {
+    		version: "0.4.0",
+    		verifiedRevision: "d440203183e24b2a0ecf773915888bb6072fc015",
+    		hostArtifactSha256:
+    			"2e3bd07241c250cf00653c346945108529d2fbba04a145bd9e38d938ae949a36",
+    		setSha256:
+    			"62f1aaa496307ba5f56894dcf6aef0ffac365ed6a303a8cb6fb0ef3b215ab3ea",
+    		attestationTag: "drenyra-dominion-v0.4.0",
+    	};
+
+    	type ProgramLockCheck = {
+    		name: string;
+    		ok: boolean;
+    		detail: string;
+    		applicability?: string;
+    		manifestState?: string;
+    		packageVersion?: string;
+    		versionRelationship?: string;
+    		promotedComposition?: PromotedComposition;
+    	};
+
+    	function programLockCheck(
+    		stdout: string,
+    	): ProgramLockCheck | undefined {
+    		return parseReport(stdout).checks.find(
+    			(c) => c.name === "program-lock-awareness",
+    		) as ProgramLockCheck | undefined;
+    	}
+
+    	it("valid manifest with 0.4.0/0.4.1 skew: applicable/ok, surfaces the promoted version and the differs relationship, healthy/readonly exit 0 (R4·1)", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			const read: PromotedCompositionRead = {
+    				state: "valid",
+    				composition: { ...PROMOTED },
+    			};
+    			const { code, stdout } = capture(() =>
+    				doctorCommand(["--home", dir], {
+                        packagedVersion: "0.4.1",
+                        readPromotedComposition: () => read,
+    				}),
+    			);
+    			expect(code).toBe(0);
+    			const parsed = parseReport(stdout);
+    			expect(parsed.status).toBe("healthy");
+    			expect(parsed.readonly).toBe(true);
+    			const check = programLockCheck(stdout);
+    			expect(check?.ok).toBe(true);
+    			expect(check?.applicability).toBe("applicable");
+    			expect(check?.manifestState).toBe("valid");
+    			expect(check?.versionRelationship).toBe("differs");
+    			expect(check?.detail).toContain("0.4.0");
+    			expect(check?.detail).toContain("0.4.1");
+    			expect(check?.packageVersion).toBe("0.4.1");
+    			expect(check?.promotedComposition).toEqual(PROMOTED);
+    		} finally {
+    			cleanup();
+    		}
+    	});
+
+    	it("malformed manifest: check fails closed as unverifiable with no promoted facts, report degraded, exit 1 (R4·2)", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			const read: PromotedCompositionRead = {
+    				state: "invalid",
+    				invalidReason: "not valid JSON",
+    			};
+    			const { code, stdout } = capture(() =>
+    				doctorCommand(["--home", dir], {
+                        packagedVersion: "0.4.1",
+                        readPromotedComposition: () => read,
+    				}),
+    			);
+    			expect(code).toBe(1);
+    			const parsed = parseReport(stdout);
+    			expect(parsed.status).toBe("degraded");
+    			expect(parsed.readonly).toBe(true);
+    			const check = programLockCheck(stdout);
+    			expect(check?.ok).toBe(false);
+    			expect(check?.applicability).toBe("unverifiable");
+    			expect(check?.manifestState).toBe("invalid");
+    			expect(check?.detail).toContain("not valid JSON");
+    			expect(check?.promotedComposition).toBeUndefined();
+    			expect(check?.versionRelationship).toBeUndefined();
+    		} finally {
+    			cleanup();
+    		}
+    	});
+
+    	it("absent manifest on an otherwise healthy package: not-applicable without promoted facts, report stays healthy, exit 0 (R4·3)", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			const { code, stdout } = capture(() =>
+    				doctorCommand(["--home", dir], {
+                        packagedVersion: "0.4.1",
+                        readPromotedComposition: () => ({ state: "absent" }),
+    				}),
+    			);
+    			expect(code).toBe(0);
+    			const parsed = parseReport(stdout);
+    			expect(parsed.status).toBe("healthy");
+    			expect(parsed.readonly).toBe(true);
+    			expect(parsed.checks.every((c) => c.ok)).toBe(true);
+    			const check = programLockCheck(stdout);
+    			expect(check?.ok).toBe(true);
+    			expect(check?.applicability).toBe("not-applicable");
+    			expect(check?.manifestState).toBe("absent");
+    			expect(check?.promotedComposition).toBeUndefined();
+    			expect(check?.versionRelationship).toBeUndefined();
+    		} finally {
+    			cleanup();
+    		}
+    	});
+
+    	it("a healthy program-lock check does not mask managed-state failures, and an invalid program-lock check does not suppress the rest of the report (other failures compose)", () => {
+    		// healthy program-lock + invalid managed manifest: both facts visible
+    		{
+    			const { dir, cleanup } = tempHome();
+    			try {
+    				mkdirSync(join(dir, ".drenyra"), { recursive: true });
+    				writeFileSync(join(dir, ".drenyra", "managed.json"), "{ not json");
+    				const read: PromotedCompositionRead = {
+                        state: "valid",
+                        composition: { ...PROMOTED },
+    				};
+    				const { code, stdout } = capture(() =>
+                        doctorCommand(["--home", dir], {
+                            packagedVersion: "0.4.1",
+                            readPromotedComposition: () => read,
+                        }),
+    				);
+    				expect(code).toBe(1);
+    				const parsed = parseReport(stdout);
+    				expect(parsed.status).toBe("degraded");
+    				const managedState = parsed.checks.find(
+                        (c) => c.name === "managed-state",
+    				);
+    				expect(managedState?.ok).toBe(false);
+    				const check = programLockCheck(stdout);
+    				expect(check?.ok).toBe(true);
+    				expect(check?.applicability).toBe("applicable");
+    			} finally {
+    				cleanup();
+    			}
+    		}
+    		// invalid program-lock + otherwise healthy package: full report emitted
+    		{
+    			const { dir, cleanup } = tempHome();
+    			try {
+    				const { code, stdout } = capture(() =>
+                        doctorCommand(["--home", dir], {
+                            packagedVersion: "0.4.1",
+                            readPromotedComposition: () => ({
+                                state: "invalid",
+                                invalidReason: "malformed",
+                            }),
+                        }),
+    				);
+    				expect(code).toBe(1);
+    				const parsed = parseReport(stdout);
+    				expect(parsed.status).toBe("degraded");
+    				const names = parsed.checks.map((c) => c.name);
+    				expect(names.slice(0, 5)).toEqual([
+                        "node-engine",
+                        "version",
+                        "contracts",
+                        "cli",
+                        "mission-store",
+    				]);
+    				expect(names).toContain("managed-state");
+    				expect(names).toContain("managed-drift");
+    				expect(names).toContain("package-pin");
+    				expect(names).toContain("host-prerequisites");
+    				expect(names).toContain("pinned-ai-runtime");
+    				expect(names).toContain("program-lock-awareness");
+    				const managedState = parsed.checks.find(
+                        (c) => c.name === "managed-state",
+    				);
+    				expect(managedState?.ok).toBe(true);
+    			} finally {
+    				cleanup();
+    			}
     		}
     	});
     });
