@@ -15,6 +15,10 @@ import {
 	readInstallManifest,
 } from "../commands/install.js";
 import { syncManaged } from "../commands/sync.js";
+import {
+	renderManagedMarker,
+	renderManagedSkills,
+} from "../../configurator/managed-config.js";
 
 function tempHome(): { dir: string; cleanup: () => void } {
 	const dir = mkdtempSync(join(tmpdir(), "drenyra-test-"));
@@ -100,6 +104,98 @@ describe("sync", () => {
 				readFileSync(join(dir, ".config/opencode", ".drenyra-managed"), "utf8"),
 			).toBe("someone edited this");
 			expect(manifest.version).toBeTruthy();
+		} finally {
+			cleanup();
+		}
+	});
+});
+
+describe("install composition record (SDD-020)", () => {
+	it("writes composition.current with integer sequence/schemaVersion, exact asset hashes/content, previous null, and the compatibility version mirror", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			mkdirSync(join(dir, ".claude"), { recursive: true });
+			const manifest = installIntegrations(dir, "2026-03-01T00:00:00.000Z");
+			const raw = JSON.parse(
+				readFileSync(join(dir, ".drenyra", "managed.json"), "utf8"),
+			) as {
+				version: string;
+				composition: {
+					schemaVersion: number;
+					current: {
+						packageVersion: string;
+						sequence: number;
+						activatedAt: string;
+						managedAssets: {
+							marker: { sha256: string; content: string };
+							skills: { sha256: string; content: string };
+						};
+					};
+					previous: unknown;
+				};
+			};
+			expect(raw.composition.schemaVersion).toBe(1);
+			expect(Number.isInteger(raw.composition.schemaVersion)).toBe(true);
+			expect(Number.isInteger(raw.composition.current.sequence)).toBe(true);
+			expect(raw.composition.current.sequence).toBe(0);
+			expect(raw.composition.current.packageVersion).toBe(manifest.version);
+			expect(raw.composition.current.activatedAt).toBe("2026-03-01T00:00:00.000Z");
+			expect(raw.composition.previous).toBe(null);
+			expect(raw.composition.current.managedAssets.marker.content).toBe(
+				renderManagedMarker("2026-03-01T00:00:00.000Z"),
+			);
+			expect(raw.composition.current.managedAssets.marker.sha256).toMatch(
+				/^[0-9a-f]{64}$/,
+			);
+			expect(raw.composition.current.managedAssets.skills.content).toBe(
+				renderManagedSkills(),
+			);
+			expect(raw.composition.current.managedAssets.skills.sha256).toMatch(
+				/^[0-9a-f]{64}$/,
+			);
+			expect(raw.version).toBe(manifest.version);
+		} finally {
+			cleanup();
+		}
+	});
+});
+
+describe("sync with a legacy manifest (SDD-020)", () => {
+	it("keeps a pre-composition manifest readable and preserves foreign markers", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			mkdirSync(join(dir, ".claude"), { recursive: true });
+			mkdirSync(join(dir, ".drenyra"), { recursive: true });
+			writeFileSync(join(dir, ".claude", ".drenyra-managed"), "foreign marker");
+			writeFileSync(join(dir, ".claude", ".drenyra-skills.json"), renderManagedSkills());
+			writeFileSync(
+				join(dir, ".drenyra", "managed.json"),
+				JSON.stringify(
+					{
+						manager: "drenyra-ai",
+						version: "1.2.3",
+						installedAt: "2026-03-01T00:00:00.000Z",
+						hosts: [
+							{
+								name: "claude-code",
+								configDir: join(dir, ".claude"),
+								present: true,
+							},
+						],
+						assets: ["skills"],
+					},
+					null,
+					2,
+				),
+			);
+
+			const results = syncManaged(dir);
+			expect(results.some((r) => r.action === "not-installed")).toBe(false);
+			const claude = results.find((r) => r.host === "claude-code");
+			expect(claude?.action).toBe("preserved");
+			expect(readFileSync(join(dir, ".claude", ".drenyra-managed"), "utf8")).toBe(
+				"foreign marker",
+			);
 		} finally {
 			cleanup();
 		}

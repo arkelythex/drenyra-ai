@@ -4,34 +4,47 @@
  * JavaScript Number; sequence/index/version fields are JSON integers, never floats.
  */
 /**
- * `drenyra-ai install` — configures existing agent hosts (Design 03).
+ * `drenyra-ai install` — configures existing agent hosts (Design 03, SDD-020).
  *
  * Follows Gentle-AI's philosophy: Drenyra AI DETECTS and CONFIGURES hosts that
  * already exist; it never installs Codex, Claude Code, or OpenCode for the
  * user. Installation writes only managed markers (never touching foreign
  * config files) and reports what was configured.
+ *
+ * Thin adapter: host detection, marker/skills rendering, and hashing delegate
+ * to configurator/managed-config.ts; a new install also records the additive
+ * composition record (current snapshot, `previous: null`) plus the
+ * compatibility top-level `version` mirror. Existing test-referenced exports
+ * (`detectHosts`, `readInstallManifest`, `homeFromArgs`, `InstallManifest`,
+ * `DetectedHost`) are re-exported unchanged.
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createRequire } from "node:module";
-import { BASE_PE_SKILLS } from "../../skills/index.js";
+import {
+	COMPOSITION_SCHEMA_VERSION,
+	MANAGED_DIR,
+	MANAGED_FILE,
+	detectHosts,
+	hashManagedAsset,
+	homeFromArgs,
+	readManagedState,
+	renderManagedMarker,
+	renderManagedSkills,
+	type InstallManifest,
+	type ManagedCompositionSnapshot,
+} from "../../configurator/managed-config.js";
+
+export {
+	detectHosts,
+	homeFromArgs,
+	readInstallManifest,
+	type DetectedHost,
+	type InstallManifest,
+} from "../../configurator/managed-config.js";
 
 const require = createRequire(import.meta.url);
-
-/** A detected agent host. */
-export interface DetectedHost {
-	name: "codex" | "claude-code" | "opencode";
-	configDir: string;
-	present: boolean;
-}
-
-/** Known host config directories relative to the user's home. */
-const HOST_DIRS: ReadonlyArray<{ name: DetectedHost["name"]; dir: string }> = [
-	{ name: "codex", dir: ".codex" },
-	{ name: "claude-code", dir: ".claude" },
-	{ name: "opencode", dir: ".config/opencode" },
-];
 
 /** Runtime version. */
 function version(): string {
@@ -43,89 +56,65 @@ function version(): string {
 	}
 }
 
-/** Detect which hosts are present on the machine (read-only). */
-export function detectHosts(homeDir: string): DetectedHost[] {
-	return HOST_DIRS.map(({ name, dir }) => {
-		const configDir = join(homeDir, dir);
-		return { name, configDir, present: existsSync(configDir) };
-	});
-}
-
-/** Managed install manifest. */
-export interface InstallManifest {
-	manager: "drenyra-ai";
-	version: string;
-	installedAt: string;
-	hosts: DetectedHost[];
-	/** Managed assets shipped to each present host. */
-	assets: readonly string[];
-}
-
-const MANAGED_DIR = ".drenyra";
-const MANAGED_FILE = "managed.json";
-
-/** Install managed markers for the present hosts. Never touches foreign files. */
+/**
+ * Install managed markers + skills for the present hosts and record the
+ * composition. Never touches foreign files; never installs a host binary.
+ */
 export function installIntegrations(
 	homeDir: string,
 	now = new Date().toISOString(),
 ): InstallManifest {
 	const hosts = detectHosts(homeDir);
-	const manifest: InstallManifest = {
-		manager: "drenyra-ai",
-		version: version(),
-		installedAt: now,
-		hosts,
-		assets: ["skills"],
+	const markerContent = renderManagedMarker(now);
+	const skillsContent = renderManagedSkills();
+	const current: ManagedCompositionSnapshot = {
+		packageVersion: version(),
+		sequence: 0,
+		activatedAt: now,
+		managedAssets: {
+			marker: hashManagedAsset(markerContent),
+			skills: hashManagedAsset(skillsContent),
+		},
 	};
 	const managedDir = join(homeDir, MANAGED_DIR);
 	mkdirSync(managedDir, { recursive: true });
-	// Marker per present host: created only when absent (foreign changes are
-	// never overwritten).
+	// Marker + skills per present host: created only when absent (foreign
+	// changes are never overwritten).
 	for (const host of hosts.filter((h) => h.present)) {
 		const marker = join(host.configDir, ".drenyra-managed");
 		if (!existsSync(marker)) {
-			writeFileSync(
-				marker,
-				JSON.stringify({ manager: "drenyra-ai", installedAt: now }, null, 2),
-			);
+			writeFileSync(marker, markerContent);
 		}
-		// Ship the managed Peru skills asset (id, version, jurisdiction) so the
-		// host can consume versioned policy without touching foreign files.
 		const skillsPath = join(host.configDir, ".drenyra-skills.json");
 		if (!existsSync(skillsPath)) {
-			writeFileSync(
-				skillsPath,
-				JSON.stringify(
-					BASE_PE_SKILLS.map(({ id, version, jurisdiction, maxAutonomy }) => ({
-						id,
-						version,
-						jurisdiction,
-						maxAutonomy,
-					})),
-					null,
-					2,
-				),
-			);
+			writeFileSync(skillsPath, skillsContent);
 		}
 	}
+	// Preserve an existing composition record across re-installs; create a
+	// fresh one (sequence 0, previous null) for a new install.
+	const existing = readManagedState(homeDir);
+	const composition =
+		existing.state === "current-schema" &&
+		existing.manifest?.composition !== undefined
+			? existing.manifest.composition
+			: {
+					schemaVersion: COMPOSITION_SCHEMA_VERSION,
+					current,
+					previous: null,
+				};
+	const manifest: InstallManifest = {
+		manager: "drenyra-ai",
+		version: current.packageVersion,
+		installedAt: now,
+		hosts,
+		assets: ["skills"],
+		composition,
+	};
 	writeFileSync(
 		join(managedDir, MANAGED_FILE),
 		JSON.stringify(manifest, null, 2),
 	);
 	return manifest;
-}
-
-/** Read the managed manifest, or undefined when not installed or unreadable. */
-export function readInstallManifest(
-	homeDir: string,
-): InstallManifest | undefined {
-	const path = join(homeDir, MANAGED_DIR, MANAGED_FILE);
-	if (!existsSync(path)) return undefined;
-	try {
-		return JSON.parse(readFileSync(path, "utf8")) as InstallManifest;
-	} catch {
-		return undefined;
-	}
 }
 
 /** The install command handler. */
@@ -149,14 +138,4 @@ export function installCommand(args: string[]): number {
 		),
 	);
 	return 0;
-}
-
-/** Resolve the home directory: --home override wins, else $HOME. */
-export function homeFromArgs(args: string[]): string {
-	const index = args.indexOf("--home");
-	const value = index >= 0 ? args[index + 1] : undefined;
-	if (index >= 0 && value !== undefined) {
-		return value;
-	}
-	return process.env.HOME ?? process.cwd();
 }
