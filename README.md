@@ -21,10 +21,12 @@
 ---
 
 > [!IMPORTANT]
-> **Private commercial product** — this repository is **private**; distribution
-> of artifacts (packages, releases) is contractual, never public. Use, copy,
-> and distribution remain governed by the [LICENSE](LICENSE) (proprietary,
-> © Arkelythex).
+> **Public source repository (open-core intention)** — this repository is
+> **publicly visible** on GitHub as part of the Drenyra open-core transition
+> intention (charter §9: intention, not contractual promise); distribution of
+> artifacts (packages, releases) and commercial services is contractual, never
+> public. Use, copy, and distribution of source remain governed by the
+> [LICENSE](LICENSE) (proprietary, © Arkelythex).
 
 <!-- -->
 
