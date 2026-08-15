@@ -2,13 +2,23 @@
 
 # SDD-110 — Production and Commercial Readiness
 
-> Status: lifecycle:planned · Maturity: absent (not implemented; production operations pending) · Wave: 4 · Depends on: SDD-100 · Feeds: — (operational)
+> Status: lifecycle:in-progress · Maturity: partial (drenyra-ai connector-adapter conformance contract DRAFT v0.1 shipped; production operations still pending) · Wave: 4 · Depends on: SDD-100 · Feeds: — (operational)
 >
 > **Status note (2026-08-15):** under the five-axis vocabulary
 > ([status-and-evidence.md](../../status-and-evidence.md)) the former `PLANNED`
 > label maps to `lifecycle:planned`. This SDD is NOT implemented: production
 > operations (real KMS/vault, SUNAT/SIRE/ERP/bank connectors, UNKNOWN
 > reconciliation, observability, pilots) are future wave-4 deliverables.
+>
+> **Slice A note (2026-08-15):** the drenyra-ai contribution — the connector-adapter
+> conformance contract (`contracts/connector-adapter.md`, DRAFT v0.1) + type-level
+> mutation boundary (`adapters/connector.ts`, node:crypto-only) + mock conformance
+> suite (29 tests, SC-CONN-001..020) — shipped as slice A via PR #59; change record
+> archived at `openspec/changes/archive/2026-08-15-sdd-110-production/`. NO real
+> connectors, credentials, or network shipped; `DECLARED_ADAPTERS` unchanged;
+> capability-matrix connector rows stay `planned` (R17). Production operations remain
+> future work; this record stays `lifecycle:in-progress` (R3/R4: not promoted on
+> presence alone).
 
 ## Purpose
 
@@ -101,11 +111,15 @@ storage, or observability infrastructure exist today (R17).
 
 ## Progress
 
-- [ ] Exploration
-- [ ] Proposal
-- [ ] Specification (RFC 2119 + Given/When/Then)
-- [ ] Design
-- [ ] Tasks (vertical TDD units)
-- [ ] Apply (strict TDD)
-- [ ] Verification report
-- [ ] Archive report
+- [x] Exploration
+- [x] Proposal
+- [x] Specification (RFC 2119 + Given/When/Then)
+- [x] Design
+- [x] Tasks (vertical TDD units)
+- [x] Apply (strict TDD)
+- [x] Verification report
+- [x] Archive report
+
+> Progress reflects the drenyra-ai connector-conformance slice A (PR #59, archived 2026-08-15);
+> production operations (real connectors, KMS, observability, pilots) remain future wave-4 work
+> and this record stays `lifecycle:in-progress`.
