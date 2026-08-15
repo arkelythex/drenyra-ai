@@ -16,6 +16,14 @@
 > record archived at `openspec/changes/archive/2026-08-15-sdd-100-command-center/`. The Command
 > Center UI product itself remains pending in the sibling `drenyra-command-center` repo; this
 > record stays `lifecycle:in-progress` (R3/R4: not promoted on presence alone).
+>
+> **Slice B note (2026-08-15):** the DRAFT projection contract (`contracts/projection.md`, v0.1,
+> conformance delegated to the slice-A suite, freeze gated on ecosystem adoption) and the manual
+> verification surface (`drenyra-ai project <missionId> [--store]` JSON dump, exit 0/1/2, read-only,
+> no requested-continuation flag) shipped via PR #60; change record archived at
+> `openspec/changes/archive/2026-08-15-sdd-100-projection-surface/`. Option C (contract freeze + MCP
+> projection tool) remains, gated on Command Center adoption evidence; this record stays
+> `lifecycle:in-progress`.
 
 ## Purpose
 
@@ -103,6 +111,6 @@ it is never a second authority and never reconstructs the state machine.
 - [x] Verification report
 - [x] Archive report
 
-> Progress reflects the drenyra-ai projection-surface slice A (PR #58, archived 2026-08-15); the
-> Command Center UI product work continues in `drenyra-command-center` and this record stays
-> `lifecycle:in-progress`.
+> Progress reflects the drenyra-ai projection-surface slices A (PR #58) and B (PR #60, both
+> archived 2026-08-15); the Command Center UI product work continues in `drenyra-command-center`
+> and this record stays `lifecycle:in-progress`.
