@@ -1,6 +1,6 @@
 # Tasks — Host Integration (SDD-020, slice 2 — Slice A: per-host pinned AI runtime)
 
-> Scope: Slice A only (per-host `pinned-ai-runtime` record + doctor surfacing + deterministic install/sync rendering + pre-pin/foreign compatibility + boundary compliance). Slice B (Drenyra Pi host, capability wording per design, four-host lifecycle) is a separate follow-on review unit and is NOT implemented here; its boundary is defined in the Forecast below.
+> Scope: Slice A (per-host `pinned-ai-runtime` record + doctor surfacing + deterministic install/sync rendering + pre-pin/foreign compatibility + boundary compliance) and Slice B (Drenyra Pi host union/map/`PINNED_AI_COMPOSITION` exhaustiveness, capability wording per design, four-host lifecycle). Slice A merged via #46; Slice B implemented in the section below. Program-lock-aware install remains slice C.
 >
 > Requirement key: **R1** per-host pin record, **R2** deterministic rendering through install/sync/upgrade/rollback, **R3** doctor `pinned-ai-runtime` surfacing, **R4** boundary and invariant compliance, **R5** testability. Design decision key: **D1** pin record types in `configurator/managed-config.ts`, **D2** package-local `PINNED_AI_COMPOSITION` constants + rendering, **D3** `pinnedComposition` snapshot extension + schema v2, **D4** install rendering, **D5** sync rendering, **D6** doctor `pinned-ai-runtime` diagnostic, **D7** pre-pin compatibility + foreign preservation + boundary compliance.
 >
@@ -130,3 +130,34 @@ Extend the existing snapshot and host-asset fixtures with host-specific pin reco
 
 - [ ] Start or reuse bounded review for the Slice A candidate after verification is frozen; apply findings within the single correction budget, then validate the terminal receipt. (RDD-off clone-local precedent followed — same as the SDD-020 configurator slice and the SDD-030 slice: no review, delivered under Git-normal policy.) <!-- sdd-owner: parent -->
 - [ ] Deliver Slice A via a PR to `main` following repository policy, then open Slice B as a second PR to `main` (stacked-to-main chain A→B); update the SDD-020 change record (`proposal.md` lifecycle toward apply evidence; record tasks/verify/archive state) and confirm the deferred-slice list (Drenyra Pi host union/map/detection, four-host lifecycle flow, capability wording per design, program-lock-aware install as slice C) remains documented for later SDD-020 slices. <!-- sdd-owner: parent -->
+
+## Slice B — Drenyra Pi host and four-host lifecycle (SDD-020 slice 2B, separate apply unit)
+
+> Boundary (design.md “Slice B — explicit boundary”): Slice B alone extends `HostName`, `HOST_DIR_MAP`, `isHostName`, and `PINNED_AI_COMPOSITION` with `drenyra-pi`; chooses its canonical home-relative config directory; updates capability wording; and adds the four-host `install -> doctor -> sync -> upgrade -> rollback` acceptance flow. Slice B does not redesign the record, diagnostic, or transition engine. Expected files: `configurator/managed-config.ts`, `cmd/commands/capabilities.ts`, existing configurator/command tests, and one four-host lifecycle test. Estimated Slice B: 120–200 authored lines.
+>
+> Canonical Pi config directory: the Drenyra-managed home `~/.drenyra` (where the managed manifest already lives). Presence of the Pi host = existence of that home; drenyra-ai manages only the marker/skills/pin assets for a present Pi host. No `drenyra-pi` host-serving integration (that belongs to the pi session's side).
+
+### B.1 `drenyra-pi` host union, map, and exhaustive composition (R1, R2; D2)
+
+- [x] In `configurator/managed-config.ts`, add `"drenyra-pi"` to the `HostName` union, to `HOST_DIR_MAP` (canonical home-relative config dir `.drenyra` — the Drenyra-managed home, documented in code), and to `isHostName`; document that a present Pi host is one whose Drenyra home exists and that Pi host-serving is out of scope. <!-- sdd-owner: implementation -->
+- [x] In `configurator/managed-config.ts`, add the reviewed `"drenyra-pi"` entry to `PINNED_AI_COMPOSITION` (runtime `drenyra-pi` v1, model `drenyra-pi-package-default` v1, tool `drenyra-ai-host-tools` v1 — integer versions) so the constant is exhaustive over the now-4 hosts; update the stale "three hosts" wording. Install/sync/doctor/upgrade/rollback pick up the new host automatically via `HOST_DIR_MAP`/`detectHosts`; no adapter edit needed. <!-- sdd-owner: implementation -->
+
+### B.2 Capability wording (per design)
+
+- [x] In `cmd/commands/capabilities.ts`, name all four recognized hosts (Codex/Claude Code/OpenCode/Drenyra Pi) in the integrations entry, still reflecting managed marker/skills/pin configuration WITHOUT claiming Drenyra Pi host-serving or program-lock-aware install. Wording-only. <!-- sdd-owner: implementation -->
+
+### B.3 Four-host install/sync tests (R2, R5; D2, D4, D5)
+
+- [x] RED→GREEN in `cmd/__tests__/install-sync.test.ts`: `drenyra-pi` detected present when the Drenyra home exists and install renders its managed marker/skills/pin with a recorded managed entry; all four hosts configured with one deterministic pin file each; exhaustive `PINNED_AI_COMPOSITION` keys assertion updated to the four hosts. <!-- sdd-owner: implementation -->
+
+### B.4 Four-host doctor matrix tests (R3, R5; D6)
+
+- [x] RED→GREEN in `cmd/__tests__/capabilities-doctor.test.ts`: four-host fully-managed matrix healthy/exit 0 naming every recorded-present host (including `drenyra-pi`); `drenyra-pi` drift and absent states named distinctly with bytes preserved/never created, exit 1; capabilities wording regression updated to name Drenyra Pi while still rejecting host-serving/program-lock claims. <!-- sdd-owner: implementation -->
+
+### B.5 Four-host lifecycle E2E (R1, R2, R3, R4, R5)
+
+- [x] RED→GREEN in `cmd/__tests__/configurator-transitions.test.ts`: one acceptance flow covering `install → doctor → sync → upgrade → rollback` across codex, claude-code, opencode, and drenyra-pi — all four detected/configured, doctor healthy, sync all-synced, upgrade A→B updates all four marker/skills/pin with deterministic bytes, rollback restores the A bytes for all four, second rollback zero-write unchanged. <!-- sdd-owner: implementation -->
+
+### B.6 Verification
+
+- [x] Focused 3-file run, full suite (`bun run test`), `bun run typecheck`, and `bun run build` all green; protected-path check confirms no edit touched `contracts/**`, program-root docs, `agents/**`, `ledger/**`, `receipts/**`, `missions/**`, `evidence/**`, `journal/**`, or `flow/**`. <!-- sdd-owner: implementation -->

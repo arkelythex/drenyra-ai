@@ -158,3 +158,140 @@ SHA-256 over concatenated current contents (in order) of the 7 implementation-ca
 ```
 
 Attempt token `sha256:a9677eebf0a15ddd1fa6680519fa13cb93a9091294bd9cd2e5210242e03c236a` was parent-acquired and already active per native status; no acquire/settle performed by this phase (per delegation instructions). RDD-off clone-local precedent followed (same as SDD-020 configurator slice and SDD-030); no receipt claimed.
+
+---
+
+# Slice B Record — Drenyra Pi host and four-host lifecycle (SDD-020 slice 2B, separate apply unit)
+
+> Appended on top of the Slice A record above (A record preserved verbatim — MERGED, not overwritten). This is the second apply unit of SDD-020 slice 2, delivered after Slice A merged to `main` via #46.
+
+## Status consumed (openspec store, authoritative)
+
+```yaml
+schemaName: gentle-ai.sdd-status (native dispatcher, openspec-backed)
+changeName: sdd-020-host-integration
+artifactStore: openspec
+applyState: ready
+dependencies.apply: ready
+actionContext:
+  mode: repo-local
+  workspaceRoot: /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai
+  allowedEditRoots: [/home/dreamcoder08/Documents/PROYECTOS/drenyra-ai]
+nextRecommended: apply
+blockedReasons: []
+```
+
+**Delivery decision (resolved by parent at delegation):** Slice B ships as the second stacked-to-main unit after #46 (tasks.md Forecast: `Chained PRs recommended: Yes`, `Chain strategy: stacked-to-main`, `400-line budget risk: Medium` for combined A+B; B alone ≈ +445/−27 gross ≈ 472 including the mandated four-host E2E test surface). This phase performed NO branch/PR/commit work (parent-owned per governance rows).
+
+**Strict TDD:** active (`openspec/config.yaml` `strict_tdd: true`, runner vitest, `bun run test`). RED → GREEN per unit executed and recorded below.
+
+**Attempt token (parent-acquired, slice B):** `sha256:9745a972867ee0c5a4796970a7e1325e84497a11b03bc50c3a7e2a77b8842a99`. Recorded here per delegation; no acquire/settle performed by this phase (per delegation instructions).
+
+**Scope honored:** only `configurator/managed-config.ts`, `cmd/commands/capabilities.ts`, and `cmd/__tests__/{install-sync,configurator-transitions,capabilities-doctor}.test.ts`, plus tasks.md B-scope checkboxes and this apply-progress record. Per the design boundary, `cmd/commands/install.ts`, `cmd/commands/sync.ts`, and `cmd/commands/doctor.ts` required NO edit in B: the Pi host flows through `HOST_DIR_MAP`/`detectHosts`/`runConfigDiagnostics` automatically. No `contracts/**`, program-root docs, `agents/**`, `ledger/**`, `receipts/**`, `missions/**`, `evidence/**`, `journal/**`, `flow/**`, `tsconfig*.json`, `package.json`, or root `index.ts` touched. No `drenyra-pi` code imported/invoked and no host-serving integration (that is the pi session's side).
+
+## Phase 0 evidence (B)
+
+- **Revision frozen:** `git rev-parse HEAD` = `14fd4bd1a5a74bbbf19f45e90e1c475f9d292849` (`feat(configurator): per-host pinned runtime composition (SDD-020 slice 2A)`, main after #46). Working tree at baseline: only pre-existing `?? drenyra-ai-0.3.0.tgz`; no tracked source file mutated before baseline capture. `configurator/managed-config.ts` at baseline: `HostName = "codex" | "claude-code" | "opencode"`, `HOST_DIR_MAP` 3 entries, `PINNED_AI_COMPOSITION` exhaustive over 3 hosts (its comment explicitly noted "forces Slice B to add a reviewed `drenyra-pi` entry before it can compile"), `isHostName` 3 literals.
+- **Green baseline:** `bun run test` → **64 files, 859 passed / 859 green, exit 0** (843 slice-1 baseline + 16 slice-A tests).
+- **Protected paths:** same allowlist as A; no B task lists a protected path as an edit target; final scan confirmed none touched.
+
+## Completed tasks (persisted checkboxes verified `[x]` in tasks.md)
+
+Slice B rows B.1–B.6 (7 implementation rows) all `[x]`; the two parent-owned lifecycle rows remain `[ ]` (unchanged from A).
+
+| Task | Summary |
+| --- | --- |
+| B.1 host union/map/isHostName | `HostName = "codex" \| "claude-code" \| "opencode" \| "drenyra-pi"`; `HOST_DIR_MAP["drenyra-pi"] = ".drenyra"` with an in-code decision note: the canonical Pi config directory is the Drenyra-managed home `~/.drenyra` (where the managed manifest already lives); presence of the Pi host = existence of that home; drenyra-ai manages only the marker/skills/pin assets for a present Pi host, never Pi host-serving. `isHostName` accepts the fourth literal. |
+| B.1 exhaustive composition | `PINNED_AI_COMPOSITION["drenyra-pi"] = { runtime: { id: "drenyra-pi", version: 1 }, model: { id: "drenyra-pi-package-default", version: 1 }, tool: { id: "drenyra-ai-host-tools", version: 1 } }` (integer versions; package-owned release data) — the constant is now exhaustive over the 4 hosts and `satisfies Readonly<Record<HostName, PinnedAiCompositionValues>>` still enforces future union/constant parity. Stale "three hosts"/"forces Slice B" wording updated. No adapter edits needed: `install`/`sync`/`doctor`/`upgrade`/`rollback` enumerate hosts via `HOST_DIR_MAP`/`detectHosts`, so the Pi host is detected, rendered, reconciled, and classified automatically. |
+| B.2 capability wording | `capabilities.ts` integrations entry: `"Codex/Claude Code/OpenCode/Drenyra Pi (managed marker/skills/pin configuration)"` — all four hosts named, still no "(planned)" for hosts, and still NO claim of Pi host-serving or program-lock-aware install. Wording-only (no capability surface, no new flags). |
+| B.3 install/sync tests | 2 new tests in `install-sync.test.ts`: (a) `drenyra-pi` detected present when `~/.drenyra` exists and install renders its marker/skills/pin with a recorded managed entry (exact bytes + SHA-256); (b) all four hosts configured with one deterministic pin file each, `pinnedComposition` keys = the four hosts, absent dirs untouched. Existing exhaustive-keys assertion updated to the four-host list. |
+| B.4 doctor tests | 2 new tests + 1 updated wording regression in `capabilities-doctor.test.ts`: (a) four-host fully-managed matrix → healthy, applicable, 4 hosts each `managed`, exit 0; (b) `drenyra-pi` drift (user-authored bytes preserved) then absent (nothing created) named distinctly, exit 1; (c) capabilities wording regression now asserts all four hosts (incl. "Drenyra Pi") are named while host-serving/program-lock claims stay absent and MCP stays "(planned)". Local `HOST_DIR`/`FixtureHostName`/`currentSchema` fixtures extended with the Pi dir. |
+| B.5 four-host E2E | 1 new test in `configurator-transitions.test.ts`: full acceptance flow `install → doctor → sync → upgrade → rollback` across codex, claude-code, opencode, and drenyra-pi — install detects/configures all four with deterministic pin bytes; doctor healthy exit 0 (all `managed`); sync all `synced` (marker + pin per host); upgrade A→B updates all four marker/skills/pin with B bytes (current=B, previous=A, sequence 1 integer); rollback restores A bytes for all four (marker = `renderManagedMarker(INSTALLED)`, pin = `renderPinnedAiRuntime(host)`); second rollback exact zero-write unchanged. Local fixtures extended with the Pi dir. |
+| B.6 verification | Focused 3-file run 55/55; full suite 64 files / 864 passed (859 baseline + 5 new; all green); `bun run typecheck` clean; `bun run build` clean; protected-path scan clean (git status shows only the 5 planned source/test files + pre-existing untracked tgz). |
+
+## Files changed (with authored-line accounting)
+
+| Path | Status | Lines (insertions / deletions) |
+| --- | --- | ---: |
+| `configurator/managed-config.ts` | modified | +31 / −12 |
+| `cmd/commands/capabilities.ts` | modified | +1 / −1 |
+| `cmd/__tests__/install-sync.test.ts` | modified | +94 / −1 |
+| `cmd/__tests__/configurator-transitions.test.ts` | modified | +189 / −1 |
+| `cmd/__tests__/capabilities-doctor.test.ts` | modified | +130 / −12 |
+| `openspec/changes/sdd-020-host-integration/tasks.md` | modified | B-scope checkbox rows + header note |
+| `openspec/changes/sdd-020-host-integration/apply-progress.md` | modified | this B record (appended, A record preserved) |
+| **Net authored total (source + tests)** | | **+445 insertions / −27 deletions (gross ≈472)** |
+
+No `tsconfig*.json`, `package.json`, root `index.ts`, `contracts/**`, docs, `agents/`, `ledger/`, `receipts/`, `missions/`, `evidence/`, `journal/`, `flow/`, or `skills/` changes; `dist/` is a generated build output (gitignored).
+
+## Test commands and exact results
+
+- `bun run test -- cmd/__tests__/install-sync.test.ts` — RED: **3 failed / 9 passed** (type-level: `"drenyra-pi"` not in `HostName`; runtime: `PINNED_AI_COMPOSITION` keys 3 vs 4, only 3 present hosts detected) → GREEN: **12/12**
+- `bun run test -- cmd/__tests__/capabilities-doctor.test.ts` — RED: **3 failed / 21 passed** (wording lacks "Drenyra Pi"; `renderPinnedAiRuntime("drenyra-pi")`/`managedHostPin` TypeError from missing constant entry) → GREEN: **24/24**
+- `bun run test -- cmd/__tests__/configurator-transitions.test.ts` — RED: **1 failed / 18 passed** (four-host E2E: only 3 present hosts detected) → GREEN: **19/19**
+- Focused 3-file run: **3 files, 55 tests passed**
+- `bun run test` (full suite) — **64 files, 864 tests passed** (859 baseline + 5 new; all green)
+- `bun run typecheck` — clean (exit 0)
+- `bun run build` — clean (exit 0)
+
+## TDD Cycle Evidence
+
+| Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| B.1 union/map/isHostName + composition | `install-sync.test.ts` | Unit | ✅ 859/859 | ✅ 3 failed | ✅ 12/12 | ✅ Pi-present detection, four-host install, exhaustive keys, absent dirs untouched | ✅ canonical Pi dir documented in `HOST_DIR_MAP`; stale comments updated |
+| B.2 capability wording | `capabilities-doctor.test.ts` | Unit | ✅ 859/859 | ✅ wording assertion failed | ✅ 24/24 | ✅ four hosts named; host-serving/program-lock still rejected | ✅ wording regression rewritten for B (old regex rejected "Drenyra Pi" — intentionally replaced) |
+| B.4 doctor four-host matrix | `capabilities-doctor.test.ts` | Unit | ✅ 859/859 | ✅ 3 failed | ✅ 24/24 | ✅ fully-managed 4-host healthy + Pi drift/absent distinct states | ✅ local fixtures extended (no duplication) |
+| B.5 four-host lifecycle E2E | `configurator-transitions.test.ts` | Unit | ✅ 859/859 | ✅ 1 failed | ✅ 19/19 | ✅ install→doctor→sync→upgrade→rollback over all 4 hosts + second-rollback idempotency | ✅ reused `HOST_DIR`/`snapshotFiles`/`capture` fixtures |
+
+### Test Summary
+
+- **Total tests written (new)**: 5 (install-sync +2, capabilities-doctor +2 new +1 updated, transitions +1); suite went 859 → 864
+- **Total tests passing**: 864 (full suite, all green)
+- **Layers used**: Unit (5); no network, no real host binaries, isolated `mkdtempSync` homes + injected package versions; the four-host E2E drives the real `installIntegrations`/`syncManaged`/`doctorCommand`/`upgradeCommand`/`rollbackCommand` adapters against one injected home
+- **Pure data added**: `PINNED_AI_COMPOSITION["drenyra-pi"]` entry; no new functions required (the A engine already generalized over `HostName`)
+
+## Deviations from design
+
+1. **Authored-line estimate exceeded again (design 120–200 → actual gross ≈472).** The design's Slice B estimate under-forecast the mandated four-host E2E acceptance flow plus the doctor matrix extension (same pattern as A: the mandated test surface dominates). No required coverage was cut; fixtures were extended, not duplicated. The parent owns the PR/boundary decision (stacked-to-main B PR per the Forecast); this phase takes no delivery action.
+2. **No adapter edits in B.** Design expected "existing configurator/command tests, and one four-host lifecycle test" and no adapter changes; confirmed in practice — `install.ts`/`sync.ts`/`doctor.ts` needed zero edits because host enumeration is library-driven (`HOST_DIR_MAP` + `detectHosts` + `runConfigDiagnostics`). The Pi host participates in install/sync/doctor/upgrade/rollback automatically.
+3. **Slice A's wording regression test was intentionally updated.** A's test asserted the integrations string does NOT match `/drenyra pi|pi host-serving|pi host\b/i`; B deliberately adds "Drenyra Pi" to the wording, so the regression now asserts "Drenyra Pi" IS named while `/host-serving/i` and `/program-lock/i` claims stay absent. The A→B wording intent (no host-serving/program-lock claims) is preserved.
+4. **Pi detection semantics documented.** `drenyra-pi` is present only when `~/.drenyra` (the Drenyra-managed home) exists; on a truly fresh home the first install creates `.drenyra` for the manifest, so the Pi host joins on the next install/sync. The four-host E2E models the documented state (Pi home already present), consistent with the orchestrator's instruction that the managed manifest already lives there.
+5. tasks.md header now scopes both slices; the Forecast rows are unchanged (they describe the A→B split that was executed).
+
+## Remaining tasks (unchecked, persisted in tasks.md)
+
+- Parent-owned: "Start or reuse bounded review for the Slice A candidate after verification is frozen…" — `[ ]` (parent; unchanged from A)
+- Parent-owned: "Deliver Slice A via a PR to `main`…, then open Slice B as a second PR to `main`…" — `[ ]` (parent; A delivered via #46, B delivery pending)
+- Deferred (slice C, unchanged): program-lock-aware install of a genuinely promoted artifact.
+
+## Workload / PR boundary
+
+- **Batch:** SDD-020 slice 2 Slice B, ONE apply unit (this batch), built on main @ 14fd4bd (after #46). This phase created no branch.
+- **Budget:** design estimate 120–200 authored lines; actual gross ≈472 (net +445/−27) — see deviation 1. The A→B split was executed as planned (A in #46, B is the second stacked PR); the combined product stays split into two review units as the Forecast mandates.
+- **Rollback boundary:** revert `configurator/managed-config.ts`, `cmd/commands/capabilities.ts`, `cmd/__tests__/{install-sync,configurator-transitions,capabilities-doctor}.test.ts` to HEAD (14fd4bd); revert the B-scope tasks.md rows. A's pin capability is unaffected by a B revert (B only adds the host + wording + tests).
+
+## Protected-path check (Phase 3)
+
+`git status --porcelain` against baseline: the only tracked changes are the 5 planned files (plus tasks.md/apply-progress.md under `openspec/changes/sdd-020-host-integration/`). No edit touched `contracts/**`, program-root docs (`README.md`/`LICENSE`), `agents/**`, `ledger/**`, `receipts/**`, `missions/**`, `evidence/**`, `journal/**`, `flow/**`, `tsconfig*.json`, `package.json`, or root `index.ts`. Pre-existing untracked `drenyra-ai-0.3.0.tgz` unchanged in nature.
+
+## Spec pass/fail check (B)
+
+| Req / Scenario | Result | Evidence |
+| --- | --- | --- |
+| R1 Per-Host Pin Record — now over 4 hosts | PASS | `HostName` union + `PINNED_AI_COMPOSITION` exhaustive over codex/claude-code/opencode/drenyra-pi (B.1); four-host E2E records pins for all four |
+| R2 Deterministic Pin Rendering Through Install and Sync — Pi host | PASS | install-sync B tests + E2E: `renderPinnedAiRuntime("drenyra-pi")` bytes identical on disk/snapshot/upgrade/rollback; sync `synced` for all four |
+| R3 Doctor Pin Surfacing — Pi host | PASS | doctor B tests + E2E: four-host matrix healthy; Pi drift/absent named distinctly; exit codes 0/1 per convention |
+| R4 Boundary and Invariant Compliance | PASS | no adapter edits, no reverse imports (library untouched in import surface), no host binary invoked, no Pi host-serving integration, allowlisted re-derived paths unchanged |
+| R5 Testability — four-host lifecycle | PASS | one isolated-home E2E covering install → doctor → sync → upgrade → rollback over all four hosts; no network, no real host processes |
+| Capability wording (design) | PASS | `capabilities.ts` names all four managed hosts; no "(planned)" for hosts; no Pi host-serving/program-lock claim |
+| Out of scope (deferred) | — | program-lock-aware install (slice C); Drenyra Pi host-serving (pi session's side, drenyra-pi repo) |
+
+## Evidence revision for settlement
+
+SHA-256 over concatenated current contents (in order) of the 5 implementation-candidate files (`configurator/managed-config.ts`, `cmd/commands/capabilities.ts`, `cmd/__tests__/install-sync.test.ts`, `cmd/__tests__/configurator-transitions.test.ts`, `cmd/__tests__/capabilities-doctor.test.ts`):
+
+```
+dc068c6eddb7be286fc7917a8d3dfd1cf97271689113a3e01e4909d2eb17579c
+```
+
+Attempt token `sha256:9745a972867ee0c5a4796970a7e1325e84497a11b03bc50c3a7e2a77b8842a99` (parent-acquired, slice B) recorded here; no acquire/settle performed by this phase (per delegation instructions). RDD-off clone-local precedent followed (same as the SDD-020 configurator slice, SDD-030, and slice A); no receipt claimed.

@@ -42,12 +42,21 @@ import { BASE_PE_SKILLS } from "../skills/index.js";
     export const MANAGED_FILE = "managed.json";
     export const COMPOSITION_SCHEMA_VERSION = 2;
     
-    /** The three known agent hosts and their home-relative config directories. */
-    const HOST_DIR_MAP: Readonly<Record<HostName, string>> = {
-    	codex: ".codex",
-    	"claude-code": ".claude",
-    	opencode: ".config/opencode",
-    };
+        /**
+         * The four known agent hosts and their home-relative config directories.
+         *
+         * Drenyra Pi's canonical config directory is the Drenyra-managed home
+         * (~/.drenyra), where the managed manifest already lives: a present Pi
+         * host is one whose Drenyra home exists. drenyra-ai manages only the
+         * marker/skills/pin assets inside that directory; Pi host-serving belongs
+         * to the drenyra-pi repository and is never implemented here.
+         */
+        const HOST_DIR_MAP: Readonly<Record<HostName, string>> = {
+        	codex: ".codex",
+        	"claude-code": ".claude",
+        	opencode: ".config/opencode",
+        	"drenyra-pi": ".drenyra",
+        };
     
     /** Managed asset filenames inside a recorded-present host config directory. */
     export const ASSET_FILENAMES = {
@@ -56,7 +65,7 @@ import { BASE_PE_SKILLS } from "../skills/index.js";
     	pin: ".drenyra-pinned-ai-runtime.json",
     } as const;
     
-    export type HostName = "codex" | "claude-code" | "opencode";
+    export type HostName = "codex" | "claude-code" | "opencode" | "drenyra-pi";
     export type ManagedAssetName = keyof typeof ASSET_FILENAMES;
     export type AssetAction = "updated" | "created" | "preserved" | "missing";
     
@@ -260,8 +269,8 @@ export type ConfigDiagnostic = BasicConfigDiagnostic | PinnedAiRuntimeDiagnostic
      * Package-owned deterministic pinned composition for every recognized host
      * (R1, R2; D2). These are release data in the library constant — never
      * derived from program-lock, network, host introspection, user input, or
-     * branch state. The exhaustive `Record<HostName, ...>` forces Slice B to
-     * add a reviewed `drenyra-pi` entry before it can compile.
+     * branch state. The exhaustive `Record<HostName, ...>` keeps every host in
+     * sync with the union: Slice B added the reviewed `drenyra-pi` entry below.
      */
     export const PINNED_AI_COMPOSITION = deepFreeze({
     	codex: {
@@ -277,6 +286,11 @@ export type ConfigDiagnostic = BasicConfigDiagnostic | PinnedAiRuntimeDiagnostic
     	opencode: {
     		runtime: { id: "opencode", version: 1 },
     		model: { id: "opencode-package-default", version: 1 },
+    		tool: { id: "drenyra-ai-host-tools", version: 1 },
+    	},
+    	"drenyra-pi": {
+    		runtime: { id: "drenyra-pi", version: 1 },
+    		model: { id: "drenyra-pi-package-default", version: 1 },
     		tool: { id: "drenyra-ai-host-tools", version: 1 },
     	},
     } as const satisfies Readonly<Record<HostName, PinnedAiCompositionValues>>);
@@ -368,9 +382,14 @@ export type ConfigDiagnostic = BasicConfigDiagnostic | PinnedAiRuntimeDiagnostic
     	return { state: "invalid", invalidReason: reason };
     }
 
-function isHostName(value: unknown): value is HostName {
-	return value === "codex" || value === "claude-code" || value === "opencode";
-}
+    function isHostName(value: unknown): value is HostName {
+    	return (
+    		value === "codex" ||
+    		value === "claude-code" ||
+    		value === "opencode" ||
+    		value === "drenyra-pi"
+    	);
+    }
 
 /** Re-derive a host config dir from the injected home + the fixed mapping. */
 export function reDeriveHostConfigDir(homeDir: string, name: HostName): string {
