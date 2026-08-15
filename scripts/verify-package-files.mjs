@@ -50,10 +50,37 @@ for (const entry of ["dist/receipts/index.d.ts", "dist/missions/index.d.ts"]) {
   check(entry, undefined, undefined);
 }
 
-// Contracts + conformance fixtures ship in the package.
-check("contracts/receipt-schema/fixtures/conformance-vectors.v1.json", undefined, undefined);
-check("contracts/receipt-schema/schemas/signed-receipt.schema.json", undefined, undefined);
-check("contracts/ledger.md", undefined, undefined);
+    // Contracts + conformance fixtures ship in the package.
+    check("contracts/receipt-schema/fixtures/conformance-vectors.v1.json", undefined, undefined);
+    check("contracts/receipt-schema/schemas/signed-receipt.schema.json", undefined, undefined);
+    check("contracts/ledger.md", undefined, undefined);
+
+    // The bundled composition manifest ships in dist/ (SDD-020 slice C): require it
+    // and assert the exact five-key non-carrying contract so a malformed or missing
+    // manifest fails the package gate before publication.
+    const PROMOTED_COMPOSITION_KEYS = [
+      "version",
+      "verifiedRevision",
+      "hostArtifactSha256",
+      "setSha256",
+      "attestationTag",
+    ];
+    check("dist/promoted-composition.json", (p) => {
+      let manifest;
+      try {
+        manifest = JSON.parse(readFileSync(p, "utf8"));
+      } catch {
+        return false;
+      }
+      if (typeof manifest !== "object" || manifest === null || Array.isArray(manifest)) {
+        return false;
+      }
+      const keys = Object.keys(manifest);
+      return (
+        keys.length === PROMOTED_COMPOSITION_KEYS.length &&
+        PROMOTED_COMPOSITION_KEYS.every((key) => keys.includes(key))
+      );
+    }, "dist/promoted-composition.json must be a JSON object with exactly the five promoted-composition keys");
 
 if (errors.length > 0) {
   console.error("verify-package-files: FAILED");

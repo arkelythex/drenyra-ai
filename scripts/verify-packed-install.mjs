@@ -20,9 +20,15 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-const tgzName = `drenyra-ai-${pkg.version}.tgz`;
+    const root = dirname(dirname(fileURLToPath(import.meta.url)));
+    let pkg;
+    try {
+      pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+    } catch (error) {
+      console.error(`verify-packed-install: unreadable package.json (${error instanceof Error ? error.message : String(error)})`);
+      process.exit(1);
+    }
+    const tgzName = `drenyra-ai-${pkg.version}.tgz`;
 const work = mkdtempSync(join(tmpdir(), "drenyra-ai-pack-"));
 const failures = [];
 
@@ -46,14 +52,28 @@ try {
     failures.push("packed bin did not run under plain Node");
   }
 
-  const libPath = join(installDir, "node_modules", "drenyra-ai", "dist", "index.js");
-  try {
-    console.log("resolve: library entry under Node");
-    const probe = `node -e "import('file://${libPath}').then(m => { if (!m.verifySignedReceipt) process.exit(1); console.log('packed-install: library entry resolves — OK'); }).catch(e => { console.error(e); process.exit(1); })"`;
-    execSync(probe, { cwd: installDir, stdio: "inherit" });
-  } catch {
-    failures.push("packed library entry did not resolve under Node");
-  }
+      const libPath = join(installDir, "node_modules", "drenyra-ai", "dist", "index.js");
+      try {
+        console.log("resolve: library entry under Node");
+        const probe = `node -e "import('file://${libPath}').then(m => { if (!m.verifySignedReceipt) process.exit(1); console.log('packed-install: library entry resolves — OK'); }).catch(e => { console.error(e); process.exit(1); })"`;
+        execSync(probe, { cwd: installDir, stdio: "inherit" });
+      } catch {
+        failures.push("packed library entry did not resolve under Node");
+      }
+
+      const manifestPath = join(installDir, "node_modules", "drenyra-ai", "dist", "promoted-composition.json");
+      try {
+        console.log("manifest: installed dist/promoted-composition.json");
+        const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+        const keys = Object.keys(manifest).sort().join(",");
+        if (keys !== "attestationTag,hostArtifactSha256,setSha256,verifiedRevision,version") {
+          failures.push("installed promoted-composition.json is not the five-key manifest");
+        } else {
+          console.log("packed-install: promoted-composition.json present and five-key — OK");
+        }
+      } catch {
+        failures.push("installed dist/promoted-composition.json is missing or invalid");
+      }
 } finally {
   rmSync(work, { recursive: true, force: true });
 }

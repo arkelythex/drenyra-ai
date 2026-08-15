@@ -4,6 +4,7 @@
  * independence, ordering/self-exclusion, fail-closed errors, and verification.
  */
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
 	copyFileSync,
 	existsSync,
@@ -14,12 +15,18 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 
 const SCRIPT_DIR = fileURLToPath(new URL("..", import.meta.url));
-const SCRIPTS = ["sbom.mjs", "checksums.mjs", "verify-release-integrity.mjs"];
+const SCRIPTS = [
+	"sbom.mjs",
+	"checksums.mjs",
+	"verify-release-integrity.mjs",
+	"promoted-composition.mjs",
+	"verify-package-files.mjs",
+];
 const DEPS = { ajv: "^8.17.1", pg: "^8.13.1" };
 const LOCK_PACKAGES: Record<string, unknown> = {
 	ajv: ["ajv@8.20.0", "", { dependencies: { "fast-deep-equal": "^3.1.3" } }, "sha512-ajv"],
@@ -177,6 +184,107 @@ describe("release-integrity evidence", () => {
 		writeFileSync(join(root, "dist", "checksums.txt"), clean.join("\n") + "\n");
 		expect(run(root, "verify-release-integrity.mjs").status).not.toBe(0);
 	});
+});
+
+describe("promoted-composition release coverage (R1, R6)", () => {
+const REV = "d440203183e24b2a0ecf773915888bb6072fc015";
+const HOST_DIGEST =
+"2e3bd07241c250cf00653c346945108529d2fbba04a145bd9e38d938ae949a36";
+const sha256 = (bytes: string) =>
+createHash("sha256").update(bytes, "utf8").digest("hex");
+
+function promotedLock(): Record<string, unknown> {
+const entries = [
+{
+repository: "drenyra-ai",
+revision: REV,
+artifact: "drenyra-ai-0.4.0.tgz",
+sha256: HOST_DIGEST,
+},
+];
+const setSha256 = sha256(JSON.stringify(entries));
+return {
+status: "promoted",
+currentVerified: {
+inspectedRevision: REV,
+host: {
+repository: "drenyra-ai",
+version: "0.4.0",
+commitSha: null,
+},
+},
+checksums: {
+algorithm: "sha256",
+canonicalization: "json-entries-v1",
+entries,
+setSha256,
+},
+attestation: {
+tag: "drenyra-dominion-v0.4.0",
+verifiedRevision: REV,
+checksumSetSha256: setSha256,
+carryingCommitSha: null,
+},
+};
+}
+
+/** The full packaged file set verify-package-files.mjs requires. */
+function addPackageFiles(root: string) {
+const files: Array<[string, string]> = [
+["dist/cmd/cli.js", "#!/usr/bin/env node\nconsole.log('cli');\n"],
+["dist/index.js", "export const x = 1;\n"],
+["dist/index.d.ts", "export declare const x: number;\n"],
+["dist/receipts/index.js", "export const receipts = 1;\n"],
+["dist/ledger/index.js", "export const ledger = 1;\n"],
+["dist/missions/index.js", "export const missions = 1;\n"],
+["dist/candidates/index.js", "export const candidates = 1;\n"],
+["dist/review/index.js", "export const review = 1;\n"],
+["dist/cmd/commands/mission-apply.js", "export const apply = 1;\n"],
+["dist/receipts/index.d.ts", "export declare const receipts: number;\n"],
+["dist/missions/index.d.ts", "export declare const missions: number;\n"],
+[
+"contracts/receipt-schema/fixtures/conformance-vectors.v1.json",
+"{}\n",
+],
+[
+"contracts/receipt-schema/schemas/signed-receipt.schema.json",
+"{}\n",
+],
+["contracts/ledger.md", "# ledger\n"],
+];
+for (const [rel, content] of files) {
+const full = join(root, rel);
+mkdirSync(dirname(full), { recursive: true });
+writeFileSync(full, content);
+}
+}
+
+it("generates the manifest, covers it in checksums.txt, and requires it in verify-package-files.mjs", () => {
+const root = fixture();
+addPackageFiles(root);
+mkdirSync(join(root, "openspec", "programs", "drenyra-dominion"), {
+recursive: true,
+});
+writeFileSync(
+join(
+root,
+"openspec/programs/drenyra-dominion/program-lock.json",
+),
+`${JSON.stringify(promotedLock(), null, 2)}\n`,
+);
+expect(run(root, "promoted-composition.mjs").status).toBe(0);
+expect(read(root, "promoted-composition.json")).toContain(
+'"verifiedRevision"',
+);
+expect(run(root, "sbom.mjs").status).toBe(0);
+expect(run(root, "checksums.mjs").status).toBe(0);
+expect(read(root, "checksums.txt")).toMatch(/promoted-composition\.json/);
+expect(run(root, "verify-package-files.mjs").status).toBe(0);
+rmSync(join(root, "dist", "promoted-composition.json"));
+const missing = run(root, "verify-package-files.mjs");
+expect(missing.status).not.toBe(0);
+expect(missing.stderr).toMatch(/promoted-composition\.json/);
+});
 });
 
 describe("resolved SBOM fidelity", () => {
