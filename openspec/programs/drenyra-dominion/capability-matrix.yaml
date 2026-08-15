@@ -7,26 +7,31 @@
 #   Host facts: verified-current from repository contents + revision-bound runs (E-002/E-004, W2E-001/W2E-002).
 #   Visibility: E-005 + W2E-003 (direct `gh repo view`, PUBLIC, observed 2026-08-15T00:06:08Z).
 #   Sibling-repo facts: narrative claims from the 2026-08-12 checkpoint; unverifiable from this clone -> unknown/awaiting evidence.
+# SDD-010 promotion 2026-08-15 (release-train): fresh revision-bound host facts at d440203 (010E-001..005),
+#   public sibling SHAs/visibility fetched via gh api (010E-006/010E-007, corroborating E-010), host artifact
+#   digest matches the published v0.4.0 release asset (010E-008). The promoted lock (program-lock.json) is the
+#   authoritative current-facts record; this matrix's capability rows remain maturity claims, not SHAs.
 
 program:
   id: drenyra-dominion
   version: 0.1
   stage: private # product stage — narrative claim; independent of license/productStage/sourceAvailability/githubVisibility (R11)
   evidence:
-    inspectedRevision: 549ed64
-    inspectedAt: 2026-08-15T00:06:08Z
+    inspectedRevision: d440203183e24b2a0ecf773915888bb6072fc015
+    inspectedAt: 2026-08-15T07:28:33Z
     vocabulary: status-and-evidence.md §1 (five axes; temporal class required on every numeric/SHA/visibility claim)
-    register: status-and-evidence.md §3 (E-001…E-009)
+    register: status-and-evidence.md §3 (E-001…E-012)
     w2Supplement: apply-progress.md W2 section (W2E-001…W2E-004)
+    sdd010Supplement: openspec/changes/sdd-010-release-train/apply-progress.md §SDD-010 evidence (010E-001…010E-008)
 
 repositories:
   - name: drenyra-ai
     role: authority-core
     package: drenyra-ai
-    version: 0.2.1 # W2E-004 — verified from package.json at 549ed64 (0.2.0 was stale narrative)
-    license: proprietary # W2E-004 — verified from LICENSE at 549ed64
+    version: 0.4.0 # 010E-001 — verified from package.json at d440203 (0.2.1 at 549ed64 was the W2 reconciliation point)
+    license: proprietary # 010E-001 — verified from LICENSE at d440203
     status: pre-alpha
-    github_visibility: public # W2E-003 + E-005 — direct gh repo view 2026-08-15T00:06:08Z
+    github_visibility: public # 010E-005 + E-005 — direct gh repo view 2026-08-15T07:38:15Z, PUBLIC, default branch main = d440203
     source_of_truth_for:
       - contracts
       - missions
@@ -56,7 +61,11 @@ repositories:
       - drenyra-ecosystem-cleanup # archived 2026-08-11
     tests:
       historical: 640 # E-006 — 2026-08-11 snapshot; retained as history (R7), never current
-      current: 774 # W2E-001 — fresh run 2026-08-14T19:03Z at 549ed64, 60 files, exit 0 (corroborates E-002/E-004)
+      current: 915 # 010E-002 — fresh run 2026-08-15T07:28:33Z at d440203, 65 files, exit 0 (supersedes W2E-001 774/774 at 549ed64)
+    sibling_facts:
+      drenyra-engram: PUBLIC main f997abc9cd97551cb0b9cae74623ec1fe002b9d2 (010E-006, 2026-08-15T07:38:12Z; corroborates E-010)
+      drenyra-pi: PUBLIC main 42607035c42901eebadc1bf2879cb09a1416f3b5 (010E-007, 2026-08-15T07:38:14Z; corroborates E-010)
+      drenyra-command-center / drenyra-skills / drenyra-guardian-angel: PRIVATE (E-010) — no credentialed revision evidence; unknown/awaiting-evidence
 
   - name: drenyra-command-center
     role: command-center
