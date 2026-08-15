@@ -261,3 +261,70 @@ grep -n "createRequire|require(" cmd/adapters/package-metadata.ts → no matches
 ```
 
 **Budget:** correction confined to `cmd/adapters/package-metadata.ts` (~11 added / ~4 deleted net), well under the 60-line correction budget; total Slice A authored diff (472 measured / 335 native accounted) remains under the maintainer-approved 500-line one-slice exception. No other file, WIP path, baseline test, frozen contract, or release-integrity path touched. No review/commit/push performed; settlement remains parent-owned.
+
+## Continuation verification — complete-open-quality-parity-tasks (sdd-apply re-verify)
+
+> **Attempt token:** `sha256:16694ac49ec9d69060e2aa51e3d0aae15b4bce941ead428e0bdc99a622e0212f` · **work unit:** `complete-open-quality-parity-tasks` · **session store:** OpenSpec · **Strict TDD:** active (`bun run test`)
+> No code edits were required: all 22 implementation-owned tasks are already checked and committed (`e4661bb`); the only unchecked rows are the two parent-owned lifecycle rows (bounded review + open PR), preserved byte-for-byte and deferred.
+
+### Verification gates re-run at this point (working tree clean at `e4661bb`)
+
+```text
+bunx vitest run cmd/__tests__/capabilities-doctor.test.ts mcp/__tests__/server.test.ts mcp/__tests__/stdio.test.ts
+  → Test Files 3 passed (3) | Tests 16 passed (16) | exit 0
+
+bun run typecheck (tsc --noEmit)
+  → exit 0, no diagnostics
+
+bun run test (full suite)
+  → Test Files 55 passed (55) | Tests 673 passed (673) | exit 0
+```
+
+**Full-suite outcome (honest record):** FULLY GREEN. The three known pre-existing `cmd/__tests__/cli.test.ts` baseline failures have independently cleared since apply; per the spec's "Baseline cleared" scenario the full suite must pass in full and must not recreate old failures — it does (673/673, zero failures attributable to Slice A). Baseline tests were not edited.
+
+### Additional confirmations
+
+- No hardcoded `0.2.0` literal remains in `cmd/` or `mcp/` sources (`grep -rn "0\.2\.0" cmd/ mcp/ --include="*.ts"` → no matches).
+- Slice A files in `e4661bb` measure 334 additions + 105 deletions = 439 changed lines (within the maintainer-approved one-slice 500-line exception; recorded authored 472 / native accounted 335).
+- Allowed-file list respected: no WIP path (`missions/__tests__/postgres.integration.test.ts`, `skills/__tests__/pe-skills.test.ts`, `openspec/changes/fiscal-authority-kernel/apply-progress.md`, `openspec/programs/drenyra-dominion/capability-matrix.yaml`), baseline test, frozen contract, release tooling, or `package.json` version touched.
+- No commits, pushes, PRs, reviews, or destructive actions performed by sdd-apply.
+
+### TDD Cycle Evidence (continuation)
+
+| Step | Command | Result |
+| --- | --- | --- |
+| Verify | `bunx vitest run` (3 focused files) | 3 files / 16 tests passed |
+| Verify | `bun run typecheck` | exit 0, no diagnostics |
+| Verify | `bun run test` (full suite) | 55 files / 673 tests passed, zero failures (baseline cleared) |
+
+No new RED/GREEN cycle was needed: the implementation and its TDD evidence (RED → GREEN → TRIANGULATE → REFACTOR) were completed in the earlier work units recorded above; this continuation only re-verified the persisted implementation.
+
+### Remaining tasks (exact unchecked lines, parent-owned, deferred)
+
+```text
+- [ ] After apply completes and focused suites/typecheck pass, run a bounded review of the Slice A diff before opening the PR. <!-- sdd-owner: parent -->
+- [ ] Open a single PR for Slice A; do not chain. Validate the approved receipt before commit/push/PR per repository policy. <!-- sdd-owner: parent -->
+```
+
+sdd-apply performed none of these; they remain parent-owned lifecycle actions.
+
+## Lifecycle status update — bounded review NOT performed; PR #13 merged (parent-owned, audit synchronization)
+
+> **Change:** `gentle-ai-quality-parity` | **Work unit:** `declared-surface-integrity` (Slice A) | **Recorded by:** parent-owned lifecycle status synchronization
+
+**Bounded review was NOT performed.** The user explicitly disabled Receipt-Driven Development (RDD) at clone scope after the Pi review controller failed to dispatch the selected lens. Public issue references: [#2135](https://github.com/Gentleman-Programming/gentle-ai/issues/2135) and [#2646](https://github.com/Gentleman-Programming/gentle-ai/issues/2646) only. No review receipt exists.
+
+**PR was opened and merged (historical record — supersedes the prior "PR deferred" statement in this section).** Verified against public repository history: Slice A was delivered through PR [#13](https://github.com/arkelythex/drenyra-ai/pull/13) (`docs(program): add Drenyra Dominion Program master + 12 vertical SDDs`), base branch `main`, merged **2026-08-13T02:25:02Z** (merge commit `293523da44132c83af2a0726a4bcd68b16b010df`). PR #13's commit list includes `e4661bbc89aab870fa79e9a063b1f43df016eab3` (`feat(quality): strengthen runtime and release integrity`), and current `origin/main` contains that commit (verified ancestor). The PR bundled the Slice A commit with other docs/release work on the `docs/drenyra-dominion-program` branch; the parent-owned PR lifecycle row is therefore **complete**.
+
+### Status per parent-owned lifecycle row
+
+| Row | Status | Why |
+| --- | --- | --- |
+| Run a bounded review of the Slice A diff before opening the PR | Not performed | User explicitly disabled RDD at clone scope after the Pi review controller failed to dispatch the selected lens (public issue references #2135, #2646). No review receipt exists. |
+| Open a single PR for Slice A; validate the approved receipt before commit/push/PR | **Completed (historical)** | Delivered via PR [#13](https://github.com/arkelythex/drenyra-ai/pull/13), base `main`, merged 2026-08-13T02:25:02Z (merge commit `293523d`); Slice A commit `e4661bb` in the PR commit list, present in `origin/main`. |
+
+### Audit notes
+
+- Only the **bounded-review** parent-owned checkbox remains unchecked in `tasks.md` and this file; the PR row is checked with historical evidence. The review omission stays explicit: RDD remained disabled at clone scope and no review receipt exists.
+- Implementation-owned tasks and prior evidence (TDD cycles, verification gates, budget exception, remediation, continuation verification) are preserved verbatim above; no prior evidence was altered. The prior "PR deferred" statement is superseded by this audit-synchronized record.
+- No source code, tests, contracts, WIP paths, or repository policy files were changed by this lifecycle-status record; no commit, push, or PR was performed by this update.
