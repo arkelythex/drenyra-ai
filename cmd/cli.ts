@@ -41,6 +41,8 @@ import { capabilitiesCommand } from "./commands/capabilities.js";
 import { doctorCommand } from "./commands/doctor.js";
 import { installCommand } from "./commands/install.js";
 import { syncCommand } from "./commands/sync.js";
+import { upgradeCommand } from "./commands/upgrade.js";
+import { rollbackCommand } from "./commands/rollback.js";
 import { mcpServeCommand } from "./commands/mcp-serve.js";
 import { usageError } from "./output/errors.js";
 
@@ -75,6 +77,12 @@ const COMMANDS: Readonly<Record<string, Readonly<Record<string, CommandHandler>>
       },
       sync: {
         run: syncCommand,
+      },
+      upgrade: {
+        run: upgradeCommand,
+      },
+      rollback: {
+        run: rollbackCommand,
       },
       mcp: {
         serve: mcpServeCommand,
@@ -117,6 +125,10 @@ function helpText(): string {
     "    Detect and configure existing agent hosts (never installs a host).",
     "  sync run [--home <dir>]",
     "    Refresh managed assets without overwriting foreign changes.",
+    "  upgrade run <version> [--home <dir>]",
+    "    Transition the managed composition to a packaged version (never installs a host).",
+    "  rollback run [--home <dir>]",
+    "    Restore the previous managed composition (idempotent; never installs a host).",
     "  mcp serve",
     "    Run the MCP server over stdio (JSON-RPC 2.0, one message per line).",
     "",
@@ -143,7 +155,7 @@ async function main(argv: string[]): Promise<number> {
   const handler = COMMANDS[command ?? ""]?.[subcommand ?? ""];
   if (handler === undefined) {
     return usageError(
-      `unknown command "${command ?? ""} ${subcommand ?? ""}"; expected "receipt verify", "ledger validate", "mission start|apply|status|recover", "candidate inspect|verify", or "gate check"`,
+      `unknown command "${command ?? ""} ${subcommand ?? ""}"; expected "receipt verify", "ledger validate", "mission start|apply|status|recover", "candidate inspect|verify", "gate check", "doctor run", "install run", "sync run", "upgrade run", or "rollback run"`,
     );
   }
   return handler(argv.slice(2));

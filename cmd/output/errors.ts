@@ -11,6 +11,7 @@
  */
 
 import { isMissionError, IdempotencyConflict } from "../../missions/index.js";
+import { ManagedConfigError } from "../../configurator/managed-config.js";
 
 /** Human-readable message for any thrown value. */
 export function errorMessage(error: unknown): string {
@@ -54,6 +55,19 @@ export function businessErrorOutput(error: unknown): string {
           message: error.message,
           statusCode: 409,
           details: { key: error.key },
+        },
+      },
+      null,
+      2,
+    );
+  }
+  if (error instanceof ManagedConfigError) {
+    return JSON.stringify(
+      {
+        error: {
+          code: error.code,
+          message: error.message,
+          statusCode: 1,
         },
       },
       null,
