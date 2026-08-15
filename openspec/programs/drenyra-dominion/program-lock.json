@@ -22,7 +22,9 @@
       "010E-004",
       "010E-005",
       "010E-006",
-      "010E-007"
+      "010E-007",
+      "010E-009",
+      "010E-010"
     ],
     "host": {
       "repository": "drenyra-ai",
@@ -46,19 +48,19 @@
     "siblingRepositories": {
       "drenyra-engram": {
         "temporalClass": "current-claim",
-        "commitSha": "f997abc9cd97551cb0b9cae74623ec1fe002b9d2",
+        "commitSha": "94417fd718069007e396b8d674df6ca87dbfd9fb",
         "githubVisibility": "PUBLIC",
         "source": "gh-api",
-        "fetchedAt": "2026-08-15T07:38:12Z",
-        "evidence": "010E-006"
+        "fetchedAt": "2026-08-15T18:21:55Z",
+        "evidence": "010E-009"
       },
       "drenyra-pi": {
         "temporalClass": "current-claim",
-        "commitSha": "42607035c42901eebadc1bf2879cb09a1416f3b5",
+        "commitSha": "340da3b2de7c73bcff007b9fa924d2dac7cd9e2c",
         "githubVisibility": "PUBLIC",
         "source": "gh-api",
-        "fetchedAt": "2026-08-15T07:38:14Z",
-        "evidence": "010E-007"
+        "fetchedAt": "2026-08-15T18:21:55Z",
+        "evidence": "010E-010"
       },
       "drenyra-command-center": {
         "temporalClass": "unknown",

@@ -63,8 +63,8 @@ repositories:
       historical: 640 # E-006 — 2026-08-11 snapshot; retained as history (R7), never current
       current: 915 # 010E-002 — fresh run 2026-08-15T07:28:33Z at d440203, 65 files, exit 0 (supersedes W2E-001 774/774 at 549ed64)
     sibling_facts:
-      drenyra-engram: PUBLIC main f997abc9cd97551cb0b9cae74623ec1fe002b9d2 (010E-006, 2026-08-15T07:38:12Z; corroborates E-010)
-      drenyra-pi: PUBLIC main 42607035c42901eebadc1bf2879cb09a1416f3b5 (010E-007, 2026-08-15T07:38:14Z; corroborates E-010)
+      drenyra-engram: PUBLIC main 94417fd718069007e396b8d674df6ca87dbfd9fb (010E-009, 2026-08-15T18:21:55Z; corroborates E-010)
+      drenyra-pi: PUBLIC main 340da3b2de7c73bcff007b9fa924d2dac7cd9e2c (010E-010, 2026-08-15T18:21:55Z; corroborates E-010)
       drenyra-command-center / drenyra-skills / drenyra-guardian-angel: PRIVATE (E-010) — no credentialed revision evidence; unknown/awaiting-evidence
 
   - name: drenyra-command-center
