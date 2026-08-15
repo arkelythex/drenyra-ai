@@ -47,7 +47,8 @@
     "routing",
     "guardian",
     "adapters",
-    "flow"
+    "flow",
+    "projection"
   ],
   "exclude": [
     "node_modules",

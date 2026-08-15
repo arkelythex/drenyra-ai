@@ -31,6 +31,7 @@ export * from "./adapters/index.js";
 export * from "./routing/index.js";
 export * from "./configurator/index.js";
 export * from "./flow/index.js";
+export * from "./projection/index.js";
 // Explicit re-export resolves the star-export name clash between the routing
 // axis union and missions/reconciliation.ts (both named ExternalEvidence).
 // Routing has no package subpath, so the routing surface must resolve here.

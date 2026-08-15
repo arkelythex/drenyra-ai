@@ -38,7 +38,8 @@
     "./guardian": "./dist/guardian/index.js",
     "./mcp": "./dist/mcp/index.js",
     "./adapters": "./dist/adapters/index.js",
-    "./flow": "./dist/flow/index.js"
+    "./flow": "./dist/flow/index.js",
+    "./projection": "./dist/projection/index.js"
   },
   "scripts": {
     "build": "node scripts/build.mjs",
