@@ -64,6 +64,22 @@ that informs missions but never authorizes them. Serves the ecosystem through
 
 - Max 400 authored lines per review unit; larger changes via chained PRs.
 
+## Governance amendment — non-authorizing context and separation of authority (W3 only)
+
+Allocated to SDD-080 by the Dominion reconciliation (W3 only; not repeated in any
+other SDD). This is a governance clarification of the already-recorded
+non-authorization boundary (R14): it claims no new memory capability (R17).
+
+- **Non-authorizing context:** memory provides prior decisions and context that
+  inform missions; it never authorizes them, and recalled state is never treated
+  as evidence or approval on any surface.
+- **Separation of authority:** no authority state, receipt, or decision logic
+  lives in memory; only the verifiable external response proves, and a surface
+  that accepts memory as evidence violates the boundary.
+- **No capability claim:** this amendment adds no new capability and promotes
+  nothing to `implemented`; the existing non-authorization boundary and
+  EvidenceObject maturity recorded in the capability matrix are unchanged.
+
 ## Progress
 
 - [ ] Exploration

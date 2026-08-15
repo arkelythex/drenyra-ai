@@ -61,6 +61,23 @@ exactly the bytes that could execute and reports findings, nothing more.
 
 - Max 400 authored lines per review unit; larger changes via chained PRs.
 
+## Governance amendment — independent adversarial findings and non-approval (W3 only)
+
+Allocated to SDD-090 by the Dominion reconciliation (W3 only; not repeated in any
+other SDD). This is a governance requirement allocation (R14): it records future
+acceptance wording and does NOT claim the verification lenses exist today (R17).
+
+- **Independent adversarial findings:** Guardian inspects exactly the frozen bytes
+  that could execute and reports findings; findings are advisory records with no
+  authority state of their own.
+- **Non-approval:** Guardian is never part of the approval quorum; a finding — or
+  its absence — neither approves nor blocks on its own, and a candidate change
+  requires a fresh review.
+- **No capability claim:** the adversarial verification lenses (read-only frozen
+  candidates, refutation dual-review, findings resolution) are NOT claimed to
+  exist today; the `partial` posture row in the capability matrix is unchanged,
+  and this amendment promotes nothing to `implemented`.
+
 ## Progress
 
 - [ ] Exploration
