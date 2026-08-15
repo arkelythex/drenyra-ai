@@ -2,7 +2,7 @@
 
 # SDD-070 — Skills and Policy Supply Chain
 
-> Status: PLANNED · Wave: 2 · Depends on: SDD-010 · Feeds: SDD-050
+> Status: lifecycle:active · Maturity: partial (PE skill registry implemented) · Wave: 2 · Depends on: SDD-010 · Feeds: SDD-050
 
 ## Purpose
 
@@ -19,8 +19,9 @@ guarantees that skills are immutable during an active mission.
   the capability matrix).
 - Mission pinning: each mission pins skill versions, normative sources, vigencia,
   checksum, and jurisdiction; a fiscal update affects new missions only.
-- Conformance via `drenyra-ai skills:conformance` (PE IGV validate already
-  implemented).
+- Conformance via vitest suites — `skills/__tests__/pe-skills.test.ts` and
+  `skills/__tests__/registry.test.ts` (PE IGV validate already implemented; there
+  is no `drenyra-ai skills:conformance` CLI command — see reconciliation note).
 
 ## Non-goals
 
@@ -53,7 +54,8 @@ guarantees that skills are immutable during an active mission.
 
 - Checksum/signature verification on every pack.
 - Mission pinning immutability: pinned versions cannot change mid-mission.
-- Conformance suite via `drenyra-ai skills:conformance`; tamper tests.
+- Conformance suite via vitest (`skills/__tests__/pe-skills.test.ts`,
+  `skills/__tests__/registry.test.ts`); tamper tests.
 
 ## Rollback
 
@@ -80,10 +82,54 @@ exist in full today (R17).
   checksum, and jurisdiction; pinned content is immutable for the active mission.
 - **Rollback:** revert to the previous signed pack version; started missions keep
   their pinned versions — rollback never rewrites the past.
-- **No capability claim:** full normative-source tracking, vigencia versioning,
-  checksum/signature, and mission pinning are NOT claimed to exist today; their
-  `partial`/`planned` rows in the capability matrix are unchanged, and this
-  amendment promotes nothing to `implemented`.
+  - **No capability claim:** full normative-source tracking, vigencia versioning,
+      checksum/signature, and mission pinning are NOT claimed to exist today; their
+      `partial`/`planned` rows in the capability matrix are unchanged, and this
+      amendment promotes nothing to `implemented`.
+
+## Reconciliation — 2026-08-15 (vertical-closures)
+
+> Change: `vertical-closures` (documentation-only reconciliation). Records the
+> implemented PE skill-registry slice and the pending supply-chain core; NO
+> lifecycle promotion to `complete` (status-and-evidence rules R3/R4). Evidence
+> axes: lifecycle `active` · evidence `verified-revision-bound` (`6a7f0f7`,
+> suite 843/843) · temporal class `current-claim`.
+
+### Implemented core (real symbols, verified at `6a7f0f7`)
+
+- `skills/registry.ts` — `SkillRegistry`, `computeSkillChecksum` (content-derived),
+  `validateSkill`, `isSkillInForce(skill, at)` (exclusive `to` window, no
+  retroactive change), `compareVersions`.
+- `skills/pe.ts` — `BASE_PE_SKILLS` = `IGV_VALIDATE`, `SIRE_COMPARE`,
+  `DETRACTION_CHECK`, `RETENTION_CHECK`, `PERCEPTION_CHECK`, `SIRE_FILING`.
+- `skills/types.ts` — `SkillDefinition`, `SkillValidity`, `SkillError`,
+  `canonicalSkillJson`.
+- Conformance suites (vitest): `skills/__tests__/pe-skills.test.ts` +
+  `skills/__tests__/registry.test.ts` (checksum, in-force resolution,
+  jurisdiction enforcement, no-retroactive-change).
+
+### Wording correction — `skills:conformance` is a vitest suite, not a CLI command
+
+The record previously stated conformance runs via `drenyra-ai skills:conformance`.
+No such CLI subcommand exists (`cmd/cli.ts` registers no `skills:conformance`;
+grep = zero matches). PE conformance is exercised by the vitest suites listed
+above — there is no CLI command. (The package.json `skills:conformance` script is
+a sibling-manifest drift checker for `drenyra-skills`, not a CLI command of the
+binary.) The record wording is corrected accordingly; no capability is added or
+removed.
+
+### Pending core (follow-up slices, NOT implemented)
+
+- **Signature:** `computeSkillChecksum` provides a checksum but no ed25519
+  signature on packs.
+- **Mission pinning:** no pinning API; `flow/close.ts` passes a bare
+  `igvSkill { id, version }` — no pinned immutable skill set bound to the mission.
+- **Rollback:** no rollback mechanism.
+- **Normative-source tracking:** partial (jurisdiction present on skills).
+
+Capability-matrix rows `vigencia-versioning`/`checksum-signature`/`rollback` stay
+`planned`; `pe-igv-validate` stays `implemented`; nothing is promoted on
+documentary presence alone (R4).
 
 ## Progress
 

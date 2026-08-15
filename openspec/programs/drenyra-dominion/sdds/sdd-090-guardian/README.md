@@ -2,7 +2,7 @@
 
 # SDD-090 — Guardian Angel
 
-> Status: PLANNED · Wave: 2 · Depends on: SDD-040 · Feeds: SDD-100
+> Status: lifecycle:active · Maturity: partial (read-only verification core implemented) · Wave: 2 · Depends on: SDD-040 · Feeds: SDD-100
 
 ## Purpose
 
@@ -73,10 +73,45 @@ acceptance wording and does NOT claim the verification lenses exist today (R17).
 - **Non-approval:** Guardian is never part of the approval quorum; a finding — or
   its absence — neither approves nor blocks on its own, and a candidate change
   requires a fresh review.
-- **No capability claim:** the adversarial verification lenses (read-only frozen
-  candidates, refutation dual-review, findings resolution) are NOT claimed to
-  exist today; the `partial` posture row in the capability matrix is unchanged,
-  and this amendment promotes nothing to `implemented`.
+  - **No capability claim:** the adversarial verification lenses (read-only frozen
+      candidates, refutation dual-review, findings resolution) are NOT claimed to
+      exist today; the `partial` posture row in the capability matrix is unchanged,
+      and this amendment promotes nothing to `implemented`.
+
+## Reconciliation — 2026-08-15 (vertical-closures)
+
+> Change: `vertical-closures` (documentation-only reconciliation). Records the
+> implemented read-only single-review verification core and the pending
+> verification-lens core; NO lifecycle promotion to `complete`
+> (status-and-evidence rules R3/R4). Evidence axes: lifecycle `active` · evidence
+> `verified-revision-bound` (`6a7f0f7`, suite 843/843) · temporal class
+> `current-claim`.
+
+### Implemented core (real symbols, verified at `6a7f0f7`)
+
+- `guardian/guardian.ts` — `runGuardianReview(candidate, options): GuardianReport`.
+  Strictly read-only: `verdict` is always `"none"`; findings only
+  (`GuardianFinding` severity blocker/concern/info; categories scope/materiality/
+  approval/evidence/integrity). Checks: checksummed RUC, valid period,
+  subject-hash integrity, declared materiality tier, R3 dual distinct approvers
+  (`r3DualRequired`), missing-review-history concern. Does not mutate the
+  candidate.
+- `guardian/index.ts` exports it.
+- CLI: `candidate audit <candidate.json>` — "Guardian Angel read-only adversarial
+  review (findings only)" (`cmd/cli.ts`).
+- Tests: `guardian/__tests__/guardian.test.ts`.
+
+### Pending core (follow-up slices, NOT implemented)
+
+- **Refutation dual-review:** no refuter/dual-review symbols (grep for
+  `refutation`/`dual-review`/`refuter` = zero matches).
+- **Findings resolution:** absent.
+- **Full integration:** Command Center (SDD-100) consumption and `close-package`
+  projection remain planned in the capability matrix.
+
+Capability-matrix rows `verification-lenses`/`read-only-frozen-candidates`/
+`refutation-dual-review`/`findings-resolution` stay `planned`; `posture-docs` stays
+`partial`; nothing is promoted on documentary presence alone (R4).
 
 ## Progress
 

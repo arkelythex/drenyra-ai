@@ -2,7 +2,7 @@
 
 # SDD-060 — Multi-Operator Control Plane
 
-> Status: PLANNED · Wave: 3 · Depends on: SDD-050 · Feeds: SDD-100
+> Status: lifecycle:active · Maturity: partial (tenant model implemented) · Wave: 3 · Depends on: SDD-050 · Feeds: SDD-100
 
 ## Purpose
 
@@ -77,11 +77,47 @@ hierarchies, or per-org connectors exist today (R17).
 - **Segregation of duties:** no single identity may both propose and approve the
   same monthly-close step; the R3 distinct-approvers rule is a hard acceptance
   criterion, never a default.
-- **No capability claim:** the RBAC/ABAC authorization engine, per-org policy and
-  approval hierarchies, and tenant-bound connectors are NOT claimed to exist
-  today; the `tenant-core`/`tenant-isolation` maturity already recorded in the
-  capability matrix is unchanged, and this amendment promotes nothing to
-  `implemented`.
+  - **No capability claim:** the RBAC/ABAC authorization engine, per-org policy and
+      approval hierarchies, and tenant-bound connectors are NOT claimed to exist
+      today; the `tenant-core`/`tenant-isolation` maturity already recorded in the
+      capability matrix is unchanged, and this amendment promotes nothing to
+      `implemented`.
+
+## Reconciliation — 2026-08-15 (vertical-closures)
+
+> Change: `vertical-closures` (documentation-only reconciliation). Records the
+> implemented tenant slice and the pending core; NO lifecycle promotion to
+> `complete` (status-and-evidence rules R3/R4 — the declared core is not fully
+> implemented). Evidence axes: lifecycle `active` · evidence
+> `verified-revision-bound` (`6a7f0f7`, suite 843/843) · temporal class
+> `current-claim`.
+
+### Implemented core (real symbols, verified at `6a7f0f7`)
+
+- `tenant-core/validateTenantScope` (`tenant-core/scope.ts`) — atomic fail-closed
+  validation of companyId/RUC/period; plus `tenantScopeKey`, `sameTenantScope`,
+  branded `TENANT_SCOPE_BRAND`, `ValidatedTenantScope`/`TenantScopeError`
+  (`tenant-core/types.ts`).
+- `tenant-isolation/assertTenantReadScope` + `readArtifact`
+  (`tenant-isolation/read.ts`) and `TenantScopedStore<T>` — scoped read with
+  scope revalidation. Note: `index.ts` states "Not yet wired into the package
+  exports"; `package.json` exports `./tenant` → `tenant-core/index.js` only —
+  tenant-isolation is a tested unit, not yet a package export.
+- Tests: `tenant-core/__tests__/scope.test.ts`,
+  `tenant-isolation/__tests__/read.test.ts`,
+  `tenant-isolation/__tests__/import-boundaries.test.ts`.
+
+### Pending core (follow-up slices, NOT implemented)
+
+- **RBAC/ABAC authorization engine** across organizations and roles — absent (no
+  module or symbols).
+- **Per-org policies, approval hierarchies, views, and connectors** — absent.
+- **Segregation of duties:** only the R3 dual-distinct-approvers rule exists
+  (`distinctApprovers` in `gates/approval.ts` + Guardian approval finding), scoped
+  to R3 candidates; there is no organization-wide SoD enforcement.
+
+Capability-matrix rows `tenant-core`/`tenant-isolation` stay `implemented`;
+nothing is promoted on documentary presence alone (R4).
 
 ## Progress
 
