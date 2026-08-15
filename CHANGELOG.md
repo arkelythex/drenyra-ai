@@ -10,7 +10,24 @@ All notable changes to Drenyra AI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
+## [0.4.0] - 2026-08-15
+
+### Added — configurator host integration (SDD-020 slice 2)
+
+- Per-host pinned runtime/model/tool (`PinnedComposition` on the managed manifest, package-local `PINNED_AI_COMPOSITION` constants); `install`/`sync` render the per-host pin asset (`.drenyra-pinned-ai-runtime.json`) with exact-byte ownership; foreign pin files preserved byte-for-byte and classified as a distinct unmanaged state.
+- Doctor `pinned-ai-runtime` diagnostic (managed/foreign/drift/absent); pre-pin manifests fail closed.
+- `drenyra-pi` host added (canonical dir `~/.drenyra`); the four-host E2E (`install → doctor → sync → upgrade → rollback`) across codex, claude-code, opencode, drenyra-pi.
+
+### Added — routing preflight router (SDD-030 slice C)
+
+- `routing/router.ts`: deterministic `route(request)` over the §5 criteria — closed `RouteRequest` (fiscal scope + eight axes), fail-closed `AMBIGUOUS_INPUT`, escalation-only precedence (durable-mission → specialized-agent → direct-analysis), literal authority ceilings (no-mutation / proposes-only / through-core). Propose-only; no execution/materialization/persistence.
+
+### Verification
+
+- Suite 915/915; typecheck and build clean; SBOM + checksums attached.
+
 ## [0.3.0] - 2026-08-15
+
 
 ### Added — configurator (SDD-020 slice 1)
 
