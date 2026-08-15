@@ -2,9 +2,9 @@
 
 # SDD-020 — Universal Agent Configurator
 
-> Status: lifecycle:in-progress · Maturity: partial (upgrade/rollback + doctor depth + per-host pinning + four-host integration implemented; program-lock-aware install pending) · Wave: 1 · Depends on: SDD-010 · Feeds: SDD-100
+> Status: lifecycle:complete (configurator core: install/doctor/sync/upgrade/rollback + per-host pinning + four-host integration + program-lock-aware install) · Maturity: implemented · Wave: 1 · Depends on: SDD-010 · Feeds: SDD-100
 >
-> **Slice 1 delivered 2026-08-15** (change `sdd-020-configurator`, PRs #34/#35):
+> **Slices 1-3 delivered 2026-08-15** (changes `sdd-020-configurator`, `sdd-020-host-integration`, `sdd-020-slice-c`; PRs #34/#35/#46/#47/#55/#56):
 > `configurator/managed-config.ts` library (manifest classification, legacy
 > hydration, SHA-256 assets, atomic plan/commit/rollback, diagnostics) + `upgrade
 > run`/`rollback run` commands + doctor diagnostics depth (drift/pin/prereq) +
