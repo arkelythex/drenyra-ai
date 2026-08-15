@@ -2,7 +2,7 @@
 
 # SDD-020 — Universal Agent Configurator
 
-> Status: lifecycle:in-progress · Maturity: partial (upgrade/rollback + doctor depth implemented; hosts/pinning pending) · Wave: 1 · Depends on: SDD-010 · Feeds: SDD-100
+> Status: lifecycle:in-progress · Maturity: partial (upgrade/rollback + doctor depth + per-host pinning + four-host integration implemented; program-lock-aware install pending) · Wave: 1 · Depends on: SDD-010 · Feeds: SDD-100
 >
 > **Slice 1 delivered 2026-08-15** (change `sdd-020-configurator`, PRs #34/#35):
 > `configurator/managed-config.ts` library (manifest classification, legacy
