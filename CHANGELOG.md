@@ -10,7 +10,14 @@ All notable changes to Drenyra AI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
+## [0.4.1] - 2026-08-15
+
+### Fixed
+
+- `routing/` and `configurator/` modules were shipped in `dist/` but NOT reachable via the package exports map or the root barrel (deep imports failed with `ERR_PACKAGE_PATH_NOT_EXPORTED`). Added the `./routing` and `./configurator` subpaths, re-exported both from the root entry, and added `configurator/index.ts`. Verified CJS + ESM deep imports resolve `route()` and `runConfigDiagnostics`/`PINNED_AI_COMPOSITION`.
+
 ## [0.4.0] - 2026-08-15
+
 
 ### Added — configurator host integration (SDD-020 slice 2)
 
