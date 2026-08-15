@@ -2,7 +2,7 @@
 
 # SDD-060 — Multi-Operator Control Plane
 
-> Status: lifecycle:active · Maturity: partial (tenant model implemented) · Wave: 3 · Depends on: SDD-050 · Feeds: SDD-100
+> Status: lifecycle:active · Maturity: partial (tenant model + RBAC/ABAC + SoD core implemented) · Wave: 3 · Depends on: SDD-050 · Feeds: SDD-100
 
 ## Purpose
 
@@ -121,11 +121,16 @@ nothing is promoted on documentary presence alone (R4).
 
 ## Progress
 
-- [ ] Exploration
-- [ ] Proposal
-- [ ] Specification (RFC 2119 + Given/When/Then)
-- [ ] Design
-- [ ] Tasks (vertical TDD units)
-- [ ] Apply (strict TDD)
-- [ ] Verification report
-- [ ] Archive report
+- [x] Exploration
+- [x] Proposal
+- [x] Specification (RFC 2119 + Given/When/Then)
+- [x] Design
+- [x] Tasks (vertical TDD units)
+- [x] Apply (strict TDD)
+- [x] Verification report
+- [x] Archive report
+
+> Progress reflects the RBAC/ABAC + SoD slice (PR #61, change archived 2026-08-15 at
+> `openspec/changes/archive/2026-08-15-sdd-060-authorization/`). Per-org policy engine, approval
+> hierarchies, views, connectors, canonical operator identity, and live enforcement wiring remain
+> NOT complete — this record stays `lifecycle:active` (R3/R4).
