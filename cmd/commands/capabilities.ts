@@ -25,7 +25,10 @@ export function capabilitiesCommand(): number {
 	const result = {
 		...declared,
 		skills: registry.list().map(({ checksum, ...skill }) => skill),
-		integrations: ["MCP (planned)", "Codex/Claude Code/OpenCode (planned)"],
+		integrations: [
+			"MCP (planned)",
+			"Codex/Claude Code/OpenCode (managed marker/skills/pin configuration)",
+		],
 	};
 	console.log(JSON.stringify(result, null, 2));
 	return 0;

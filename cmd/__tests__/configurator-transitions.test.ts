@@ -33,8 +33,10 @@ import { upgradeCommand } from "../commands/upgrade.js";
 import { rollbackCommand } from "../commands/rollback.js";
 import {
 	hashManagedAsset,
+	managedHostPin,
 	renderManagedMarker,
 	renderManagedSkills,
+	renderPinnedAiRuntime,
 } from "../../configurator/managed-config.js";
 
 const A = "1.2.3";
@@ -96,29 +98,27 @@ function snapshotFiles(root: string): Record<string, string> {
 	return out;
 }
 
-/** Creates a host config dir + managed marker/skills asset exactly as install does. */
-function writeHostAssets(home: string, hostName: string, installedAt: string): void {
+type FixtureHostName = "codex" | "claude-code" | "opencode";
+type FixtureHost = { name: FixtureHostName; present: boolean };
+    
+/** Creates a host config dir + managed marker/skills/pin asset exactly as install does. */
+function writeHostAssets(home: string, hostName: FixtureHostName, installedAt: string): void {
 	const configDir = join(home, HOST_DIR[hostName]!);
 	mkdirSync(configDir, { recursive: true });
 	writeFileSync(join(configDir, ".drenyra-managed"), renderManagedMarker(installedAt));
 	writeFileSync(join(configDir, ".drenyra-skills.json"), renderManagedSkills());
+	writeFileSync(join(configDir, ".drenyra-pinned-ai-runtime.json"), renderPinnedAiRuntime(hostName));
 }
-
-/** A composition snapshot fixture with exact managed-asset bytes. */
+    
+/** A composition snapshot fixture with exact managed-asset bytes (+ pins). */
 function snapshot(
 	version: string,
 	sequence: number,
 	activatedAt: string,
-): {
-	packageVersion: string;
-	sequence: number;
-	activatedAt: string;
-	managedAssets: {
-		marker: { sha256: string; content: string };
-		skills: { sha256: string; content: string };
-	};
-} {
-	return {
+	opts: { pins?: boolean; hosts?: FixtureHost[] } = {},
+): Record<string, unknown> {
+	const hosts = opts.hosts ?? [{ name: "claude-code", present: true }];
+	const base = {
 		packageVersion: version,
 		sequence,
 		activatedAt,
@@ -127,6 +127,12 @@ function snapshot(
 			skills: hashManagedAsset(renderManagedSkills()),
 		},
 	};
+	if (opts.pins === false) return base;
+	const pinnedComposition: Record<string, unknown> = {};
+	for (const h of hosts) {
+		if (h.present) pinnedComposition[h.name] = managedHostPin(h.name);
+	}
+	return { ...base, pinnedComposition };
 }
 
 /** A pre-slice (legacy) manifest fixture. */
@@ -159,12 +165,14 @@ function currentSchemaManifest(
 		activatedAt: string;
 		previous?: unknown;
 		installedAt?: string;
-		hosts?: Array<{ name: string; present: boolean }>;
+		hosts?: FixtureHost[];
+		pins?: boolean;
 	},
 ): Record<string, unknown> {
 	const hosts = (opts.hosts ?? [{ name: "claude-code", present: true }]).map(
 		({ name, present }) => ({ name, configDir: join(home, HOST_DIR[name]!), present }),
 	);
+	const snapshotOpts = { hosts, pins: opts.pins };
 	return {
 		manager: "drenyra-ai",
 		version: opts.version,
@@ -172,8 +180,8 @@ function currentSchemaManifest(
 		hosts,
 		assets: ["skills"],
 		composition: {
-			schemaVersion: 1,
-			current: snapshot(opts.version, opts.sequence, opts.activatedAt),
+			schemaVersion: 2,
+			current: snapshot(opts.version, opts.sequence, opts.activatedAt, snapshotOpts),
 			previous: opts.previous ?? null,
 		},
 	};
@@ -223,12 +231,19 @@ function snapshotContractsAndDocs(): Record<string, string> {
 }
 
 describe("configurator upgrade", () => {
-	it("upgrades A to locally packaged B: current=B, previous=exact A, integer sequence increment, version mirror, assets reflect B, exit 0", () => {
+	it("upgrades A to locally packaged B: current=B with package pin constants, previous=exact A pins, integer sequence increment, version mirror, assets reflect B, exit 0", () => {
 		const { dir, cleanup } = tempHome();
 		try {
 			writeHostAssets(dir, "claude-code", INSTALLED_AT);
-			writeManifest(dir, legacyManifest(dir));
-
+			writeManifest(
+				dir,
+				currentSchemaManifest(dir, {
+					version: A,
+					sequence: 0,
+					activatedAt: INSTALLED_AT,
+				}),
+			);
+    
 			const { code, stdout } = capture(() =>
 				upgradeCommand([B, "--home", dir], {
 					packagedVersion: B,
@@ -248,10 +263,12 @@ describe("configurator upgrade", () => {
 			expect(report.results).toEqual([
 				{ host: "claude-code", asset: "marker", action: "updated" },
 				{ host: "claude-code", asset: "skills", action: "updated" },
+				{ host: "claude-code", asset: "pin", action: "updated" },
 			]);
-
+    
 			const manifest = readManifest(dir);
-			expect(manifest.composition.schemaVersion).toBe(1);
+			expect(manifest.composition.schemaVersion).toBe(2);
+			expect(Number.isInteger(manifest.composition.schemaVersion)).toBe(true);
 			expect(manifest.composition.current.packageVersion).toBe(B);
 			expect(manifest.composition.current.sequence).toBe(1);
 			expect(Number.isInteger(manifest.composition.current.sequence)).toBe(true);
@@ -262,9 +279,14 @@ describe("configurator upgrade", () => {
 			expect(manifest.composition.current.managedAssets.skills.content).toBe(
 				renderManagedSkills(),
 			);
-			// previous is the exact hydrated legacy A
+			// current records B's package pin constants/bytes for the present host
+			const currentPin = manifest.composition.current.pinnedComposition["claude-code"];
+			expect(currentPin.managedAsset.content).toBe(renderPinnedAiRuntime("claude-code"));
+			expect(currentPin.managedAsset.sha256).toMatch(/^[0-9a-f]{64}$/);
+			// previous is the exact recorded A, including A's exact pin records/bytes
 			expect(manifest.composition.previous.packageVersion).toBe(A);
 			expect(manifest.composition.previous.sequence).toBe(0);
+			expect(Number.isInteger(manifest.composition.previous.sequence)).toBe(true);
 			expect(manifest.composition.previous.activatedAt).toBe(INSTALLED_AT);
 			expect(manifest.composition.previous.managedAssets.marker.content).toBe(
 				renderManagedMarker(INSTALLED_AT),
@@ -272,19 +294,28 @@ describe("configurator upgrade", () => {
 			expect(manifest.composition.previous.managedAssets.skills.content).toBe(
 				renderManagedSkills(),
 			);
-			// top-level compatibility mirror + retained legacy fields
+			const previousPin = manifest.composition.previous.pinnedComposition["claude-code"];
+			expect(previousPin.managedAsset.content).toBe(renderPinnedAiRuntime("claude-code"));
+			expect(previousPin.record.host).toBe("claude-code");
+			// top-level compatibility mirror + retained fields
 			expect(manifest.version).toBe(B);
 			expect(manifest.manager).toBe("drenyra-ai");
 			expect(manifest.installedAt).toBe(INSTALLED_AT);
 			expect(manifest.hosts).toHaveLength(1);
 			expect(manifest.assets).toEqual(["skills"]);
-			// managed assets on disk reflect B
+			// managed assets on disk reflect B (pin included)
 			expect(
 				readFileSync(join(dir, ".claude", ".drenyra-managed"), "utf8"),
 			).toBe(renderManagedMarker(ACTIVATED_B));
 			expect(
 				readFileSync(join(dir, ".claude", ".drenyra-skills.json"), "utf8"),
 			).toBe(renderManagedSkills());
+			expect(
+				readFileSync(
+					join(dir, ".claude", ".drenyra-pinned-ai-runtime.json"),
+					"utf8",
+				),
+			).toBe(renderPinnedAiRuntime("claude-code"));
 		} finally {
 			cleanup();
 		}
@@ -354,44 +385,53 @@ describe("configurator upgrade", () => {
 	});
 });
 
-describe("configurator rollback", () => {
-	it("restores the previous composition: current and mirror become A, previous stays A; a second rollback is byte-for-byte unchanged and exits 0", () => {
-		const { dir, cleanup } = tempHome();
-		try {
-			writeHostAssets(dir, "claude-code", ACTIVATED_B);
-			writeManifest(
-				dir,
-				currentSchemaManifest(dir, {
-					version: B,
-					sequence: 1,
-					activatedAt: ACTIVATED_B,
-					previous: snapshot(A, 0, INSTALLED_AT),
-				}),
-			);
-
-			const { code, stdout } = capture(() => rollbackCommand(["--home", dir]));
-			expect(code).toBe(0);
-			const report = JSON.parse(stdout) as {
-				status: string;
-				from: string;
-				to: string;
-				results: Array<{ host: string; asset: string; action: string }>;
-			};
-			expect(report.status).toBe("rolled-back");
-			expect(report.from).toBe(B);
-			expect(report.to).toBe(A);
-			expect(report.results).toEqual([
-				{ host: "claude-code", asset: "marker", action: "updated" },
-				{ host: "claude-code", asset: "skills", action: "updated" },
-			]);
-
-			const manifest = readManifest(dir);
-			expect(manifest.composition.current.packageVersion).toBe(A);
-			expect(manifest.composition.current.sequence).toBe(0);
-			expect(manifest.composition.current.activatedAt).toBe(INSTALLED_AT);
-			expect(manifest.version).toBe(A);
-			// previous stays A (current === previous afterwards)
-			expect(manifest.composition.previous.packageVersion).toBe(A);
+    	describe("configurator rollback", () => {
+    	it("restores the previous composition including the exact previous pin bytes: current and mirror become A, previous stays A; a second rollback is byte-for-byte unchanged and exits 0", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			writeHostAssets(dir, "claude-code", ACTIVATED_B);
+    			writeManifest(
+    				dir,
+    				currentSchemaManifest(dir, {
+    					version: B,
+    					sequence: 1,
+    					activatedAt: ACTIVATED_B,
+    					previous: snapshot(A, 0, INSTALLED_AT),
+    				}),
+    			);
+    
+    			const { code, stdout } = capture(() => rollbackCommand(["--home", dir]));
+    			expect(code).toBe(0);
+    			const report = JSON.parse(stdout) as {
+    				status: string;
+    				from: string;
+    				to: string;
+    				results: Array<{ host: string; asset: string; action: string }>;
+    			};
+    			expect(report.status).toBe("rolled-back");
+    			expect(report.from).toBe(B);
+    			expect(report.to).toBe(A);
+    			expect(report.results).toEqual([
+    				{ host: "claude-code", asset: "marker", action: "updated" },
+    				{ host: "claude-code", asset: "skills", action: "updated" },
+    				{ host: "claude-code", asset: "pin", action: "updated" },
+    			]);
+    
+    			const manifest = readManifest(dir);
+    			expect(manifest.composition.current.packageVersion).toBe(A);
+    			expect(manifest.composition.current.sequence).toBe(0);
+    			expect(manifest.composition.current.activatedAt).toBe(INSTALLED_AT);
+    			expect(manifest.composition.current.pinnedComposition["claude-code"]
+    				.managedAsset.content).toBe(renderPinnedAiRuntime("claude-code"));
+    			expect(manifest.version).toBe(A);
+    			// previous stays A (current === previous afterwards)
+    			expect(manifest.composition.previous.packageVersion).toBe(A);
+    			expect(
+    				readFileSync(
+    					join(dir, ".claude", ".drenyra-pinned-ai-runtime.json"),
+    					"utf8",
+    				),
+    			).toBe(renderPinnedAiRuntime("claude-code"));
 			expect(
 				readFileSync(join(dir, ".claude", ".drenyra-managed"), "utf8"),
 			).toBe(renderManagedMarker(INSTALLED_AT));
@@ -478,6 +518,18 @@ describe("configurator fail-closed state paths", () => {
 				writeManifest(home, m);
 			},
 		},
+		{
+			name: "redirected host path with recorded pins",
+			setup: (home) => {
+				const m = currentSchemaManifest(home, {
+					version: A,
+					sequence: 0,
+					activatedAt: INSTALLED_AT,
+				}) as Record<string, unknown>;
+				(m.hosts as Array<{ configDir: string }>)[0]!.configDir = "/tmp/evil-redirect";
+				writeManifest(home, m);
+			},
+		},
 	];
 
 	for (const c of cases) {
@@ -501,28 +553,23 @@ describe("configurator fail-closed state paths", () => {
 });
 
 describe("configurator legacy compatibility", () => {
-	it("derives A from legacy fields/assets on upgrade, persists A as previous, and retains legacy top-level fields", () => {
+	it("fails closed with MANAGED_STATE_UNKNOWN on a real legacy upgrade (no prior pin bytes) and never invents historical pin state", () => {
 		const { dir, cleanup } = tempHome();
 		try {
 			writeHostAssets(dir, "claude-code", INSTALLED_AT);
 			writeManifest(dir, legacyManifest(dir));
-			const { code } = capture(() =>
+			const before = snapshotFiles(dir);
+			const { code, stdout } = capture(() =>
 				upgradeCommand([B, "--home", dir], {
 					packagedVersion: B,
 					now: () => ACTIVATED_B,
 				}),
 			);
-			expect(code).toBe(0);
-			const manifest = readManifest(dir);
-			// legacy top-level compatibility fields retained
-			expect(manifest.manager).toBe("drenyra-ai");
-			expect(manifest.installedAt).toBe(INSTALLED_AT);
-			expect(manifest.hosts).toHaveLength(1);
-			expect(manifest.assets).toEqual(["skills"]);
-			// previous derived from legacy: sequence 0, activatedAt = installedAt
-			expect(manifest.composition.previous.packageVersion).toBe(A);
-			expect(manifest.composition.previous.sequence).toBe(0);
-			expect(manifest.composition.previous.activatedAt).toBe(INSTALLED_AT);
+			expect(code).toBe(1);
+			const parsed = JSON.parse(stdout) as { error: { code: string } };
+			expect(parsed.error.code).toBe("MANAGED_STATE_UNKNOWN");
+			// no schema migration, no pin bytes fabricated for the old manifest
+			expect(snapshotFiles(dir)).toEqual(before);
 		} finally {
 			cleanup();
 		}
@@ -549,7 +596,7 @@ describe("configurator legacy compatibility", () => {
 });
 
 describe("configurator foreign preservation", () => {
-	it("preserves foreign-modified marker and skills bytes across upgrade and rollback, reports preserved, sentinels untouched", () => {
+	it("preserves foreign-modified marker, skills, and pin bytes across upgrade and rollback, reports preserved, sentinels untouched", () => {
 		const { dir, cleanup } = tempHome();
 		try {
 			// Current-schema A with RECORDED expectations: foreign-modified managed
@@ -566,8 +613,12 @@ describe("configurator foreign preservation", () => {
 			);
 			writeFileSync(join(dir, ".claude", ".drenyra-managed"), "foreign marker bytes");
 			writeFileSync(join(dir, ".claude", ".drenyra-skills.json"), "foreign skills bytes");
+			writeFileSync(
+				join(dir, ".claude", ".drenyra-pinned-ai-runtime.json"),
+				"user-authored pin bytes",
+			);
 			writeFileSync(join(dir, ".claude", "unrelated.txt"), "sentinel");
-
+    
 			const upgrade = capture(() =>
 				upgradeCommand([B, "--home", dir], {
 					packagedVersion: B,
@@ -581,6 +632,7 @@ describe("configurator foreign preservation", () => {
 			expect(upgradeReport.results).toEqual([
 				{ host: "claude-code", asset: "marker", action: "preserved" },
 				{ host: "claude-code", asset: "skills", action: "preserved" },
+				{ host: "claude-code", asset: "pin", action: "preserved" },
 			]);
 			expect(
 				readFileSync(join(dir, ".claude", ".drenyra-managed"), "utf8"),
@@ -588,10 +640,16 @@ describe("configurator foreign preservation", () => {
 			expect(
 				readFileSync(join(dir, ".claude", ".drenyra-skills.json"), "utf8"),
 			).toBe("foreign skills bytes");
+			expect(
+				readFileSync(
+					join(dir, ".claude", ".drenyra-pinned-ai-runtime.json"),
+					"utf8",
+				),
+			).toBe("user-authored pin bytes");
 			expect(readFileSync(join(dir, ".claude", "unrelated.txt"), "utf8")).toBe(
 				"sentinel",
 			);
-
+    
 			const rollback = capture(() => rollbackCommand(["--home", dir]));
 			expect(rollback.code).toBe(0);
 			const rollbackReport = JSON.parse(rollback.stdout) as {
@@ -600,6 +658,7 @@ describe("configurator foreign preservation", () => {
 			expect(rollbackReport.results).toEqual([
 				{ host: "claude-code", asset: "marker", action: "preserved" },
 				{ host: "claude-code", asset: "skills", action: "preserved" },
+				{ host: "claude-code", asset: "pin", action: "preserved" },
 			]);
 			expect(
 				readFileSync(join(dir, ".claude", ".drenyra-managed"), "utf8"),
@@ -607,6 +666,12 @@ describe("configurator foreign preservation", () => {
 			expect(
 				readFileSync(join(dir, ".claude", ".drenyra-skills.json"), "utf8"),
 			).toBe("foreign skills bytes");
+			expect(
+				readFileSync(
+					join(dir, ".claude", ".drenyra-pinned-ai-runtime.json"),
+					"utf8",
+				),
+			).toBe("user-authored pin bytes");
 			expect(readFileSync(join(dir, ".claude", "unrelated.txt"), "utf8")).toBe(
 				"sentinel",
 			);
@@ -617,13 +682,21 @@ describe("configurator foreign preservation", () => {
 });
 
 describe("configurator atomic fail-closed commit", () => {
-	it("restores the prior manifest and assets and removes temp files when a replacement fails mid-commit", () => {
+	it("restores the prior manifest, assets, and pin file, and removes temp files when a replacement fails mid-commit", () => {
 		const { dir, cleanup } = tempHome();
 		try {
 			writeHostAssets(dir, "claude-code", INSTALLED_AT);
-			writeManifest(dir, legacyManifest(dir));
+			writeManifest(
+				dir,
+				currentSchemaManifest(dir, {
+					version: A,
+					sequence: 0,
+					activatedAt: INSTALLED_AT,
+					previous: null,
+				}),
+			);
 			const before = snapshotFiles(dir);
-
+    
 			const { code } = capture(() =>
 				upgradeCommand([B, "--home", dir], {
 					packagedVersion: B,
@@ -638,7 +711,7 @@ describe("configurator atomic fail-closed commit", () => {
 				}),
 			);
 			expect(code).toBe(2);
-			// prior manifest and both assets restored byte-for-byte
+			// prior manifest, marker, skills, and pin file restored byte-for-byte
 			expect(snapshotFiles(dir)).toEqual(before);
 			// no stale temp files remain anywhere under the home
 			const all = snapshotFiles(dir);
@@ -649,7 +722,51 @@ describe("configurator atomic fail-closed commit", () => {
 	});
 });
 
-describe("configurator boundary compliance", () => {
+    describe("configurator pre-pin fail-closed (SDD-020 slice 2)", () => {
+    	it("pre-pin schema-1 current snapshot: same-version upgrade is an unchanged no-op; a real upgrade and a rollback to a pinless previous snapshot fail MANAGED_STATE_UNKNOWN with zero writes", () => {
+    		const { dir, cleanup } = tempHome();
+    		try {
+    			writeHostAssets(dir, "claude-code", INSTALLED_AT);
+    			writeManifest(
+    				dir,
+    				currentSchemaManifest(dir, {
+    					version: A,
+    					sequence: 0,
+    					activatedAt: INSTALLED_AT,
+    					pins: false,
+    					previous: snapshot(A, 0, INSTALLED_AT, { pins: false }),
+    				}),
+    			);
+    			const before = snapshotFiles(dir);
+    
+    			// same-version upgrade: unchanged no-op (idempotency precedes pins)
+    			const same = capture(() =>
+    				upgradeCommand([A, "--home", dir], { packagedVersion: A }),
+    			);
+    			expect(same.code).toBe(0);
+    			expect(JSON.parse(same.stdout).status).toBe("unchanged");
+    			expect(snapshotFiles(dir)).toEqual(before);
+    
+    			// real upgrade needs prior pin bytes the pre-pin manifest cannot supply
+    			const upgrade = capture(() =>
+    				upgradeCommand([B, "--home", dir], { packagedVersion: B }),
+    			);
+    			expect(upgrade.code).toBe(1);
+    			expect(JSON.parse(upgrade.stdout).error.code).toBe("MANAGED_STATE_UNKNOWN");
+    			expect(snapshotFiles(dir)).toEqual(before);
+    
+    			// rollback to a previous snapshot without pins fails the same way
+    			const rollback = capture(() => rollbackCommand(["--home", dir]));
+    			expect(rollback.code).toBe(1);
+    			expect(JSON.parse(rollback.stdout).error.code).toBe("MANAGED_STATE_UNKNOWN");
+    			expect(snapshotFiles(dir)).toEqual(before);
+    		} finally {
+    			cleanup();
+    		}
+    	});
+    });
+    
+    describe("configurator boundary compliance", () => {
 	it("upgrade then rollback invoke no host binary, make no authorization decision, change only allowlisted paths, and leave frozen contracts and program-root docs byte-identical", () => {
 		const { dir, cleanup } = tempHome();
 		try {
@@ -678,10 +795,18 @@ describe("configurator boundary compliance", () => {
 			}
 
 			writeHostAssets(dir, "claude-code", INSTALLED_AT);
-			writeManifest(dir, legacyManifest(dir));
+			writeManifest(
+				dir,
+				currentSchemaManifest(dir, {
+					version: A,
+					sequence: 0,
+					activatedAt: INSTALLED_AT,
+					previous: null,
+				}),
+			);
 			const repoBefore = snapshotContractsAndDocs();
 			const homeBefore = snapshotFiles(dir);
-
+    
 			const upgrade = capture(() =>
 				upgradeCommand([B, "--home", dir], {
 					packagedVersion: B,
@@ -691,12 +816,13 @@ describe("configurator boundary compliance", () => {
 			const rollback = capture(() => rollbackCommand(["--home", dir]));
 			expect(upgrade.code).toBe(0);
 			expect(rollback.code).toBe(0);
-
-			// only allowlisted managed paths changed under home
+    
+			// only allowlisted managed paths changed under home (pin path included)
 			const allowlisted = new Set([
 				join(dir, ".drenyra", "managed.json"),
 				join(dir, ".claude", ".drenyra-managed"),
 				join(dir, ".claude", ".drenyra-skills.json"),
+				join(dir, ".claude", ".drenyra-pinned-ai-runtime.json"),
 			]);
 			const after = snapshotFiles(dir);
 			const changed = Object.keys(after).filter(
