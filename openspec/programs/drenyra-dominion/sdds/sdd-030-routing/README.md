@@ -2,13 +2,22 @@
 
 # SDD-030 — Organic Accounting Work Routing
 
-> Status: lifecycle:in-progress · Maturity: partial (WorkUnit/WorkResult surfaces implemented; preflight router pending) · Wave: 1 · Depends on: SDD-010 · Feeds: SDD-040
+> Status: lifecycle:complete (routing core: WorkUnit/WorkResult + preflight router) · Maturity: implemented · Wave: 1 · Depends on: SDD-010 · Feeds: SDD-040
 >
-> **Slice A+B delivered 2026-08-15** (change `sdd-030-routing`, PRs #39/#40):
+> **Slices A+B delivered 2026-08-15** (change `sdd-030-routing`, PRs #39/#40):
 > new `routing/` module with the immutable `WorkUnit`/`WorkResult` typed
 > surfaces and fail-closed helpers (type-only Core boundaries, branded
 > JsonInteger/Sha256Hash, 9-kind typed stop reasons, injected canonical
-> transition validation, candidate refs by subjectHash, BigInt cents). Suite
+> transition validation, candidate refs by subjectHash, BigInt cents).
+>
+> **Slice C delivered 2026-08-15** (change `sdd-030-router`, PR #49): the
+> deterministic preflight router — `route(request) → ValidationResult<Route>`
+> over the §5 criteria with escalation-only precedence, typed
+> `AMBIGUOUS_INPUT` fail-closed, and inseparable literal authority ceilings
+> (no-mutation / proposes-only / through-core); propose-only invariant (no
+> execution/materialization/persistence). Suite 915/915 green. Follow-ups
+> (NOT this SDD's core): authorized-adapter execution integration (Core
+> determines transitions; adapters execute — later work). Suite
 > 843/843 green. Remaining (slice C, deferred): the preflight router over the
 > §5 criteria.
 
