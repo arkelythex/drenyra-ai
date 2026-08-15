@@ -153,3 +153,8 @@ Before implementing SDD-020: inventory active OpenSpec changes (including
 commercial messages with the private stage; provisionally freeze ICP,
 operators, and first journey; register open-core as intention; build the first
 capability matrix against real repo state. See [gate-0.md](gate-0.md).
+
+**Status (reconciled 2026-08-14):** rows 1, 2, 5, 6 are `satisfied`; row 3 is
+`pending`; row 4 is `approved-pending-evidence`. **SDD-020 is blocked** until
+every required row is satisfied (no waiver recorded). Vocabulary and evidence:
+[status-and-evidence.md](status-and-evidence.md).
