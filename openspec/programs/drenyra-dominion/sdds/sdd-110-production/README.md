@@ -2,7 +2,13 @@
 
 # SDD-110 — Production and Commercial Readiness
 
-> Status: PLANNED · Wave: 4 · Depends on: SDD-100 · Feeds: — (operational)
+> Status: lifecycle:planned · Maturity: absent (not implemented; production operations pending) · Wave: 4 · Depends on: SDD-100 · Feeds: — (operational)
+>
+> **Status note (2026-08-15):** under the five-axis vocabulary
+> ([status-and-evidence.md](../../status-and-evidence.md)) the former `PLANNED`
+> label maps to `lifecycle:planned`. This SDD is NOT implemented: production
+> operations (real KMS/vault, SUNAT/SIRE/ERP/bank connectors, UNKNOWN
+> reconciliation, observability, pilots) are future wave-4 deliverables.
 
 ## Purpose
 

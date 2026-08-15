@@ -2,7 +2,13 @@
 
 # SDD-100 — Professional Command Center
 
-> Status: PLANNED · Wave: 3 · Depends on: SDD-020, SDD-060, SDD-090 · Feeds: SDD-110
+> Status: lifecycle:planned · Maturity: absent (not implemented; Command Center product experience pending) · Wave: 3 · Depends on: SDD-020, SDD-060, SDD-090 · Feeds: SDD-110
+>
+> **Status note (2026-08-15):** under the five-axis vocabulary
+> ([status-and-evidence.md](../../status-and-evidence.md)) the former `PLANNED`
+> label maps to `lifecycle:planned`. This SDD is NOT implemented: the Command
+> Center product experience (SDD-100) is a future wave-3 deliverable consuming
+> SDD-020 configurator, SDD-060 multi-operator, and SDD-090 guardian capabilities.
 
 ## Purpose
 
