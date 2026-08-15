@@ -20,6 +20,8 @@ it is never a second authority and never reconstructs the state machine.
 
 - Portfolio and Mission Workspace (projection of the 15-state lifecycle).
 - Evidence Room, Reconciliation Workspace, and Candidate Review.
+- Evidence Room fidelity: an `EvidenceObject` is displayed as an immutable
+  Engram copy whose authoritative origin remains the external source.
 - Decision Queue (R2/R3 approvals), Guardian Findings, Receipt Explorer, and
   Close Package.
 - Control Center: autonomy configuration within ceilings (never below the
@@ -27,6 +29,9 @@ it is never a second authority and never reconstructs the state machine.
 - Projection of negotiated transitions: render only `status`, `eligibleTransitions`,
   and `nextAction` — deny with code, cause, and continuation.
 - Receipt fidelity: never show "verified" when only a review receipt exists.
+  Engram `SignedReceipt`s prove Engram integrity and `approveMemory` is
+  professional memory review — neither authorizes a fiscal action; only a
+  `drenyra-ai` operation receipt claims the authoritative result.
 
 ## Non-goals
 
@@ -35,6 +40,10 @@ it is never a second authority and never reconstructs the state machine.
   client `approved: true`.
 - No fiscal content authored by the UI; terminology follows professional Spanish
   accounting norms.
+- No Engram artifact rendered as authority: `AccountingMemory`, `EvidenceObject`
+  copies, `approveMemory` approvals, and Engram `SignedReceipt`s never authorize
+  or prove a governed fiscal operation — that belongs to `drenyra-ai` and the
+  enabled professional.
 
 ## Dependencies
 
@@ -57,6 +66,8 @@ it is never a second authority and never reconstructs the state machine.
 - Stale projections deciding transitions on outdated state.
 - Fiscal terminology errors in Spanish user-facing copy.
 - Approval actions trusting client-side state instead of Core recalculation.
+- Engram artifacts (`AccountingMemory`, `EvidenceObject` copies,
+  `approveMemory`, Engram `SignedReceipt`s) rendered as authoritative.
 
 ## Tests and metrics
 

@@ -29,7 +29,10 @@ and a verifiable Close Package. This is the conquest that defines Drenyra v1.
 
 - Drenyra AI never becomes an ERP, bank, or primary accounting ledger.
 - No fiscal data crosses tenants without full context.
-- Engram memory informs the close but is never accepted as evidence.
+- `AccountingMemory` (SDD-080) informs the close but is never accepted as
+  authoritative evidence and never authorizes a governed action.
+- An Engram `EvidenceObject` is an immutable copy of an external artifact; its
+  authoritative origin remains the external source.
 
 ## Dependencies
 
@@ -37,14 +40,14 @@ and a verifiable Close Package. This is the conquest that defines Drenyra v1.
 | --- | --- |
 | SDD-040 | provides — freeze/review/gate/execution mechanics and receipt types |
 | SDD-070 | provides — versioned fiscal skills and policies pinned to the period |
-| SDD-080 | provides — institutional memory context for the close (informs only) |
+| SDD-080 | provides — `AccountingMemory` institutional context for the close (informs only; never authorizes) |
 | SDD-060 | consumes — the close runs for firms and internal teams via the multi-operator plane |
 | SDD-100 | coordinates — Close Package and Evidence Room are projected in Command Center |
 
 ## Input/output contract
 
 - Inputs: ERP exports, SIRE reports, bank statements; pinned skills and policies
-  (SDD-070); memory context (SDD-080).
+  (SDD-070); `AccountingMemory` context (SDD-080, informs only).
 - Outputs: a verifiable monthly close — Close Package receipt, audit-ledger
   entries, exception reports, and full evidence chain.
 
@@ -53,7 +56,8 @@ and a verifiable Close Package. This is the conquest that defines Drenyra v1.
 - Evidence gaps producing assumption instead of wait/block.
 - UNKNOWN external responses misclassified as success or failure.
 - Skill/policy vigencia violations during the close.
-- Altered or forged evidence; cross-tenant leakage; memory accepted as evidence.
+- Altered or forged evidence; cross-tenant leakage; `AccountingMemory` accepted
+  as authoritative evidence.
 
 ## Tests and metrics
 
@@ -96,7 +100,7 @@ baseline `57ea56a` → `9b8aa1c` recorded in the SDD-040 closure; typecheck clea
 | Evidence collection via adapters; absence never zero | `AdapterRegistry` over `REQUIRED_EVIDENCE_SYSTEMS` (`adapters/registry.ts`), `EvidenceAdapter` interface, `LocalFileAdapter` (`adapters/local.ts`); missing evidence returns `waiting-for-evidence` | suite 843/843; `flow/__tests__/close.test.ts` |
 | Candidate generation through RDA v2 | `CandidateLifecycle.propose` (`candidates/lifecycle.ts`, SDD-040 core) | suite 843/843 |
 | Guardian review per candidate | `runGuardianReview` per candidate (`guardian/guardian.ts`, SDD-090 slice); blockers surfaced as risks, receipt skipped | suite 843/843 |
-| Close Package receipt + audit ledger | `buildSignedReceipt` (IGV skill version noted) + `validateLedger`; `ClosePackage { status, scope, sourcesUsed, sourcesMissing, candidates, guardianReports, receipts, ledgerValid, risks }` | suite 843/843; `flow/__tests__/close.test.ts` |
+| Close Package receipt + audit ledger | `buildSignedReceipt` (a `drenyra-ai` close receipt; IGV skill version noted) + `validateLedger`; `ClosePackage { status, scope, sourcesUsed, sourcesMissing, candidates, guardianReports, receipts, ledgerValid, risks }` | suite 843/843; `flow/__tests__/close.test.ts` |
 | E2E close journey | `missions/__tests__/e2e-monthly-close.test.ts` — mission → candidates → receipt → ledger with evidence-gated execution | suite 843/843 |
 | Package export | `flow/index.ts` (`export * from "./close.js"`) | — |
 
@@ -137,7 +141,8 @@ of the deterministic local close core:
 ### Dependency reconciliation (R3)
 
 - Dependencies unchanged: SDD-040 provides the RDA v2 mechanics, SDD-070 provides
-  pinned skills, SDD-080 provides memory context (informs only). Closing this
+  pinned skills, SDD-080 provides `AccountingMemory` context (informs only).
+  Closing this
   record does NOT close those records.
 
 ## Progress
