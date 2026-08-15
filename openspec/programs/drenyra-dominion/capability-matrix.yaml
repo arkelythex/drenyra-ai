@@ -2,19 +2,31 @@
 # First capability matrix against the REAL state of each repository (Gate 0).
 # Status: DRAFT (v0.1) · Generated 2026-08-12 (checkpoint after Phase A) · Recheck at each program checkpoint.
 # Legend: implemented | partial | planned | absent
+# W2 reconciliation 2026-08-15: evidence/freshness metadata added per R6/R13.
+#   Inspected revision: 6326eee (branch sdd/dominion-reconciliation-w1).
+#   Host facts: verified-current from repository contents + revision-bound runs (E-002/E-004, W2E-001/W2E-002).
+#   Visibility: E-005 + W2E-003 (direct `gh repo view`, PUBLIC, observed 2026-08-15T00:06:08Z).
+#   Sibling-repo facts: narrative claims from the 2026-08-12 checkpoint; unverifiable from this clone -> unknown/awaiting evidence.
 
 program:
   id: drenyra-dominion
   version: 0.1
-  stage: private
+  stage: private # product stage — narrative claim; independent of license/productStage/sourceAvailability/githubVisibility (R11)
+  evidence:
+    inspectedRevision: 6326eee
+    inspectedAt: 2026-08-15T00:06:08Z
+    vocabulary: status-and-evidence.md §1 (five axes; temporal class required on every numeric/SHA/visibility claim)
+    register: status-and-evidence.md §3 (E-001…E-009)
+    w2Supplement: apply-progress.md W2 section (W2E-001…W2E-004)
 
 repositories:
   - name: drenyra-ai
     role: authority-core
     package: drenyra-ai
-    version: 0.2.0
-    license: proprietary
+    version: 0.2.1 # W2E-004 — verified from package.json at 6326eee (0.2.0 was stale narrative)
+    license: proprietary # W2E-004 — verified from LICENSE at 6326eee
     status: pre-alpha
+    github_visibility: public # W2E-003 + E-005 — direct gh repo view 2026-08-15T00:06:08Z
     source_of_truth_for:
       - contracts
       - missions
@@ -42,7 +54,9 @@ repositories:
       - fiscal-authority-kernel # in progress (tenant, evidence, journal, policy, CDR)
       - bounded-agent-roles
       - drenyra-ecosystem-cleanup # archived 2026-08-11
-    tests: 640
+    tests:
+      historical: 640 # E-006 — 2026-08-11 snapshot; retained as history (R7), never current
+      current: 774 # W2E-001 — fresh run 2026-08-14T19:03Z at 6326eee, 60 files, exit 0 (corroborates E-002/E-004)
 
   - name: drenyra-command-center
     role: command-center
@@ -65,7 +79,8 @@ repositories:
       close-package: planned # SDD-050/100
       control-center-autonomy: planned # SDD-100
     active_changes: []
-    tests: 209
+    tests: unknown # 2026-08-12 narrative claim; awaiting sibling-repository evidence (R13)
+    evidence: historical-snapshot # row facts unverified from this clone; see program.evidence (R6)
 
   - name: drenyra-pi
     role: agentic-runtime
@@ -85,7 +100,8 @@ repositories:
       pinned-ai-runtime: partial
       configurator-install-doctor-sync: planned # SDD-020
     active_changes: []
-    tests: partial
+    tests: unknown # 2026-08-12 narrative claim; awaiting sibling-repository evidence (R13)
+    evidence: historical-snapshot # row facts unverified from this clone; see program.evidence (R6)
 
   - name: drenyra-engram
     role: institutional-memory
@@ -106,7 +122,8 @@ repositories:
       cross-tenant-isolation: implemented
     active_changes:
       - audit-register-closure
-    tests: go-test-suite (40+ baseline, growing)
+    tests: unknown # 2026-08-12 narrative claim; awaiting sibling-repository evidence (R13)
+    evidence: historical-snapshot # row facts unverified from this clone; see program.evidence (R6)
 
   - name: drenyra-skills
     role: knowledge-content
@@ -124,7 +141,8 @@ repositories:
       rollback: planned # SDD-070
       latam-policy-packs: planned # future
     active_changes: []
-    tests: conformance via drenyra-ai skills:conformance
+    tests: unknown # 2026-08-12 narrative claim; awaiting sibling-repository evidence (R13)
+    evidence: historical-snapshot # row facts unverified from this clone; see program.evidence (R6)
 
   - name: drenyra-guardian-angel
     role: independent-verification
@@ -139,7 +157,8 @@ repositories:
       refutation-dual-review: planned # SDD-090
       findings-resolution: planned # SDD-090
     active_changes: []
-    tests: none yet
+    tests: unknown # 2026-08-12 narrative claim; awaiting sibling-repository evidence (R13)
+    evidence: historical-snapshot # row facts unverified from this clone; see program.evidence (R6)
 
 invariants:
   - no-component-approves-itself

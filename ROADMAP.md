@@ -1,7 +1,8 @@
 # Drenyra AI — Roadmap
 
 > [!NOTE]
-> **Last updated:** 2026-08-10. Status: released (all six contracts frozen), repository private.
+> **Last updated:** 2026-08-15. Status: released (all six contracts frozen).
+> **GitHub repository visibility:** `public` — directly verified via `gh repo view arkelythex/drenyra-ai` → `{visibility: PUBLIC, isPrivate: false, defaultBranch: main}` (E-005, observed 2026-08-14T20:57:27Z; refreshed W2E-003, observed 2026-08-15T00:06:08Z). The prior "repository private" claim is stale and superseded by direct metadata — retained as history, not falsified (R7/R11). `license`, `productStage`, `sourceAvailability`, and `githubVisibility` remain independent fields; none is inferred from another.
 
 <!-- -->
 
@@ -15,6 +16,8 @@
 ## Program alignment
 
 The [Drenyra Dominion Program](openspec/programs/drenyra-dominion/README.md) fixes the ecosystem's vision, authority, contracts, waves, and gates; this roadmap tracks this repository's local delivery against it.
+
+> Dominion checkpoint 2026-08-15 (W2): program status reconciled at `6326eee` — see [status-and-evidence.md](openspec/programs/drenyra-dominion/status-and-evidence.md) (evidence register E-001…E-009; W2 supplement W2E-001…W2E-004), [gate-0.md](openspec/programs/drenyra-dominion/gate-0.md), and [capability-matrix.yaml](openspec/programs/drenyra-dominion/capability-matrix.yaml). SDD-020 remains **blocked** pending Gate 0 rows 3–4.
 
 | Roadmap work | Dominion wave | Related SDDs |
 | --- | --- | --- |

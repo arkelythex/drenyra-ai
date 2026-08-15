@@ -1,5 +1,9 @@
 # Apply Progress — Dominion Program Status Reconciliation
 
+> **Updated (W2 batch):** 2026-08-15T00:06:08Z — W2 (composition and visibility)
+> applied in this batch; the W1 record below is preserved in full. See the W2
+> section at the end of this file.
+
 ## Work unit status
 
 - **Unit:** W1 — vocabulary and gate (only W1 applied in this batch)
@@ -181,4 +185,83 @@ All 8 protected paths byte-for-byte identical before and after W1. `git diff --n
 | R15 protected-path isolation | ✅ hashes byte-identical; no non-allowlisted path changed |
 | R16 ecosystem-coherence boundary | ✅ pointer only in gate-0.md §4; no copied/modified records |
 | R17 no capability implementation | ✅ docs-only |
-| R18 bounded evidence-backed edits | ✅ 262 lines < 300; every current claim evidence-backed |
+
+    | R18 bounded evidence-backed edits | ✅ 262 lines < 300; every current claim evidence-backed |
+
+---
+
+## W2 — composition and visibility (this batch)
+
+## Work unit status (W2)
+
+- **Unit:** W2 — composition and visibility (only W2 applied in this batch; W1 record above preserved in full)
+- **Date (UTC):** 2026-08-15T00:06:08Z (edits + readback same session)
+- **Inspected revision:** `6326eee` (`6326eeed7c75c5db165f8f9919744cc55028d7e1`, branch `sdd/dominion-reconciliation-w1`, W1 commit) — W2 edits build on W1
+- **Runtime attempt token (W2):** `sha256:c9147c7b8e7e8422efb4ab5b8cc27bc7a9b38cfcb814d725c76a70f0e6781364` (parent-provided, already acquired)
+- **Delivery decision:** stacked-to-main (parent-resolved); W2 measured **165** changed lines (< 300)
+
+## W2 supplementary evidence (defined here, NOT in status-and-evidence.md — W1-owned)
+
+W2 artifacts cite the W1 register E-IDs (E-002, E-004, E-005, E-006…) plus the following W2-owned supplement. Resolution rule: E-*resolve in `status-and-evidence.md` §3; W2E-* resolve in this section.
+
+| `claimId` | Axis / value | Temporal class | Source kind | Source locator | Repository identity | Revision | Captured at (UTC) | Verification method | Freshness |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| W2E-001 | evidence — test suite | current-claim (revision-bound) | executable-verification | `bun run test` (vitest) | arkelythex/drenyra-ai | 6326eee | 2026-08-14T19:03Z (parent-captured fresh run) | Fresh run: 60 files, 774/774 passed, exit 0 | verified-revision-bound (6326eee) — corroborates E-002/E-004 |
+| W2E-002 | evidence — typecheck | current-claim (revision-bound) | executable-verification | `bun run typecheck` (tsc --noEmit) | arkelythex/drenyra-ai | 6326eee | 2026-08-14T19:03Z (parent-captured) | Fresh run: clean, exit 0 | verified-revision-bound (6326eee) |
+| W2E-003 | evidence — GitHub visibility | current-claim (observation-scoped) | github-metadata | `gh repo view arkelythex/drenyra-ai --json nameWithOwner,visibility,isPrivate,defaultBranchRef,url,pushedAt` | arkelythex/drenyra-ai | n/a (live) | 2026-08-15T00:06:08Z (fresh query by W2 writer) | Direct API query: visibility PUBLIC, isPrivate false, defaultBranch main, url <https://github.com/arkelythex/drenyra-ai> | verified-current (observation-scoped) — corroborates E-005 |
+| W2E-004 | evidence — host version/license | current-claim | repository | `package.json` (version 0.2.1), `LICENSE` (proprietary) | arkelythex/drenyra-ai | 6326eee | 2026-08-15T00:06:08Z | Read at inspected revision | verified-current (tree == inspected) |
+
+Notes:
+
+- W2E-001/W2E-002 are revision-bound to `6326eee` (the tree at capture); W2's docs-only edits do not touch runtime, and Phase 4 re-runs `bun run test`/`bun run typecheck` at the merged candidate as final proof.
+- W2E-003 is the W2 fresh visibility observation; E-005 remains the W1 observation (2026-08-14T20:57:27Z). Both are direct metadata for the exact repository identity.
+- W2E-004 reconciles the matrix/lock `0.2.0` narrative claim to `0.2.1` per precedence level 1 (current repository contents over narrative).
+
+## Files changed (exact W2 allowlist; 5 paths)
+
+| Path | Change | Lines (adds+dels) |
+| --- | --- | --- |
+| `openspec/programs/drenyra-dominion/capability-matrix.yaml` | W2 evidence/freshness block (program.evidence), version 0.2.0→0.2.1 (W2E-004), `github_visibility` (W2E-003/E-005), tests split historical 640 (E-006) / current 774 (W2E-001), sibling rows → `unknown` + `historical-snapshot` markers (R6/R13) | 37 |
+| `openspec/programs/drenyra-dominion/program-lock.json` | `snapshot` (historical) + `currentVerified` (current-claim, revision-bound, host commitSha null — no self-reference) blocks; per-repo `temporalClass: historical-snapshot`; drenyra-ai `conformanceNote` (640 superseded by W2E-001) | 42 |
+| `openspec/programs/drenyra-dominion/program-lock.schema.json` | `snapshot` + `currentVerified` + repo `temporalClass`/`conformanceNote` properties only; valid against draft-07 meta-schema and lock validates against it | 54 |
+| `openspec/programs/drenyra-dominion/delivery-sequence.md` | New §1.1 (lock freshness, promotion, bootstrap, readback) + §4 step-4 freshness clause | 27 |
+| `ROADMAP.md` | Visibility sentence (PUBLIC, E-005 + W2E-003 with observation timestamps; stale "private" claim superseded, not falsified; independent fields) + Dominion checkpoint reference (SDD-020 blocked pending Gate 0 rows 3–4) | 5 |
+| **Total** | | **165** (< 300) |
+
+`git diff --name-only` shows exactly these 5 allowlisted paths plus the pre-existing user-modified protected README.md (hash unchanged from baseline; not part of W2).
+
+## W2 readback and integrity results
+
+- ✅ JSON validates against the updated lock schema (draft-07 validator); schema valid against draft-07 meta-schema
+- ✅ YAML parses; matrix assertions hold (640 historical + 774 current; version 0.2.1)
+- ✅ Evidence IDs resolve: cited E-IDs {E-001, E-002, E-004, E-005, E-006, E-009} all defined in W1 register; cited W2E-IDs {W2E-001…W2E-004} defined in the W2 supplement above
+- ✅ 640-test checkpoint remains historical (matrix `historical: 640` E-006; lock conformanceNote labels 640 a snapshot claim superseded by W2E-001); CLI-failure baseline remains historical in W1 register (E-007) — not presented as current anywhere
+- ✅ Visibility metadata-backed: W2E-003 (fresh `gh repo view`, PUBLIC, 2026-08-15T00:06:08Z) + E-005; `license`/`productStage`/`sourceAvailability`/`githubVisibility` kept independent
+- ✅ Exactly 12 canonical SDDs (SDD-000…SDD-110 by tens, directory enumeration)
+- ✅ `status-and-evidence.md` byte-for-byte as W1 produced it (hash `8c7a7de9…` unchanged; not edited)
+- ✅ Protected-path hashes all byte-identical to the W1 manifest (pre == post)
+- ✅ Changed lines 165 < 300
+- ✅ W2 delivery verification (local): changed-path set = W2 allowlist exactly; rendered text preserves evidence IDs and historical/current labels (GitHub-rendered text re-check deferred to the PR gate per §5 of tasks.md; no commit/PR opened in this batch)
+
+### Strict TDD — docs-only rationale (W2)
+
+No production code, tests, or runtime artifacts exist for this unit (R17). The applicable verification is the structural readback above plus the unchanged green suite at `6326eee` (W2E-001, parent-captured fresh run 2026-08-14T19:03Z). No RED test can reference code this unit must not create. Phase 4 re-runs the suite at the merged candidate.
+
+## Deviations from design (W2)
+
+- None structural. Two reconciliation outcomes worth recording:
+  - `capability-matrix.yaml` host `version` 0.2.0 → **0.2.1** (W2E-004): precedence level 1 (package.json at 6326eee) beats the 2026-08-12 narrative claim.
+  - Sibling-repository `tests` values (209 / partial / go-test-suite… / conformance-via… / none yet) → **`unknown`** with `historical-snapshot` row markers: unverifiable from this clone (R13), recorded as awaiting evidence, not deleted.
+- Lock keeps the prior snapshot intact under `snapshot` and adds `currentVerified`; no self-reference (`currentVerified.host.commitSha` is `null`; `inspectedRevision` is the W1 commit `6326eee`, an ancestor of the future lock commit, explicitly not the lock commit itself).
+
+## Remaining tasks (exact unchecked lines in tasks.md)
+
+- Phase 3 W3: Amendments 1–4 + readback + delivery verification (6 rows)
+- Phase 4: catalog enumeration, protected hashes on merged candidate, `bun run test`/`typecheck`, spec requirement pass/fail, Gate 0 SDD-020 confirmation (5 rows)
+- Parent-owned: post-apply bounded review; open the 3 chained PRs W1→W2→W3; record SDD-020 blocked/permitted in Gate 0 (3 rows)
+
+## Workload / PR boundary (W2)
+
+- W2 changed lines: **165** (< 300). Cumulative forecast 480–630 across W1(262)+W2(165)+W3 — chained PRs required (stacked-to-main).
+- W2 → W3 dependency preserved (W3 amendments consume W1 vocabulary).
+- Rollback (W2): revert only the five W2 paths to the prior snapshot; prior lock retained as historical; no self-reference introduced.
