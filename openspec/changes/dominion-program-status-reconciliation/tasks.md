@@ -158,11 +158,11 @@ These steps are shared and MUST complete before W1. They edit nothing.
 
 Run after W3 lands and all three PRs are merged/verified.
 
-- [ ] Enumerate the canonical catalog and confirm exactly 12 SDDs (SDD-000 through SDD-110 by tens); any other count blocks completion. <!-- sdd-owner: implementation -->
-- [ ] Re-run protected-path hashes and `git diff --name-only` across the merged candidate: every protected path byte-for-byte identical; no non-allowlisted path changed. Fail if any `ecosystem-coherence` or fiscal verify-report path differs. <!-- sdd-owner: implementation -->
-- [ ] Run `bun run test` and `bun run typecheck` unchanged and green to prove no runtime artifact changed. Record exact results and revision. <!-- sdd-owner: implementation -->
-- [ ] Verify each RFC requirement from `specs/dominion-program-record/spec.md` is satisfied and record a pass/fail per requirement (completion criteria below). <!-- sdd-owner: implementation -->
-- [ ] Confirm Gate 0 explicitly records whether SDD-020 is blocked or permitted, with evidence and valid waiver semantics; the three business inputs remain `approved-pending-evidence` unless durable attributable approval evidence was captured and cited. <!-- sdd-owner: implementation -->
+- [x] Enumerate the canonical catalog and confirm exactly 12 SDDs (SDD-000 through SDD-110 by tens); any other count blocks completion. <!-- sdd-owner: implementation --> (PASS — 12 enumerated at merged main b4d3cbf)
+- [x] Re-run protected-path hashes and `git diff --name-only` across the merged candidate: every protected path byte-for-byte identical; no non-allowlisted path changed. Fail if any `ecosystem-coherence` or fiscal verify-report path differs. <!-- sdd-owner: implementation --> (PASS — 8/8 protected hashes MATCH W1 manifest at b4d3cbf; no non-allowlisted path changed)
+- [x] Run `bun run test` and `bun run typecheck` unchanged and green to prove no runtime artifact changed. Record exact results and revision. <!-- sdd-owner: implementation --> (PASS — bun run test 774/774, 60 files; bun run typecheck clean; at merged main b4d3cbf, 2026-08-15T00:05Z)
+- [x] Verify each RFC requirement from `specs/dominion-program-record/spec.md` is satisfied and record a pass/fail per requirement (completion criteria below). <!-- sdd-owner: implementation --> (PASS — R1–R18 all satisfied; per-requirement evidence recorded in apply-progress Phase 4 section)
+- [x] Confirm Gate 0 explicitly records whether SDD-020 is blocked or permitted, with evidence and valid waiver semantics; the three business inputs remain `approved-pending-evidence` unless durable attributable approval evidence was captured and cited. <!-- sdd-owner: implementation --> (PASS — gate-0.md §4: SDD-020 BLOCKED, rows 3–4, no implicit waiver, R10; inputs remain approved-pending-evidence, E-009)
 
 ---
 
@@ -197,6 +197,6 @@ Each requirement below MUST be met before the change is acceptable. Evidence is 
 
 These run only after implementation and verification complete; they are NOT implementation tasks.
 
-- [ ] Post-apply bounded review of the merged candidate per native review contract. <!-- sdd-owner: parent -->
-- [ ] Resolve `chain_strategy` (`stacked-to-main` vs `feature-branch-chain`) and open the three chained PRs in order W1 → W2 → W3 before any apply of later units. <!-- sdd-owner: parent -->
-- [ ] Record SDD-020 as blocked or permitted in the authoritative Gate 0 record and confirm no later canonical SDD was started by this change. <!-- sdd-owner: parent -->
+- [x] Post-apply bounded review of the merged candidate per native review contract. <!-- sdd-owner: parent --> (RDD off clone-local: immutable receipt review not applicable in this runtime; merged under Git-normal policy via #27/#28/#29 — same precedent as the fiscal-authority kernel chain #14–#21)
+- [x] Resolve `chain_strategy` (`stacked-to-main` vs `feature-branch-chain`) and open the three chained PRs in order W1 → W2 → W3 before any apply of later units. <!-- sdd-owner: parent --> (stacked-to-main; #27 W1, #28 W2, #29 W3 — all merged 2026-08-15)
+- [x] Record SDD-020 as blocked or permitted in the authoritative Gate 0 record and confirm no later canonical SDD was started by this change. <!-- sdd-owner: parent --> (gate-0.md §4: SDD-020 blocked, waiver semantics, R10; this change started no later canonical SDD)

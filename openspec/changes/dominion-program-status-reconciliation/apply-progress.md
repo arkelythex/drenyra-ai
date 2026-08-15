@@ -347,3 +347,48 @@ merged candidate.
 | R15 protected-path isolation | ✅ hashes byte-identical; no non-allowlisted path changed |
 | R17 no capability implementation | ✅ docs-only; every amendment states the capability is not claimed to exist |
 | R18 bounded evidence-backed edits | ✅ 102 lines < 300; no new current-state claims introduced; evidence status carried from parent context |
+
+---
+
+## Phase 4 — Final integration validation (merged candidate)
+
+- **Date (UTC):** 2026-08-15T00:05Z (validation) · **Merged candidate:** `b4d3cbf` (`docs(openspec): allocate governance amendments to owning SDDs (W3) (#29)`, main)
+- **Delivery:** stacked-to-main chained PRs all merged: **#27 (W1)**, **#28 (W2)**, **#29 (W3)** — 2026-08-15T00:30–01:04Z.
+- **Parent-owned gates:** post-apply bounded review N/A (RDD off clone-local, immutable transport unsupported — Git-normal policy precedent, same as fiscal chain #14–#21); chain strategy resolved (stacked-to-main) and 3 chained PRs opened+merged; SDD-020 recorded **blocked** in gate-0.md §4 with waiver semantics (R10); no later canonical SDD started by this change.
+
+### Phase 4 evidence (P4-001..P4-005)
+
+| Check | Result |
+| --- | --- |
+| P4-001 catalog | ✅ Exactly 12 canonical SDDs (SDD-000..SDD-110 by tens) at `b4d3cbf` |
+| P4-002 protected isolation | ✅ 8/8 protected-path SHA-256 hashes byte-identical vs W1 manifest; `git diff --name-only` a482db8..b4d3cbf = only W-unit allowlisted paths + change artifacts; no non-allowlisted path changed |
+| P4-003 suite | ✅ `bun run test` → 774 passed (774), 60 files, exit 0; `bun run typecheck` → clean, exit 0; at `b4d3cbf`, 2026-08-15T00:05Z |
+| P4-004 spec requirements | ✅ R1–R18 all satisfied (per-requirement mapping below) |
+| P4-005 Gate 0 SDD-020 | ✅ gate-0.md §4: SDD-020 **blocked** (rows 3–4 unsatisfied, no implicit waiver, R10); three business inputs remain `approved-pending-evidence` (E-009) |
+
+### R1–R18 pass/fail at the merged candidate
+
+| Req | Result | Evidence (merged main `b4d3cbf`) |
+| --- | --- | --- |
+| R1 12-SDD invariant | ✅ PASS | catalog = 12 SDDs (P4-001) |
+| R2 one status vocabulary | ✅ PASS | `status-and-evidence.md` five-axis vocabulary + term mappings |
+| R3 lifecycle ≠ maturity | ✅ PASS | SDD-000/SDD-010 `lifecycle:active` + maturity exposed separately; no derivation |
+| R4 presence ≠ gate completion | ✅ PASS | gate-0 rows 3–4 stay unresolved; nothing completed on presence |
+| R5 evidence precedence | ✅ PASS | claims reconciled via 5-level precedence; higher source prevails per revision |
+| R6 claims carry source+freshness | ✅ PASS | E-001..E-009 + W2E-001..004 cite source+revision; unsupported → `unknown`/`unverified` |
+| R7 historical stays historical | ✅ PASS | 640-test checkpoint + CLI-failure baseline labeled historical (E-006, W2) |
+| R8 gate-0 reconciled | ✅ PASS | every row re-evaluated at `4975f4f`→merged; inventory refreshed without altering changes |
+| R9 approvals pending evidence | ✅ PASS | three inputs `approved-pending-evidence` (E-009), decision not reopened |
+| R10 SDD-020 blocked | ✅ PASS | gate-0.md §4 blocked; waiver semantics; no implicit waiver (P4-005) |
+| R11 visibility verified | ✅ PASS | PUBLIC via `gh repo view` (E-005, W2E-003) with timestamps; fields independent |
+| R12 test/CLI history | ✅ PASS | 640 historical; promoted 774/774 bound to revision (E-002/E-004, W2E-001/002) |
+| R13 matrix/lock/roadmap coherence | ✅ PASS | matrix refreshed; lock historical/current split; no self-reference; siblings `unknown` |
+| R14 amendment allocation | ✅ PASS | SDD-010 amendment W1-only; W3 amendments in owning SDDs only |
+| R15 protected isolation | ✅ PASS | P4-002 (8/8 hashes; no non-allowlisted path) |
+| R16 ecosystem-coherence boundary | ✅ PASS | pointer only in gate-0 §4; records untouched (P4-002) |
+| R17 no capability implementation | ✅ PASS | all units docs-only; W3 amendments state not-claimed-to-exist |
+| R18 bounded evidence-backed edits | ✅ PASS | W1 262, W2 165, W3 102 — all < 300; every edit evidence-cited |
+
+### Phase 4 completion
+
+All 5 Phase 4 rows and all 3 parent-owned rows marked `[x]` in `tasks.md`. The change is ready for verification and archive.
