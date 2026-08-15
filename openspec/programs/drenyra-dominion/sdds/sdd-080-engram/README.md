@@ -2,7 +2,7 @@
 
 # SDD-080 — Engram Institutional Memory
 
-> Status: lifecycle:active · Maturity: partial (non-authorization boundary implemented; sibling core awaiting evidence) · Wave: 2 · Depends on: SDD-010 · Feeds: SDD-050
+> Status: lifecycle:active · Maturity: partial (non-authorization boundary implemented; sibling core verified 2026-08-15) · Wave: 2 · Depends on: SDD-010 · Feeds: SDD-050
 
 ## Purpose
 
@@ -128,25 +128,44 @@ non-authorization boundary (R14): it claims no new memory capability (R17).
   (each asserts `MEMORY_SHAPED_MARKERS` rejection) — the `memory-never-authorizes`
   invariant.
 
-### Sibling core — awaiting evidence (unverifiable from this clone)
+### Sibling core — verified 2026-08-15 (drenyra-engram surface)
 
-The bulk of SDD-080's scope (scope-first SQLite, EvidenceObject WORM, ed25519
-receipts, offline verification, provenance, cross-tenant isolation, CLI/HTTP/MCP,
-audit-register closure) lives in the sibling `drenyra-engram` repo. Per the
-capability matrix, sibling facts are `historical-snapshot / awaiting evidence`;
-they cannot be verified from this clone. No engram runtime client is wired into
-drenyra-ai — only the boundary. Federated integration and the sibling engram core
-remain `awaiting evidence`; closure of this record is deferred to a change that
-can verify the `drenyra-engram` surface. Nothing is promoted on documentary
-presence alone (R4).
+The sibling `drenyra-engram` surface is now verified from its own clone
+(`arkelythex/drenyra-engram` @ `e52ff3e`, main, pushed 2026-08-15):
+
+- **SDD change `audit-register-closure` ARCHIVED (PASS)** — the five due-diligence
+  audit blocks G/J/L/Q/Z closed with executable evidence and per-claim citations;
+  verify PASS (33/33 ACs); chain merged to main via stacked-to-main.
+- **Suite (repository-verifiable):** Go `go test ./...` 10/10 packages (incl.
+  cross-tenant matrix `TestCrossTenantMatrix*`, migration matrix
+  `TestDirectUpgradeMatrixV1ToV14`, operability readback), TS `npm test` 385/385,
+  `TestGoldenVectorsGo` parity, typecheck/vet/gofmt clean.
+- **Native bounded reviews:** the delivery candidate was reviewed end-to-end
+  (`review-bd7751cd5b4e8293` with one bounded correction for the caller-asserted
+  scope claim, then `review-983059cb39d4ef37` approved on the full delivery
+  range) and validated through the pre-commit/pre-push gates.
+- **Capability evidence per the SDD-080 scope list:** scope-first SQLite store,
+  EvidenceObject WORM + ed25519 receipts + offline verification, lifecycle/vigencia
+  and provenance, cross-tenant isolation, CLI/HTTP/MCP, professional memory
+  review, integrity receipts — all implemented and tested.
+
+Lifecycle stays `active` (status-and-evidence rules R3/R4): promotion to
+`complete` is a Dominion governance decision, not a documentary claim from this
+clone. The non-authorization boundary in drenyra-ai (verified at `6a7f0f7`,
+suite 843/843) and the sibling surface above jointly evidence SDD-080's core;
+federated runtime integration (wiring an engram client into drenyra-ai) and
+production identity binding (issue #18 OIDC) remain follow-up slices.
 
 ## Progress
 
-- [ ] Exploration
-- [ ] Proposal
-- [ ] Specification (RFC 2119 + Given/When/Then)
-- [ ] Design
-- [ ] Tasks (vertical TDD units)
-- [ ] Apply (strict TDD)
-- [ ] Verification report
-- [ ] Archive report
+Delivered via the sibling `drenyra-engram` OpenSpec changes (`v1-readiness`
+archived 2026-08-11; `audit-register-closure` archived 2026-08-15):
+
+- [x] Exploration
+- [x] Proposal
+- [x] Specification (RFC 2119 + Given/When/Then)
+- [x] Design
+- [x] Tasks (vertical TDD units)
+- [x] Apply (strict TDD)
+- [x] Verification report
+- [x] Archive report
