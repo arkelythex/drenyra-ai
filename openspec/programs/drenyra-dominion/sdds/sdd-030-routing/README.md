@@ -2,7 +2,15 @@
 
 # SDD-030 — Organic Accounting Work Routing
 
-> Status: PLANNED · Wave: 1 · Depends on: SDD-010 · Feeds: SDD-040
+> Status: lifecycle:in-progress · Maturity: partial (WorkUnit/WorkResult surfaces implemented; preflight router pending) · Wave: 1 · Depends on: SDD-010 · Feeds: SDD-040
+>
+> **Slice A+B delivered 2026-08-15** (change `sdd-030-routing`, PRs #39/#40):
+> new `routing/` module with the immutable `WorkUnit`/`WorkResult` typed
+> surfaces and fail-closed helpers (type-only Core boundaries, branded
+> JsonInteger/Sha256Hash, 9-kind typed stop reasons, injected canonical
+> transition validation, candidate refs by subjectHash, BigInt cents). Suite
+> 843/843 green. Remaining (slice C, deferred): the preflight router over the
+> §5 criteria.
 
 ## Purpose
 
