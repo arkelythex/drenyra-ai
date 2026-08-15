@@ -11,9 +11,9 @@
 | --- | --- | --- | --- |
 | 1 | Inventory active OpenSpec changes, including `fiscal-authority-kernel` | **satisfied** | See §1 (refreshed 2026-08-14, E-001/E-008) |
 | 2 | Resolve overlaps and dependencies between active changes | **satisfied** | See §2 (resolution table; this change is docs-only, no new overlap) |
-| 3 | Align README, license, visibility, commercial messages with private stage | **pending** | Program notices in place; cross-repo alignment unverified; visibility fact recorded (E-005) |
-| 4 | Provisionally freeze ICP, operators, first journey | **approved-pending-evidence** | See §3 (decision approved; durable capture pending, E-009) |
-| 5 | Register open-core transition as intention, not contractual promise | **satisfied** | [charter.md §9](charter.md#9-open-core-transition); program README; sibling READMEs unverified from this clone |
+| 3 | Align README, license, visibility, commercial messages with private stage | **satisfied** | Cross-repo alignment verified 2026-08-15: sibling visibility directly queried (E-010), host README corrected (E-011), stale sibling claims fixed and merged in drenyra-pi #36, drenyra-engram #25, drenyra-command-center #180 (E-012); skills/guardian-angel already correct |
+| 4 | Provisionally freeze ICP, operators, first journey | **satisfied** | See §3 (durable attributable approval captured 2026-08-15, E-009) |
+| 5 | Register open-core transition as intention, not contractual promise | **satisfied** | [charter.md §9](charter.md#9-open-core-transition); program README; sibling READMEs verified 2026-08-15 (E-010/E-012) |
 | 6 | Create first capability matrix against real repo state | **satisfied** | [capability-matrix.yaml](capability-matrix.yaml) exists at `4975f4f`; W2 evidence/freshness refresh scheduled |
 
 ## 1. Active OpenSpec changes inventory
@@ -65,9 +65,10 @@ No OpenSpec changes.
 
 ## 3. Provisional freeze: ICP, operators, first journey
 
-> **Status: approved-pending-evidence** — the three business inputs below were
-> provided and approved by the product owner; durable attributable approval
-> capture is pending (E-009). The decision is not reopened.
+> **Status: satisfied** — durable attributable approval captured 2026-08-15
+> (E-009): the three business inputs below were provided and approved by the
+> product owner (arkelythex) via orchestration directive 2026-08-14/15 and
+> recorded in this §3 as the durable reference. The decision is not reopened.
 
 - **ICP (ideal customer profile):** Peruvian accounting firms (SME and
   mid-market) with monthly close obligations, plus internal finance teams of
@@ -81,20 +82,21 @@ No OpenSpec changes.
 
 ## 4. SDD-020 decision
 
-**SDD-020 is BLOCKED.**
+**SDD-020 is PERMITTED** (unblocked 2026-08-15).
 
-Rows 3 (`pending`) and 4 (`approved-pending-evidence`) are not `satisfied`. Per
-the reconciliation contract, any incomplete required row blocks SDD-020 unless
-a durable waiver names owner, rationale, scope, and approval reference; no
-waiver is recorded, so there is no implicit waiver. SDD-020 remains
-`lifecycle:planned` in its own record and MUST NOT be started (R10).
+Rows 3 and 4 are now `satisfied`:
 
-Required for unblock — evidence capture only, no new product-decision gate:
+- Row 3 → `satisfied` 2026-08-15: cross-repo README/license/visibility alignment
+  directly verified and corrected — sibling visibility queried (E-010), host
+  README messaging corrected (E-011), stale sibling claims fixed and merged
+  (E-012: drenyra-pi #36, drenyra-engram #25, drenyra-command-center #180;
+  skills/guardian-angel already correct).
+- Row 4 → `satisfied` 2026-08-15: the three business inputs carry a durable,
+  attributable approval reference (E-009, recorded in §3).
 
-- Row 3 → `satisfied` when cross-repo README/license/visibility alignment is
-  directly verified (drenyra-ai verified at `4975f4f`; siblings not).
-- Row 4 → `satisfied` when the three business inputs carry a durable,
-  attributable approval reference (E-009), without reopening the decision.
+SDD-020 may now start (R10). Its own record moves from `lifecycle:planned` to
+`lifecycle:in-progress` when its change formally begins.
+
 
 Boundary pointer: this record relates to — but does not duplicate —
 `ecosystem-coherence` (program record
@@ -105,8 +107,10 @@ copied, modified, superseded, or marked complete here (R16).
 
 ## 5. Alignment notes
 
-> Sibling-repository alignment claims below are as recorded 2026-08-11 and are
-> unverified from this clone; refresh at the next integrated checkpoint.
+> Sibling-repository alignment verified 2026-08-15 (E-010/E-012): visibility
+> directly queried per repository; stale "private ecosystem" claims corrected
+> and merged in drenyra-pi #36, drenyra-engram #25, and drenyra-command-center
+> #180; skills/guardian-angel messaging already correct.
 
 - All repositories already carry private-product notices (except
   `drenyra-engram`, which is the Apache-2.0 open component by design).
@@ -118,11 +122,13 @@ copied, modified, superseded, or marked complete here (R16).
 
 ## 6. Next actions
 
-1. Capture durable attributable approval evidence for the §3 business inputs
-   (E-009); the decision is not reopened.
-2. Archive `fiscal-authority-kernel` (verification complete, E-004); refresh
-   `bounded-agent-roles` state from its owning repository (unverified here).
-3. Refresh sibling-repository README/license/visibility alignment and change
-   inventory at the next integrated checkpoint (row 3).
+1. ~~Capture durable attributable approval evidence for the §3 business inputs~~
+   **DONE 2026-08-15** (E-009, §3).
+2. ~~Archive `fiscal-authority-kernel`~~ **DONE 2026-08-15** (archived, PR #32);
+   refresh `bounded-agent-roles` state from its owning repository (unverified
+   here).
+3. ~~Refresh sibling-repository README/license/visibility alignment~~ **DONE
+   2026-08-15** (E-010/E-011/E-012; pi #36, engram #25, command-center #180
+   merged); change inventory refresh at the next integrated checkpoint.
 4. Reconcile `capability-matrix.yaml` and `program-lock.json` evidence/freshness
    (W2 of this change; the 640-test snapshot stays historical, E-006).
