@@ -2,7 +2,16 @@
 
 # SDD-010 — Ecosystem Contracts and Release Train
 
-> Status: lifecycle:active · Maturity: implemented (composition/lock artifacts) · Wave: 0 · Depends on: SDD-000 · Feeds: SDD-020, SDD-030, SDD-070, SDD-080
+> Status: lifecycle:complete (contracts frozen + release-train executed) · Maturity: implemented · Wave: 0 · Depends on: SDD-000 · Feeds: SDD-020, SDD-030, SDD-070, SDD-080
+>
+> **Release-train executed 2026-08-15** (change `sdd-010-release-train`, PRs #52/#53):
+> the program-lock checkpoint was PROMOTED (candidate → promoted) with fresh
+> revision-bound facts (host 0.4.0, tests 928/928, visibility PUBLIC), verified
+> public sibling SHAs (engram/pi), the private trio honestly recorded
+> `unknown`/`awaiting-evidence` (E-010), deterministic self-excluding checksums
+> (`scripts/checksum-lock.mjs`), and the B5 release attestation recorded. The
+> federated release train is executed; the six frozen contracts (v0.1) and the
+> evidence-precedence governance are in place.
 >
 > **Status reconciliation (2026-08-14, evidence E-001/E-004/E-006):** the former
 > `PLANNED` label maps to `lifecycle:planned` under the five-axis vocabulary
