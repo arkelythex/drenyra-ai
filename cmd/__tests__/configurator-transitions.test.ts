@@ -31,12 +31,16 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { upgradeCommand } from "../commands/upgrade.js";
 import { rollbackCommand } from "../commands/rollback.js";
+import { installIntegrations } from "../commands/install.js";
+import { syncManaged } from "../commands/sync.js";
+import { doctorCommand } from "../commands/doctor.js";
 import {
 	hashManagedAsset,
 	managedHostPin,
 	renderManagedMarker,
 	renderManagedSkills,
 	renderPinnedAiRuntime,
+	type InstallManifest,
 } from "../../configurator/managed-config.js";
 
 const A = "1.2.3";
@@ -48,6 +52,7 @@ const HOST_DIR: Record<string, string> = {
 	codex: ".codex",
 	"claude-code": ".claude",
 	opencode: ".config/opencode",
+	"drenyra-pi": ".drenyra",
 };
 
 /** Creates an isolated home directory for one test. */
@@ -98,7 +103,7 @@ function snapshotFiles(root: string): Record<string, string> {
 	return out;
 }
 
-type FixtureHostName = "codex" | "claude-code" | "opencode";
+type FixtureHostName = "codex" | "claude-code" | "opencode" | "drenyra-pi";
 type FixtureHost = { name: FixtureHostName; present: boolean };
     
 /** Creates a host config dir + managed marker/skills/pin asset exactly as install does. */
@@ -834,6 +839,189 @@ describe("configurator atomic fail-closed commit", () => {
 			}
 			// frozen contracts and program-root docs byte-identical
 			expect(snapshotContractsAndDocs()).toEqual(repoBefore);
+		} finally {
+			cleanup();
+		}
+	});
+});
+
+describe("four-host lifecycle (SDD-020 slice B)", () => {
+	it("install → doctor → sync → upgrade → rollback across codex, claude-code, opencode, and drenyra-pi with deterministic pin rendering and preservation", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			const INSTALLED = "2026-03-01T00:00:00.000Z";
+			const ACTIVATED = "2026-03-05T00:00:00.000Z";
+			// All four host config dirs exist BEFORE install. drenyra-pi's canonical
+			// config directory is the Drenyra-managed home (~/.drenyra), where the
+			// managed manifest already lives; a present Pi host is one whose home
+			// exists. drenyra-ai manages only the marker/skills/pin assets there.
+			const HOST_NAMES = ["codex", "claude-code", "opencode", "drenyra-pi"] as const;
+			for (const name of HOST_NAMES) {
+				mkdirSync(join(dir, HOST_DIR[name]!), { recursive: true });
+			}
+
+			// 1) install: every present host gets marker/skills/pin + a managed entry
+			const manifest = installIntegrations(dir, INSTALLED);
+			expect(manifest.hosts.filter((h) => h.present).map((h) => h.name)).toEqual([
+				...HOST_NAMES,
+			]);
+			for (const name of HOST_NAMES) {
+				const configDir = join(dir, HOST_DIR[name]!);
+				expect(existsSync(join(configDir, ".drenyra-managed"))).toBe(true);
+				expect(existsSync(join(configDir, ".drenyra-skills.json"))).toBe(true);
+				expect(
+					readFileSync(
+						join(configDir, ".drenyra-pinned-ai-runtime.json"),
+						"utf8",
+					),
+				).toBe(renderPinnedAiRuntime(name));
+				const pinned = (
+					manifest as InstallManifest & {
+						composition?: {
+							current: {
+								pinnedComposition?: Record<string, unknown>;
+							};
+						};
+					}
+				).composition!.current.pinnedComposition!;
+				expect(
+					(pinned[name] as { managedAsset: { content: string } }).managedAsset
+						.content,
+				).toBe(renderPinnedAiRuntime(name));
+			}
+
+			// 2) doctor: all four managed → healthy, exit 0
+			const doctor = capture(() =>
+				doctorCommand(["--home", dir], { packagedVersion: manifest.version }),
+			);
+			expect(doctor.code).toBe(0);
+			const doctorReport = JSON.parse(doctor.stdout) as {
+				status: string;
+				checks: Array<{
+					name: string;
+					ok: boolean;
+					applicability?: string;
+					hosts?: Array<{ host: string; state: string }>;
+				}>;
+			};
+			expect(doctorReport.status).toBe("healthy");
+			const pinCheck = doctorReport.checks.find(
+				(c) => c.name === "pinned-ai-runtime",
+			);
+			expect(pinCheck?.ok).toBe(true);
+			expect(pinCheck?.applicability).toBe("applicable");
+			expect(pinCheck?.hosts).toHaveLength(4);
+			expect(pinCheck?.hosts?.every((h) => h.state === "managed")).toBe(true);
+			for (const name of HOST_NAMES) {
+				expect(pinCheck?.hosts?.some((h) => h.host === name)).toBe(true);
+			}
+
+			// 3) sync: everything already current → synced for marker and pin per host
+			const results = syncManaged(dir);
+			for (const name of HOST_NAMES) {
+				expect(
+					results.find((r) => r.host === name && r.asset === "marker")?.action,
+				).toBe("synced");
+				expect(
+					results.find((r) => r.host === name && r.asset === "pin")?.action,
+				).toBe("synced");
+			}
+
+			// 4) upgrade A→B: all four hosts updated marker/skills/pin; current=B, previous=A
+			const upgrade = capture(() =>
+				upgradeCommand([B, "--home", dir], {
+					packagedVersion: B,
+					now: () => ACTIVATED,
+				}),
+			);
+			expect(upgrade.code).toBe(0);
+			const upgradeReport = JSON.parse(upgrade.stdout) as {
+				status: string;
+				results: Array<{ host: string; asset: string; action: string }>;
+			};
+			expect(upgradeReport.status).toBe("upgraded");
+			for (const name of HOST_NAMES) {
+				expect(upgradeReport.results).toContainEqual({
+					host: name,
+					asset: "marker",
+					action: "updated",
+				});
+				expect(upgradeReport.results).toContainEqual({
+					host: name,
+					asset: "skills",
+					action: "updated",
+				});
+				expect(upgradeReport.results).toContainEqual({
+					host: name,
+					asset: "pin",
+					action: "updated",
+				});
+				const configDir = join(dir, HOST_DIR[name]!);
+				expect(readFileSync(join(configDir, ".drenyra-managed"), "utf8")).toBe(
+					renderManagedMarker(ACTIVATED),
+				);
+				expect(
+					readFileSync(
+						join(configDir, ".drenyra-pinned-ai-runtime.json"),
+						"utf8",
+					),
+				).toBe(renderPinnedAiRuntime(name));
+			}
+			const upgraded = readManifest(dir);
+			expect(upgraded.composition.current.packageVersion).toBe(B);
+			expect(upgraded.composition.previous.packageVersion).toBe(
+				manifest.version,
+			);
+			expect(upgraded.composition.current.sequence).toBe(1);
+			expect(Number.isInteger(upgraded.composition.current.sequence)).toBe(true);
+
+			// 5) rollback: restores the A bytes for all four hosts; second rollback no-op
+			const rollback = capture(() => rollbackCommand(["--home", dir]));
+			expect(rollback.code).toBe(0);
+			const rollbackReport = JSON.parse(rollback.stdout) as {
+				status: string;
+				results: Array<{ host: string; asset: string; action: string }>;
+			};
+			expect(rollbackReport.status).toBe("rolled-back");
+			for (const name of HOST_NAMES) {
+				expect(rollbackReport.results).toContainEqual({
+					host: name,
+					asset: "marker",
+					action: "updated",
+				});
+				expect(rollbackReport.results).toContainEqual({
+					host: name,
+					asset: "skills",
+					action: "updated",
+				});
+				expect(rollbackReport.results).toContainEqual({
+					host: name,
+					asset: "pin",
+					action: "updated",
+				});
+				const configDir = join(dir, HOST_DIR[name]!);
+				expect(readFileSync(join(configDir, ".drenyra-managed"), "utf8")).toBe(
+					renderManagedMarker(INSTALLED),
+				);
+				expect(
+					readFileSync(
+						join(configDir, ".drenyra-pinned-ai-runtime.json"),
+						"utf8",
+					),
+				).toBe(renderPinnedAiRuntime(name));
+			}
+			const rolledBack = readManifest(dir);
+			expect(rolledBack.composition.current.packageVersion).toBe(
+				manifest.version,
+			);
+			expect(rolledBack.version).toBe(manifest.version);
+
+			// second rollback: exact zero-write no-op
+			const before = snapshotFiles(dir);
+			const second = capture(() => rollbackCommand(["--home", dir]));
+			expect(second.code).toBe(0);
+			expect(JSON.parse(second.stdout).status).toBe("unchanged");
+			expect(snapshotFiles(dir)).toEqual(before);
 		} finally {
 			cleanup();
 		}

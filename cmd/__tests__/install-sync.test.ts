@@ -23,6 +23,7 @@ import {
 	isPinVersion,
 	managedHostPin,
 	pinnedAiRuntimeRecord,
+	reDeriveHostConfigDir,
 	renderManagedMarker,
 	renderManagedSkills,
 	renderPinnedAiRuntime,
@@ -329,11 +330,12 @@ describe("per-host pinned AI runtime (SDD-020 slice 2)", () => {
 				// repeat rendering is byte-identical
 				expect(renderPinnedAiRuntime(host)).toBe(renderPinnedAiRuntime(host));
 			}
-			// the package-owned constant is exhaustive over the three hosts
+			// the package-owned constant is exhaustive over the four hosts
 			expect(Object.keys(PINNED_AI_COMPOSITION)).toEqual([
 				"codex",
 				"claude-code",
 				"opencode",
+				"drenyra-pi",
 			]);
 			// sync does not change the rendered bytes
 			syncManaged(dir);
@@ -426,6 +428,97 @@ describe("per-host pinned AI runtime (SDD-020 slice 2)", () => {
 					/child_process|spawn\(|execSync|spawnSync|fork\(/,
 				);
 			}
+		} finally {
+			cleanup();
+		}
+	});
+    
+	it("recognizes drenyra-pi as a present host when the Drenyra-managed home exists and renders its managed marker/skills/pin (SDD-020 slice B)", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			// The canonical Drenyra Pi config directory is the Drenyra-managed home
+			// (~/.drenyra), where the managed manifest already lives. Presence of the
+			// Pi host = existence of that home; drenyra-ai only manages the
+			// marker/skills/pin assets for a present Pi host (no host-serving).
+			mkdirSync(join(dir, ".drenyra"), { recursive: true });
+			mkdirSync(join(dir, ".claude"), { recursive: true });
+			const detected = detectHosts(dir);
+			expect(detected.find((h) => h.name === "drenyra-pi")?.present).toBe(
+				true,
+			);
+			const manifest = installIntegrations(dir);
+			expect(
+				manifest.hosts.filter((h) => h.present).map((h) => h.name),
+			).toEqual(["claude-code", "drenyra-pi"]);
+			const piDir = join(dir, ".drenyra");
+			expect(existsSync(join(piDir, ".drenyra-managed"))).toBe(true);
+			expect(existsSync(join(piDir, ".drenyra-skills.json"))).toBe(true);
+			expect(
+				readFileSync(
+					join(piDir, ".drenyra-pinned-ai-runtime.json"),
+					"utf8",
+				),
+			).toBe(renderPinnedAiRuntime("drenyra-pi"));
+			// the manifest records a managed entry for the Pi host with exact bytes
+			const pinned = (
+				manifest as InstallManifest & {
+					composition?: { current: ManagedCompositionSnapshot };
+				}
+			).composition!.current.pinnedComposition!;
+			expect(pinned["drenyra-pi"]!.record.host).toBe("drenyra-pi");
+			expect(pinned["drenyra-pi"]!.managedAsset.content).toBe(
+				renderPinnedAiRuntime("drenyra-pi"),
+			);
+			expect(pinned["drenyra-pi"]!.managedAsset.sha256).toMatch(
+				/^[0-9a-f]{64}$/,
+			);
+		} finally {
+			cleanup();
+		}
+	});
+    
+	it("detects and configures all four hosts (codex, claude-code, opencode, drenyra-pi) with one deterministic pin file each (SDD-020 slice B)", () => {
+		const { dir, cleanup } = tempHome();
+		try {
+			for (const dirName of [".codex", ".claude", ".config/opencode", ".drenyra"]) {
+				mkdirSync(join(dir, dirName), { recursive: true });
+			}
+			const manifest = installIntegrations(dir);
+			expect(manifest.hosts.filter((h) => h.present)).toHaveLength(4);
+			expect(manifest.hosts.map((h) => h.name)).toEqual([
+				"codex",
+				"claude-code",
+				"opencode",
+				"drenyra-pi",
+			]);
+			for (const host of [
+				"codex",
+				"claude-code",
+				"opencode",
+				"drenyra-pi",
+			] as const) {
+				const pinPath = join(
+					reDeriveHostConfigDir(dir, host),
+				".drenyra-pinned-ai-runtime.json",
+				);
+				expect(existsSync(pinPath)).toBe(true);
+				expect(readFileSync(pinPath, "utf8")).toBe(
+					renderPinnedAiRuntime(host),
+				);
+			}
+			const pinned = (
+				manifest as InstallManifest & {
+					composition?: { current: ManagedCompositionSnapshot };
+				}
+			).composition!.current.pinnedComposition!;
+			expect(Object.keys(pinned)).toEqual([
+				"codex",
+				"claude-code",
+				"opencode",
+				"drenyra-pi",
+			]);
+			// absent hosts still receive nothing: only the four created dirs are used
+			expect(existsSync(join(dir, ".other-host"))).toBe(false);
 		} finally {
 			cleanup();
 		}
