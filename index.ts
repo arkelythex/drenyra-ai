@@ -1,7 +1,7 @@
 /**
  * drenyra-ai — public package entry.
  *
- * Re-exports the five library modules. The library is zero-dependency
+ * Re-exports the library modules. The library is zero-dependency
  * (node:crypto built-in only); the CLI additionally uses ajv for schema
  * validation of public contract files.
  *
@@ -28,6 +28,8 @@ export * from "./security/index.js";
 export * from "./guardian/index.js";
 export * from "./mcp/index.js";
 export * from "./adapters/index.js";
+export * from "./routing/index.js";
+export * from "./configurator/index.js";
 export * from "./flow/index.js";
 // Explicit re-export resolves the star-export name clash between the routing
 // axis union and missions/reconciliation.ts (both named ExternalEvidence).

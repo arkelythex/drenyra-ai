@@ -18,6 +18,8 @@
   ],
   "exports": {
     ".": "./dist/index.js",
+    "./routing": "./dist/routing/index.js",
+    "./configurator": "./dist/configurator/index.js",
     "./receipts": "./dist/receipts/index.js",
     "./ledger": "./dist/ledger/index.js",
     "./missions": "./dist/missions/index.js",
