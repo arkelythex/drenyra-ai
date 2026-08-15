@@ -10,7 +10,24 @@ All notable changes to Drenyra AI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
-## [Unreleased]
+## [0.3.0] - 2026-08-15
+
+### Added — configurator (SDD-020 slice 1)
+
+- `upgrade run <version>` and `rollback run` commands with idempotent, fail-closed managed-composition transitions (`configurator/managed-config.ts`); never installs host binaries; preserves foreign configuration byte-for-byte.
+- Doctor diagnostics depth: managed-config drift, package-pin mismatch, missing host prerequisites, malformed manifests (`{status, checks, readonly}` report).
+- `install`/`sync` delegate to the managed-config library; composition record added on new installs; legacy manifests remain readable.
+
+### Added — routing (SDD-030 slice A+B)
+
+- `routing/` module: immutable `WorkUnit`/`WorkResult` typed surfaces with fail-closed helpers — type-only Core boundaries, branded `JsonInteger`/`Sha256Hash`, 9-kind typed stop reasons, injected canonical transition validation, candidate refs by subjectHash, BigInt cents.
+- `routing/` added to the tsconfig include lists.
+
+### Added — program (Ola 0-1)
+
+- Dominion program record reconciled (five-axis status vocabulary, evidence register, Gate 0 completed with SDD-020 permitted); RDA v2 core and monthly-close core closed; fiscal-authority kernel archived.
+
+
 
 ### Added — design series (docs)
 
