@@ -23,7 +23,9 @@ import type {
 import type {
   Candidate,
   CandidateScope,
+  Materiality,
   MaterialityInput,
+  Reversibility,
 } from "../candidates/index.js";
 
 /**
@@ -203,11 +205,93 @@ export interface NextTransition {
   readonly to: AccountingMissionStatus;
 }
 
-/**
- * Structured result of one WorkUnit. Authoritative values are structured
- * fields only; explanation is optional non-authoritative free text.
- */
-export interface WorkResult {
+    /**
+     * Requested effect of the work: what the caller asks the advisory layer to do.
+     */
+    export type RequestedEffect =
+      | "read-only"
+      | "proposes-change"
+      | "core-governed-change";
+    
+    /** Need for external evidence beyond the requesting system. */
+    export type ExternalEvidence = "none" | "bounded" | "material";
+    
+    /** Expected duration and interruptibility of the work. */
+    export type DurationAndInterruptibility =
+      | "immediate"
+      | "bounded-interruptible"
+      | "recoverable";
+    
+    /** Whether segregation of duties is required for the work. */
+    export type SegregationOfDuties = "not-required" | "required";
+    
+    /** Whether regulatory obligations apply to the work. */
+    export type RegulatoryObligations = "none" | "applicable";
+    
+    /** Whether human approval is required before the work proceeds. */
+    export type ApprovalRequirement = "not-required" | "required";
+    
+    /**
+     * Closed, transport-agnostic preflight routing request (SDD-030, slice C).
+     *
+     * All decision-relevant values are required, typed fields drawn from closed
+     * unions; free text never carries authoritative scope, materiality,
+     * permissions, or approvals. `materiality` is the policy-derived canonical
+     * tier (R0-R3); `reversibility` is the canonical candidate union. Money
+     * stays BigInt cents upstream: this request carries tiers, not thresholds.
+     */
+    export interface RouteRequest {
+      readonly scope: WorkScope;
+      readonly requestedEffect: RequestedEffect;
+      readonly materiality: Materiality;
+      readonly reversibility: Reversibility;
+      readonly externalEvidence: ExternalEvidence;
+      readonly durationAndInterruptibility: DurationAndInterruptibility;
+      readonly systemsInvolved: readonly [string, ...string[]];
+      readonly segregationOfDuties: SegregationOfDuties;
+      readonly regulatoryObligations: RegulatoryObligations;
+      readonly approval: ApprovalRequirement;
+    }
+    
+    /**
+     * Authority ceiling of a route: the maximum authority the advisory layer may
+     * exercise under that route. Closed vocabulary; each `Route` member narrows
+     * itself to exactly one ceiling.
+     */
+    export type AuthorityCeiling =
+      | "no-mutation"
+      | "proposes-only"
+      | "through-core";
+    
+    /**
+     * Closed route discriminant (SDD-030, slice C). Each member carries an
+     * inseparable literal authority ceiling plus a validated request snapshot.
+     * A route is a proposal only: it never executes work, authorizes a tool or
+     * destination, selects a Core transition, or creates/advances a mission or
+     * WorkUnit.
+     */
+    export type Route =
+      | {
+          readonly kind: "direct-analysis";
+          readonly authorityCeiling: "no-mutation";
+          readonly request: RouteRequest;
+        }
+      | {
+          readonly kind: "specialized-agent";
+          readonly authorityCeiling: "proposes-only";
+          readonly request: RouteRequest;
+        }
+      | {
+          readonly kind: "durable-mission";
+          readonly authorityCeiling: "through-core";
+          readonly request: RouteRequest;
+        };
+    
+    /**
+     * Structured result of one WorkUnit. Authoritative values are structured
+     * fields only; explanation is optional non-authoritative free text.
+     */
+    export interface WorkResult {
   readonly workUnitId: WorkUnit["id"];
   readonly missionId: WorkUnit["missionId"];
   readonly outcome: WorkOutcome;
