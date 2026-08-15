@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "drenyra-dominion/program-lock.schema.json",
   "title": "Drenyra Dominion Program Lock",
-  "description": "Reproducible ecosystem composition: fixes repositories, commit SHAs, package versions, contracts consumed/produced, skills, storage schemas, compatibility, conformance status, and artifacts for one integrated checkpoint.",
+  "description": "Reproducible ecosystem composition: fixes repositories, commit SHAs, package versions, contracts consumed/produced, skills, storage schemas, compatibility, conformance status, and artifacts for one integrated checkpoint. Promoted checkpoints add revision-bound current facts (currentVerified), deterministic composition checksums, and the external Phase B5 attestation declaration (D1-D11).",
   "type": "object",
   "required": ["program", "lockVersion", "stage", "generatedAt", "status", "repositories", "waves"],
   "properties": {
@@ -11,57 +11,73 @@
     "stage": { "type": "string", "enum": ["private", "open-core"] },
     "generatedAt": { "type": "string", "format": "date-time" },
     "generatedBy": { "type": "string" },
-        "status": { "type": "string", "enum": ["baseline", "candidate", "promoted", "superseded"] },
-        "snapshot": {
+    "status": { "type": "string", "enum": ["baseline", "candidate", "promoted", "superseded"] },
+    "snapshot": {
+      "type": "object",
+      "description": "Historical lock snapshot wrapper: the generated lock content is a past checkpoint (historical-snapshot) until corroborated by stronger evidence; stale SHAs, versions, test totals, and conformance must not be presented as current.",
+      "properties": {
+        "temporalClass": { "type": "string", "enum": ["historical-snapshot", "current-claim", "unknown"] },
+        "capturedAt": { "type": "string", "format": "date-time" },
+        "note": { "type": "string" }
+      },
+      "required": ["temporalClass"]
+    },
+    "currentVerified": {
+      "type": "object",
+      "description": "Current verified composition (current-claim): revision-bound facts corroborated by evidence IDs; the host lock never self-references the commit that contains it (bootstrap rule).",
+      "properties": {
+        "temporalClass": { "type": "string", "enum": ["historical-snapshot", "current-claim", "unknown"] },
+        "inspectedRevision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "inspectedAt": { "type": "string", "format": "date-time" },
+        "evidence": { "type": "array", "items": { "type": "string" } },
+        "host": {
           "type": "object",
-          "description": "Historical lock snapshot wrapper: the generated lock content is a past checkpoint (historical-snapshot) until corroborated by stronger evidence; stale SHAs, versions, test totals, and conformance must not be presented as current.",
           "properties": {
-            "temporalClass": { "type": "string", "enum": ["historical-snapshot", "current-claim", "unknown"] },
-            "capturedAt": { "type": "string", "format": "date-time" },
+            "repository": { "type": "string" },
+            "role": { "type": "string" },
+            "version": { "type": ["string", "null"] },
+            "versionEvidence": { "type": "string" },
+            "license": { "type": ["string", "null"] },
+            "licenseEvidence": { "type": "string" },
+            "testTotal": { "type": "integer", "minimum": 0 },
+            "testPassed": { "type": "integer", "minimum": 0 },
+            "testEvidence": { "type": "string" },
+            "typecheck": { "type": "string" },
+            "typecheckEvidence": { "type": "string" },
+            "conformance": { "type": "string" },
+            "conformanceEvidence": { "type": "string" },
+            "githubVisibility": { "type": "string", "enum": ["PUBLIC", "PRIVATE", "unverified"] },
+            "visibilityEvidence": { "type": "string" },
+            "commitSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
             "note": { "type": "string" }
           },
-          "required": ["temporalClass"]
+          "required": ["repository"]
         },
-        "currentVerified": {
+        "siblingRepositories": {
           "type": "object",
-          "description": "Current verified composition (current-claim): revision-bound facts corroborated by evidence IDs; the host lock never self-references the commit that contains it (bootstrap rule).",
+          "description": "Current sibling repository facts keyed by repository name (per-sibling current-claim). Only evidenced facts are recorded; unknown siblings stay temporalClass unknown / awaiting-evidence with commitSha null. The legacy group-level unknown wrapper (temporalClass/note directly) is also accepted.",
           "properties": {
             "temporalClass": { "type": "string", "enum": ["historical-snapshot", "current-claim", "unknown"] },
-            "inspectedRevision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
-            "inspectedAt": { "type": "string", "format": "date-time" },
-            "evidence": { "type": "array", "items": { "type": "string" } },
-            "host": {
-              "type": "object",
-              "properties": {
-                "repository": { "type": "string" },
-                "role": { "type": "string" },
-                "version": { "type": ["string", "null"] },
-                "versionEvidence": { "type": "string" },
-                "license": { "type": ["string", "null"] },
-                "licenseEvidence": { "type": "string" },
-                "testTotal": { "type": "integer", "minimum": 0 },
-                "testEvidence": { "type": "string" },
-                "typecheck": { "type": "string" },
-                "typecheckEvidence": { "type": "string" },
-                "conformance": { "type": "string" },
-                "conformanceEvidence": { "type": "string" },
-                "githubVisibility": { "type": "string", "enum": ["PUBLIC", "PRIVATE", "unverified"] },
-                "visibilityEvidence": { "type": "string" },
-                "commitSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
-                "note": { "type": "string" }
-              },
-              "required": ["repository"]
-            },
-            "siblingRepositories": {
-              "type": "object",
-              "properties": {
-                "temporalClass": { "type": "string", "enum": ["historical-snapshot", "current-claim", "unknown"] },
-                "note": { "type": "string" }
-              }
-            }
+            "note": { "type": "string" }
           },
-          "required": ["temporalClass", "inspectedRevision"]
-        },
+          "additionalProperties": {
+            "type": "object",
+            "required": ["temporalClass"],
+            "properties": {
+              "temporalClass": { "type": "string", "enum": ["historical-snapshot", "current-claim", "unknown"] },
+              "commitSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+              "githubVisibility": { "type": "string", "enum": ["PUBLIC", "PRIVATE", "unverified"] },
+              "source": { "type": "string" },
+              "fetchedAt": { "type": "string", "format": "date-time" },
+              "evidence": { "type": "string" },
+              "status": { "type": "string", "enum": ["awaiting-evidence", "verified"] },
+              "note": { "type": "string" }
+            }
+          }
+        }
+      },
+      "required": ["temporalClass", "inspectedRevision"]
+    },
     "host": {
       "type": "object",
       "description": "Host-repo binding. programBaseCommit is the commit that introduces the program tree; the lock commit itself is never self-referenced (fixed externally by the release manifest / attestation).",
@@ -115,7 +131,42 @@
         }
       }
     },
-    "checksums": { "type": "object" },
+    "checksums": {
+      "type": "object",
+      "description": "Deterministic SHA-256 checksums over the lock's pinned, verifiable composition (D1/D4). The lock file itself is excluded from the entry set and no carrying-commit SHA is encoded (D5).",
+      "properties": {
+        "algorithm": { "type": "string", "const": "sha256" },
+        "canonicalization": { "type": "string", "const": "json-entries-v1" },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["repository", "revision", "artifact", "sha256"],
+            "properties": {
+              "repository": { "type": "string" },
+              "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+              "artifact": { "type": "string", "minLength": 1 },
+              "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+            }
+          }
+        },
+        "setSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "note": { "type": "string" }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "description": "External Phase B5 release attestation declaration (D10): a signed tag plus an immutable GitHub Release asset pin the carrying commit. The carrying SHA is recorded only in the external attestation, never inside the lock.",
+      "properties": {
+        "scheme": { "type": "string", "const": "signed-git-tag+github-release-asset-v1" },
+        "tag": { "type": "string", "minLength": 1 },
+        "asset": { "type": "string", "minLength": 1 },
+        "verifiedRevision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "checksumSetSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "carryingCommitSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "note": { "type": "string" }
+      }
+    },
     "waves": {
       "type": "object",
       "properties": {
@@ -124,6 +175,24 @@
         "wave-2-fiscal-intelligence": { "type": "string" },
         "wave-3-flagship-product": { "type": "string" },
         "wave-4-production": { "type": "string" }
+      }
+    }
+  },
+  "if": {
+    "properties": { "status": { "const": "promoted" } },
+    "required": ["status"]
+  },
+  "then": {
+    "required": ["currentVerified", "checksums", "attestation"],
+    "properties": {
+      "currentVerified": {
+        "required": ["temporalClass", "inspectedRevision", "evidence", "host", "siblingRepositories"]
+      },
+      "checksums": {
+        "required": ["algorithm", "canonicalization", "entries", "setSha256"]
+      },
+      "attestation": {
+        "required": ["scheme", "tag", "asset", "verifiedRevision", "checksumSetSha256", "carryingCommitSha"]
       }
     }
   }

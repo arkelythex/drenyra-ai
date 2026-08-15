@@ -4,41 +4,79 @@
   "lockVersion": 1,
   "stage": "private",
   "generatedAt": "2026-08-12T00:00:00Z",
-  "generatedBy": "Phase B \u2014 lock update after Phase A documentary commits (delivery-sequence.md)",
-      "status": "candidate",
-      "snapshot": {
-        "temporalClass": "historical-snapshot",
-        "capturedAt": "2026-08-12T00:00:00Z",
-        "note": "Phase-B lock snapshot. SHAs, versions, test totals, conformance, and status below are historical or awaiting evidence; current verified facts are recorded in \"currentVerified\" (R13)."
-      },
-      "currentVerified": {
+  "generatedBy": "Phase B — lock update after Phase A documentary commits (delivery-sequence.md)",
+  "status": "promoted",
+  "snapshot": {
+    "temporalClass": "historical-snapshot",
+    "capturedAt": "2026-08-12T00:00:00Z",
+    "note": "Phase-B lock snapshot. SHAs, versions, test totals, conformance, and status below are historical or awaiting evidence; current verified facts are recorded in \"currentVerified\" (R13)."
+  },
+  "currentVerified": {
+    "temporalClass": "current-claim",
+    "inspectedRevision": "d440203183e24b2a0ecf773915888bb6072fc015",
+    "inspectedAt": "2026-08-15T07:28:33Z",
+    "evidence": [
+      "010E-001",
+      "010E-002",
+      "010E-003",
+      "010E-004",
+      "010E-005",
+      "010E-006",
+      "010E-007"
+    ],
+    "host": {
+      "repository": "drenyra-ai",
+      "role": "authority-core",
+      "version": "0.4.0",
+      "versionEvidence": "010E-001",
+      "license": "proprietary",
+      "licenseEvidence": "010E-001",
+      "testTotal": 915,
+      "testPassed": 915,
+      "testEvidence": "010E-002",
+      "typecheck": "clean",
+      "typecheckEvidence": "010E-003",
+      "conformance": "passing",
+      "conformanceEvidence": "010E-004",
+      "githubVisibility": "PUBLIC",
+      "visibilityEvidence": "010E-005",
+      "commitSha": null,
+      "note": "Bootstrap rule: the inspected revision is verification input (commit d440203, ancestor of the lock commit); the carrying commit is pinned only by the external Phase B5 attestation."
+    },
+    "siblingRepositories": {
+      "drenyra-engram": {
         "temporalClass": "current-claim",
-        "inspectedRevision": "549ed640e05bca03c0debd383ef523fb19605a5e7",
-        "inspectedAt": "2026-08-15T00:06:08Z",
-        "evidence": ["W2E-001", "W2E-002", "W2E-003", "W2E-004", "E-005"],
-        "host": {
-          "repository": "drenyra-ai",
-          "role": "authority-core",
-          "version": "0.2.1",
-          "versionEvidence": "W2E-004 (package.json at 549ed64)",
-          "license": "proprietary",
-          "licenseEvidence": "W2E-004 (LICENSE at 549ed64)",
-          "testTotal": 774,
-          "testEvidence": "W2E-001 (fresh run 2026-08-14T19:03Z at 549ed64; corroborates E-002/E-004)",
-          "typecheck": "clean",
-          "typecheckEvidence": "W2E-002 (at 549ed64)",
-          "conformance": "passing",
-          "conformanceEvidence": "W2E-001/W2E-002 (revision-bound to 549ed64)",
-          "githubVisibility": "PUBLIC",
-          "visibilityEvidence": "W2E-003 (gh repo view 2026-08-15T00:06:08Z) + E-005",
-          "commitSha": null,
-          "note": "Bootstrap rule: the SHA of the commit that contains this lock is never recorded here; inspectedRevision is the inspected tree (W1 commit 549ed64), an ancestor of the lock commit, not the lock commit itself."
-        },
-        "siblingRepositories": {
-          "temporalClass": "unknown",
-          "note": "Current SHAs, versions, test totals, and conformance for the five sibling repositories are not verifiable from this clone; recorded as awaiting evidence (R13). Snapshot values above remain historical."
-        }
+        "commitSha": "f997abc9cd97551cb0b9cae74623ec1fe002b9d2",
+        "githubVisibility": "PUBLIC",
+        "source": "gh-api",
+        "fetchedAt": "2026-08-15T07:38:12Z",
+        "evidence": "010E-006"
       },
+      "drenyra-pi": {
+        "temporalClass": "current-claim",
+        "commitSha": "42607035c42901eebadc1bf2879cb09a1416f3b5",
+        "githubVisibility": "PUBLIC",
+        "source": "gh-api",
+        "fetchedAt": "2026-08-15T07:38:14Z",
+        "evidence": "010E-007"
+      },
+      "drenyra-command-center": {
+        "temporalClass": "unknown",
+        "commitSha": null,
+        "status": "awaiting-evidence"
+      },
+      "drenyra-skills": {
+        "temporalClass": "unknown",
+        "commitSha": null,
+        "status": "awaiting-evidence"
+      },
+      "drenyra-guardian-angel": {
+        "temporalClass": "unknown",
+        "commitSha": null,
+        "status": "awaiting-evidence"
+      }
+    }
+  },
   "repositories": [
     {
       "name": "drenyra-ai",
@@ -242,9 +280,6 @@
       "activeChanges": []
     }
   ],
-  "checksums": {
-    "note": "Computed at promotion time by the federated integration runner; baseline lock records SHAs only."
-  },
   "waves": {
     "wave-0-constitution": "in-progress",
     "wave-1-universal-runtime": "pending",
@@ -256,5 +291,27 @@
     "repository": "drenyra-ai",
     "programBaseCommit": "0a00ccb1c62988b20fbe59ee6c65a7d7cb6980c1",
     "note": "programBaseCommit = Phase-A HEAD that introduces the program tree. The SHA of the lock commit itself is fixed externally by the release manifest / attestation (never self-referenced)."
+  },
+  "attestation": {
+    "scheme": "signed-git-tag+github-release-asset-v1",
+    "tag": "drenyra-dominion-v0.4.0",
+    "asset": "drenyra-dominion-v0.4.0.attestation.json",
+    "verifiedRevision": "d440203183e24b2a0ecf773915888bb6072fc015",
+    "checksumSetSha256": "62f1aaa496307ba5f56894dcf6aef0ffac365ed6a303a8cb6fb0ef3b215ab3ea",
+    "carryingCommitSha": null,
+    "note": "The carrying commit is intentionally recorded only in the external signed Phase B5 attestation (tag + GitHub Release asset), never inside the lock."
+  },
+  "checksums": {
+    "algorithm": "sha256",
+    "canonicalization": "json-entries-v1",
+    "entries": [
+      {
+        "repository": "drenyra-ai",
+        "revision": "d440203183e24b2a0ecf773915888bb6072fc015",
+        "artifact": "drenyra-ai-0.4.0.tgz",
+        "sha256": "2e3bd07241c250cf00653c346945108529d2fbba04a145bd9e38d938ae949a36"
+      }
+    ],
+    "setSha256": "62f1aaa496307ba5f56894dcf6aef0ffac365ed6a303a8cb6fb0ef3b215ab3ea"
   }
 }

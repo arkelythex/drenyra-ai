@@ -154,5 +154,6 @@ pre-existing changes stay untouched and uncommitted.
 - [x] Fix command-center README badge (MIT → Proprietary) — gate-0 item 3. Done during delivery.
 - [ ] Confirm ICP / operators / first journey (gate-0 item 4) before SDD-020.
 - [ ] Commit + push Phase A, then Phase B, per this sequence.
-- [ ] Add the release-manifest attestation workflow (B5) to the federated CI
-      when the release train lands (SDD-010).
+- [ ] **Add the release-manifest attestation workflow (B5) — documented by SDD-010 apply (2026-08-15): the workflow is now written in `release-train.md` §4.1 and the promoted lock records the attestation declaration (`scheme: signed-git-tag+github-release-asset-v1`, tag `drenyra-dominion-v0.4.0`, asset `drenyra-dominion-v0.4.0.attestation.json`, `carryingCommitSha: null`). Completion requires the external B5 attestation over the lock commit: create signed tag `drenyra-dominion-v0.4.0` targeting commit B, publish the release asset, read back tag target + lock bytes + checksum set + verified revision, and only then mark this item complete. It stays open until that external readback succeeds (spec R5 fail-closed).**
+
+An invalid or out-of-date attestation binding is superseded with a NEW lock commit, tag, and attestation — never by rewriting the historical tag, release asset, receipt, or evidence record.
