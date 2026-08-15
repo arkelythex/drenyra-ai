@@ -1,7 +1,7 @@
 # Drenyra AI — Contracts
 
 > [!IMPORTANT]
-> **Status: six contracts are FROZEN at v0.1 (release 0.2.0); `brand-system` is DRAFT at v0.2.** Freezing means the normative surface of each frozen contract is pinned by a conformance suite that runs in CI and fails on drift. `brand-system` ships its conformance suite now and freezes when the ecosystem adopts it (see the [contract](brand-system.md)).
+> **Status: six contracts are FROZEN at v0.1 (release 0.2.0); `brand-system` is DRAFT at v0.2 and `connector-adapter` is DRAFT at v0.1.** Freezing means the normative surface of each frozen contract is pinned by a conformance suite that runs in CI and fails on drift. `brand-system` ships its conformance suite now and freezes when the ecosystem adopts it (see the [contract](brand-system.md)); `connector-adapter` ships its mock conformance suite now and freezes after adoption plus explicit approval (see the [contract](connector-adapter.md)).
 
 <!-- -->
 
@@ -23,6 +23,7 @@ Contracts are the **public surface** of Drenyra AI. They are transport-agnostic,
 | [ledger](ledger.md) | 0.1 | FROZEN | Auditors, ERPs, Drenyra Pi |
 | [recovery](recovery.md) | 0.1 | FROZEN | Drenyra Pi, CLI |
 | [brand-system](brand-system.md) | 0.2 | DRAFT | Drenyra Command Center, Drenyra Pi, Drenyra Engram, Guardian Angel, docs |
+| [connector-adapter](connector-adapter.md) | 0.1 | DRAFT | Future restricted ERP, SUNAT/SIRE, bank, e-invoicing, and document connectors (no live connector yet) |
 
 The receipt contract's normative shape — the JSON schemas and the frozen conformance vectors — lives in [receipt-schema](receipt-schema/README.md).
 
