@@ -222,14 +222,20 @@ An SDD cannot advance if it:
 
 Before implementing SDD-020:
 
-| # | Action | Status |
+| # | Action | Status (gate-decision axis) |
 | --- | --- | --- |
-| 1 | Inventory active OpenSpec changes, including `fiscal-authority-kernel` | In progress — see [gate-0.md](gate-0.md) |
-| 2 | Resolve overlaps and dependencies | In progress |
-| 3 | Align README, license, visibility, commercial messages with private stage | In progress — per-repo updates reference this program |
-| 4 | Provisionally freeze ICP, operators, first journey | Pending |
-| 5 | Register future open-core transition as intention, not contractual promise | Done — recorded in [charter.md §9](#9-open-core-transition) and READMEs |
-| 6 | Create first capability matrix against real repo state | Done — see [capability-matrix.yaml](capability-matrix.yaml) |
+| 1 | Inventory active OpenSpec changes, including `fiscal-authority-kernel` | **satisfied** — inventory refreshed 2026-08-14, see [gate-0.md](gate-0.md) |
+| 2 | Resolve overlaps and dependencies | **satisfied** — see [gate-0.md](gate-0.md) §2 |
+| 3 | Align README, license, visibility, commercial messages with private stage | **pending** — cross-repo alignment unverified; visibility fact recorded in the evidence register |
+| 4 | Provisionally freeze ICP, operators, first journey | **approved-pending-evidence** — decision not reopened, see [gate-0.md](gate-0.md) §3 |
+| 5 | Register future open-core transition as intention, not contractual promise | **satisfied** — recorded in [charter.md §9](#9-open-core-transition) and READMEs |
+| 6 | Create first capability matrix against real repo state | **satisfied** — see [capability-matrix.yaml](capability-matrix.yaml); W2 refresh scheduled |
+
+**SDD-020 status:** **blocked**. Reconciled 2026-08-14 — rows 3 and 4 are not
+`satisfied`, no waiver is recorded, so there is no implicit waiver; SDD-020
+stays `lifecycle:planned` and must not start until [gate-0.md](gate-0.md) §4
+records permission. Status vocabulary and evidence register:
+[status-and-evidence.md](status-and-evidence.md).
 
 ## 8. Success definition (v1)
 
