@@ -33,6 +33,14 @@ export * from "./configurator/index.js";
 export * from "./flow/index.js";
 export * from "./projection/index.js";
 export * from "./authorization/index.js";
+export * from "./close-calculations/index.js";
+// bank-reconciliation is intentionally NOT star-exported here: its
+// ReconciliationError would clash with missions/reconciliation.ts and its
+// Scope with close-calculations. It stays reachable via the package subpath
+// "./bank-reconciliation" (verified state; see archive 2026-08-16).
+// Explicit re-export resolves the star-export name clash between
+// skills/index.js and close-calculations (IsoDate is module-private there).
+export type { IsoDate } from "./skills/index.js";
 // Explicit re-export resolves the star-export name clash between the routing
 // axis union and missions/reconciliation.ts (both named ExternalEvidence).
 // Routing has no package subpath, so the routing surface must resolve here.

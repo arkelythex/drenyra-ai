@@ -22,6 +22,12 @@ import type {
 	MaterialityInput,
 	Reversibility,
 } from "../candidates/types.js";
+import type { BankRow, LedgerRow } from "../bank-reconciliation/index.js";
+import {
+	closeEntriesToProposals,
+	reconciliationToProposals,
+	type CloseEngineInputs,
+} from "./close-wiring.js";
 import { runGuardianReview, type GuardianReport } from "../guardian/index.js";
 import {
 	buildSignedReceipt,
@@ -71,6 +77,10 @@ export interface MonthlyCloseInput {
 	ledgerEntries: readonly LedgerEntry[];
 	/** Optional pending ledger entries produced by this close. */
 	proposals?: readonly ReconciliationProposal[];
+	/** Optional engine inputs for deterministic candidate generation. */
+	bankRows?: readonly BankRow[];
+	ledgerRows?: readonly LedgerRow[];
+	closeInputs?: CloseEngineInputs;
 }
 
 /** Result status of the close vertical. */
@@ -152,12 +162,34 @@ export async function runMonthlyClose(
 		};
 	}
 
-	// 3. Candidates from the reconciliation proposals (agents propose only).
+	// 3. Candidates: externally supplied proposals first, then engine-generated
+	//    proposals from the deterministic wiring converters (fail-closed). The
+	//    generated stream is computed BEFORE the candidate loop so a fail-closed
+	//    conversion is always visible in ClosePackage.risks.
+	const generated: ReconciliationProposal[] = [];
+	const wiringRisks: string[] = [];
+	if (input.bankRows !== undefined && input.ledgerRows !== undefined) {
+		const reconciliation = reconciliationToProposals(
+			scope,
+			input.bankRows,
+			input.ledgerRows,
+		);
+		generated.push(...reconciliation.proposals);
+		wiringRisks.push(...reconciliation.risks);
+	}
+	if (input.closeInputs !== undefined) {
+		const close = closeEntriesToProposals(scope, input.closeInputs);
+		generated.push(...close.proposals);
+		wiringRisks.push(...close.risks);
+	}
+	const allProposals = [...(input.proposals ?? []), ...generated];
+	risks.push(...wiringRisks);
+
 	const lifecycle = new CandidateLifecycle();
 	const candidates: Candidate[] = [];
 	const guardianReports: GuardianReport[] = [];
 	const receipts: SignedReceipt[] = [];
-	for (const proposal of input.proposals ?? []) {
+	for (const proposal of allProposals) {
 		const materialityInput: MaterialityInput = {
 			value: BigInt(proposal.amountCents),
 			reversibility: proposal.reversibility,

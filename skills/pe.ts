@@ -98,6 +98,74 @@ export const SIRE_FILING = make(
 	"R2",
 );
 
+/**
+ * Bank-statement vs ledger reconciliation (PCGE cash accounts; NIC 1
+ * financial statement structure; Código Tributario registration duty).
+ * Deterministic engine core; adapters/missions/gates are separate slices.
+ */
+export const CONCILIACION_BANCARIA = make(
+	"pe.conciliacion-bancaria",
+	"1.0.0",
+	[
+		"PCGE — Plan Contable General Empresarial (R. SMV 043-2010-SMV/01)",
+		"NIC 1 — Presentación de Estados Financieros",
+		"Código Tributario — D.S. 133-2013-EF",
+	],
+	["bank-statement", "ledger", "scope"],
+	["differences", "adjustments", "reconciliation-report"],
+	"R1",
+);
+
+/** Fixed-asset depreciation per LIR (D.S. 179-2004-EF) and PCGE. */
+export const DEPRECIACION_ACTIVO_FIJO = make(
+	"pe.depreciacion-activo-fijo",
+	"1.0.0",
+	[
+		"PCGE — Plan Contable General Empresarial (R. SMV 043-2010-SMV/01)",
+		"LIR — Ley del Impuesto a la Renta (D.S. 179-2004-EF)",
+	],
+	["fixed-asset", "policy", "scope"],
+	["depreciation-entries"],
+	"R1",
+);
+
+/** Provisions for past-due receivables and inventory per LIR + Código Tributario. */
+export const PROVISION_CARTERA = make(
+	"pe.provision-cartera",
+	"1.0.0",
+	[
+		"PCGE — Plan Contable General Empresarial (R. SMV 043-2010-SMV/01)",
+		"LIR — Ley del Impuesto a la Renta (D.S. 179-2004-EF)",
+		"Código Tributario — D.S. 133-2013-EF",
+	],
+	["receivables", "inventory", "policy", "scope"],
+	["provision-entries"],
+	"R1",
+);
+
+/** Provisional ISR (pago a cuenta) per LIR Art. 85. */
+export const ISR_MENSUAL = make(
+	"pe.isr-mensual",
+	"1.0.0",
+	["LIR — Ley del Impuesto a la Renta (D.S. 179-2004-EF), Art. 85"],
+	["net-income", "prior-year-ratio", "scope"],
+	["isr-entry", "cedula"],
+	"R1",
+);
+
+/** Closing of result accounts to retained earnings (PCGE 59) per PCGE + NIC 1. */
+export const CIERRE_RESULTADOS = make(
+	"pe.cierre-resultados",
+	"1.0.0",
+	[
+		"PCGE — Plan Contable General Empresarial (R. SMV 043-2010-SMV/01)",
+		"NIC 1 — Presentación de Estados Financieros",
+	],
+	["result-balances", "chart", "scope"],
+	["closing-entries"],
+	"R1",
+);
+
 /** All base Peruvian skills, ready to register. */
 export const BASE_PE_SKILLS: readonly SkillDefinition[] = [
 	IGV_VALIDATE,
@@ -106,4 +174,9 @@ export const BASE_PE_SKILLS: readonly SkillDefinition[] = [
 	RETENTION_CHECK,
 	PERCEPTION_CHECK,
 	SIRE_FILING,
+	CONCILIACION_BANCARIA,
+	DEPRECIACION_ACTIVO_FIJO,
+	PROVISION_CARTERA,
+	ISR_MENSUAL,
+	CIERRE_RESULTADOS,
 ];

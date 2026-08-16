@@ -109,15 +109,28 @@ hierarchies, or per-org connectors exist today (R17).
 
 ### Pending core (follow-up slices, NOT implemented)
 
-- **RBAC/ABAC authorization engine** across organizations and roles — absent (no
-  module or symbols).
 - **Per-org policies, approval hierarchies, views, and connectors** — absent.
-- **Segregation of duties:** only the R3 dual-distinct-approvers rule exists
-  (`distinctApprovers` in `gates/approval.ts` + Guardian approval finding), scoped
-  to R3 candidates; there is no organization-wide SoD enforcement.
+- **Canonical operator identity** (directory/SSO) — absent; identity is an explicit input.
+- **Organization-wide segregation of duties:** only the R3 dual-distinct-approvers
+  rule exists (`distinctApprovers` in `gates/approval.ts` + Guardian approval
+  finding), scoped to R3 candidates; there is no org-wide SoD policy engine.
+
+### Implemented surface (reconciled 2026-08-16, PR #61 + PR #64)
+
+- **RBAC/ABAC authorization engine** — `authorization/` (`assignRoles`,
+  `authorize`, `assertSegregation`, closed permission/role vocabularies, frozen
+  role→permission matrix; 5 test files, 60 tests). PR #61.
+- **Enforcement wiring in the approval pipeline** — `gates/authorization.ts`
+  `AuthorizationGate`: ApprovalGate quantity passthrough (R0/R1 allowed, R2 one,
+  R3 two distinct) + per-approver `close:approve` at exact tenant scope via
+  `authorize()`; fail-closed needs_input on missing evidence; never throws;
+  `GateName` includes `"authorization"`; exported from `gates/index.ts` (27
+  tests). PR #64 — suite 1389/1390 at PR #64 tip (46/46 gates; 1 pre-existing
+  release-integrity flake passing 13/13 isolated).
 
 Capability-matrix rows `tenant-core`/`tenant-isolation` stay `implemented`;
-nothing is promoted on documentary presence alone (R4).
+nothing is promoted on documentary presence alone (R4). The record stays
+`lifecycle:active` (R3/R4).
 
 ## Progress
 

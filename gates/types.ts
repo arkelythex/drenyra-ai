@@ -23,6 +23,7 @@ export type GateName =
   | "mission"
   | "receipt"
   | "approval"
+  | "authorization"
   | "pre-commit"
   | "release";
 

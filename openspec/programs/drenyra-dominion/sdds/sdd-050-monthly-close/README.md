@@ -98,7 +98,9 @@ baseline `57ea56a` → `9b8aa1c` recorded in the SDD-040 closure; typecheck clea
 | --- | --- | --- |
 | Preflight (checksummed RUC + `isValidPeriod`) | `runMonthlyClose` (`flow/close.ts`) — fails closed on invalid RUC/period | suite 843/843 at `6a7f0f7`; `flow/__tests__/close.test.ts` |
 | Evidence collection via adapters; absence never zero | `AdapterRegistry` over `REQUIRED_EVIDENCE_SYSTEMS` (`adapters/registry.ts`), `EvidenceAdapter` interface, `LocalFileAdapter` (`adapters/local.ts`); missing evidence returns `waiting-for-evidence` | suite 843/843; `flow/__tests__/close.test.ts` |
-| Candidate generation through RDA v2 | `CandidateLifecycle.propose` (`candidates/lifecycle.ts`, SDD-040 core) | suite 843/843 |
+| Candidate generation through RDA v2 | `CandidateLifecycle.propose` (`candidates/lifecycle.ts`, SDD-040 core); engine-generated candidates via `flow/close-wiring.ts` (`reconciliationToProposals`, `closeEntriesToProposals`) when `bankRows`/`ledgerRows`/`closeInputs` are supplied, external-first merge | suite 1363/1363 at PR #64 tip; `flow/__tests__/close-wiring.test.ts`, `flow/__tests__/close-integration.test.ts` |
+| Bank reconciliation engine (SDD-CON-001) | `bank-reconciliation/` — `normalizeBankRows`, `normalizeLedgerRows`, `reconcile`, `buildAdjustments`, `buildReport` (reference-first matching, amount+same-day bounded fallback, fail-closed adjustment drafts); skill `pe.conciliacion-bancaria` | suite 1363/1363; `bank-reconciliation/__tests__/` (65 tests) |
+| Monthly close calculations engine (SDD-CON-002) | `close-calculations/` — `computeDepreciation`, `computeProvisions`, `computeProvisionalIsr` (LIR Art. 85), `closeResultAccounts`, `buildCloseReport` (balanced-entry invariant, PCGE 59); skills `pe.depreciacion-activo-fijo`, `pe.provision-cartera`, `pe.isr-mensual`, `pe.cierre-resultados` | suite 1363/1363; `close-calculations/__tests__/` (63 tests) |
 | Guardian review per candidate | `runGuardianReview` per candidate (`guardian/guardian.ts`, SDD-090 slice); blockers surfaced as risks, receipt skipped | suite 843/843 |
 | Close Package receipt + audit ledger | `buildSignedReceipt` (a `drenyra-ai` close receipt; IGV skill version noted) + `validateLedger`; `ClosePackage { status, scope, sourcesUsed, sourcesMissing, candidates, guardianReports, receipts, ledgerValid, risks }` | suite 843/843; `flow/__tests__/close.test.ts` |
 | E2E close journey | `missions/__tests__/e2e-monthly-close.test.ts` — mission → candidates → receipt → ledger with evidence-gated execution | suite 843/843 |
@@ -133,8 +135,8 @@ of the deterministic local close core:
   rule R3) and NOT marked complete on documentary presence alone (rule R4).
 - Evidence axes: lifecycle `complete` (monthly-close core) · evidence
   `verified-revision-bound` (`57ea56a` 843/843 routed baseline; `9b8aa1c` SDD-040
-  closure re-confirmation; `6a7f0f7` this closure re-confirmation) · temporal
-  class `current-claim`.
+  closure re-confirmation; `6a7f0f7` closure re-confirmation; PR #64 tip suite
+  1363/1363 engine + wiring re-confirmation) · temporal class `current-claim`.
 - Closing SDD-050 does NOT close SDD-060/070/080/090 or SDD-100; SDD-060 still
   consumes the close capability.
 

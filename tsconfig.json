@@ -49,7 +49,9 @@
     "adapters",
     "flow",
     "projection",
-    "authorization"
+    "authorization",
+    "bank-reconciliation",
+    "close-calculations"
   ],
   "exclude": [
     "node_modules",
