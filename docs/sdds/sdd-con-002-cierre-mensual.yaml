@@ -1,0 +1,102 @@
+# drenyra-sdd — SDD-CON-002: Cierre Contable y Fiscal Mensual (Perú)
+#
+# Especificación fuente (trazabilidad). Implementación real: cambio OpenSpec
+# openspec/changes/cierre-mensual/ -> módulo close-calculations/
+# (types, depreciation, provisions, isr, close-results, report) + 4 skills PE.
+# Jurisdicción: PE. Este YAML es la intención original del usuario, adaptada a la
+# normativa peruana; el runtime ejecuta la lógica TypeScript, no este archivo.
+version: "1.0.0"
+codigo: "SDD-CON-002"
+nombre: "Proceso de Cierre Contable y Fiscal Mensual"
+
+ejecucion:
+  agente: "drenyra-pi"
+  nivel_autorizacion: "critico"  # Siempre requiere firma de contador
+  timeout_segundos: 7200
+
+normativa_aplicable:
+  - "PCGE — Plan Contable General Empresarial (R. SMV 043-2010-SMV/01)"
+  - "NIC 1 — Presentación de Estados Financieros"
+  - "LIR — Ley del Impuesto a la Renta (D.S. 179-2004-EF), Art. 85 pagos a cuenta"
+  - "Código Tributario — D.S. 133-2013-EF"
+
+precondiciones:
+  - type: "sdd_completed"
+    sdd_id: "SDD-CON-001"
+    descripcion: "Debe haberse ejecutado la conciliación bancaria primero"
+  - type: "scope_valido"
+    descripcion: "RUC válido + periodo YYYYMM; ledger abierto"
+  - type: "politicas_disponibles"
+    descripcion: "Políticas de depreciación y provisión validadas contra LIR"
+
+pasos:
+  - id: "step_1"
+    nombre: "Calcular Depreciaciones de Activo Fijo"
+    skill: "close-calculations/depreciation"
+    entradas:
+      - "registro_activos_fijos"
+      - "politica_depreciacion"
+    reglas:
+      - "Depreciación mensual = (costo * tasa anual / 10000) / 12 en BigInt"
+      - "Costo <= 0 -> NEGATIVE_AMOUNT; tasa fuera de límites -> RATE_OUT_OF_BOUNDS"
+      - "Cuenta fuera del PCGE -> ACCOUNT_NOT_IN_CHART"
+    output: "asientos_depreciacion"
+
+  - id: "step_2"
+    nombre: "Calcular Provisiones (Cartera, Inventarios)"
+    skill: "close-calculations/provisions"
+    entradas:
+      - "cartera_vencida"
+      - "inventarios"
+      - "politica_provision"
+    reglas:
+      - "Monto = exposición * tasa / 10000 en BigInt"
+      - "Entrada no clasificable -> UNCLASSIFIABLE_INPUT (bloqueador, nunca adivinar)"
+    output: "asientos_provision"
+
+  - id: "step_3"
+    nombre: "Cálculo de ISR Mensual (Pago a Cuenta, LIR Art. 85)"
+    skill: "close-calculations/isr"
+    entradas:
+      - "ingresos_netos_mes"
+      - "coeficiente_ejercicio_anterior"
+    reglas:
+      - "Ruta coeficiente: ratio * ingresos / 10000; ruta 1.5%: 150bp * ingresos / 10000"
+      - "regla greater-of aplica el mayor; aritmética BigInt exacta"
+    output: "asiento_isr"
+
+  - id: "step_4"
+    nombre: "Cierre de Cuentas de Resultados"
+    skill: "close-calculations/close-results"
+    entradas:
+      - "saldos_resultados"
+      - "chart_pcge"
+    reglas:
+      - "Cuentas 12/13/14 -> 59 Resultados Acumulados"
+      - "Invariante: suma(débitos) === suma(créditos); desbalance -> UNBALANCED_ENTRY"
+    output: "asientos_resultados"
+
+  - id: "step_5"
+    nombre: "Reporte de Cierre (Dictamen)"
+    skill: "close-calculations/report"
+    entradas:
+      - "todos_los_asientos_generados"
+    reglas:
+      - "Trial balance: suma débitos === suma créditos en todos los asientos"
+      - "Cédula ISR: ruta coeficiente, ruta 1.5% y monto aplicado"
+      - "Movimiento del saldo de resultados: antes vs después"
+    output: "reporte_cierre_mensual"
+
+postcondiciones:
+  - check: "reporte.trialBalanceBalanced == true"
+    mensaje_error: "Los asientos de cierre no cuadran; revisar provisiones/depreciaciones"
+  - check: "asientos_no_vacios"
+    mensaje_error: "El cierre no generó asientos"
+
+reporte:
+  formato: "pdf_dictamen"
+  incluir:
+    - "Asientos de depreciación, provisiones, ISR y cierre de resultados"
+    - "Cédula de ISR (pago a cuenta)"
+    - "Trial balance post-cierre"
+    - "Movimiento de resultados antes vs después"

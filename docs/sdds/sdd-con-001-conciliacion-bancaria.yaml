@@ -1,0 +1,95 @@
+# drenyra-sdd — SDD-CON-001: Conciliación Bancaria (Perú)
+#
+# Especificación fuente (trazabilidad). Implementación real: cambio OpenSpec
+# openspec/changes/conciliacion-bancaria/ -> módulo bank-reconciliation/
+# (types, normalize, compare, adjust, report) + skill pe.conciliacion-bancaria.
+# Jurisdicción: PE. Este YAML es la intención original del usuario, adaptada a la
+# normativa peruana; el runtime ejecuta la lógica TypeScript, no este archivo.
+version: "1.0.0"
+codigo: "SDD-CON-001"
+nombre: "Conciliación Bancaria Mensual"
+
+ejecucion:
+  agente: "drenyra-pi"
+  nivel_autorizacion: "alto"  # Requiere doble check humano si diferencias > umbral
+  timeout_segundos: 3600
+
+# Contexto legal y fiscal peruano (gates de auditoría)
+normativa_aplicable:
+  - "PCGE — Plan Contable General Empresarial (R. SMV 043-2010-SMV/01)"
+  - "NIC 1 — Presentación de Estados Financieros"
+  - "Código Tributario — D.S. 133-2013-EF"
+
+# Precondiciones verificadas ANTES de lanzar la misión
+precondiciones:
+  - type: "scope_valido"
+    descripcion: "RUC de 11 dígitos con dígito verificador Módulo 11 + periodo YYYYMM"
+  - type: "ledger_status"
+    estado: "abierto"
+    descripcion: "El libro mayor (ledger) no debe estar en cierre definitivo"
+  - type: "fuentes_disponibles"
+    descripcion: "Estado de cuenta bancario y movimientos de ledger del periodo"
+
+# Pasos que ejecuta el motor determinista (bank-reconciliation/)
+pasos:
+  - id: "step_1"
+    nombre: "Normalizar Movimientos"
+    skill: "bank-reconciliation/normalize"
+    entradas:
+      - "movimientos_bancarios_raw"
+      - "movimientos_contables"
+    reglas:
+      - "Monto en céntimos BigInt; nunca float"
+      - "Fila no normalizable -> rechazada con razón tipada (fail-closed)"
+      - "RUC ajeno -> CROSS_RUC_ACCESS"
+    output: "movimientos_canonicos"
+
+  - id: "step_2"
+    nombre: "Matching (Conciliación Técnica)"
+    skill: "bank-reconciliation/compare"
+    entradas:
+      - "movimientos_canonicos"
+    reglas:
+      - "Primero por referencia normalizada"
+      - "Fallback: monto exacto + misma fecha + mismo lado (nunca solo monto ni solo fecha)"
+      - "Referencia ambigua -> conflict (nunca se adivina)"
+    output: "resultado_matching"
+
+  - id: "step_3"
+    nombre: "Análisis de Partidas No Conciliadas"
+    skill: "bank-reconciliation/adjust"
+    condicion: "{{resultado_matching.fullyMatched == false}}"
+    entradas:
+      - "resultado_matching.differences"
+    reglas:
+      - "Solo bankOnly/ledgerOnly generan borradores de ajuste"
+      - "Diferencia no clasificable -> UNCLASSIFIED_DIFFERENCE (bloqueador)"
+      - "Todo borrador con requireApproval=true por defecto"
+    output: "propuesta_ajustes"
+
+  - id: "step_4"
+    nombre: "Reporte Ejecutivo"
+    skill: "bank-reconciliation/report"
+    entradas:
+      - "resultado_matching"
+      - "saldos_iniciales"
+    reglas:
+      - "reconciled == true solo si ledgerFinal + netAdjustment === bankFinal"
+      - "Con diferencias pendientes -> reconciled == false (fail-closed)"
+    output: "reporte_conciliacion"
+
+# Postcondiciones verificadas al terminar
+postcondiciones:
+  - check: "reporte.reconciled == true"
+    mensaje_error: "La conciliación no cuadra; revisar partidas no conciliadas"
+  - check: "todos_los_movimientos_clasificados"
+    mensaje_error: "Quedó un movimiento sin clasificación"
+
+# Salida esperada
+reporte:
+  incluir:
+    - "Movimientos emparejados (matched)"
+    - "Movimientos faltantes (bank-only / ledger-only)"
+    - "Conflictos de referencia"
+    - "Borradores de ajuste con justificación y requireApproval"
+    - "Saldos iniciales/finales banco vs ledger"
