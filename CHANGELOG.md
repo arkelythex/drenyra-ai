@@ -10,6 +10,17 @@ All notable changes to Drenyra AI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
+## [Unreleased]
+
+### Added — SDD-CON-001/002 engines + vertical wiring + authorization enforcement (PR #64)
+
+- **`bank-reconciliation/`** (SDD-CON-001): deterministic bank-vs-ledger reconciliation engine — canonical normalization, reference-first matching with bounded amount+same-day fallback, fail-closed adjustment drafts, executive report with reconciled identity check. Skill `pe.conciliacion-bancaria`. 65 tests.
+- **`close-calculations/`** (SDD-CON-002): deterministic monthly-close calculation engine — fixed-asset depreciation (LIR-validated policy rates), provisions, provisional ISR (LIR Art. 85 coefficient vs 1.5% floor), closing entries to PCGE 59, post-close report with trial-balance identity. Skills `pe.depreciacion-activo-fijo`, `pe.provision-cartera`, `pe.isr-mensual`, `pe.cierre-resultados`. 63 tests.
+- **`flow/close-wiring.ts`**: wires both engines into the monthly-close vertical — `MonthlyCloseInput` gains optional `bankRows`/`ledgerRows`/`closeInputs`; the vertical now generates candidates FROM engine output (external-first merge, wiring risks surfaced). 30 tests.
+- **`gates/authorization.ts`** (SDD-060): `AuthorizationGate` wires the standalone `authorize()` RBAC engine into the approval pipeline — ApprovalGate quantity passthrough + per-approver `close:approve` at exact tenant scope; fail-closed `needs_input` on missing evidence. `GateName` includes `"authorization"`. 27 tests.
+- **PE skills registry** grows 7 → 11; sibling `drenyra-skills/skills/registry.json` synced; `skills:conformance` PASS.
+- **Program records reconciled**: SDD-050 and SDD-060 records now reflect the implemented surface; Dominion capability matrix refreshed (drenyra-ai rows + `tests.current` 1390).
+
 ## [0.4.1] - 2026-08-15
 
 ### Fixed
@@ -17,7 +28,6 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 - `routing/` and `configurator/` modules were shipped in `dist/` but NOT reachable via the package exports map or the root barrel (deep imports failed with `ERR_PACKAGE_PATH_NOT_EXPORTED`). Added the `./routing` and `./configurator` subpaths, re-exported both from the root entry, and added `configurator/index.ts`. Verified CJS + ESM deep imports resolve `route()` and `runConfigDiagnostics`/`PINNED_AI_COMPOSITION`.
 
 ## [0.4.0] - 2026-08-15
-
 
 ### Added — configurator host integration (SDD-020 slice 2)
 
@@ -35,7 +45,6 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [0.3.0] - 2026-08-15
 
-
 ### Added — configurator (SDD-020 slice 1)
 
 - `upgrade run <version>` and `rollback run` commands with idempotent, fail-closed managed-composition transitions (`configurator/managed-config.ts`); never installs host binaries; preserves foreign configuration byte-for-byte.
@@ -50,8 +59,6 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 ### Added — program (Ola 0-1)
 
 - Dominion program record reconciled (five-axis status vocabulary, evidence register, Gate 0 completed with SDD-020 permitted); RDA v2 core and monthly-close core closed; fiscal-authority kernel archived.
-
-
 
 ### Added — design series (docs)
 
