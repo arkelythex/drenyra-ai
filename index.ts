@@ -33,6 +33,11 @@ export * from "./configurator/index.js";
 export * from "./flow/index.js";
 export * from "./projection/index.js";
 export * from "./authorization/index.js";
+export * from "./bank-reconciliation/index.js";
+// Explicit re-export resolves the star-export name clash between
+// skills/index.js and bank-reconciliation/index.js (both define IsoDate — the
+// identical ISO-8601 date type). The established skills surface resolves here.
+export type { IsoDate } from "./skills/index.js";
 // Explicit re-export resolves the star-export name clash between the routing
 // axis union and missions/reconciliation.ts (both named ExternalEvidence).
 // Routing has no package subpath, so the routing surface must resolve here.
