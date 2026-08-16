@@ -99,20 +99,70 @@ export const SIRE_FILING = make(
 );
 
 /**
- * Bank-statement vs ledger reconciliation (NIF C-3 cash accounts; NIF A-1
- * financial statement structure; Código Fiscal arts. 32-33 registration duty).
+ * Bank-statement vs ledger reconciliation (PCGE cash accounts; NIC 1
+ * financial statement structure; Código Tributario registration duty).
  * Deterministic engine core; adapters/missions/gates are separate slices.
  */
 export const CONCILIACION_BANCARIA = make(
 	"pe.conciliacion-bancaria",
 	"1.0.0",
 	[
-		"NIF C-3 — Cuentas de efectivo",
-		"NIF A-1 — Estructura de estados financieros",
-		"Código Fiscal arts. 32-33",
+		"PCGE — Plan Contable General Empresarial (R. SMV 043-2010-SMV/01)",
+		"NIC 1 — Presentación de Estados Financieros",
+		"Código Tributario — D.S. 133-2013-EF",
 	],
 	["bank-statement", "ledger", "scope"],
 	["differences", "adjustments", "reconciliation-report"],
+	"R1",
+);
+
+/** Fixed-asset depreciation per LIR (D.S. 179-2004-EF) and PCGE. */
+export const DEPRECIACION_ACTIVO_FIJO = make(
+	"pe.depreciacion-activo-fijo",
+	"1.0.0",
+	[
+		"PCGE — Plan Contable General Empresarial (R. SMV 043-2010-SMV/01)",
+		"LIR — Ley del Impuesto a la Renta (D.S. 179-2004-EF)",
+	],
+	["fixed-asset", "policy", "scope"],
+	["depreciation-entries"],
+	"R1",
+);
+
+/** Provisions for past-due receivables and inventory per LIR + Código Tributario. */
+export const PROVISION_CARTERA = make(
+	"pe.provision-cartera",
+	"1.0.0",
+	[
+		"PCGE — Plan Contable General Empresarial (R. SMV 043-2010-SMV/01)",
+		"LIR — Ley del Impuesto a la Renta (D.S. 179-2004-EF)",
+		"Código Tributario — D.S. 133-2013-EF",
+	],
+	["receivables", "inventory", "policy", "scope"],
+	["provision-entries"],
+	"R1",
+);
+
+/** Provisional ISR (pago a cuenta) per LIR Art. 85. */
+export const ISR_MENSUAL = make(
+	"pe.isr-mensual",
+	"1.0.0",
+	["LIR — Ley del Impuesto a la Renta (D.S. 179-2004-EF), Art. 85"],
+	["net-income", "prior-year-ratio", "scope"],
+	["isr-entry", "cedula"],
+	"R1",
+);
+
+/** Closing of result accounts to retained earnings (PCGE 59) per PCGE + NIC 1. */
+export const CIERRE_RESULTADOS = make(
+	"pe.cierre-resultados",
+	"1.0.0",
+	[
+		"PCGE — Plan Contable General Empresarial (R. SMV 043-2010-SMV/01)",
+		"NIC 1 — Presentación de Estados Financieros",
+	],
+	["result-balances", "chart", "scope"],
+	["closing-entries"],
 	"R1",
 );
 
@@ -125,4 +175,8 @@ export const BASE_PE_SKILLS: readonly SkillDefinition[] = [
 	PERCEPTION_CHECK,
 	SIRE_FILING,
 	CONCILIACION_BANCARIA,
+	DEPRECIACION_ACTIVO_FIJO,
+	PROVISION_CARTERA,
+	ISR_MENSUAL,
+	CIERRE_RESULTADOS,
 ];

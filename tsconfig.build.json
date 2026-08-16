@@ -37,7 +37,8 @@
     "flow",
     "projection",
     "authorization",
-    "bank-reconciliation"
+    "bank-reconciliation",
+    "close-calculations"
   ],
   "exclude": [
     "node_modules",

@@ -21,6 +21,7 @@
     "./adapters": "./dist/adapters/index.js",
     "./authorization": "./dist/authorization/index.js",
     "./bank-reconciliation": "./dist/bank-reconciliation/index.js",
+    "./close-calculations": "./dist/close-calculations/index.js",
     "./candidates": "./dist/candidates/index.js",
     "./cdr": "./dist/cdr/index.js",
     "./configurator": "./dist/configurator/index.js",
