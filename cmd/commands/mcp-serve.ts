@@ -9,12 +9,13 @@
  * Runs the MCP server over stdio (Design 03 "MCP server"): JSON-RPC 2.0
  * requests on stdin, responses on stdout, one message per line. Exposes the
  * read-only/verification tools from the frozen core (capabilities,
- * ledger.validate).
+ * ledger.validate, bank.reconcile).
  */
 
 import { createInterface } from "node:readline";
 import {
 	McpServer,
+	bankReconcileTool,
 	capabilitiesTool,
 	ledgerValidateTool,
 } from "../../mcp/index.js";
@@ -34,6 +35,7 @@ export function createDrenyraMcpServer(): McpServer {
 	});
 	server.registerTool(capabilitiesTool(declared));
 	server.registerTool(ledgerValidateTool());
+	server.registerTool(bankReconcileTool());
 	return server;
 }
 
