@@ -98,6 +98,24 @@ export const SIRE_FILING = make(
 	"R2",
 );
 
+/**
+ * Bank-statement vs ledger reconciliation (NIF C-3 cash accounts; NIF A-1
+ * financial statement structure; Código Fiscal arts. 32-33 registration duty).
+ * Deterministic engine core; adapters/missions/gates are separate slices.
+ */
+export const CONCILIACION_BANCARIA = make(
+	"pe.conciliacion-bancaria",
+	"1.0.0",
+	[
+		"NIF C-3 — Cuentas de efectivo",
+		"NIF A-1 — Estructura de estados financieros",
+		"Código Fiscal arts. 32-33",
+	],
+	["bank-statement", "ledger", "scope"],
+	["differences", "adjustments", "reconciliation-report"],
+	"R1",
+);
+
 /** All base Peruvian skills, ready to register. */
 export const BASE_PE_SKILLS: readonly SkillDefinition[] = [
 	IGV_VALIDATE,
@@ -106,4 +124,5 @@ export const BASE_PE_SKILLS: readonly SkillDefinition[] = [
 	RETENTION_CHECK,
 	PERCEPTION_CHECK,
 	SIRE_FILING,
+	CONCILIACION_BANCARIA,
 ];
