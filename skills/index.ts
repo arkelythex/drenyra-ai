@@ -8,3 +8,5 @@
 export * from "./types.js";
 export * from "./registry.js";
 export * from "./pe.js";
+export * from "./signature.js";
+export * from "./pinning.js";
