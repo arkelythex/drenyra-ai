@@ -50,6 +50,7 @@
     "flow",
     "projection",
     "authorization",
+    "annual-declaration",
     "bank-reconciliation",
     "close-calculations"
   ],
