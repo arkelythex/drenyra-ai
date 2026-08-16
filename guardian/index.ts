@@ -6,3 +6,5 @@
 /** Public API of the Guardian Angel module — adversarial read-only review. */
 
 export * from "./guardian.js";
+export * from "./refutation.js";
+export * from "./resolution.js";
