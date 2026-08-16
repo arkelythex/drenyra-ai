@@ -2,7 +2,7 @@
 
 # SDD-070 — Skills and Policy Supply Chain
 
-> Status: lifecycle:active · Maturity: partial (PE skill registry implemented) · Wave: 2 · Depends on: SDD-010 · Feeds: SDD-050
+> Status: lifecycle:active · Maturity: partial (PE skill registry + signed packs + mission pinning implemented) · Wave: 2 · Depends on: SDD-010 · Feeds: SDD-050
 
 ## Purpose
 
@@ -133,11 +133,18 @@ documentary presence alone (R4).
 
 ## Progress
 
-- [ ] Exploration
-- [ ] Proposal
-- [ ] Specification (RFC 2119 + Given/When/Then)
-- [ ] Design
-- [ ] Tasks (vertical TDD units)
-- [ ] Apply (strict TDD)
-- [ ] Verification report
-- [ ] Archive report
+- [x] Exploration
+- [x] Proposal
+- [x] Specification (RFC 2119 + Given/When/Then)
+- [x] Design
+- [x] Tasks (vertical TDD units)
+- [x] Apply (strict TDD)
+- [x] Verification report
+- [x] Archive report
+
+> Progress reflects the signed-packs + mission-pinning slice (PR #62, change archived 2026-08-15
+> at `openspec/changes/archive/2026-08-15-sdd-070-skill-supply-chain/`). Rollback,
+> full normative-source tracking, and live wiring (`flow/close.ts` consuming pinned skills)
+> remain NOT complete — this record stays `lifecycle:active` (R3/R4). Capability-matrix rows
+> (vigencia-versioning/checksum-signature/rollback) not promoted; program-level pass is a
+> follow-up.
