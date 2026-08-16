@@ -2,7 +2,7 @@
 
 # SDD-090 — Guardian Angel
 
-> Status: lifecycle:active · Maturity: partial (read-only verification core implemented) · Wave: 2 · Depends on: SDD-040 · Feeds: SDD-100
+> Status: lifecycle:active · Maturity: partial (read-only verification core + refutation/resolution lenses implemented) · Wave: 2 · Depends on: SDD-040 · Feeds: SDD-100
 
 ## Purpose
 
@@ -115,11 +115,16 @@ Capability-matrix rows `verification-lenses`/`read-only-frozen-candidates`/
 
 ## Progress
 
-- [ ] Exploration
-- [ ] Proposal
-- [ ] Specification (RFC 2119 + Given/When/Then)
-- [ ] Design
-- [ ] Tasks (vertical TDD units)
-- [ ] Apply (strict TDD)
-- [ ] Verification report
-- [ ] Archive report
+- [x] Exploration
+- [x] Proposal
+- [x] Specification (RFC 2119 + Given/When/Then)
+- [x] Design
+- [x] Tasks (vertical TDD units)
+- [x] Apply (strict TDD)
+- [x] Verification report
+- [x] Archive report
+
+> Progress reflects the refutation dual-review + findings resolution slice (PR #63, change archived
+> 2026-08-15 at `openspec/changes/archive/2026-08-15-sdd-090-refutation/`). Command Center (SDD-100)
+> integration and close-package projection remain NOT complete — this record stays
+> `lifecycle:active` (R3/R4). Capability-matrix rows not promoted; program-level pass is a follow-up.
