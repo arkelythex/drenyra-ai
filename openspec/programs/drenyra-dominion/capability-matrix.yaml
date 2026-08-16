@@ -57,6 +57,7 @@ repositories:
       open-spec-program: implemented # this program directory
       bank-reconciliation: implemented # SDD-CON-001 — bank-reconciliation/ (types/normalize/compare/adjust/report), 65 tests, PR #64 tip
       close-calculations: implemented # SDD-CON-002 — close-calculations/ (depreciation/provisions/isr/close-results/report), 63 tests, PR #64 tip
+      annual-declaration: implemented # SDD-CON-003 — annual-declaration/ (net-income/isr/settlement/close-results/declaration/report)
       close-vertical-wiring: implemented # flow/close-wiring.ts converters + MonthlyCloseInput engine inputs, 30 tests, PR #64 tip
       authorization-enforcement: implemented # gates/authorization.ts AuthorizationGate (27 tests) + authorization/ engine (60 tests), PR #64 tip
       pe-skills-registry: implemented # BASE_PE_SKILLS 11 entries, skills:conformance PASS, PR #64 tip

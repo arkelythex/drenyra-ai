@@ -34,6 +34,7 @@ export * from "./flow/index.js";
 export * from "./projection/index.js";
 export * from "./authorization/index.js";
 export * from "./close-calculations/index.js";
+export * from "./annual-declaration/index.js";
 // bank-reconciliation is intentionally NOT star-exported here: its
 // ReconciliationError would clash with missions/reconciliation.ts and its
 // Scope with close-calculations. It stays reachable via the package subpath
