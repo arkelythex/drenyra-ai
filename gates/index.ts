@@ -14,6 +14,7 @@
 
 export * from "./types.js";
 export { ApprovalGate, distinctApprovers } from "./approval.js";
+export { AuthorizationGate } from "./authorization.js";
 export { ReceiptGate } from "./receipt.js";
 export { MissionStateGate } from "./mission.js";
 export { GateRunner } from "./runner.js";
