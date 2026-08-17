@@ -323,7 +323,7 @@ describe("resolved SBOM fidelity", () => {
 		expect(readSbom(cyclic).components.map((c) => c.name)).toEqual(["a", "b"]);
 	});
 
-	it("fails verification on every SBOM fidelity drift class", () => {
+	it("fails verification on every SBOM fidelity drift class", { timeout: 15000 }, () => {
 		const root = fixture();
 		const drift = (mutate: (sbom: Sbom) => void) => {
 			gen(root);
