@@ -13,9 +13,19 @@
   },
   "currentVerified": {
     "temporalClass": "current-claim",
-    "inspectedRevision": "5425efe042de00933fee040675b8e48ed47af9ee",
-    "inspectedAt": "2026-08-16T22:29:00Z",
-    "evidence": "PR #64 merged 2026-08-16T22:28:55Z (5425efe); suite 1390 at merge tip (1 pre-existing release-integrity flake passes 13/13 isolated); CI CLEAN (typecheck/lint/test/package/brand-conformance/skills-conformance)",
+    "inspectedRevision": "d440203183e24b2a0ecf773915888bb6072fc015",
+    "inspectedAt": "2026-08-15T07:28:33Z",
+    "evidence": [
+      "010E-001",
+      "010E-002",
+      "010E-003",
+      "010E-004",
+      "010E-005",
+      "010E-006",
+      "010E-007",
+      "010E-009",
+      "010E-010"
+    ],
     "host": {
       "repository": "drenyra-ai",
       "role": "authority-core",
@@ -58,12 +68,9 @@
         "status": "awaiting-evidence"
       },
       "drenyra-skills": {
-        "temporalClass": "current-claim",
-        "commitSha": "2a3eaa2e4da1963aca44f603aa88021726b4e2e1",
-        "status": "awaiting-evidence",
-        "source": "git-push",
-        "fetchedAt": "2026-08-16T22:20:00Z",
-        "evidence": "push 315b2f6..2a3eaa2 main -> main (11 PE skills sync)"
+        "temporalClass": "unknown",
+        "commitSha": null,
+        "status": "awaiting-evidence"
       },
       "drenyra-guardian-angel": {
         "temporalClass": "unknown",
