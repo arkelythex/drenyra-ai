@@ -1,55 +1,68 @@
 name: Release
 
 on:
-    push:
-        tags:
-            - "v*"
-    workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      publish_from_main:
+        description: "Acknowledge that dispatch publishes the current main state with Sigstore provenance"
+        type: boolean
+        required: true
 
 permissions:
-    contents: read
-    # Required for npm provenance: the publish step exchanges the OIDC token for
-    # a Sigstore attestation binding the published artifact to this workflow and
-    # commit. Consumers verify with `npm audit signatures` after installing.
-    id-token: write
+  contents: read
+  # Required for npm provenance: the publish step exchanges the OIDC token for
+  # a Sigstore attestation binding the published artifact to this workflow and
+  # commit. Consumers verify with `npm audit signatures` after installing.
+  id-token: write
 
 jobs:
-    publish:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-              with:
-                  persist-credentials: false
-            - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-              with:
-                  bun-version: "1.3.14"
-                  # Hermetic release build: never restore the bun executable
-                  # from the actions cache (cache-poisoning vector in a
-                  # provenance-bearing publish workflow; zizmor cache-poisoning).
-                  no-cache: true
-            # False positive at this pin: setup-node v4 caches only when the
-            # `cache` input names a package manager (verified against the
-            # pinned action.yml); explicit `cache: ""` declares no caching.
-            - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4 # zizmor: ignore[cache-poisoning]
-              with:
-                  node-version: "22"
-                  registry-url: "https://registry.npmjs.org"
-                  # Explicit no-cache: setup-node v4 caches only when the
-                  # `cache` input names a package manager; declare intent so
-                  # the publish path never consumes a poisoned dependency cache.
-                  cache: ""
-            - run: bun install --frozen-lockfile
-            # prepublishOnly already runs typecheck + verify:package (build, SBOM,
-            # checksums, release-integrity, packed-install proof) before npm touches
-            # the registry. `publishConfig.provenance` in package.json makes the
-            # attestation default for every publish path.
-            - name: Publish with Sigstore provenance
-              run: npm publish --provenance
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-            - name: Confirm published artifact
-              run: |
-                  VERSION="$(node -p "require('./package.json').version")"
-                  TARBALL="$(npm view "drenyra-ai@${VERSION}" dist.tarball)"
-                  test -n "$TARBALL"
-                  echo "published tarball: ${TARBALL}"
+  publish:
+    runs-on: ubuntu-latest
+    # Tag pushes publish the tagged version; manual dispatch is only allowed
+    # from main with an explicit confirmation input — never from an arbitrary
+    # branch state.
+    if: >-
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' &&
+       github.ref == 'refs/heads/main' &&
+       github.event.inputs.publish_from_main == 'true')
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: "1.3.14"
+          # Hermetic release build: never restore the bun executable
+          # from the actions cache (cache-poisoning vector in a
+          # provenance-bearing publish workflow; zizmor cache-poisoning).
+          no-cache: true
+      # False positive at this pin: setup-node v4 caches only when the
+      # `cache` input names a package manager (verified against the
+      # pinned action.yml); explicit `cache: ""` declares no caching.
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4 # zizmor: ignore[cache-poisoning]
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+          # Explicit no-cache: setup-node v4 caches only when the
+          # `cache` input names a package manager; declare intent so
+          # the publish path never consumes a poisoned dependency cache.
+          cache: ""
+      - run: bun install --frozen-lockfile
+      # prepublishOnly already runs typecheck + verify:package (build, SBOM,
+      # checksums, release-integrity, packed-install proof) before npm touches
+      # the registry. `publishConfig.provenance` in package.json makes the
+      # attestation default for every publish path.
+      - name: Publish with Sigstore provenance
+        run: npm publish --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Confirm published artifact
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          TARBALL="$(npm view "drenyra-ai@${VERSION}" dist.tarball)"
+          test -n "$TARBALL"
+          echo "published tarball: ${TARBALL}"

@@ -36,75 +36,75 @@ export type AuditLevel = "debug" | "info" | "warn" | "error";
 
 /** Numeric precedence used for level filtering. */
 export const AUDIT_LEVEL_ORDER: Readonly<Record<AuditLevel, number>> = {
-	debug: 10,
-	info: 20,
-	warn: 30,
-	error: 40,
+  debug: 10,
+  info: 20,
+  warn: 30,
+  error: 40,
 };
 
 export const AUDIT_LEVELS: readonly AuditLevel[] = [
-	"debug",
-	"info",
-	"warn",
-	"error",
+  "debug",
+  "info",
+  "warn",
+  "error",
 ];
 
 /** Tenant-boundary context attached to every event (all optional; fail-closed to "unknown"). */
 export interface AuditContext {
-	readonly mission_id?: string;
-	readonly ruc?: string;
-	readonly period?: string;
-	readonly user_id?: string;
-	readonly company_id?: string;
+  readonly mission_id?: string;
+  readonly ruc?: string;
+  readonly period?: string;
+  readonly user_id?: string;
+  readonly company_id?: string;
 }
 
 /** One JSONL audit event. */
 export interface AuditEvent extends AuditContext {
-	readonly timestamp: string;
-	readonly level: AuditLevel;
-	readonly event: string;
-	readonly message: string;
-	readonly details?: Readonly<Record<string, unknown>>;
+  readonly timestamp: string;
+  readonly level: AuditLevel;
+  readonly event: string;
+  readonly message: string;
+  readonly details?: Readonly<Record<string, unknown>>;
 }
 
 export interface AuditSink {
-	write(line: string): void;
+  write(line: string): void;
 }
 
 export interface AuditLogger {
-	/** Effective level; events below it are dropped. */
-	readonly level: AuditLevel;
-	/** Returns a new logger with merged (immutable) context. */
-	child(context: AuditContext): AuditLogger;
-	debug(
-		event: string,
-		message: string,
-		details?: Readonly<Record<string, unknown>>,
-	): void;
-	info(
-		event: string,
-		message: string,
-		details?: Readonly<Record<string, unknown>>,
-	): void;
-	warn(
-		event: string,
-		message: string,
-		details?: Readonly<Record<string, unknown>>,
-	): void;
-	error(
-		event: string,
-		message: string,
-		details?: Readonly<Record<string, unknown>>,
-	): void;
+  /** Effective level; events below it are dropped. */
+  readonly level: AuditLevel;
+  /** Returns a new logger with merged (immutable) context. */
+  child(context: AuditContext): AuditLogger;
+  debug(
+    event: string,
+    message: string,
+    details?: Readonly<Record<string, unknown>>,
+  ): void;
+  info(
+    event: string,
+    message: string,
+    details?: Readonly<Record<string, unknown>>,
+  ): void;
+  warn(
+    event: string,
+    message: string,
+    details?: Readonly<Record<string, unknown>>,
+  ): void;
+  error(
+    event: string,
+    message: string,
+    details?: Readonly<Record<string, unknown>>,
+  ): void;
 }
 
 export interface AuditLoggerOptions {
-	/** Overrides DRENYRA_AUDIT_LEVEL. */
-	readonly level?: AuditLevel;
-	/** Overrides the default stderr/file sink (used by tests). */
-	readonly sink?: AuditSink;
-	/** Context merged into every event emitted by this logger. */
-	readonly context?: AuditContext;
+  /** Overrides DRENYRA_AUDIT_LEVEL. */
+  readonly level?: AuditLevel;
+  /** Overrides the default stderr/file sink (used by tests). */
+  readonly sink?: AuditSink;
+  /** Context merged into every event emitted by this logger. */
+  readonly context?: AuditContext;
 }
 
 const FALLBACK = "unknown";
@@ -117,7 +117,7 @@ const RUC_SHAPE = /^[0-9]{11}$/;
  * when it has the eleven-digit shape; anything else fails closed to "unknown".
  */
 export function inferRuc(companyId: string): string {
-	return RUC_SHAPE.test(companyId) ? companyId : FALLBACK;
+  return RUC_SHAPE.test(companyId) ? companyId : FALLBACK;
 }
 
 /**
@@ -126,106 +126,106 @@ export function inferRuc(companyId: string): string {
  * to a stable textual rendering.
  */
 function stringifyDetails(
-	details: Readonly<Record<string, unknown>> | undefined,
+  details: Readonly<Record<string, unknown>> | undefined,
 ): Readonly<Record<string, unknown>> | undefined {
-	if (details === undefined) {
-		return undefined;
-	}
-	try {
-		return JSON.parse(JSON.stringify(details)) as Record<string, unknown>;
-	} catch {
-		return { unserializable: String(details) };
-	}
+  if (details === undefined) {
+    return undefined;
+  }
+  try {
+    return JSON.parse(JSON.stringify(details)) as Record<string, unknown>;
+  } catch {
+    return { unserializable: String(details) };
+  }
 }
 
 function resolveSink(): AuditSink {
-	const path = process.env.DRENYRA_AUDIT_LOG;
-	if (path !== undefined && path.length > 0) {
-		return {
-			write(line: string): void {
-				appendFileSync(path, `${line}\n`);
-			},
-		};
-	}
-	return {
-		write(line: string): void {
-			process.stderr.write(`${line}\n`);
-		},
-	};
+  const path = process.env.DRENYRA_AUDIT_LOG;
+  if (path !== undefined && path.length > 0) {
+    return {
+      write(line: string): void {
+        appendFileSync(path, `${line}\n`);
+      },
+    };
+  }
+  return {
+    write(line: string): void {
+      process.stderr.write(`${line}\n`);
+    },
+  };
 }
 
 function resolveLevel(): AuditLevel {
-	const raw = process.env.DRENYRA_AUDIT_LEVEL;
-	if (raw !== undefined && (AUDIT_LEVELS as readonly string[]).includes(raw)) {
-		return raw as AuditLevel;
-	}
-	return "info";
+  const raw = process.env.DRENYRA_AUDIT_LEVEL;
+  if (raw !== undefined && (AUDIT_LEVELS as readonly string[]).includes(raw)) {
+    return raw as AuditLevel;
+  }
+  return "info";
 }
 
 /** Creates an audit logger; options override environment-derived defaults. */
 export function createAuditLogger(options: AuditLoggerOptions = {}): AuditLogger {
-	const level = options.level ?? resolveLevel();
-	const sink = options.sink ?? resolveSink();
-	const baseContext: AuditContext = options.context ?? {};
+  const level = options.level ?? resolveLevel();
+  const sink = options.sink ?? resolveSink();
+  const baseContext: AuditContext = options.context ?? {};
 
-	function emit(
-		eventLevel: AuditLevel,
-		event: string,
-		message: string,
-		details?: Readonly<Record<string, unknown>>,
-	): void {
-		if (AUDIT_LEVEL_ORDER[eventLevel] < AUDIT_LEVEL_ORDER[level]) {
-			return;
-		}
-		const ruc =
-			baseContext.ruc ??
-			(baseContext.company_id !== undefined
-				? inferRuc(baseContext.company_id)
-				: FALLBACK);
-		const eventRecord: AuditEvent = {
-			timestamp: new Date().toISOString(),
-			level: eventLevel,
-			event,
-			message,
-			mission_id: baseContext.mission_id ?? FALLBACK,
-			ruc,
-			period: baseContext.period ?? FALLBACK,
-			user_id: baseContext.user_id ?? FALLBACK,
-			...(baseContext.company_id !== undefined
-				? { company_id: baseContext.company_id }
-				: {}),
-			...(details !== undefined ? { details: stringifyDetails(details) } : {}),
-    		};
-    		try {
-    			sink.write(JSON.stringify(eventRecord));
-    		} catch {
-    			// Fail-open: an audit transport failure (for example an unwritable
-    			// DRENYRA_AUDIT_LOG path) must NEVER change the outcome of the
-    			// business operation being recorded. The audit log is advisory;
-    			// command JSON results, exit codes, and receipts stay authoritative.
-    		}
-    	}
+  function emit(
+    eventLevel: AuditLevel,
+    event: string,
+    message: string,
+    details?: Readonly<Record<string, unknown>>,
+  ): void {
+    if (AUDIT_LEVEL_ORDER[eventLevel] < AUDIT_LEVEL_ORDER[level]) {
+      return;
+    }
+    const ruc =
+      baseContext.ruc ??
+      (baseContext.company_id !== undefined
+        ? inferRuc(baseContext.company_id)
+        : FALLBACK);
+    const eventRecord: AuditEvent = {
+      timestamp: new Date().toISOString(),
+      level: eventLevel,
+      event,
+      message,
+      mission_id: baseContext.mission_id ?? FALLBACK,
+      ruc,
+      period: baseContext.period ?? FALLBACK,
+      user_id: baseContext.user_id ?? FALLBACK,
+      ...(baseContext.company_id !== undefined
+        ? { company_id: baseContext.company_id }
+        : {}),
+      ...(details !== undefined ? { details: stringifyDetails(details) } : {}),
+        };
+        try {
+          sink.write(JSON.stringify(eventRecord));
+        } catch {
+          // Fail-open: an audit transport failure (for example an unwritable
+          // DRENYRA_AUDIT_LOG path) must NEVER change the outcome of the
+          // business operation being recorded. The audit log is advisory;
+          // command JSON results, exit codes, and receipts stay authoritative.
+        }
+      }
     
-    	return {
-		level,
-		child(context: AuditContext): AuditLogger {
-			return createAuditLogger({
-				level,
-				sink,
-				context: { ...baseContext, ...context },
-			});
-		},
-		debug(event, message, details) {
-			emit("debug", event, message, details);
-		},
-		info(event, message, details) {
-			emit("info", event, message, details);
-		},
-		warn(event, message, details) {
-			emit("warn", event, message, details);
-		},
-		error(event, message, details) {
-			emit("error", event, message, details);
-		},
-	};
+      return {
+    level,
+    child(context: AuditContext): AuditLogger {
+      return createAuditLogger({
+        level,
+        sink,
+        context: { ...baseContext, ...context },
+      });
+    },
+    debug(event, message, details) {
+      emit("debug", event, message, details);
+    },
+    info(event, message, details) {
+      emit("info", event, message, details);
+    },
+    warn(event, message, details) {
+      emit("warn", event, message, details);
+    },
+    error(event, message, details) {
+      emit("error", event, message, details);
+    },
+  };
 }
