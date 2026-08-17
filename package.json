@@ -19,6 +19,7 @@
   "exports": {
     ".": "./dist/index.js",
     "./adapters": "./dist/adapters/index.js",
+    "./annual-declaration": "./dist/annual-declaration/index.js",
     "./authorization": "./dist/authorization/index.js",
     "./bank-reconciliation": "./dist/bank-reconciliation/index.js",
     "./close-calculations": "./dist/close-calculations/index.js",
