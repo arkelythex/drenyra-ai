@@ -98,6 +98,6 @@ Chain strategy: feature-branch-chain
 
 ## Lifecycle gates (parent-owned, post-apply)
 
-- [ ] Ship the work units as two chained PRs under feature-branch-chain strategy: PR1 (W1–W3, calculation core) then PR2 (W4–W5, composition + report + barrel + wiring); validate each PR candidate per native review contract before merge. <!-- sdd-owner: parent -->
-- [ ] Run post-apply bounded review of each PR candidate per native review contract and validate the terminal receipt before merge. <!-- sdd-owner: parent -->
-- [ ] Validate the integrated change: full suite green, no frozen-contract delta, then merge to main. <!-- sdd-owner: parent -->
+- [x] Ship the work units as two chained PRs under feature-branch-chain strategy: PR1 (W1–W3, calculation core) then PR2 (W4–W5, composition + report + barrel + wiring); validate each PR candidate per native review contract before merge. <!-- sdd-owner: parent -->
+- [x] Run post-apply bounded review of each PR candidate per native review contract and validate the terminal receipt before merge. <!-- sdd-owner: parent -->
+- [x] Validate the integrated change: full suite green, no frozen-contract delta, then merge to main. <!-- sdd-owner: parent -->

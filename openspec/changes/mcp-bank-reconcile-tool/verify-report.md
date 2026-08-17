@@ -1,3 +1,19 @@
+```yaml
+schema: gentle-ai.verify-result/v1
+evidence_revision: sha256:34cb6ffafb1bae42b22bee33d666a8469db52ffdb3ea05a52b8914631ef3549f
+verdict: pass
+blockers: 0
+critical_findings: 0
+requirements: 9/9
+scenarios: 23/23
+test_command: bun run test
+test_exit_code: 0
+test_output_hash: sha256:80047e32a8b952a9b11deac462468142636a996d4fcd46de1334f7168c02de7d
+build_command: bun run typecheck
+build_exit_code: 0
+build_output_hash: sha256:1383d3b3e514b0940d50f6b0e77596f839420a9680372de8c536ec57c0ce6e98
+```
+
 # Verify Report — mcp-bank-reconcile-tool (MCP tool `bank.reconcile`)
 
 - Change: `mcp-bank-reconcile-tool`

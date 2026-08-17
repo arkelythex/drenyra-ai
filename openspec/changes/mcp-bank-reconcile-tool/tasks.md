@@ -68,5 +68,5 @@ Chain strategy: n/a
 
 ## Lifecycle gates (parent-owned, post-apply)
 
-- [ ] Run post-apply bounded review of the single PR candidate per native review contract and validate the terminal receipt before merge. <!-- sdd-owner: parent -->
-- [ ] Validate the integrated change: full suite green, no frozen contract delta, then merge to main. <!-- sdd-owner: parent -->
+- [x] Run post-apply bounded review of the single PR candidate per native review contract and validate the terminal receipt before merge. <!-- sdd-owner: parent -->
+- [x] Validate the integrated change: full suite green, no frozen contract delta, then merge to main. <!-- sdd-owner: parent -->

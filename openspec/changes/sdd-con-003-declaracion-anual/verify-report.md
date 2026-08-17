@@ -1,3 +1,19 @@
+```yaml
+schema: gentle-ai.verify-result/v1
+evidence_revision: sha256:be9dbf3c87c7aa4a7dbfbdd63df664cb951f0ccfcc3748f8ce31cf01aeeb4e72
+verdict: pass
+blockers: 0
+critical_findings: 0
+requirements: 9/9
+scenarios: 24/24
+test_command: bun run test
+test_exit_code: 0
+test_output_hash: sha256:80047e32a8b952a9b11deac462468142636a996d4fcd46de1334f7168c02de7d
+build_command: bun run typecheck
+build_exit_code: 0
+build_output_hash: sha256:1383d3b3e514b0940d50f6b0e77596f839420a9680372de8c536ec57c0ce6e98
+```
+
 # Verification Report — SDD-CON-003 Declaración Anual
 
 - **Change**: `sdd-con-003-declaracion-anual`
