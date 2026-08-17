@@ -22,6 +22,7 @@ import { createAgentRegistry } from "../../agents/index.js";
 import { MissionFileStore } from "../adapters/file-mission-store.js";
 import { parseMissionFlags } from "./mission-demo-handler.js";
 import { readJsonFile, emitJson, emitSummary } from "../output/json.js";
+import { createAuditLogger } from "../output/audit.js";
 import {
   businessErrorOutput,
   errorMessage,
@@ -85,8 +86,10 @@ export async function missionApplyCommand(args: string[]): Promise<number> {
       "usage: drenyra-ai mission apply <command.json> [--store <file>] [--demo]",
     );
   }
+  let parsed:
+    | { command: BoundMissionCommand; idempotencyKey?: string }
+    | undefined;
   try {
-    let parsed: { command: BoundMissionCommand; idempotencyKey?: string };
     try {
       parsed = parseCommandFile(readJsonFile(commandPath));
     } catch (error) {
@@ -116,16 +119,40 @@ export async function missionApplyCommand(args: string[]): Promise<number> {
       "mission apply",
       `${result.snapshot.id} status=${result.snapshot.status} version=${result.snapshot.version} replayed=${result.replayed ?? false}`,
     );
+    createAuditLogger()
+      .child({
+        mission_id: result.snapshot.id,
+        company_id: result.snapshot.companyId,
+        period: result.snapshot.fiscalPeriod,
+      })
+      .info("mission.applied", `command ${parsed.command.type} applied`, {
+        command: parsed.command.type,
+        status: result.snapshot.status,
+        version: result.snapshot.version,
+        replayed: result.replayed ?? false,
+      });
     return 0;
-  } catch (error) {
-    if (
-      isMissionError(error) ||
-      error instanceof IdempotencyConflict
-    ) {
-      console.log(businessErrorOutput(error));
+      } catch (error) {
+        if (
+          isMissionError(error) ||
+          error instanceof IdempotencyConflict
+        ) {
+          console.log(businessErrorOutput(error));
       console.error(`mission apply: business error: ${errorMessage(error)}`);
+      createAuditLogger()
+        .child({ mission_id: parsed?.command.missionId })
+        .error(
+          "mission.apply_failed",
+          `command ${parsed?.command.type ?? "?"} rejected`,
+          {
+            command: parsed?.command.type ?? "?",
+            code: isMissionError(error)
+              ? error.code
+              : "IDEMPOTENCY_CONFLICT",
+          },
+        );
       return 1;
-    }
+        }
     console.error(`mission apply: IO/parse error: ${errorMessage(error)}`);
     return 2;
   }

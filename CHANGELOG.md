@@ -21,6 +21,12 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 - **PE skills registry** grows 7 → 11; sibling `drenyra-skills/skills/registry.json` synced; `skills:conformance` PASS.
 - **Program records reconciled**: SDD-050 and SDD-060 records now reflect the implemented surface; Dominion capability matrix refreshed (drenyra-ai rows + `tests.current` 1390).
 
+### Added — audit coverage gate + structured audit log + release provenance
+
+- **`cmd/output/audit.ts`**: zero-dependency structured audit log (JSONL to stderr or `DRENYRA_AUDIT_LOG=<path>`, level filter `DRENYRA_AUDIT_LEVEL`) with mandatory fail-closed tenant fields `mission_id`/`ruc`/`period`/`user_id`; `ruc` derived from an eleven-digit `company_id` (`inferRuc`). Wired into `mission start/apply/status` (`mission.started`, `mission.applied`, `mission.apply_failed`, `mission.status_read`, `mission.status_not_found`). 11 tests.
+- **Coverage gate**: `@vitest/coverage-v8` (v4) with global thresholds statements 80 / branches 75 / functions 80 / lines 80; CI job `coverage` fails on any miss. Baseline measured at commit `0066847`: 85.4/79.1/89/86.9.
+- **Release provenance**: `.github/workflows/release.yml` publishes tags with npm Sigstore provenance (`npm publish --provenance`, OIDC `id-token: write`); `repository` + `publishConfig.provenance` added to `package.json`. Consumers verify with `npm audit signatures`.
+
 ## [0.4.1] - 2026-08-15
 
 ### Fixed

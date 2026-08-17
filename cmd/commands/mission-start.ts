@@ -13,6 +13,7 @@ import { MissionRuntime, type CreateMissionCommand } from "../../missions/index.
 import { MissionFileStore } from "../adapters/file-mission-store.js";
 import { parseMissionFlags, VALID_MISSION_INTENTS } from "./mission-demo-handler.js";
 import { readJsonFile, emitJson, emitSummary } from "../output/json.js";
+import { createAuditLogger } from "../output/audit.js";
 import { errorMessage, usageError } from "../output/errors.js";
 
 function isCreateMissionCommand(
@@ -69,6 +70,17 @@ export async function missionStartCommand(args: string[]): Promise<number> {
       "mission start",
       `${snapshot.id} status=${snapshot.status} version=${snapshot.version}`,
     );
+    createAuditLogger()
+      .child({
+        mission_id: snapshot.id,
+        company_id: snapshot.companyId,
+        period: snapshot.fiscalPeriod,
+      })
+      .info("mission.started", `mission ${snapshot.id} created`, {
+        intent: snapshot.intent,
+        status: snapshot.status,
+        version: snapshot.version,
+      });
     return 0;
   } catch (error) {
     console.error(`mission start: IO/parse error: ${errorMessage(error)}`);

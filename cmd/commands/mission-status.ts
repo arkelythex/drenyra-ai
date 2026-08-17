@@ -12,6 +12,7 @@
 import { MissionFileStore } from "../adapters/file-mission-store.js";
 import { parseMissionFlags } from "./mission-demo-handler.js";
 import { emitJson, emitSummary } from "../output/json.js";
+import { createAuditLogger } from "../output/audit.js";
 import { errorMessage, usageError } from "../output/errors.js";
 
 export async function missionStatusCommand(args: string[]): Promise<number> {
@@ -43,6 +44,9 @@ export async function missionStatusCommand(args: string[]): Promise<number> {
         },
       });
       emitSummary("mission status", `mission ${missionId} not found`);
+      createAuditLogger()
+        .child({ mission_id: missionId })
+        .warn("mission.status_not_found", `mission ${missionId} not found`);
       return 1;
     }
     const events = await stores.events.list(missionId);
@@ -51,6 +55,17 @@ export async function missionStatusCommand(args: string[]): Promise<number> {
       "mission status",
       `${missionId} status=${snapshot.status} version=${snapshot.version} events=${events.length}`,
     );
+    createAuditLogger()
+      .child({
+        mission_id: snapshot.id,
+        company_id: snapshot.companyId,
+        period: snapshot.fiscalPeriod,
+      })
+      .info("mission.status_read", `mission ${missionId} status read`, {
+        status: snapshot.status,
+        version: snapshot.version,
+        events: events.length,
+      });
     return 0;
   } catch (error) {
     console.error(`mission status: IO/parse error: ${errorMessage(error)}`);
