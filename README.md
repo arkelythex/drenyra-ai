@@ -159,6 +159,9 @@ flowchart LR
 
 ## Quick Start
 
+> [!TIP]
+> For a five-minute start with prerequisites and install options, see the [Quickstart](docs/quickstart.md); for the full CLI reference, see [Usage](docs/usage.md).
+
 ### Install
 
 ```bash
@@ -186,6 +189,15 @@ drenyra-ai --help
 | `drenyra-ai gate check <gate-input.json>` | Run the standard gates (mission, receipt, approval) over a gate input |
 
 Exit codes: `0` success, `1` business error (JSON error to stdout), `2` usage/IO. JSON goes to stdout; the human-readable one-line summary goes to stderr.
+
+#### Audit log
+
+The CLI emits a structured audit log (JSONL — one JSON object per line) for operational events: `mission.started`, `mission.applied`, `mission.apply_failed`, `mission.status_read`, `mission.status_not_found`. Every event always carries the tenant-boundary fields `mission_id`, `ruc`, `period`, `user_id` (fail-closed to `unknown` when the context has no value), plus `level`, `event`, `message`, `timestamp` and optional `details`. The stream is filterable with `jq`, e.g. `jq 'select(.ruc == "20123456789" and .period == "202507")'`.
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `DRENYRA_AUDIT_LOG` | unset | When set to a path, audit lines append to that file; otherwise they go to stderr (stdout stays reserved for command JSON results) |
+| `DRENYRA_AUDIT_LEVEL` | `info` | Severity filter — one of `debug`, `info`, `warn`, `error`; events below the level are dropped |
 
 ### A minimal session
 
@@ -341,9 +353,13 @@ This repository holds only its local change plus a reference to the master progr
 
 | Your task | Start here |
 | --- | --- |
+| Get running in five minutes | [Quickstart](docs/quickstart.md) |
+| Full CLI reference and mission store | [Usage](docs/usage.md) |
 | Understand the intended usage and the frozen frontier | [Intended Usage](docs/intended-usage.md) |
 | Integrate via the public library surface | [SDK](docs/sdk.md) |
-| Understand open-core governance and contribution rules | [Governance](docs/governance.md), [CONTRIBUTING](CONTRIBUTING.md) |
+| Navigate the codebase as a maintainer | [Codebase Guide](docs/CODEBASE-GUIDE.md) |
+| Understand how fiscal correctness is proven | [Deterministic Testing](docs/testing-deterministic.md) |
+| Understand open-core governance and contribution rules | [Governance](docs/governance.md), [CONTRIBUTING](CONTRIBUTING.md), [AI Policy](AI_POLICY.md) |
 | Read the frozen design series (frontier, monthly close, agents/skills, persistence, v1.0) | [Design 01](docs/design/design-01-ecosystem-frontier-and-authority.md) → [Design 05](docs/design/design-05-testing-releases-v1.md) |
 | Understand the trust model | [Trust Model](docs/architecture/trust-model.md) |
 | See the system and its boundaries | [System Context](docs/architecture/system-context.md), [Trust Boundaries](docs/architecture/trust-boundaries.md) |
@@ -355,16 +371,18 @@ This repository holds only its local change plus a reference to the master progr
 | Change or extend a contract | [Contracts](contracts/README.md) — change policy, conformance suites, migration path |
 | Track the plan | [ROADMAP](ROADMAP.md) and [CHANGELOG](CHANGELOG.md) |
 | Read the ecosystem program (master SDD, waves, gates, program-lock) | [Drenyra Dominion Program](openspec/programs/drenyra-dominion/README.md) — program source of truth |
-| Contribute | [CONTRIBUTING](CONTRIBUTING.md), [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md), [SECURITY](SECURITY.md) |
+| Contribute | [CONTRIBUTING](CONTRIBUTING.md), [AI Policy](AI_POLICY.md), [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md), [SECURITY](SECURITY.md), [CONTRIBUTORS](CONTRIBUTORS.md) |
 
 ---
 
 ## Next Steps
 
 - **New to the ecosystem?** Read the [Trust Model](docs/architecture/trust-model.md) first — it explains what the runtime can prove and what it cannot.
+- **Just installed?** Run the [Quickstart](docs/quickstart.md), then read the [Intended Usage](docs/intended-usage.md) for the mental model.
 - **Integrating an ERP or SaaS?** Start with the [Contracts](contracts/README.md) — they are the public, frozen surface.
-- **Building on the runtime?** Read the [Architecture](docs/architecture.md) and the [Layer Model](docs/architecture.md#layer-model).
-- **Contributing?** Read [CONTRIBUTING](CONTRIBUTING.md), then pick up an item from the [ROADMAP](ROADMAP.md).
+- **Building on the runtime?** Read the [Architecture](docs/architecture.md) and the [Layer Model](docs/architecture.md#layer-model), and the [Codebase Guide](docs/CODEBASE-GUIDE.md) for where changes belong.
+- **Maintaining Drenyra AI?** Use the [Codebase Guide](docs/CODEBASE-GUIDE.md) to find ownership, and [Deterministic Testing](docs/testing-deterministic.md) to verify a change.
+- **Contributing?** Read [CONTRIBUTING](CONTRIBUTING.md) and the [AI Policy](AI_POLICY.md), then pick up an item from the [ROADMAP](ROADMAP.md).
 
 ---
 
