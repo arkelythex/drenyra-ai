@@ -66,3 +66,19 @@ jobs:
           TARBALL="$(npm view "drenyra-ai@${VERSION}" dist.tarball)"
           test -n "$TARBALL"
           echo "published tarball: ${TARBALL}"
+      # Exercise the consumer-side provenance check the README documents:
+      # install the just-published artifact and verify its Sigstore signature.
+      # `npm audit signatures` fails when any installed package lacks a valid
+      # provenance attestation.
+      - name: Verify published provenance signature
+        # zizmor: ignore[adhoc-packages] — intentional: installs the artifact just
+        # published with provenance in this same workflow (version from package.json,
+        # ephemeral temp dir, --ignore-scripts) solely so `npm audit signatures`
+        # can verify its Sigstore attestation.
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          TMP="$(mktemp -d)"
+          cd "${TMP}"
+          npm init -y > /dev/null 2>&1
+          npm install "drenyra-ai@${VERSION}" --ignore-scripts --no-audit --no-fund > /dev/null 2>&1
+          npm audit signatures

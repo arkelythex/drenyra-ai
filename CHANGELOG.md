@@ -27,6 +27,12 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 - **Coverage gate**: `@vitest/coverage-v8` (v4) with global thresholds statements 80 / branches 75 / functions 80 / lines 80; CI job `coverage` fails on any miss. Baseline measured at commit `0066847`: 85.4/79.1/89/86.9.
 - **Release provenance**: `.github/workflows/release.yml` publishes tags with npm Sigstore provenance (`npm publish --provenance`, OIDC `id-token: write`); `repository` + `publishConfig.provenance` added to `package.json`. Consumers verify with `npm audit signatures`.
 
+### Fixed — review follow-ups + program record sync
+
+- **`cmd/output/audit.ts` + `cmd/output/__tests__/audit.test.ts`**: converted tab indentation to the repository's 2-space convention (whitespace-only); audit suite now 12 tests (incl. fail-open sink regression).
+- **`.github/workflows/release.yml`**: re-indented to 2-space YAML matching `ci.yml`; `workflow_dispatch` now guarded — manual dispatch publishes only from `main` with an explicit confirmation input, never arbitrary branch state.
+- **Dominion capability matrix**: `tests.current` synced to 1483 (fresh run at `948f1a2`, 111 files, exit 0; coverage gate green 85.44/79.07/89.2/86.92).
+
 ## [0.4.1] - 2026-08-15
 
 ### Fixed
