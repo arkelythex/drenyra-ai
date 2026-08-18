@@ -52,14 +52,14 @@ jobs:
           # the publish path never consumes a poisoned dependency cache.
           cache: ""
       - run: bun install --frozen-lockfile
-      # prepublishOnly already runs typecheck + verify:package (build, SBOM,
-      # checksums, release-integrity, packed-install proof) before npm touches
-      # the registry. `publishConfig.provenance` in package.json makes the
-      # attestation default for every publish path.
+      # Trusted Publishing (OIDC): npm exchanges the runner's identity token
+      # for a short-lived publish credential bound to this exact workflow run —
+      # no long-lived NPM_TOKEN secret. Configure the trusted publisher once on
+      # the npm package page (GitHub Actions -> arkelythex/drenyra-ai/release.yml
+      # -> allowed action npm publish). `--provenance` stays explicit: the
+      # Sigstore attestation is generated automatically under trusted publishing.
       - name: Publish with Sigstore provenance
         run: npm publish --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Confirm published artifact
         run: |
           VERSION="$(node -p "require('./package.json').version")"
