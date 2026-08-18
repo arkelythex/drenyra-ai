@@ -1,6 +1,6 @@
 {
   "name": "drenyra-ai",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Standalone RDA (Receipt-Driven Accounting) core — receipt verification against frozen conformance vectors, append-only audit ledger validation, mission protocol + runtime, candidate identity/materiality, and proportional review lenses. Library modules use node:crypto only; the CLI adds ajv for schema validation.",
   "repository": {
     "type": "git",

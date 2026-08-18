@@ -12,6 +12,8 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-08-17
+
 ### Added — SDD-CON-001/002 engines + vertical wiring + authorization enforcement (PR #64)
 
 - **`bank-reconciliation/`** (SDD-CON-001): deterministic bank-vs-ledger reconciliation engine — canonical normalization, reference-first matching with bounded amount+same-day fallback, fail-closed adjustment drafts, executive report with reconciled identity check. Skill `pe.conciliacion-bancaria`. 65 tests.
