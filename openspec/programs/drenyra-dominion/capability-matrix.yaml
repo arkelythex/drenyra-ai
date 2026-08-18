@@ -67,7 +67,7 @@ repositories:
       - drenyra-ecosystem-cleanup # archived 2026-08-11
     tests:
       historical: 640 # E-006 — 2026-08-11 snapshot; retained as history (R7), never current
-      current: 1390 # fresh run at PR #64 tip (99 files, exit 0; 1 pre-existing release-integrity flake passes 13/13 isolated) — supersedes 010E-002 915/915 at d440203
+      current: 1483 # fresh run at commit 948f1a2 (111 files, 1483 tests, exit 0; coverage gate green 85.44/79.07/89.2/86.92) — supersedes 1390 at PR #64 tip
     sibling_facts:
       drenyra-engram: PUBLIC main 94417fd718069007e396b8d674df6ca87dbfd9fb (010E-009, 2026-08-15T18:21:55Z; corroborates E-010)
       drenyra-pi: PUBLIC main 340da3b2de7c73bcff007b9fa924d2dac7cd9e2c (010E-010, 2026-08-15T18:21:55Z; corroborates E-010)
