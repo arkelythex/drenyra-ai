@@ -9,9 +9,9 @@
 <p><strong>Verifiable Accounting Agent Ecosystem</strong> — the runtime and CLI that make AI execution verifiable, receipted, and risk-proportional for fiscal work.</p>
 
 <p>
-<a href="https://github.com/arkelythex/drenyra-ai/releases"><img src="https://img.shields.io/github/v/release/arkelythex/drenyra-ai" alt="Release"></a>
+<a href="https://www.npmjs.com/package/drenyra-ai"><img src="https://img.shields.io/npm/v/drenyra-ai" alt="npm version"></a>
+<a href="https://github.com/arkelythex/drenyra-ai/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/arkelythex/drenyra-ai/ci.yml" alt="CI"></a>
 <img src="https://img.shields.io/badge/License-Proprietary-red" alt="License: Proprietary">
-<img src="https://img.shields.io/badge/tests-640-green" alt="Tests: 640 passing">
 <img src="https://img.shields.io/badge/Node-22+-339933?logo=nodedotjs&logoColor=white" alt="Node 22+">
 <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey" alt="Platform">
 </p>
@@ -21,6 +21,11 @@
 ---
 
 > [!IMPORTANT]
+> **Current stable release: [`v0.5.0`](https://www.npmjs.com/package/drenyra-ai) (npm `@latest`).** All six contracts are **FROZEN**: `mission-protocol`, `candidate`, `receipt`, `gate`, `ledger`, `recovery`. The frozen surface is normative — any breaking change to a frozen contract requires a major version bump and a migration path. `@latest` is the stable channel; use `@main` (or the repository) only for unreleased development. See the [CHANGELOG](CHANGELOG.md) and [RELEASING](RELEASING.md) for the version policy.
+
+<!-- -->
+
+> [!IMPORTANT]
 > **Public source repository (open-core intention)** — this repository is
 > **publicly visible** on GitHub as part of the Drenyra open-core transition
 > intention (charter §9: intention, not contractual promise); distribution of
@@ -28,20 +33,15 @@
 > public. Use, copy, and distribution of source remain governed by the
 > [LICENSE](LICENSE) (proprietary, © Arkelythex).
 
-<!-- -->
-
-> [!IMPORTANT]
-> **v0.2.0 released (2026-08-02)** — all six contracts are **FROZEN**: `mission-protocol`, `candidate`, `receipt`, `gate`, `ledger`, `recovery`. The frozen surface is normative: any change to a frozen contract requires a major version bump. See the [release](https://github.com/arkelythex/drenyra-ai/releases/tag/v0.2.0) and the [CHANGELOG](CHANGELOG.md).
+---
 
 ## What It Does
 
-Drenyra AI is the direct accounting-domain counterpart of `gentle-ai`. It does **not** replace your ERP, ledger, or approval workflow — it makes the AI agents you already run over them **provable**. Every proposal an agent makes becomes a first-class *candidate* with identity and materiality; every material action produces an immutable, Ed25519-signed *receipt*; every lifecycle transition runs a *gate*; review depth scales with risk instead of hope.
+Drenyra AI is **not** an ERP, a ledger of record, a UI, or the fiscal authority — and it is not "an agent that does accounting." It is the **infrastructure that makes AI participation in accounting processes provable**: a configurator, runtime, and control plane that lets any agent propose work over your ERP, ledger, and approval workflow without ever becoming the fiscal authority. It works **standalone** — no Drenyra dependency — so ERPs, accounting SaaS, and agent hosts (Codex, Claude Code, OpenCode) can adopt it directly.
 
 **Before**: "The agent suggested a journal correction and a monthly close. I don't know what was executed, by whom, whether anyone approved it, or whether the numbers were ever touched."
 
-**After**: Every candidate is reviewed before it can act, every material action is receipted, every transition is gated, and the ledger is an append-only hash chain you can validate with one command. Agents propose; the deterministic core decides.
-
-It works **standalone** — no Drenyra dependency — so ERPs, other accounting SaaS, and agent hosts (Codex, Claude Code, OpenCode) can adopt it.
+**After**: Every proposal an agent makes becomes a first-class *candidate* with content-derived identity and materiality; every material action produces an immutable, Ed25519-signed *receipt*; every lifecycle transition runs a *gate*; review depth scales with risk instead of hope. Agents propose; the deterministic core decides; the ledger is an append-only hash chain you can validate with one command.
 
 ### What it provides
 
@@ -52,11 +52,12 @@ It works **standalone** — no Drenyra dependency — so ERPs, other accounting 
 | **Proportional review** | Review depth scales with risk — R0 high autonomy → R3 explicit dual approval |
 | **Missions** | Protocol-driven, resumable work units with 15 canonical states, commands, and events |
 | **Ledger** | Append-only, verifiable audit ledger core with an Ed25519-signed hash chain |
-| **Gates** | Lifecycle gates that validate authority, scope, and receipts before commit/push/PR/release |
+| **Gates** | Lifecycle gates that validate authority, scope, and receipts before any mutation |
 | **Approvals** | Human approval as an explicit, recorded event — never implied |
 | **Recovery** | Crash-safe resumption of missions and candidates, decided by evidence, never transcript |
 | **Tenant isolation** | RUC/company/period scoping enforced in every query and mutation |
 | **CLI** | `drenyra-ai` command surface for mission, receipt, ledger, candidate, and gate operations |
+| **MCP server** | JSON-RPC 2.0 server (`drenyra-ai mcp serve`) so agent hosts consume the same surface |
 
 ---
 
@@ -64,32 +65,119 @@ It works **standalone** — no Drenyra dependency — so ERPs, other accounting 
 
 Drenyra AI occupies the accounting-domain position that Gentle-AI holds in software engineering — **equivalent discipline, stricter controls**. Gentle-AI turns generic coding agents into a disciplined engineering system; Drenyra AI turns generic agents into a verifiable accounting and fiscal system. The added strictness is deliberate: fiscal risk is not a merge conflict.
 
-> [!IMPORTANT]
-> **Drenyra AI is not "an agent that does accounting."** It is the infrastructure that lets any agent participate in accounting processes without becoming the fiscal authority: a configurator, runtime, and control plane for accounting/fiscal agents — never the ERP, and never the primary interface. Agents propose; the deterministic Core and human approval decide.
-
-<!-- -->
-
 > **The institutional thesis: the AI proposes, the system validates, the professional decides, the evidence remains.** The professional never learns to operate an agent orchestration — they ask for an accounting result and receive reviewable candidates, evidence, explicit decisions, and verifiable receipts. See [Intended Usage](docs/intended-usage.md) for the full philosophy.
 
 | Gentle-AI | Equivalent in Drenyra AI |
 | --- | --- |
-| Configures agent runtimes | Configures accounting/fiscal agent runtimes (`drenyra-ai install`) |
-| Installer and TUI | Installer/configurator (`drenyra-ai install`) |
+| Configures agent runtimes | Configures accounting/fiscal agent runtimes (`drenyra-ai install run`) |
+| Installer and TUI | Installer/configurator (`drenyra-ai install run`) |
 | SDD | Accounting missions and fiscal specifications |
 | RDD (Receipt-Driven Development) | RDA (Receipt-Driven Accounting) |
 | Code candidate | Posting, reconciliation, or declaration candidate |
 | Review receipt | Accounting/fiscal receipt (Ed25519, canonical vectors) |
 | Pre-commit/push/PR gates | Gates before posting, approving, declaring, or filing |
 | Engram memory | Drenyra Engram — informs, never authorizes |
-| gentle-pi harness | Drenyra Pi — pinned package-local runtime |
 | Skills registry | Drenyra Skills — versioned accounting/tax knowledge |
-| doctor / sync / upgrade / rollback | `drenyra-ai doctor` / `sync` / `upgrade` / rollback |
+| doctor / sync / upgrade / rollback | `drenyra-ai doctor run` / `sync run` / `upgrade run` / `rollback run` |
 
 **What Drenyra AI is:** protocols, missions, agents, candidates, gates, receipts, and ledger.
 
 **What Drenyra AI is not:** the ERP, the UI, the ledger of record, or the fiscal authority. See [Intended Usage](docs/intended-usage.md) for the full frontier and the responsibility split.
 
 **Delivery (v1.0):** Drenyra AI ships as a **headless core** consumed by Drenyra Command Center via library, CLI, or MCP; the flagship flow is the **monthly accounting and tax close**. Gentle-AI disappears behind the developer's flow — Drenyra AI disappears behind the professional accountant's flow.
+
+---
+
+## Quick Start
+
+> [!TIP]
+> For a five-minute start with prerequisites and install options, see the [Quickstart](docs/quickstart.md); for the full CLI reference, see [Usage](docs/usage.md).
+
+### Install
+
+```bash
+npm install drenyra-ai
+```
+
+The package ships a prebuilt ESM artifact (`dist/`, Node >= 22), a `drenyra-ai` binary, and library subpaths for each subsystem. Library modules use `node:crypto` only; the CLI adds `ajv` for schema validation.
+
+For a machine-wide binary (global install), use `npm install -g drenyra-ai` — the `drenyra-ai` command then works from any directory.
+
+### Configure the ecosystem (optional)
+
+Once installed, run these to register the accounting/fiscal agent runtime:
+
+| Command | What it does | When to re-run |
+| --- | --- | --- |
+| `drenyra-ai install run` | Detects agent hosts, writes markers and managed skills assets | First time in a new environment, or after changing hosts |
+| `drenyra-ai sync run` | Refresh managed assets, preserving foreign changes | After upgrading the package |
+| `drenyra-ai doctor run` | Read-only health check of the ecosystem | Any time something looks wrong |
+
+These are **not required** for the core CLI — missions, receipts, and the ledger work standalone. They configure the ecosystem surface (skills, host markers, memory wiring).
+
+### The CLI
+
+```bash
+drenyra-ai --help
+```
+
+| Command | What it does |
+| --- | --- |
+| `drenyra-ai receipt verify <receipt.json> [--keys <keys.json>]` | Verify a signed receipt bundle (hash + Ed25519 signature + trusted signer) |
+| `drenyra-ai ledger validate <ledger.json>` | Validate an append-only audit ledger hash chain |
+| `drenyra-ai mission start <create-command.json> [--store <file>]` | Create a new mission (DRAFT) |
+| `drenyra-ai mission apply <command.json> [--store <file>]` | Apply an execute/approve/reject/reconcile command (real intent handlers by default) |
+| `drenyra-ai mission status <missionId> [--store <file>]` | Show a mission snapshot and its event log |
+| `drenyra-ai mission recover [--store <file>]` | Crash-safe recovery: mark in-flight RUNNING missions UNKNOWN (idempotent) |
+| `drenyra-ai candidate inspect <candidate.json>` | Derive candidate identity + materiality from an inspect file |
+| `drenyra-ai candidate verify <candidate.json> --subject <subject-file>` | Revalidate candidate identity against the exact subject bytes |
+| `drenyra-ai gate check <gate-input.json>` | Run the standard gates (mission, receipt, approval) over a gate input |
+| `drenyra-ai capabilities show` | Declare available contracts, skills, jurisdictions, and adapters |
+| `drenyra-ai mcp serve` | Serve the JSON-RPC 2.0 MCP surface over stdio |
+
+Exit codes: `0` success, `1` business error (JSON error to stdout), `2` usage/IO. JSON goes to stdout; the human-readable one-line summary goes to stderr.
+
+#### Audit log
+
+The CLI emits a structured audit log (JSONL — one JSON object per line) for operational events: `mission.started`, `mission.applied`, `mission.apply_failed`, `mission.status_read`, `mission.status_not_found`. Every event always carries the tenant-boundary fields `mission_id`, `ruc`, `period`, `user_id` (fail-closed to `unknown` when the context has no value), plus `level`, `event`, `message`, `timestamp` and optional `details`. The stream is filterable with `jq`, e.g. `jq 'select(.ruc == "20123456789" and .period == "202507")'`.
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `DRENYRA_AUDIT_LOG` | unset | When set to a path, audit lines append to that file; otherwise they go to stderr (stdout stays reserved for command JSON results) |
+| `DRENYRA_AUDIT_LEVEL` | `info` | Severity filter — one of `debug`, `info`, `warn`, `error`; events below the level are dropped |
+
+### A minimal session
+
+```bash
+# 1. Start a monthly-close mission
+drenyra-ai mission start mission-create.json
+
+# 2. Apply an execute command — the intent handler stages work and pauses at the gate
+drenyra-ai mission apply mission-command.json
+
+# 3. Show where it stands
+drenyra-ai mission status <missionId>
+
+# 4. Verify any receipt and validate the ledger
+drenyra-ai receipt verify receipt.json
+drenyra-ai ledger validate ledger.json
+```
+
+### The target experience
+
+After installation, a professional accountant should be able to say:
+
+> "I use Codex, Claude, or OpenCode — but Drenyra gives them accounting memory, skills, missions, materiality controls, approvals, and verifiable evidence."
+
+```bash
+drenyra-ai install run       # configure the accounting/fiscal agent runtime
+drenyra-ai doctor run        # read-only health check of the ecosystem
+drenyra-ai mission start monthly-close
+drenyra-ai candidate inspect correction.json
+drenyra-ai gate check posting.json
+drenyra-ai receipt verify receipt.json
+drenyra-ai ledger validate ledger.json
+```
 
 ---
 
@@ -157,83 +245,6 @@ flowchart LR
 
 ---
 
-## Quick Start
-
-> [!TIP]
-> For a five-minute start with prerequisites and install options, see the [Quickstart](docs/quickstart.md); for the full CLI reference, see [Usage](docs/usage.md).
-
-### Install
-
-```bash
-npm install drenyra-ai
-```
-
-The package ships a prebuilt ESM artifact (`dist/`, Node >= 22), a `drenyra-ai` binary, and library subpaths for each subsystem. Library modules use `node:crypto` only; the CLI adds `ajv` for schema validation.
-
-### The CLI
-
-```bash
-drenyra-ai --help
-```
-
-| Command | What it does |
-| --- | --- |
-| `drenyra-ai receipt verify <receipt.json> [--keys <keys.json>]` | Verify a signed receipt bundle (hash + Ed25519 signature + trusted signer) |
-| `drenyra-ai ledger validate <ledger.json>` | Validate an append-only audit ledger hash chain |
-| `drenyra-ai mission start <create-command.json> [--store <file>]` | Create a new mission (DRAFT) |
-| `drenyra-ai mission apply <command.json> [--store <file>]` | Apply an execute/approve/reject/reconcile command (real intent handlers by default) |
-| `drenyra-ai mission status <missionId> [--store <file>]` | Show a mission snapshot and its event log |
-| `drenyra-ai mission recover [--store <file>]` | Crash-safe recovery: mark in-flight RUNNING missions UNKNOWN (idempotent) |
-| `drenyra-ai candidate inspect <candidate.json>` | Derive candidate identity + materiality from an inspect file |
-| `drenyra-ai candidate verify <candidate.json> --subject <subject-file>` | Revalidate candidate identity against the exact subject bytes |
-| `drenyra-ai gate check <gate-input.json>` | Run the standard gates (mission, receipt, approval) over a gate input |
-
-Exit codes: `0` success, `1` business error (JSON error to stdout), `2` usage/IO. JSON goes to stdout; the human-readable one-line summary goes to stderr.
-
-#### Audit log
-
-The CLI emits a structured audit log (JSONL — one JSON object per line) for operational events: `mission.started`, `mission.applied`, `mission.apply_failed`, `mission.status_read`, `mission.status_not_found`. Every event always carries the tenant-boundary fields `mission_id`, `ruc`, `period`, `user_id` (fail-closed to `unknown` when the context has no value), plus `level`, `event`, `message`, `timestamp` and optional `details`. The stream is filterable with `jq`, e.g. `jq 'select(.ruc == "20123456789" and .period == "202507")'`.
-
-| Variable | Default | Effect |
-| --- | --- | --- |
-| `DRENYRA_AUDIT_LOG` | unset | When set to a path, audit lines append to that file; otherwise they go to stderr (stdout stays reserved for command JSON results) |
-| `DRENYRA_AUDIT_LEVEL` | `info` | Severity filter — one of `debug`, `info`, `warn`, `error`; events below the level are dropped |
-
-### A minimal session
-
-```bash
-# 1. Start a monthly-close mission
-drenyra-ai mission start mission-create.json
-
-# 2. Apply an execute command — the intent handler stages work and pauses at the gate
-drenyra-ai mission apply mission-command.json
-
-# 3. Show where it stands
-drenyra-ai mission status <missionId>
-
-# 4. Verify any receipt and validate the ledger
-drenyra-ai receipt verify receipt.json
-drenyra-ai ledger validate ledger.json
-```
-
-### The target experience
-
-After installation, a professional accountant should be able to say:
-
-> "I use Codex, Claude, or OpenCode — but Drenyra gives them accounting memory, skills, missions, materiality controls, approvals, and verifiable evidence."
-
-```bash
-drenyra-ai install            # configure the accounting/fiscal agent runtime
-drenyra-ai doctor             # read-only health check of the ecosystem
-drenyra-ai mission start monthly-close
-drenyra-ai candidate inspect correction.json
-drenyra-ai gate check posting.json
-drenyra-ai receipt verify receipt.json
-drenyra-ai ledger validate ledger.json
-```
-
----
-
 ## Contracts — the frozen public surface
 
 Contracts are the **public surface** of Drenyra AI: transport-agnostic, versioned, and consumed by Drenyra, Drenyra Pi, ERPs, other SaaS, and agent hosts. Each frozen contract is pinned by a conformance suite that runs in CI and fails on drift.
@@ -272,11 +283,15 @@ Agent proposals are first-class artifacts with content-derived identity (mutated
 
 ### Gates, not faith
 
-Lifecycle transitions validate authority, scope, and receipts before commit/push/PR/release. The `GateRunner` is fail-closed and returns `needs_input` envelopes: approval tiers (R2 single / R3 dual distinct approvers), receipt fail-closed on signer trust, and mission-state legality with a terminal guard.
+Lifecycle transitions validate authority, scope, and receipts before any mutation. The `GateRunner` is fail-closed and returns `needs_input` envelopes: approval tiers (R2 single / R3 dual distinct approvers), receipt fail-closed on signer trust, and mission-state legality with a terminal guard. The **AuthorizationGate** wires a standalone RBAC engine into the approval pipeline — per-approver `close:approve` at exact tenant scope.
 
 ### Crash-safe recovery
 
 Per-state recovery policy: `RUNNING`/`RETRYING` recover; `UNKNOWN` is decided by evidence; human-wait states are never auto-recovered by the default policy; terminal states are untouched. Recovery replays the event log from the last persisted event and is idempotent.
+
+### Deterministic fiscal engines
+
+The monthly close runs on deterministic engines — `bank-reconciliation/` (canonical normalization, reference-first matching, fail-closed adjustment drafts) and `close-calculations/` (fixed-asset depreciation, provisions, provisional ISR, closing entries to PCGE 59) — wired into the close vertical with skills (`pe.conciliacion-bancaria`, `pe.isr-mensual`, `pe.cierre-resultados`, …). Fiscal convention throughout: **money is BigInt cents, never floats**.
 
 ### Tenant isolation
 
@@ -387,7 +402,7 @@ This repository holds only its local change plus a reference to the master progr
 ---
 
 <div align="center">
-<img src="https://img.shields.io/badge/License-Proprietary-red" alt="License: Proprietary">
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-Proprietary-red" alt="License: Proprietary"></a>
 </div>
 
 Proprietary. © 2026 Arkelythex. All rights reserved. See [LICENSE](LICENSE).
