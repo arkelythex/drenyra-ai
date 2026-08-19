@@ -194,7 +194,7 @@ and #6B54A8, checkmark #1A8F52, beacon core #1F8A80.
 | drenyra-pi | `assets/branding/drenyra-pi-banner.png` (create) | add banner `<img>` at top |
 | drenyra-engram | `assets/branding/drenyra-engram-banner.png` (rename) | replace `drenyra-engram-banner-1.png`; delete banner-1/2/3 |
 | drenyra-guardian-angel | `assets/branding/drenyra-guardian-angel-banner.png` (create) | add banner `<img>` at top |
-| drenyra-skills | (planned) | — |
+| drenyra-skills | `assets/branding/drenyra-skills-banner.png` (create) | add banner `<img>` at top |
 
 The vector SVG in drenyra-ai stays in the repo as the **vector reference**
 (the contract requires vectors for identity primitives); READMEs display the
