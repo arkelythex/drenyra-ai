@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="1200" alt="Drenyra AI flow — request → policy/evidence verification → immutable receipt" src="docs/assets/brand/drenyra-ai-flow-banner.svg" />
+<img width="1200" alt="Drenyra AI — the verified relic: receipts, gates, deterministic control" src="docs/assets/brand/drenyra-ai-verified-relic-dark.svg" />
 
 <p><code>request → policy/evidence verification → immutable receipt</code></p>
 
@@ -226,6 +226,8 @@ Recovery is explicit: in-flight `RUNNING` missions become `UNKNOWN` and resume b
 
 ### Receipt-Driven Accounting at a glance
 
+<img width="1200" alt="RDA flow — proposal → candidate → gate → approval → receipt → verifiable ledger" src="docs/assets/brand/drenyra-ai-rda-flow.svg" />
+
 ```mermaid
 flowchart LR
     A["Agent proposal"] --> B["Candidate<br/>identity + materiality"]
@@ -304,6 +306,8 @@ RUC/company/period scope is enforced in every query and mutation — never acces
 Drenyra AI orchestrates specialized accounting/fiscal agents through `agents/`: deterministic `IntentHandler` implementations for every mission intent stage work, request evidence, and pause at the evidence or approval gate. The deterministic Core — `missions/` (lifecycle, idempotency, rules), `gates/`, `receipts/`, and explicit human approval — remains the authority for what may actually change.
 
 > **Agents never claim SUNAT, bank, or ERP execution and never perform fiscal approval. They only propose and stage work.**
+
+<img width="1200" alt="Deterministic control plane — agent hosts → Drenyra AI Core (missions, gates, receipts) → professional / ERP / SUNAT" src="docs/assets/brand/drenyra-ai-control-plane.svg" />
 
 ### Layout
 

@@ -350,7 +350,7 @@ Iterate with the checker's off-palette feedback until coverage ≥ 0.92, then `b
 | Repo | File | README line |
 | --- | --- | --- |
 | Drenyra Command Center (`drenyra-command-center`) | `assets/branding/drenyra-banner.png` (create) | add banner `<img>` at top |
-| drenyra-ai | `docs/assets/brand/drenyra-ai-banner.png` (create) | replace `src="docs/assets/brand/drenyra-ai-banner.svg"` with the PNG |
+| drenyra-ai | `docs/assets/brand/drenyra-ai-verified-relic-dark.svg` (+ `.png`, `-light`, `-rda-flow`, `-control-plane`) | top hero + control-plane + RDA flow (integrated) |
 | drenyra-pi | `assets/branding/drenyra-pi-banner.png` (create) | add banner `<img>` at top |
 | drenyra-engram | `assets/branding/drenyra-engram-banner.png` (rename) | replace `drenyra-engram-banner-1.png`; delete banner-1/2/3 |
 | drenyra-skills | `assets/branding/drenyra-skills-banner.png` (create) | add banner `<img>` at top |
