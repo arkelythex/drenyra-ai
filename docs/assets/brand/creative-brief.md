@@ -3,7 +3,7 @@
 > **Normative layer:** [`brand-system.md`](../../../contracts/brand-system.md) (v0.2)
 >
 > + [`tokens.json`](../../../contracts/brand-system/tokens.json) — the palette is
-> law (dark `#0B0E11`/cyan `#3CE6D8`/violet `#9B7FE8`, light `#FAFAF9`).
+> law (dark `#000000`/cyan `#3CE6D8`/violet `#9B7FE8`, light `#FAFAF9`).
 > **This brief is the ART DIRECTION layer**: it decides what the banners SAY
 > and how they FEEL, within the law. Prompts in `gpt-image-prompts.md` encode it.
 
@@ -18,7 +18,7 @@ object photographed by a fashion campaign on a Syd Mead set.
 1. **One hero, infinite craft.** A single focal element rendered with
    pathological fidelity (sculptural form, machined edges, optical material);
    everything else yields to it. If a banner has two competing ideas, it fails.
-2. **Negative space as carved matter.** The deep-navy canvas is never "empty":
+2. **Negative space as carved matter.** The pure-black (OLED) canvas is never "empty":
    it is atmosphere — subtle film grain, volumetric depth, soft light falloff.
    Minimalism of elements, maximalism of atmosphere.
 3. **Light is the sculptor.** Cinematic, directional, volumetric: rim light

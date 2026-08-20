@@ -27,14 +27,14 @@
 
   <style>
     :root {
-      --bg1: #0B0E11; --bg2: #12161B; --bg3: #1A1F26;
+      --bg1: #000000; --bg2: #0A0A0A; --bg3: #121212;
       --grid: #FFFFFF;
       --glow-c: #3CE6D8; --glow-v: #9B7FE8;
       --c: #3CE6D8; --c-bright: #6AEFE4;
       --v: #9B7FE8; --v-bright: #B8A2F0;
       --ok: #4ADE94;
-      --n1: #12161B; --n2: #1A1F26; --n3: #20262E;
-      --border: #323A44; --border-subtle: #262C34;
+      --n1: #0A0A0A; --n2: #121212; --n3: #1A1A1A;
+      --border: #2A2A2A; --border-subtle: #1F1F1F;
       --muted: #A8B0BC; --muted-dim: #6B7480;
       --pending: #6B9FE8;
       --spark: #6AEFE4;

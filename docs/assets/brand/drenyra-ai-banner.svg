@@ -23,7 +23,7 @@
 
   <style>
     :root {
-      --bg1: #0B0E11; --bg2: #12161B; --bg3: #1A1F26;
+      --bg1: #000000; --bg2: #0A0A0A; --bg3: #121212;
       --grid: #FFFFFF;
       --glow-cyan: #3CE6D8; --glow-violet: #9B7FE8;
       --title1: #3CE6D8; --title2: #9B7FE8;
@@ -31,9 +31,9 @@
       --chip1: #3CE6D8; --chip2: #4ADE94; --chip3: #9B7FE8; --chip4: #6B9FE8;
       --chip-text1: #6AEFE4; --chip-text2: #4ADE94; --chip-text3: #B8A2F0; --chip-text4: #A8B0BC;
       --subline: #A8B0BC;
-      --card-back: #0B0E11; --card-back-border: #262C34;
-      --card-mid: #12161B; --card-mid-border: #323A44;
-      --card-front: #1A1F26; --card-front-stroke: #3CE6D8;
+      --card-back: #000000; --card-back-border: #1F1F1F;
+      --card-mid: #0A0A0A; --card-mid-border: #2A2A2A;
+      --card-front: #121212; --card-front-stroke: #3CE6D8;
       --bar: #6B7480; --bar-top: #6AEFE4; --bar-accent: #F5B84A;
       --check: #4ADE94;
       --label: #EDEFF2; --label-sub: #A8B0BC;

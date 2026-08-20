@@ -49,12 +49,12 @@ source.
 
 | Token | Hex | Role |
 | --- | --- | --- |
-| `canvas` | `#0B0E11` | App background, brand surface |
-| `surface` | `#12161B` | Cards, raised surfaces |
-| `surface-2` | `#1A1F26` | Raised cards, banners |
-| `overlay` | `#20262E` | Overlays, popovers |
-| `border-subtle` | `#262C34` | Subtle dividers |
-| `border-default` | `#323A44` | Strokes, card borders |
+| `canvas` | `#000000` | App background, brand surface |
+| `surface` | `#0A0A0A` | Cards, raised surfaces |
+| `surface-2` | `#121212` | Raised cards, banners |
+| `overlay` | `#1A1A1A` | Overlays, popovers |
+| `border-subtle` | `#1F1F1F` | Subtle dividers |
+| `border-default` | `#2A2A2A` | Strokes, card borders |
 | `text-primary` | `#EDEFF2` | Primary text |
 | `text-secondary` | `#A8B0BC` | Secondary text, sublines |
 | `text-tertiary` | `#6B7480` | Skeleton bars, captions |
@@ -178,7 +178,7 @@ is for ad-hoc explorations:
 
 ```text
 Design a dark, professional, architectural banner for an enterprise accounting
-verification platform. Background: deep navy canvas #0B0E11 with a subtle
+verification platform. Background: pure OLED black canvas #000000 with a subtle
 blueprint grid and soft glows in cyan #3CE6D8 and violet #9B7FE8 at low
 intensity. Accent colors ONLY: cyan #3CE6D8 (and lighter #6AEFE4), violet
 #9B7FE8 (and lighter #B8A2F0), success green #4ADE94, muted blue-gray #A8B0BC.

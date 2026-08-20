@@ -187,7 +187,7 @@ describe("brand-system conformance (v0.2 DRAFT)", () => {
 			"off-var.svg",
 			`<svg xmlns="http://www.w3.org/2000/svg">
          <style>
-           :root { --bg: #0B0E11; }
+           :root { --bg: #000000; }
            @media (prefers-color-scheme: light) { :root { --bg: #FAFAF9; --bad: #22d3ee; } }
          </style>
          <rect width="10" height="10" fill="var(--bg)"/>

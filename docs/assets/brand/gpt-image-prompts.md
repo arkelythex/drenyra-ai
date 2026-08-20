@@ -38,9 +38,9 @@ outside the violet set, no warm beige/ember tones, no pure-white glows.
 These are the design decisions that make the dark banners feel premium instead
 of generic. The prompts already encode them; keep them when iterating.
 
-1. **Layered elevation, not flat panels.** The canvas is near-black (`#0B0E11`)
-   and every raised element climbs a surface ladder (`#12161B` → `#1A1F26` →
-   `#20262E`) with subtle inner shadows — Dreamcoder's anthracite trick. Depth
+1. **Layered elevation, not flat panels.** The canvas is pure OLED black (`#000000`)
+   and every raised element climbs a surface ladder (`#0A0A0A` → `#121212` →
+   `#1A1A1A`) with subtle inner shadows — the OLED elevation trick. Depth
    comes from elevation, never from noise.
 2. **Aurora ambient glow.** Two soft radial glows (cyan and violet, 5–8%
    opacity) at opposing corners — the Dreamcoder `active_rgba` treatment
@@ -72,13 +72,13 @@ the ecosystem read as one family.
 Drenyra ecosystem brand banner — premium art direction (see
 docs/assets/brand/creative-brief.md): radical minimalism with obsessive
 maximalism. ONE hero element rendered with pathological fidelity; the deep
-anthracite-navy canvas #0B0E11 is CARVED ATMOSPHERE (subtle film grain,
+pure OLED black canvas #000000 is CARVED ATMOSPHERE (subtle film grain,
 volumetric depth, soft light falloff), never empty space. Cinematic
 directional light: rim light tracing the hero's silhouette, gentle god
 rays, caustics on machined/optical surfaces. Accent colors allowed ONLY:
 cyan #3CE6D8 (lighter #6AEFE4, dimmer #1F8A80), violet #9B7FE8 (lighter
 #B8A2F0, dimmer #7B66C0), success green #4ADE94, muted blue-gray #A8B0BC,
-plus the surface ladder #12161B, #1A1F26, #20262E. All gradients blend
+plus the surface ladder #0A0A0A, #121212, #1A1A1A. All gradients blend
 exclusively between these colors. Composition: one hero on the right third,
 deep negative space on the left, brutal precision meeting organic curves,
 and ONE intricate signature micro-detail that rewards close looking. NO
@@ -100,8 +100,8 @@ composition, palette, and constraints stay identical.
 
 ```text
 Subject: an abstract accounting command center. Focal point on the right
-third: three stacked translucent console panels (surfaces #12161B, #1A1F26,
-#20262E) with rising ledger bars in cyan #3CE6D8, success green #4ADE94 and
+third: three stacked translucent console panels (surfaces #0A0A0A, #121212,
+#1A1A1A) with rising ledger bars in cyan #3CE6D8, success green #4ADE94 and
 muted blue-gray #A8B0BC. Wrapped around the console: two concentric orbital
 rings — one cyan #3CE6D8, one violet #9B7FE8 — tilted in 3D, with small
 spark dots at the points where a sweeping Bézier curve crosses each ring. At
@@ -115,7 +115,7 @@ cyan #2ECFC2 and violet #6B54A8, checkmark #1A8F52, sparks #1F8A80.
 
 ```text
 Subject: a verified receipt inside an orbital hash-chain. Focal point on the
-right third: a large receipt card (surface #12161B, raised #1A1F26 layer, cyan
+right third: a large receipt card (surface #0A0A0A, raised #121212 layer, cyan
 #3CE6D8 border) holding a circular verified seal with a checkmark in success
 green #4ADE94. Around the card: a tilted circular chain of small hash blocks
 (rounded squares in muted blue-gray #A8B0BC and violet #9B7FE8) orbiting like
@@ -130,7 +130,7 @@ variant (optional): canvas #FAFAF9, card #FFFFFF with #F2F2F0 layer and cyan
 
 ```text
 Subject: a pinned deterministic runtime node. Focal point on the right third:
-a single central cube (surface #1A1F26 with cyan #3CE6D8 edges, soft inner
+a single central cube (surface #121212 with cyan #3CE6D8 edges, soft inner
 shadow) held by a vertical pin of violet #9B7FE8. Around it: three concentric
 arcs of muted blue-gray #A8B0BC — two full rings and one partial — with small
 satellite nodes at the arc intersections and a spark dot where the pin meets
@@ -148,7 +148,7 @@ point on the right third: a knowledge-graph whose connections are sweeping
 Bézier curves (not straight lines) in cyan #3CE6D8, violet #9B7FE8 and muted
 blue-gray #A8B0BC, with node dots at every curve intersection and sparks
 scattered along the arcs like fireflies. Beneath the canopy: a fiscal-scope
-document silhouette (surface #12161B, cyan #3CE6D8 outline) with a small
+document silhouette (surface #0A0A0A, cyan #3CE6D8 outline) with a small
 verified checkmark in success green #4ADE94. Composition: the lattice curves
 like a wave over the document; deep negative space on the left. Signature detail: one node casts a tiny caustic onto the document. Light variant
 (optional): canvas #FAFAF9, document #FFFFFF with cyan #2ECFC2 outline,
@@ -159,8 +159,8 @@ checkmark #1A8F52, nodes #6B54A8.
 
 ```text
 Subject: layered knowledge folios with a curved spine. Focal point on the
-right third: three overlapping folio sheets (surfaces #12161B, #1A1F26,
-#20262E) whose spines curve outward like an open book, edges in cyan #3CE6D8
+right third: three overlapping folio sheets (surfaces #0A0A0A, #121212,
+#1A1A1A) whose spines curve outward like an open book, edges in cyan #3CE6D8
 and violet #9B7FE8. Each sheet carries a small abstract rule-glyph (a §-mark
 formed by a simple curve in muted blue-gray #A8B0BC) and a tiny spark sits at
 each glyph's curve tip. A version tag in success green #4ADE94 floats on the
@@ -206,7 +206,7 @@ generated PNG.
 
 The prompts above are **validation-clean against the current contract** (apps/web
 DTCG palette). If you want the Dreamcoder hues themselves, the dark surfaces are
-already near-identical (contract `#0B0E11` ≈ Dreamcoder `#070A13`), but three
+already near-identical (contract `#000000` ≈ Dreamcoder `#070A13`), but three
 deliberate swaps would bring the banners closer to the Dreamcoder soul:
 
 | Role | Current (contract) | Dreamcoder option |
