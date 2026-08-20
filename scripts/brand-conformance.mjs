@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * brand-system conformance checker (contracts/brand-system.md, v0.2 DRAFT).
+ * brand-system conformance checker (contracts/brand-system.md, v0.3 DRAFT).
  *
  * Zero-dependency verifier for the Drenyra ecosystem brand system. The
  * canonical palette mirrors the Drenyra apps/web DTCG token pipeline
@@ -43,7 +43,7 @@ const PNG_SIGNATURE = Buffer.from([
 	0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
 ]);
 const REQUIRED_THEMES = ["dark", "light"];
-const REQUIRED_ACCENTS = ["cyan", "violet"];
+const REQUIRED_ACCENTS = ["cocoa", "terracotta"];
 const REQUIRED_TOKEN_KEYS = [
 	"canvas",
 	"surface",
@@ -91,8 +91,8 @@ function loadTokens() {
 		process.exit(1);
 	}
 	const problems = [];
-	if (raw.version !== "0.2")
-		problems.push(`version must be 0.2, got ${raw.version}`);
+	if (raw.version !== "0.3")
+		problems.push(`version must be 0.3, got ${raw.version}`);
 	for (const theme of REQUIRED_THEMES) {
 		if (!raw.themes?.[theme]) {
 			problems.push(`missing theme: ${theme}`);

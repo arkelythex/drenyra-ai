@@ -3,7 +3,7 @@
 > **Normative layer:** [`brand-system.md`](../../../contracts/brand-system.md) (v0.2)
 >
 > + [`tokens.json`](../../../contracts/brand-system/tokens.json) — the palette is
-> law (dark `#000000`/cyan `#3CE6D8`/violet `#9B7FE8`, light `#FAFAF9`).
+> law (Dreamcoder canonical: Anthracite Steel dark `#070A13` / Cocoa-Lúcuma light `#F3EADC`; cocoa `#824F16` / terracotta `#A7471C` accents).
 > **This brief is the ART DIRECTION layer**: it decides what the banners SAY
 > and how they FEEL, within the law. Prompts in `gpt-image-prompts.md` encode it.
 
@@ -18,7 +18,7 @@ object photographed by a fashion campaign on a Syd Mead set.
 1. **One hero, infinite craft.** A single focal element rendered with
    pathological fidelity (sculptural form, machined edges, optical material);
    everything else yields to it. If a banner has two competing ideas, it fails.
-2. **Negative space as carved matter.** The pure-black (OLED) canvas is never "empty":
+2. **Negative space as carved matter.** The warm-ivory editorial canvas is never "empty":
    it is atmosphere — subtle film grain, volumetric depth, soft light falloff.
    Minimalism of elements, maximalism of atmosphere.
 3. **Light is the sculptor.** Cinematic, directional, volumetric: rim light
@@ -61,7 +61,7 @@ object photographed by a fashion campaign on a Syd Mead set.
 1. **Drenyra Command Center** — *the fiscal command deck.* A sculptural control
    surface, machined like an instrument of state: layered translucent consoles
    (precise geometry) crowned by the dual-approval seal — two interlocking
-   arcs, one cyan one violet, the checkmark as a single engraved point of
+   arcs, one cocoa one teal, the checkmark as a single engraved point of
    light. Signature detail: the seal's engraving catches a rim light.
 2. **Drenyra AI** — *the verified relic.* The receipt card is treated as a
    museum monolith: minimal slab, luminous engraved border, the checkmark as a

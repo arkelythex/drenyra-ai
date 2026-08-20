@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="460" viewBox="0 0 1400 460">
+<rect width="1400" height="460" fill="#f3eadc"/>
+<text x="64" y="52" fill="#725e4c" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" text-anchor="start" letter-spacing="2.0">RECEIPT-DRIVEN ACCOUNTING</text>
+<text x="64" y="98" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="700" text-anchor="start" letter-spacing="0">From proposal to proof.</text>
+<text x="64" y="130" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500" text-anchor="start" letter-spacing="0">Risk determines review depth. Evidence survives the workflow.</text>
+
+<!-- baseline -->
+<line x1="72" y1="252" x2="1328" y2="252" stroke="#8a7358" stroke-width="2"/>
+
+<g transform="translate(112 252)">
+  <circle r="32" fill="#fff7ea" stroke="#824f16" stroke-width="2.2"/>
+  <circle r="5" fill="#824f16"/>
+  <text x="0" y="-68" fill="#824f16" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="1.5">01</text>
+  <text x="0" y="-45" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="0.6">PROPOSAL</text>
+  <text x="0" y="62" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="500" text-anchor="middle" letter-spacing="0">Agent draft</text>
+</g>
+<g transform="translate(300 252)">
+  <circle r="32" fill="#fff7ea" stroke="#0d4a68" stroke-width="2.2"/>
+  <circle r="5" fill="#0d4a68"/>
+  <text x="0" y="-68" fill="#0d4a68" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="1.5">02</text>
+  <text x="0" y="-45" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="0.6">CANDIDATE</text>
+  <text x="0" y="62" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="500" text-anchor="middle" letter-spacing="0">Identity + scope</text>
+</g>
+<g transform="translate(488 252)">
+  <circle r="32" fill="#fff7ea" stroke="#654300" stroke-width="2.2"/>
+  <circle r="5" fill="#654300"/>
+  <text x="0" y="-68" fill="#654300" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="1.5">03</text>
+  <text x="0" y="-45" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="0.6">MATERIALITY</text>
+  <text x="0" y="62" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="500" text-anchor="middle" letter-spacing="0">Deterministic risk</text>
+</g>
+<g transform="translate(676 252)">
+  <circle r="32" fill="#fff7ea" stroke="#57478b" stroke-width="2.2"/>
+  <circle r="5" fill="#57478b"/>
+  <text x="0" y="-68" fill="#57478b" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="1.5">04</text>
+  <text x="0" y="-45" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="0.6">REVIEW</text>
+  <text x="0" y="62" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="500" text-anchor="middle" letter-spacing="0">R0 · R1 · R2 · R3</text>
+</g>
+<g transform="translate(864 252)">
+  <circle r="32" fill="#fff7ea" stroke="#315b31" stroke-width="2.2"/>
+  <circle r="5" fill="#315b31"/>
+  <text x="0" y="-68" fill="#315b31" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="1.5">05</text>
+  <text x="0" y="-45" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="0.6">APPROVAL</text>
+  <text x="0" y="62" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="500" text-anchor="middle" letter-spacing="0">Human event</text>
+</g>
+<g transform="translate(1052 252)">
+  <circle r="32" fill="#fff7ea" stroke="#a7471c" stroke-width="2.2"/>
+  <circle r="5" fill="#a7471c"/>
+  <text x="0" y="-68" fill="#a7471c" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="1.5">06</text>
+  <text x="0" y="-45" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="0.6">RECEIPT</text>
+  <text x="0" y="62" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="500" text-anchor="middle" letter-spacing="0">Ed25519</text>
+</g>
+<g transform="translate(1240 252)">
+  <circle r="32" fill="#fff7ea" stroke="#0d4a68" stroke-width="2.2"/>
+  <circle r="5" fill="#0d4a68"/>
+  <text x="0" y="-68" fill="#0d4a68" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="1.5">07</text>
+  <text x="0" y="-45" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="0.6">LEDGER</text>
+  <text x="0" y="62" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="500" text-anchor="middle" letter-spacing="0">Append-only</text>
+</g>
+<g transform="translate(676 252)">
+  <rect x="-26" y="-20" width="52" height="8" rx="4" fill="#c8ad89"/>
+  <rect x="-20" y="-8" width="40" height="8" rx="4" fill="#57478b" opacity=".45"/>
+  <rect x="-14" y="4" width="28" height="8" rx="4" fill="#57478b" opacity=".7"/>
+  <rect x="-8" y="16" width="16" height="8" rx="4" fill="#57478b"/>
+</g>
+<!-- footer doctrine -->
+<g transform="translate(64 368)">
+  <rect width="1272" height="50" rx="10" fill="#fff7ea" stroke="#8a7358" stroke-width="1"/>
+  <text x="22" y="31" fill="#0d4a68" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.4">DETERMINISTIC POLICY</text>
+  <text x="252" y="31" fill="#315b31" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.4">EVIDENCE FIRST</text>
+  <text x="438" y="31" fill="#a7471c" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.4">TAMPER-EVIDENT</text>
+  <text x="664" y="31" fill="#824f16" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.4">APPEND-ONLY</text>
+  <text x="856" y="31" fill="#57478b" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.4">HUMAN AUTHORITY</text>
+</g>
+</svg>

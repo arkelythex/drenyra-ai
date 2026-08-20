@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="460" viewBox="0 0 1400 460">
+<defs>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+    <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#100c07" flood-opacity=".16"/>
+  </filter>
+  <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#fff7ea"/>
+    <stop offset="100%" stop-color="#e6d7c4"/>
+  </linearGradient>
+  <pattern id="grain" width="18" height="18" patternUnits="userSpaceOnUse">
+    <circle cx="3" cy="4" r=".45" fill="#17120d" opacity=".025"/>
+    <circle cx="14" cy="12" r=".4" fill="#824f16" opacity=".02"/>
+  </pattern>
+</defs>
+<rect width="1400" height="460" fill="#f3eadc"/>
+<rect width="1400" height="460" fill="url(#grain)"/>
+
+<!-- editorial index -->
+<text x="72" y="54" fill="#725e4c" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" text-anchor="start" letter-spacing="2.2">ARKELYTHEX / DRENYRA</text>
+<text x="72" y="112" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700" text-anchor="start" letter-spacing="0">Drenyra AI</text>
+<text x="72" y="148" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="500" text-anchor="start" letter-spacing="0">Verifiable Accounting Agent Ecosystem</text>
+
+<!-- thesis -->
+<g transform="translate(72 202)">
+  <line x1="0" y1="0" x2="520" y2="0" stroke="#8a7358" stroke-width="1"/>
+  <text x="0" y="38" fill="#824f16" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="start" letter-spacing="0">AI proposes.</text>
+  <text x="128" y="38" fill="#0d4a68" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="start" letter-spacing="0">The system validates.</text>
+  <text x="333" y="38" fill="#315b31" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="start" letter-spacing="0">The professional decides.</text>
+  <text x="0" y="76" fill="#57478b" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="start" letter-spacing="0">Evidence remains.</text>
+</g>
+
+<!-- tiny capability ledger -->
+<g transform="translate(72 328)">
+  <rect x="0" y="0" width="520" height="72" rx="10" fill="#fff7ea" stroke="#8a7358" stroke-width="1"/>
+  <text x="20" y="27" fill="#554638" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.7">CANDIDATES</text>
+  <text x="181" y="27" fill="#554638" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.7">SIGNED RECEIPTS</text>
+  <text x="370" y="27" fill="#554638" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.7">LEDGER</text>
+  <circle cx="28" cy="49" r="5" fill="#824f16"/>
+  <circle cx="189" cy="49" r="5" fill="#315b31"/>
+  <circle cx="378" cy="49" r="5" fill="#0d4a68"/>
+  <text x="42" y="54" fill="#17120d" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="500" text-anchor="start" letter-spacing="0">reviewable</text>
+  <text x="203" y="54" fill="#17120d" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="500" text-anchor="start" letter-spacing="0">Ed25519</text>
+  <text x="392" y="54" fill="#17120d" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="500" text-anchor="start" letter-spacing="0">append-only</text>
+</g>
+
+<!-- hero artifact -->
+<g transform="translate(890 46)" filter="url(#shadow)">
+  <rect x="0" y="0" width="340" height="348" rx="18" fill="url(#paper)" stroke="#66513b" stroke-width="1.4"/>
+  <rect x="22" y="22" width="296" height="304" rx="12" fill="none" stroke="#8a7358" stroke-width="1"/>
+  <text x="42" y="58" fill="#725e4c" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" text-anchor="start" letter-spacing="1.8">RECEIPT / 0007</text>
+  <line x1="42" y1="82" x2="298" y2="82" stroke="#8a7358" stroke-width="1"/>
+  <text x="42" y="115" fill="#554638" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.2">candidate</text>
+  <text x="178" y="115" fill="#554638" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.2">materiality</text>
+  <text x="42" y="144" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" text-anchor="start" letter-spacing="0">C-7F3A</text>
+  <text x="178" y="144" fill="#a7471c" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" text-anchor="start" letter-spacing="0">R2</text>
+  <text x="42" y="186" fill="#554638" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.2">approval</text>
+  <text x="178" y="186" fill="#554638" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.2">signature</text>
+  <text x="42" y="215" fill="#315b31" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" text-anchor="start" letter-spacing="0">explicit</text>
+  <text x="178" y="215" fill="#0d4a68" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" text-anchor="start" letter-spacing="0">verified</text>
+  <line x1="42" y1="245" x2="298" y2="245" stroke="#8a7358" stroke-width="1"/>
+  <!-- seal -->
+  <g transform="translate(252 286)">
+    <circle r="29" fill="#decbb1" stroke="#315b31" stroke-width="2"/>
+    <path d="M-11 0 L-3 8 L14 -11" fill="none" stroke="#315b31" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="42" y="287" fill="#824f16" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="start" letter-spacing="0">immutable</text>
+  <text x="42" y="310" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="500" text-anchor="start" letter-spacing="0">evidence</text>
+</g>
+
+<!-- archive tab / distinct motif -->
+<g transform="translate(1245 85)">
+  <rect width="72" height="250" rx="10" fill="#824f16" opacity=".95"/>
+  <text x="36" y="125" fill="#fff7ea" font-family="Arial" font-size="14" font-weight="700" text-anchor="middle"
+        transform="rotate(90 36 125)" letter-spacing="2">VERIFIED ARTIFACT</text>
+</g>
+</svg>

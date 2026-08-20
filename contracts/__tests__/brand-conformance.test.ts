@@ -1,5 +1,5 @@
 /**
- * brand-system contract conformance (v0.2 DRAFT).
+ * brand-system contract conformance (v0.3 DRAFT).
  *
  * Pins the normative surface of contracts/brand-system.md, which mirrors the
  * Drenyra apps/web DTCG token pipeline:
@@ -134,7 +134,7 @@ function solidPng(rgb: Rgb): Buffer {
 	]);
 }
 
-const CYAN_BASE: Rgb = [0x3c, 0xe6, 0xd8]; // #3CE6D8 — canonical cyan accent
+const COCOA_BASE: Rgb = [0x82, 0x4f, 0x16]; // #824F16 — canonical cocoa accent (Dreamcoder Light)
 const LEGACY_BLUE: Rgb = [0x1a, 0x73, 0xe8]; // #1a73e8 — banned legacy drift (v0.1 palette)
 
 let tmpDir: string | undefined;
@@ -155,21 +155,32 @@ function asPngDetail(detail: AssetDetail): PngDetail {
 	return detail as PngDetail;
 }
 
-describe("brand-system conformance (v0.2 DRAFT)", () => {
-	it("palette mirrors apps/web DTCG: dark + light themes, cyan + violet accents, hex-valid", () => {
+describe("brand-system conformance (v0.3 DRAFT)", () => {
+	it("palette mirrors Dreamcoder canonical: dark Anthracite Steel + light Cocoa/Lúcuma, cocoa + terracotta accents, hex-valid", () => {
 		const report = runCli();
 		expect(report.contract).toBe("brand-system");
-		expect(report.version).toBe("0.2");
+		expect(report.version).toBe("0.3");
 		expect(report.palette.pass).toBe(true);
 		expect(report.palette.problems).toEqual([]);
 	});
 
-	it("passes the fused banner SVG (Black Dark OLED + Dreamcoder Light) with zero tolerance", () => {
-		const report = runCli();
-		const banner = findAsset(report, "drenyra-ai-banner.svg");
-		expect(banner.pass).toBe(true);
-		expect(banner.detail).toEqual([]);
-	});
+    	it("passes the Dreamcoder Light editorial hero SVG with zero tolerance", () => {
+    		const report = runCli();
+    		const banner = findAsset(report, "drenyra-ai-hero-dreamcoder-light.svg");
+    		expect(banner.pass).toBe(true);
+    		expect(banner.detail).toEqual([]);
+    	});
+
+    	it("fails closed on a legacy palette color in an SVG", () => {
+    		const svg = writeTmp(
+    			"legacy-cyan.svg",
+    			`<svg xmlns="http://www.w3.org/2000/svg"><rect width="10" height="10" fill="#3CE6D8"/></svg>`,
+    		);
+    		const report = runCli([svg]);
+    		const asset = findAsset(report, "legacy-cyan.svg");
+    		expect(asset.pass).toBe(false);
+    		expect(asset.detail).toContain("#3CE6D8");
+    	});
 
 	it("fails closed on a banned legacy color in an SVG", () => {
 		const svg = writeTmp(
@@ -206,7 +217,7 @@ describe("brand-system conformance (v0.2 DRAFT)", () => {
 		const svg = writeTmp(
 			"structural.svg",
 			`<svg xmlns="http://www.w3.org/2000/svg">
-         <defs><linearGradient id="g"><stop offset="0%" stop-color="#3CE6D8"/></linearGradient></defs>
+         <defs><linearGradient id="g"><stop offset="0%" stop-color="#824F16"/></linearGradient></defs>
          <rect width="10" height="10" fill="url(#g)" stroke="currentColor"/>
          <circle cx="5" cy="5" r="2" fill="none"/>
        </svg>`,
@@ -217,7 +228,7 @@ describe("brand-system conformance (v0.2 DRAFT)", () => {
 	});
 
 	it("accepts an on-token solid PNG (palette coverage)", () => {
-		const png = writeTmp("on-token.png", solidPng(CYAN_BASE));
+		const png = writeTmp("on-token.png", solidPng(COCOA_BASE));
 		const report = runCli([png]);
 		const asset = findAsset(report, "on-token.png");
 		expect(asset.pass).toBe(true);

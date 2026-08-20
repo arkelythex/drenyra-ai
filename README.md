@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="1200" alt="Drenyra AI — the verified relic: receipts, gates, deterministic control" src="docs/assets/brand/drenyra-ai-verified-relic-dark.svg" />
+<img width="1200" alt="Drenyra AI — verified artifact: the institutional receipt with candidate, materiality, approval and signature" src="docs/assets/brand/drenyra-ai-hero-dreamcoder-light.svg" />
 
 <p><code>request → policy/evidence verification → immutable receipt</code></p>
 
@@ -192,58 +192,13 @@ drenyra-ai ledger validate ledger.json
 
 ### The mission lifecycle at a glance
 
-```mermaid
-flowchart TD
-    A["start · DRAFT"] --> B["QUEUED"]
-    B --> C["RUNNING<br/>deterministic intent handler stages work"]
-    C -->|"evidence needed"| E["WAITING_FOR_EVIDENCE<br/>agent proposes, never executes"]
-    C -->|"blocked"| BL["BLOCKED"]
-    C -->|"approval needed"| AP["AWAITING_APPROVAL"]
-    E --> C
-    BL --> C
-    AP -->|"approved (R2 single / R3 dual)"| APD["APPROVED"]
-    AP -->|"rejected"| REJ["REJECTED"]
-    REJ --> RV["REVISION_REQUESTED"]
-    RV --> B
-    APD --> G{"Gates<br/>mission-state · receipt · approval"}
-    C --> G
-    G -->|"pass"| DONE["COMPLETED<br/>receipt recorded"]
-    G -->|"fail"| FB["BLOCKED_BY_GATE"]
-    FB --> C
-    C -->|"crash"| R["RECOVERING → UNKNOWN<br/>decide-by-evidence · idempotent"]
-    R --> C
-    C -->|"unrecoverable"| F["FAILED"]
-    B --> F
-    APD --> F
-    DONE --> T["Terminal"]
-
-    style DONE fill:#2D4F67,color:#fff
-    style F fill:#B8860B,color:#fff
-    style T fill:#2D4F67,color:#fff
-```
+<img width="1200" alt="Mission lifecycle — the frozen operating contract: 15 canonical states with explicit recovery branches" src="docs/assets/brand/drenyra-ai-mission-lifecycle-editorial.svg" />
 
 Recovery is explicit: in-flight `RUNNING` missions become `UNKNOWN` and resume by **deciding from persisted evidence**, replaying the event log from the last event — never from a transcript. Human-wait states (`WAITING_FOR_EVIDENCE`, `BLOCKED_BY_GATE`, approval) are never auto-recovered.
 
 ### Receipt-Driven Accounting at a glance
 
-<img width="1200" alt="RDA flow — proposal → candidate → gate → approval → receipt → verifiable ledger" src="docs/assets/brand/drenyra-ai-rda-flow.svg" />
-
-```mermaid
-flowchart LR
-    A["Agent proposal"] --> B["Candidate<br/>identity + materiality"]
-    B --> C{"Review tier<br/>R0 · R1 · R2 · R3"}
-    C -->|"R0/R1 autonomous"| D["Execute"]
-    C -->|"R2 single approval"| E["Human approval"]
-    C -->|"R3 dual distinct approval"| E
-    E --> D
-    D --> F["Immutable receipt<br/>Ed25519-signed"]
-    F --> G["Append-only ledger"]
-    G --> H["ledger validate"]
-    H -->|"hash chain intact"| I["Verifiable trail"]
-
-    style F fill:#2D4F67,color:#fff
-    style G fill:#2D4F67,color:#fff
-```
+<img width="1200" alt="RDA — the editorial process line: proposal → candidate → materiality → review → approval → receipt → ledger" src="docs/assets/brand/drenyra-ai-rda-editorial.svg" />
 
 ---
 
@@ -307,7 +262,7 @@ Drenyra AI orchestrates specialized accounting/fiscal agents through `agents/`: 
 
 > **Agents never claim SUNAT, bank, or ERP execution and never perform fiscal approval. They only propose and stage work.**
 
-<img width="1200" alt="Deterministic control plane — agent hosts → Drenyra AI Core (missions, gates, receipts) → professional / ERP / SUNAT" src="docs/assets/brand/drenyra-ai-control-plane.svg" />
+<img width="1200" alt="Deterministic control plane — agent hosts → Drenyra AI Core (missions, gates, receipts) → authority outside the core: professional, ERP, SUNAT" src="docs/assets/brand/drenyra-ai-control-plane-editorial.svg" />
 
 ### Layout
 
