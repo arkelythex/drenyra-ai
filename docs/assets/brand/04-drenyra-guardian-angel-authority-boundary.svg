@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="460" viewBox="0 0 1400 460">
+<rect width="1400" height="460" fill="#f3eadc"/>
+<text x="64" y="50" fill="#725e4c" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="start" letter-spacing="2.0">AUTHORITY BOUNDARY</text>
+<text x="64" y="96" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700" text-anchor="start" letter-spacing="0">Verification is not approval</text>
+<text x="64" y="128" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="500" text-anchor="start" letter-spacing="0">Guardian reports a verdict. It never approves, executes, mutates, or joins the approval quorum.</text>
+
+<g transform="translate(64 180)">
+  <rect width="360" height="188" rx="14" fill="#fff7ea" stroke="#66513b"/>
+  <text x="24" y="34" fill="#725e4c" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.5">GUARDIAN ANGEL</text>
+  <text x="24" y="74" fill="#0d4a68" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" text-anchor="start" letter-spacing="0">Verify</text>
+  <text x="24" y="108" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="500" text-anchor="start" letter-spacing="0">refute · compare · evidence-check</text>
+  <text x="24" y="134" fill="#315b31" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="start" letter-spacing="0">APPROVED / ESCALATED</text>
+  <text x="24" y="162" fill="#0d4a68" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" text-anchor="start" letter-spacing="0">read-only verdict</text>
+</g>
+
+<g transform="translate(520 180)">
+  <rect width="360" height="188" rx="14" fill="#fff7ea" stroke="#66513b"/>
+  <text x="24" y="34" fill="#725e4c" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.5">DRENYRA AI</text>
+  <text x="24" y="74" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" text-anchor="start" letter-spacing="0">Candidate lifecycle</text>
+  <text x="24" y="108" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="500" text-anchor="start" letter-spacing="0">frozen contracts + receipts</text>
+  <text x="24" y="134" fill="#824f16" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="start" letter-spacing="0">approval gate exists here</text>
+  <text x="24" y="162" fill="#a7471c" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" text-anchor="start" letter-spacing="0">Guardian cannot cross it</text>
+</g>
+
+<g transform="translate(976 180)">
+  <rect width="360" height="188" rx="14" fill="#decbb1" stroke="#66513b"/>
+  <text x="24" y="34" fill="#725e4c" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="1.5">PROFESSIONAL</text>
+  <text x="24" y="74" fill="#57478b" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" text-anchor="start" letter-spacing="0">Authorize</text>
+  <text x="24" y="108" fill="#352e22" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="500" text-anchor="start" letter-spacing="0">approve · reject · correct</text>
+  <text x="24" y="134" fill="#315b31" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" text-anchor="start" letter-spacing="0">explicit human event</text>
+  <text x="24" y="162" fill="#100c07" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" text-anchor="start" letter-spacing="0">final fiscal authority</text>
+</g>
+
+<path d="M424 274 H520" stroke="#3e2f20" stroke-width="1.6"/>
+<circle cx="472" cy="274" r="18" fill="#e6d7c4" stroke="#0d4a68" stroke-width="1.6"/>
+<text x="472" y="279" fill="#0d4a68" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0">R</text>
+<path d="M880 274 H976" stroke="#3e2f20" stroke-width="1.6"/>
+<circle cx="928" cy="274" r="18" fill="#e6d7c4" stroke="#57478b" stroke-width="1.6"/>
+<text x="928" y="279" fill="#57478b" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0">H</text>
+
+<g transform="translate(64 405)">
+  <text x="0" y="0" fill="#a7471c" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" text-anchor="start" letter-spacing="0.3">Guardian is outside the approval quorum by design.</text>
+</g>
+</svg>
