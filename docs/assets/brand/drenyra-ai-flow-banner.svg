@@ -1,124 +1,78 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="460" viewBox="0 0 1400 460" role="img" aria-label="Drenyra AI flow — request, policy and evidence verification, immutable receipt">
-  <!-- brand-system v0.2 flow banner: theme-aware (dark + light via prefers-color-scheme),
+  <!-- brand-system v0.2 fused banner: Black Dark OLED -> Dreamcoder Light seamless gradient,
        canonical tokens only (contracts/brand-system/tokens.json), zero embedded text.
-       Flow motif: request -> policy/evidence verification -> immutable receipt. -->
+       Flow motif: request -> policy/evidence verification -> immutable receipt.
+       The flow travels from the OLED black zone into the warm Dreamcoder Light zone. -->
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop class="g-bg1" offset="0%"/>
-      <stop class="g-bg2" offset="55%"/>
-      <stop class="g-bg3" offset="100%"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#000000"/>
+      <stop offset="55%" stop-color="#0A0A0A"/>
+      <stop offset="72%" stop-color="#F3EADC"/>
+      <stop offset="100%" stop-color="#F3EADC"/>
     </linearGradient>
     <linearGradient id="flow-c" x1="0" y1="0" x2="1" y2="0">
-      <stop class="g-c1" offset="0%"/>
-      <stop class="g-c2" offset="100%"/>
-    </linearGradient>
-    <linearGradient id="flow-v" x1="0" y1="0" x2="1" y2="0">
-      <stop class="g-v1" offset="0%"/>
-      <stop class="g-v2" offset="100%"/>
-    </linearGradient>
-    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
-      <stop class="g-card1" offset="0%"/>
-      <stop class="g-card2" offset="100%"/>
+      <stop offset="0%" stop-color="#3CE6D8"/>
+      <stop offset="100%" stop-color="#6AEFE4"/>
     </linearGradient>
     <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
-      <path d="M 44 0 L 0 0 0 44" fill="none" stroke="var(--grid)" stroke-opacity="0.04" stroke-width="1"/>
+      <path d="M 44 0 L 0 0 0 44" fill="none" stroke="#FFFFFF" stroke-opacity="0.04" stroke-width="1"/>
     </pattern>
   </defs>
 
-  <style>
-    :root {
-      --bg1: #000000; --bg2: #0A0A0A; --bg3: #121212;
-      --grid: #FFFFFF;
-      --glow-c: #3CE6D8; --glow-v: #9B7FE8;
-      --c: #3CE6D8; --c-bright: #6AEFE4;
-      --v: #9B7FE8; --v-bright: #B8A2F0;
-      --ok: #4ADE94;
-      --n1: #0A0A0A; --n2: #121212; --n3: #1A1A1A;
-      --border: #2A2A2A; --border-subtle: #1F1F1F;
-      --muted: #A8B0BC; --muted-dim: #6B7480;
-      --pending: #6B9FE8;
-      --spark: #6AEFE4;
-    }
-    .g-bg1 { stop-color: var(--bg1); }
-    .g-bg2 { stop-color: var(--bg2); }
-    .g-bg3 { stop-color: var(--bg3); }
-    .g-c1 { stop-color: var(--c); }
-    .g-c2 { stop-color: var(--c-bright); }
-    .g-v1 { stop-color: var(--v); }
-    .g-v2 { stop-color: var(--v-bright); }
-    .g-card1 { stop-color: var(--n1); }
-    .g-card2 { stop-color: var(--n2); }
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg1: #F3EADC; --bg2: #FAF6EF; --bg3: #F0E8DA;
-        --grid: #000000;
-        --glow-c: #2ECFC2; --glow-v: #6B54A8;
-        --c: #2ECFC2; --c-bright: #1F8A80;
-        --v: #6B54A8; --v-bright: #7B66C0;
-        --ok: #1A8F52;
-        --n1: #FAF6EF; --n2: #F0E8DA; --n3: #FCF9F3;
-        --border: #D8CDB8; --border-subtle: #E8DFCE;
-        --muted: #5C5347; --muted-dim: #84786A;
-        --pending: #2E5FB8;
-        --spark: #1F8A80;
-      }
-    }
-  </style>
-
-  <!-- Background: canvas gradient + blueprint grid + cyan/violet aurora glows -->
+  <!-- Background: fused dawn canvas (OLED black -> warm ivory) + blueprint grid + aurora glows -->
   <rect width="1400" height="460" fill="url(#bg)"/>
   <rect width="1400" height="460" fill="url(#grid)"/>
-  <circle cx="1150" cy="90" r="280" fill="var(--glow-c)" opacity="0.06"/>
-  <circle cx="150" cy="410" r="320" fill="var(--glow-v)" opacity="0.05"/>
+  <circle cx="1150" cy="90" r="280" fill="#3CE6D8" opacity="0.05"/>
+  <circle cx="150" cy="410" r="320" fill="#9B7FE8" opacity="0.06"/>
 
-  <!-- Node 1: request (packet chip with cyan keyline) -->
+  <!-- Node 1: request (packet chip with cyan keyline) — OLED black zone -->
   <g>
-    <rect x="200" y="185" width="180" height="100" rx="12" fill="var(--n1)" stroke="var(--border)" stroke-width="1.5"/>
-    <rect x="210" y="195" width="4" height="80" rx="2" fill="var(--c)" opacity="0.8"/>
-    <rect x="238" y="212" width="34" height="30" rx="6" fill="var(--n2)" stroke="var(--c)" stroke-opacity="0.7" stroke-width="1.5"/>
-    <circle cx="255" cy="227" r="4" fill="var(--c)"/>
-    <circle cx="356" cy="200" r="5" fill="var(--pending)"/>
-    <circle cx="360" cy="268" r="3.5" fill="var(--spark)"/>
+    <rect x="200" y="185" width="180" height="100" rx="12" fill="#0A0A0A" stroke="#2A2A2A" stroke-width="1.5"/>
+    <rect x="210" y="195" width="4" height="80" rx="2" fill="#3CE6D8" opacity="0.8"/>
+    <rect x="238" y="212" width="34" height="30" rx="6" fill="#121212" stroke="#3CE6D8" stroke-opacity="0.7" stroke-width="1.5"/>
+    <circle cx="255" cy="227" r="4" fill="#3CE6D8"/>
+    <circle cx="356" cy="200" r="5" fill="#6B9FE8"/>
+    <circle cx="360" cy="268" r="3.5" fill="#6AEFE4"/>
   </g>
 
   <!-- Flow: request -> verification gate (cyan) -->
   <path d="M 384 235 C 450 235 500 235 560 235" fill="none" stroke="url(#flow-c)" stroke-width="3" stroke-linecap="round"/>
-  <path d="M 552 228 L 566 235 L 552 242 Z" fill="var(--c)"/>
-  <circle cx="470" cy="235" r="3" fill="var(--spark)" opacity="0.9"/>
+  <path d="M 552 228 L 566 235 L 552 242 Z" fill="#3CE6D8"/>
+  <circle cx="470" cy="235" r="3" fill="#6AEFE4" opacity="0.9"/>
 
-  <!-- Node 2: policy/evidence verification gate (violet slats + evidence dots) -->
+  <!-- Node 2: policy/evidence verification gate (violet slats + evidence dots) — dark edge -->
   <g>
-    <rect x="580" y="165" width="200" height="140" rx="12" fill="var(--n2)" stroke="var(--border)" stroke-width="1.5"/>
-    <rect x="594" y="177" width="172" height="8" rx="4" fill="var(--v)" opacity="0.8"/>
-    <rect x="612" y="197" width="16" height="96" rx="8" fill="var(--v)" opacity="0.7"/>
-    <rect x="644" y="197" width="16" height="96" rx="8" fill="var(--v)" opacity="0.4"/>
-    <circle cx="712" cy="210" r="4.5" fill="var(--muted)" opacity="0.9"/>
-    <circle cx="736" cy="220" r="4.5" fill="var(--muted)" opacity="0.7"/>
-    <circle cx="760" cy="210" r="4.5" fill="var(--muted)" opacity="0.5"/>
-    <circle cx="756" cy="196" r="5" fill="var(--v)"/>
+    <rect x="580" y="165" width="200" height="140" rx="12" fill="#121212" stroke="#2A2A2A" stroke-width="1.5"/>
+    <rect x="594" y="177" width="172" height="8" rx="4" fill="#9B7FE8" opacity="0.8"/>
+    <rect x="612" y="197" width="16" height="96" rx="8" fill="#9B7FE8" opacity="0.7"/>
+    <rect x="644" y="197" width="16" height="96" rx="8" fill="#9B7FE8" opacity="0.4"/>
+    <circle cx="712" cy="210" r="4.5" fill="#A8B0BC" opacity="0.9"/>
+    <circle cx="736" cy="220" r="4.5" fill="#A8B0BC" opacity="0.7"/>
+    <circle cx="760" cy="210" r="4.5" fill="#A8B0BC" opacity="0.5"/>
+    <circle cx="756" cy="196" r="5" fill="#9B7FE8"/>
   </g>
 
   <!-- Flow: verification -> immutable receipt (green, verified) -->
-  <path d="M 784 235 C 860 235 930 235 1010 235" fill="none" stroke="var(--ok)" stroke-width="3" stroke-linecap="round"/>
-  <path d="M 1002 228 L 1016 235 L 1002 242 Z" fill="var(--ok)"/>
-  <circle cx="900" cy="235" r="3" fill="var(--ok)"/>
+  <path d="M 784 235 C 860 235 930 235 1010 235" fill="none" stroke="#4ADE94" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 1002 228 L 1016 235 L 1002 242 Z" fill="#4ADE94"/>
+  <circle cx="900" cy="235" r="3" fill="#4ADE94"/>
 
-  <!-- Node 3: immutable receipt endpoint (green seal + hash circlet) -->
+  <!-- Node 3: immutable receipt endpoint (green seal + hash circlet) — Dreamcoder Light zone -->
   <g>
-    <rect x="1100" y="170" width="200" height="130" rx="12" fill="url(#card)" stroke="var(--border)" stroke-width="1.5"/>
-    <rect x="1112" y="182" width="176" height="8" rx="4" fill="var(--ok)" opacity="0.4"/>
-    <circle cx="1200" cy="245" r="36" fill="var(--ok)" opacity="0.14" stroke="var(--ok)" stroke-width="2"/>
-    <path d="M 1183 245 L 1195 257 L 1218 232" fill="none" stroke="var(--ok)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="1100" y="170" width="200" height="130" rx="12" fill="#FAF6EF" stroke="#D8CDB8" stroke-width="1.5"/>
+    <rect x="1112" y="182" width="176" height="8" rx="4" fill="#1A8F52" opacity="0.35"/>
+    <circle cx="1200" cy="245" r="36" fill="#1A8F52" opacity="0.14" stroke="#1A8F52" stroke-width="2"/>
+    <path d="M 1183 245 L 1195 257 L 1218 232" fill="none" stroke="#1A8F52" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
     <!-- orbital hash circlet -->
-    <circle cx="1250" cy="268" r="5" fill="var(--muted)" opacity="0.8"/>
-    <circle cx="1200" cy="295" r="5" fill="var(--muted)" opacity="0.8"/>
-    <circle cx="1150" cy="268" r="5" fill="var(--muted)" opacity="0.8"/>
-    <circle cx="1150" cy="222" r="5" fill="var(--v)" opacity="0.8"/>
-    <circle cx="1200" cy="195" r="5" fill="var(--muted)" opacity="0.8"/>
-    <circle cx="1250" cy="222" r="5" fill="var(--v)" opacity="0.8"/>
-    <rect x="1120" y="288" width="2" height="6" rx="1" fill="var(--muted-dim)" opacity="0.6"/>
-    <rect x="1200" y="288" width="2" height="6" rx="1" fill="var(--muted-dim)" opacity="0.6"/>
-    <rect x="1280" y="288" width="2" height="6" rx="1" fill="var(--muted-dim)" opacity="0.6"/>
-    <circle cx="1284" cy="182" r="3.5" fill="var(--spark)"/>
+    <circle cx="1250" cy="268" r="5" fill="#5C5347" opacity="0.8"/>
+    <circle cx="1200" cy="295" r="5" fill="#5C5347" opacity="0.8"/>
+    <circle cx="1150" cy="268" r="5" fill="#5C5347" opacity="0.8"/>
+    <circle cx="1150" cy="222" r="5" fill="#6B54A8" opacity="0.8"/>
+    <circle cx="1200" cy="195" r="5" fill="#5C5347" opacity="0.8"/>
+    <circle cx="1250" cy="222" r="5" fill="#6B54A8" opacity="0.8"/>
+    <rect x="1120" y="288" width="2" height="6" rx="1" fill="#84786A" opacity="0.6"/>
+    <rect x="1200" y="288" width="2" height="6" rx="1" fill="#84786A" opacity="0.6"/>
+    <rect x="1280" y="288" width="2" height="6" rx="1" fill="#84786A" opacity="0.6"/>
+    <circle cx="1284" cy="182" r="3.5" fill="#1F8A80"/>
   </g>
 </svg>

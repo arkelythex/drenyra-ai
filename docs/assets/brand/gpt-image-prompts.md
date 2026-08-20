@@ -34,9 +34,13 @@ The new direction is:
 
 ## 2. Core aesthetic
 
-### Black Dark OLED
+### Fused aesthetic — one image, both worlds
 
-The dark mode must feel like a **luxury OLED environment**:
+The banner is a **single composition** that fuses Black Dark OLED and Dreamcoder Light: a seamless dawn gradient from pure black to warm ivory, with the hero object living on the boundary.
+
+### Black Dark OLED zone (left)
+
+The left zone of the fused image must feel like a **luxury OLED environment**:
 
 * true deep blacks
 * anthracite and graphite surfaces
@@ -47,9 +51,9 @@ The dark mode must feel like a **luxury OLED environment**:
 * high contrast, low clutter
 * negative space used as a luxury signal
 
-### Dreamcoder Light
+### Dreamcoder Light zone (right)
 
-The light mode must feel like a **warm, eye-friendly, refined system surface**:
+The right zone must feel like a **warm, eye-friendly, refined system surface**:
 
 * warm ivory instead of harsh white
 * soft mineral cream
@@ -111,6 +115,8 @@ Drenyra ecosystem README banner — world-class premium brand image, not a gener
 Dark mode: true black OLED atmosphere with anthracite and graphite surfaces, deep material depth, smoked glass, matte ceramic, precision-machined metallic edges, subtle film grain, soft volumetric falloff, blueprint discipline, and restrained rim lighting. No cyberpunk overload, no gamer neon, no clutter, no floating generic HUDs. Accent light is sparse and intentional.
 
 Light mode variant: warm ivory and soft mineral surfaces with restrained cocoa/lúcuma undertones, elegant and eye-friendly, never plain white, never beige-heavy, never playful. Keep the exact same object identity and composition in the light version.
+
+FUSION RULE (non-negotiable): generate ONE image, never two variants. The canvas is a seamless dawn gradient from pure OLED black #000000 on the left to warm Dreamcoder ivory #F3EADC on the right, with a smooth cinematic transition between them — no hard seam, no split line, no vignette. The left zone carries the Black Dark OLED world (anthracite, graphite, smoked glass, matte ceramic, machined edges, blueprint discipline). The right zone carries the Dreamcoder Light world (warm ivory, mineral cream, restrained cocoa/lúcuma undertones). The hero object lives ON the boundary: dark machined materials that catch warm light as they cross into the ivory zone. The composition must read as one continuous atmosphere, not two panels.
 
 Compositional soul: layered elevation, orbital arcs, curved geometry, soft focus halo, subtle atmospheric glows, tiny spark accents, and an editorial-luxury sense of order. The object should feel like an institutional artifact from a high-trust accounting intelligence system: elegant, exact, auditable, and quietly futuristic.
 
@@ -199,22 +205,22 @@ This must feel protective, exact, and calm — not superhero, not fantasy armor,
 
 ---
 
-## 6. Dark OLED rider
+## 6. Fusion rider
 
-Append this paragraph when you want to push the dark version harder.
+Append this paragraph to push the dark-to-light fusion harder.
 
 ```text
-Dark OLED emphasis: blacks must feel deep and light-absorbing, with crisp edge lighting, subtle local bloom, and clean separation between surfaces. The image should look luxurious on an OLED display: high-contrast, sharply controlled, atmospheric, and never muddy.
+Fusion emphasis: the dark-to-light transition must feel inevitable, like dawn over a precision instrument. The OLED black side must be deep and light-absorbing with crisp edge lighting and clean surface separation; the Dreamcoder Light side must be warm ivory with soft mineral cream and restrained cocoa/lúcuma undertones. The hero object must straddle both zones — its dark machined materials catching the warm light — with NO hard seam: the gradient IS the composition.
 ```
 
 ---
 
-## 7. Dreamcoder Light rider
+## 7. Light-zone refinement (within the fusion)
 
-Append this paragraph when you want to generate the light version.
+Use when the warm side of the fused image needs to be pushed further.
 
 ```text
-Dreamcoder Light emphasis: replace harsh white with warm ivory and soft mineral cream, with restrained cocoa/lúcuma undertones used only in support surfaces and ambient warmth. Keep the image premium, airy, calm, and editorial — never sugary, never beige-heavy, never playful.
+Dreamcoder Light refinement (right zone only): within the fused image, push the warm side toward warm ivory and soft mineral cream, with restrained cocoa/lúcuma undertones used only in support surfaces and ambient warmth. Keep the image premium, airy, calm, and editorial — never sugary, never beige-heavy, never playful. The left zone stays deep OLED black.
 ```
 
 ---
@@ -233,10 +239,7 @@ Avoid the visual language of a generic SaaS hero banner. Avoid random holographi
 
 1. Paste the Shared DNA block.
 2. Append one product prompt.
-3. Add either:
-
-   * the **Dark OLED rider**, or
-   * the **Dreamcoder Light rider**
+3. Optionally append the **Fusion rider** (section 6) or the **Light-zone refinement** (section 7).
 4. If needed, append the **Extra anti-generic closer**.
 5. Generate 2–4 candidates.
 6. Keep the strongest candidate based on:
@@ -272,8 +275,8 @@ Use this as a fast validation rubric.
 * [ ] No text appears in the image
 * [ ] The object clearly suggests product meaning
 * [ ] The image feels like Drenyra, not a random AI brand
-* [ ] The light version feels Dreamcoder Light
-* [ ] The dark version feels Black Dark OLED
+* [ ] The image fuses Black Dark OLED (left) and Dreamcoder Light (right) in one seamless composition
+* [ ] The hero object lives on the dark-to-light boundary
 
 ---
 
@@ -289,7 +292,7 @@ That single shift is what turns the banners from generic to memorable.
 
 ## 12. Palette reference (tokens v0.2 DRAFT)
 
-The conformance checker validates against `contracts/brand-system/tokens.json`. Keep the prompts' descriptive language, but the **law** is:
+The conformance checker validates against `contracts/brand-system/tokens.json`. The **fused banner carries BOTH palettes**: the left zone uses the dark tokens, the right zone the light tokens — one image, both worlds. Keep the prompts' descriptive language, but the **law** is:
 
 ### Dark — Black Dark OLED
 

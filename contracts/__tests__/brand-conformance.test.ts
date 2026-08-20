@@ -164,7 +164,7 @@ describe("brand-system conformance (v0.2 DRAFT)", () => {
 		expect(report.palette.problems).toEqual([]);
 	});
 
-	it("passes the dual-theme banner SVG (CSS var + @media) with zero tolerance", () => {
+	it("passes the fused banner SVG (Black Dark OLED + Dreamcoder Light) with zero tolerance", () => {
 		const report = runCli();
 		const banner = findAsset(report, "drenyra-ai-banner.svg");
 		expect(banner.pass).toBe(true);
