@@ -214,7 +214,7 @@ Contracts are the **public surface** of Drenyra AI: transport-agnostic, versione
 | [gate](contracts/gate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, CI/CD |
 | [ledger](contracts/ledger.md) | 0.1 | FROZEN | Auditors, ERPs, Drenyra Pi |
 | [recovery](contracts/recovery.md) | 0.1 | FROZEN | Drenyra Pi, CLI |
-| [brand-system](contracts/brand-system.md) | 0.2 | DRAFT | Drenyra, Drenyra Pi, Drenyra Engram, Guardian Angel, docs |
+| [brand-system](contracts/brand-system.md) | 0.3 | DRAFT | Drenyra, Drenyra Pi, Drenyra Engram, Guardian Angel, docs |
 
 **Contract requirements:** versioned · verifiable (canonical vectors + conformance suite) · scope-safe (RUC/company/period where fiscal context applies) · transport-agnostic (no HTTP/CLI/framework bindings) · backward-compatible by default (breaking changes require a major bump and a migration path).
 
