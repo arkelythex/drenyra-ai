@@ -77,13 +77,10 @@ object photographed by a fashion campaign on a Syd Mead set.
    that drape like fabric (structural drapery), luminous edges; each carries a
    §-sigil formed by a single precise curve. Signature detail: the sigil's
    curve tip holds a point of light.
-6. **Drenyra Guardian Angel** — *the frozen review dossier.* A candidate
-   packet held in a precise archival frame, observed by two independent review
-   lenses that never share a conclusion before inspection. Their evidence
-   resolves into a canonical findings register, with a restrained refutation
-   mark and a clear boundary to the professional's authority. Signature detail:
-   two fine inspection lines converge on the dossier seal without becoming an
-   approval mark.
+6. **Drenyra Guardian Angel** — *the twin-lens sentinel.* A ceremonial shield
+   of two mirrored sculptural halves, a luminous seam, and a lens-beacon above
+   casting two concentric energy ripples. Signature detail: the ripple edges
+   resolve into fine engraving.
 
 ## Iteration criteria (critique before you accept a generation)
 

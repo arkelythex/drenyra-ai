@@ -200,23 +200,6 @@ Recovery is explicit: in-flight `RUNNING` missions become `UNKNOWN` and resume b
 
 <img width="1200" alt="RDA — the editorial process line: proposal → candidate → materiality → review → approval → receipt → ledger" src="docs/assets/brand/drenyra-ai-rda-editorial.svg" />
 
-### Guardian Angel — independent adversarial verification
-
-[Drenyra Guardian Angel](https://github.com/arkelythex/drenyra-guardian-angel) is a separate, read-only verification boundary around frozen candidates. Its review evidence is persisted and challenged independently; it never authors the candidate, mutates it, or turns a review finding into fiscal approval. In this repository, the local `guardian/` module produces findings only (`verdict: "none"`), while the professional remains the authority for approval and the candidate lifecycle.
-
-<img width="1200" alt="Frozen candidate dossier observed by Judge A and Judge B, producing canonical findings" src="docs/assets/brand/01-drenyra-guardian-angel-hero-dual-review.svg" />
-
-<details>
-<summary>Guardian Angel verification model</summary>
-
-<img width="1200" alt="Verification lifecycle: freeze, scope, blind judges, canonicalize, refute, bounded correction, and verdict or escalation" src="docs/assets/brand/02-drenyra-guardian-angel-verification-lifecycle.svg" />
-
-<img width="1200" alt="Blind dual review: one frozen target, two independent judges, and canonical finding classifications" src="docs/assets/brand/03-drenyra-guardian-angel-blind-dual-review.svg" />
-
-<img width="1200" alt="Authority boundary: Guardian verifies, Drenyra AI runs the candidate lifecycle, and the professional authorizes" src="docs/assets/brand/04-drenyra-guardian-angel-authority-boundary.svg" />
-
-</details>
-
 ---
 
 ## Contracts — the frozen public surface

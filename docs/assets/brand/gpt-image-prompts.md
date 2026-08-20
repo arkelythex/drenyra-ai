@@ -141,11 +141,11 @@ Living doctrine under version control: elegant, ordered, auditable. No open-book
 ## 5.6 Drenyra Guardian Angel — Independent Adversarial Verification
 
 ```text
-Subject: a frozen candidate dossier under independent adversarial review. Place the dossier on the right third as a precise archival folio with a sealed subject hash, cocoa #824F16 structural marks, diagnostic teal #0D4A68 inspection lines, and a small sage #315B31 evidence seal. The object must read as preserved evidence, not a shield, mascot, or approval badge.
+Subject: independent adversarial verification as a guardian review instrument. The hero on the right third is a shield-like precision form of two mirrored curved halves in cocoa #824F16 and diagnostic teal #0D4A68, meeting at a narrow luminous seam. At the seam's center, a small sage #315B31 trust mark, engraved rather than painted.
 
-Observe the same immutable dossier through two separate review lenses, Judge A and Judge B, with a visible gap between their inspection paths. Their paths converge only in a restrained canonical findings register: corroborated, contradicted, pre-existing, or candidate-caused severe. Add a quiet refutation mark and a bounded correction notation, but never a checkmark or symbol that implies fiscal approval.
+Hovering above, a single review lens or beacon — refined, optical, editorial — with a dim teal core. From it descend two faint concentric review ripples that interact with the shield surface, creating tiny spark points where scrutiny meets structure. A silent external reviewer watching over the system.
 
-Exact, calm, forensic, and editorial — not superhero, fantasy armor, security-software cliché, or generic dashboard UI. The authority boundary should be legible in the composition: Guardian verifies, Drenyra AI runs the candidate lifecycle, and the professional authorizes. Signature detail: two hairline inspection traces meet at the dossier seal while remaining visibly independent.
+Protective, exact, calm — not superhero, not fantasy armor, not security-software cliché. Signature detail: the fine engraved ripple traces resolving near the shield edge.
 ```
 
 ---
