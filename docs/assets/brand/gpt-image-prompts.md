@@ -1,191 +1,348 @@
-# Drenyra Ecosystem — gpt-image Prompts for README Banners
+# Drenyra Ecosystem — README Banner Prompts v2
 
-> **Normative source:** [`brand-system.md`](../../../contracts/brand-system.md) (v0.2
-> DRAFT) + [`tokens.json`](../../../contracts/brand-system/tokens.json).
->
-> **Creative inspiration:** the Dreamcoder OS design system
-> (`dreamcoder-dots/DreamcoderThemes/dreamcoder/tokens.json`) — "Anthracite
-> Steel" dark + "Dreamcoder Light" (cocoa/lúcuma) + Dusk. The Drenyra banners
-> borrow Dreamcoder's **compositional soul** (layered elevation, aurora glows,
-> soft focus, curved geometry, spark accents, visual-health guardrails) while
-> keeping the **Drenyra accent identity** (cyan/violet) for validation.
+## Dreamcoder Light + Black Dark OLED Edition
 
-## How to use
+> **Normative source:** [`brand-system.md`](../../../contracts/brand-system.md) (v0.2 DRAFT) + [`tokens.json`](../../../contracts/brand-system/tokens.json)
+> **Creative direction:** Dreamcoder compositional soul + Drenyra validation identity
+> **Goal:** README banners that feel **elite, audit-grade, original, calm, and premium**, not generic SaaS or generic sci-fi.
 
-1. Open **ChatGPT → Images** (ChatGPT Images 2.0; "Images with thinking" on
-   paid plans gives better prompt adherence).
-2. Paste the full prompt (Shared DNA + your product's section) verbatim.
-3. Generate **2–3 candidates**, keep the strongest.
-4. Validate with the conformance checker. Iterate with its off-palette
-   feedback if coverage < 0.92.
-5. Swap the README `<img>` to the passing PNG.
+---
 
-**Conformance gate (non-negotiable):**
+## 1. Creative intention
+
+These prompts are designed to preserve the visual DNA already established for the Drenyra ecosystem while correcting the main failure mode of earlier banner generations:
+
+* they looked **too generic**
+* too close to **random futuristic tech art**
+* too close to **SaaS dashboards / HUDs / startup AI clichés**
+* not enough like **institutional intelligence artifacts**
+* not enough like **Dreamcoder Light + Black Dark OLED**
+
+The new direction is:
+
+* **more premium**
+* **more minimal**
+* **more tactile**
+* **more intentional**
+* **more symbolic**
+* **more audit-grade**
+* **more Drenyra**
+* **less "cool AI demo"**
+* **less "generic cyber dashboard"**
+
+---
+
+## 2. Core aesthetic
+
+### Black Dark OLED
+
+The dark mode must feel like a **luxury OLED environment**:
+
+* true deep blacks
+* anthracite and graphite surfaces
+* smoked glass
+* matte ceramic finishes
+* precise metallic edges
+* restrained cyan/violet glow
+* high contrast, low clutter
+* negative space used as a luxury signal
+
+### Dreamcoder Light
+
+The light mode must feel like a **warm, eye-friendly, refined system surface**:
+
+* warm ivory instead of harsh white
+* soft mineral cream
+* restrained cocoa / lúcuma undertones
+* elegant, not playful
+* soft contrast, premium calmness
+* never beige-heavy
+* never "cute"
+* never casual
+
+---
+
+## 3. Anti-generic guardrails
+
+Apply these constraints to **every** prompt.
+
+### Always avoid
+
+* generic SaaS hero banner aesthetics
+* startup dashboard visuals
+* floating random HUD clutter
+* cyberpunk overload
+* gamer neon
+* generic "AI" imagery
+* robot heads
+* glowing brains
+* code rain
+* circuit-board clichés
+* blockchain clichés
+* clip-art iconography
+* flat illustration
+* mascot energy
+* empty decorative abstraction
+
+### Always prefer
+
+* one symbolic hero object
+* tactile form over literal UI
+* controlled cinematic lighting
+* precision-engineered materials
+* quiet institutional confidence
+* abstract meaning expressed through object design
+* premium restraint
+* left-side negative space
+* right-side hero composition
+* curved geometry and orbital logic
+* tiny "verified truth" spark accents
+* a sense of **trust**, **scope**, **control**, **evidence**, and **review**
+
+---
+
+## 4. Shared DNA — identical opening for every product
+
+Use this block **unchanged** as the shared base for all ecosystem banner prompts.
+
+```text
+Drenyra ecosystem README banner — world-class premium brand image, not a generic tech illustration, not a dashboard mockup, not a software screenshot. Visual language: Dreamcoder Light + Black Dark OLED. The image must feel engineered, audited, and emotionally controlled: radical minimalism with obsessive detail. ONE symbolic hero object on the right third, deep luxurious negative space on the left, and a calm cinematic composition.
+
+Dark mode: true black OLED atmosphere with anthracite and graphite surfaces, deep material depth, smoked glass, matte ceramic, precision-machined metallic edges, subtle film grain, soft volumetric falloff, blueprint discipline, and restrained rim lighting. No cyberpunk overload, no gamer neon, no clutter, no floating generic HUDs. Accent light is sparse and intentional.
+
+Light mode variant: warm ivory and soft mineral surfaces with restrained cocoa/lúcuma undertones, elegant and eye-friendly, never plain white, never beige-heavy, never playful. Keep the exact same object identity and composition in the light version.
+
+Compositional soul: layered elevation, orbital arcs, curved geometry, soft focus halo, subtle atmospheric glows, tiny spark accents, and an editorial-luxury sense of order. The object should feel like an institutional artifact from a high-trust accounting intelligence system: elegant, exact, auditable, and quietly futuristic.
+
+Allowed accents only: cyan validation glow, violet intelligence glow, muted blue-gray, and success green used only for verification moments. All glows must be soft, localized, and low-opacity. No off-palette blues, no random purple, no warm orange, no red, no gold-dominant composition. No text, no letters, no numbers, no logos. The README carries the name; the image carries the aura.
+
+Important anti-generic rule: do not render a standard SaaS dashboard, generic sci-fi interface, random holographic panels, or abstract "AI" imagery. The hero must be a tactile, premium, symbolic object that expresses product meaning through form, light, surface, and composition.
+```
+
+---
+
+## 5. Product prompts
+
+Append **one** of the following product sections to the Shared DNA block.
+
+---
+
+## 5.1 Drenyra — Command Center
+
+```text
+Subject: an accounting command center rendered as a premium institutional control artifact, not as a software dashboard. The hero on the right third is a circular command dais made of layered smoked glass and matte anthracite ceramic, with three raised translucent slabs emerging from it like disciplined strata rather than floating interface cards. Inside the slabs, only minimal abstract signals are visible: elegant ledger pulses, a restrained approval rhythm, and a verification cadence — never a literal app screen.
+
+Around the core, two tilted orbital rings wrap the object: one cyan for validation, one violet for intelligence. At the center sits a dual-approval seal formed by two interlocking arcs, with a subtle success-green verification mark engraved into the inner surface, catching rim light like a machined emblem. Tiny spark points appear only where orbital paths intersect, suggesting moments of verified truth.
+
+The object must feel calm, exact, and elite — like the operating altar of a fiscal intelligence system. No generic charts, no obvious business intelligence dashboard, no startup analytics vibe. Signature detail: the engraved approval seal and the precision edge-lighting on the layered slabs.
+```
+
+---
+
+## 5.2 Drenyra AI — The Verifiable Core
+
+```text
+Subject: the verifiable core rendered as a premium receipt artifact suspended inside a precise orbital integrity system. The hero on the right third is a single refined receipt tablet made of smoked glass over a dark anthracite substrate, with a cyan-lit perimeter edge and a softly engraved circular verification seal at its center. The seal contains a quiet success-green verification mark, subtle and authoritative, never loud.
+
+Orbiting around the receipt is a disciplined circular hash-chain made of small rounded integrity blocks in muted blue-gray and violet, evenly spaced, mechanically precise, almost jewelry-like. A single thin luminous arc passes behind the receipt, giving it calm momentum. The receipt is the still center; the integrity ring is the proof field.
+
+This should feel like evidence you can trust, not a fintech card, not a crypto poster, not a UI tile. No generic blockchain visual clichés. Signature detail: the ring's orbital light path and the way the seal engraving catches the light.
+```
+
+---
+
+## 5.3 Drenyra Pi — Pinned Deterministic Runtime
+
+```text
+Subject: a pinned deterministic runtime node rendered as a sealed precision object. The hero on the right third is a compact central cube with smoked-glass faces and anthracite structural edges, the corners traced with cyan edge light. A single vertical violet pin passes through the object from above, locking it into place with ritual precision, as if the runtime were physically anchored.
+
+Around it, three elegant orbital arcs in muted blue-gray define deterministic boundaries — two complete, one partial — with tiny satellite nodes placed at exact intervals. Near the base, a miniature success-green padlock is engraved into one facet of the cube, extremely subtle, like a trust mark. The surrounding platform is calm and minimal, with only a few luminous intersections.
+
+The image must communicate locality, determinism, package-level control, and safety. No cube-in-space cliché, no blockchain cube, no random abstract geometry. Signature detail: the pin-lock relationship and the tiny engraved padlock facet.
+```
+
+---
+
+## 5.4 Drenyra Engram — Institutional Fiscal Memory
+
+```text
+Subject: institutional fiscal memory rendered as a quiet memory canopy over a verified document. The hero on the right third is a curved lattice of sweeping Bézier connections suspended like a protective memory canopy, using cyan, violet, and muted blue-gray strands with luminous node points. The structure should feel less like a random network graph and more like a cultivated memory architecture: elegant, sparse, deliberate, and archival.
+
+Beneath it rests a single document silhouette in dark smoked material with a cyan outline, grounded and calm, carrying a tiny success-green verification mark. The lattice curves over it like institutional memory preserving scope, lineage, and context. A few spark points sit along the arcs like retained fragments of verified truth.
+
+This must feel archival, trustworthy, and beautiful — not generic big-data art, not a generic node graph. Signature detail: one luminous node casts a faint optical caustic onto the document surface.
+```
+
+---
+
+## 5.5 Drenyra Skills — Versioned Accounting / Tax Knowledge
+
+```text
+Subject: versioned accounting and tax knowledge rendered as a layered folio system. The hero on the right third is a stack of three overlapping knowledge folios made of smoked glass and matte anthracite surfaces, each slightly offset, with curved spines that open outward in a refined arc. Their edges are traced with cyan and violet accent light, extremely restrained.
+
+Each folio bears a tiny abstract rule-glyph — not a literal symbol, but a minimal curved compliance sigil — in muted blue-gray. A success-green version marker hovers above the top folio with a soft halo, like a sanctioned release state. A single sweeping orbit passes behind the stack, binding the layers together.
+
+The object should feel like living doctrine under version control: elegant, ordered, and auditable. No open-book cliché, no school notebook vibe, no generic education iconography. Signature detail: the minute luminous point resting on the curve tip of the top sigil.
+```
+
+---
+
+## 5.6 Drenyra Guardian Angel — Independent Adversarial Verification
+
+```text
+Subject: independent adversarial verification rendered as a guardian review instrument. The hero on the right third is a shield-like precision form composed of two mirrored curved halves in cyan and violet, meeting at a narrow luminous seam. At the seam's center sits a small success-green trust mark, engraved rather than painted.
+
+Hovering above is a single review lens or beacon — refined, optical, and premium — with a dim cyan core. From it descend two faint concentric review ripples that interact with the shield surface, creating tiny spark points where scrutiny meets structure. The whole object should feel like a silent external reviewer watching over the system.
+
+This must feel protective, exact, and calm — not superhero, not fantasy armor, not security-software cliché. Signature detail: the fine engraved ripple traces resolving near the shield edge.
+```
+
+---
+
+## 6. Dark OLED rider
+
+Append this paragraph when you want to push the dark version harder.
+
+```text
+Dark OLED emphasis: blacks must feel deep and light-absorbing, with crisp edge lighting, subtle local bloom, and clean separation between surfaces. The image should look luxurious on an OLED display: high-contrast, sharply controlled, atmospheric, and never muddy.
+```
+
+---
+
+## 7. Dreamcoder Light rider
+
+Append this paragraph when you want to generate the light version.
+
+```text
+Dreamcoder Light emphasis: replace harsh white with warm ivory and soft mineral cream, with restrained cocoa/lúcuma undertones used only in support surfaces and ambient warmth. Keep the image premium, airy, calm, and editorial — never sugary, never beige-heavy, never playful.
+```
+
+---
+
+## 8. Extra anti-generic closer
+
+Add this at the end of any prompt when the model starts drifting into cliché.
+
+```text
+Avoid the visual language of a generic SaaS hero banner. Avoid random holographic interface clutter. Avoid obvious "AI" tropes such as brains, robots, wireframe heads, circuit clichés, or infinite code rain. Avoid startup illustration energy. Prefer tactile symbolic objects over literal software screens. Make it feel like an elite artifact from a high-trust fiscal operating system.
+```
+
+---
+
+## 9. Recommended generation workflow
+
+1. Paste the Shared DNA block.
+2. Append one product prompt.
+3. Add either:
+
+   * the **Dark OLED rider**, or
+   * the **Dreamcoder Light rider**
+4. If needed, append the **Extra anti-generic closer**.
+5. Generate 2–4 candidates.
+6. Keep the strongest candidate based on:
+
+   * calmness
+   * originality
+   * premium materiality
+   * brand fidelity
+   * lack of cliché
+   * symbolic clarity
+7. Reject any result that looks like:
+
+   * startup analytics
+   * random sci-fi art
+   * cyberpunk wallpaper
+   * a UI screenshot
+   * a generic AI poster
+
+---
+
+## 10. Quality checklist
+
+Use this as a fast validation rubric.
+
+* [ ] Left side has luxurious negative space
+* [ ] Right side contains one clear hero object
+* [ ] The result feels premium and calm
+* [ ] The result does not look like generic SaaS
+* [ ] The result does not look like generic sci-fi
+* [ ] Materials feel tactile and deliberate
+* [ ] Cyan/violet are restrained, not loud
+* [ ] Success green is used sparingly
+* [ ] No text appears in the image
+* [ ] The object clearly suggests product meaning
+* [ ] The image feels like Drenyra, not a random AI brand
+* [ ] The light version feels Dreamcoder Light
+* [ ] The dark version feels Black Dark OLED
+
+---
+
+## 11. Final note
+
+The key idea is simple:
+
+**Drenyra banners should not look like "technology." They should look like trusted fiscal intelligence artifacts.**
+
+That single shift is what turns the banners from generic to memorable.
+
+---
+
+## 12. Palette reference (tokens v0.2 DRAFT)
+
+The conformance checker validates against `contracts/brand-system/tokens.json`. Keep the prompts' descriptive language, but the **law** is:
+
+### Dark — Black Dark OLED
+
+| Token | Hex | Role |
+| --- | --- | --- |
+| canvas | `#000000` | Pure OLED black — light-absorbing |
+| surface | `#0A0A0A` | Raised surfaces |
+| surface-2 | `#121212` | Raised cards |
+| overlay | `#1A1A1A` | Overlays |
+| border-subtle | `#1F1F1F` | Subtle dividers |
+| border-default | `#2A2A2A` | Strokes |
+| text-primary | `#EDEFF2` | Primary text |
+| text-secondary | `#A8B0BC` | Secondary text |
+
+### Light — Dreamcoder Light
+
+| Token | Hex | Role |
+| --- | --- | --- |
+| canvas | `#F3EADC` | Warm ivory — eye-friendly |
+| surface | `#FAF6EF` | Mineral cream |
+| surface-2 | `#F0E8DA` | Warm mineral |
+| overlay | `#FCF9F3` | Overlays |
+| border-subtle | `#E8DFCE` | Subtle dividers |
+| border-default | `#D8CDB8` | Strokes |
+| text-primary | `#2A2420` | Cocoa charcoal |
+| text-secondary | `#5C5347` | Secondary text |
+
+### Accents (both themes)
+
+| Accent | `base` | `hover` | `active` | `dim` |
+| --- | --- | --- | --- | --- |
+| cyan | `#3CE6D8` | `#6AEFE4` | `#2ECFC2` | `#1F8A80` |
+| violet | `#9B7FE8` | `#B8A2F0` | `#6B54A8` | `#7B66C0` |
+| success | `#4ADE94` (dark) / `#1A8F52` (light) | | | |
+
+---
+
+## 13. Conformance gate (non-negotiable)
+
+Every generated banner must pass the palette checker before it enters a README:
 
 ```bash
 node /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/scripts/brand-conformance.mjs <path-to-banner.png>
 # expect: ✓ <file> (coverage >= 0.92) ... PASS
 ```
 
-**Anti-palette exclusions (baked into every prompt):** no legacy blue
-`#1a73e8`, no off-system cyan `#22d3ee`, no royal blue `#041c78`, no purple
-outside the violet set, no warm beige/ember tones, no pure-white glows.
+Anti-palette exclusions (baked into every prompt): no legacy blue `#1a73e8`, no off-system cyan `#22d3ee`, no royal blue `#041c78`, no purple outside the violet set, no warm orange/ember tones, no pure-white glows.
+
+Iterate with the checker's off-palette feedback until coverage ≥ 0.92, then `bun run brand:ecosystem` in drenyra-ai must report every repo `PASS` before `brand-system` can freeze to v0.3.
 
 ---
 
-## Dark mode — how we improve on the plain navy (Dreamcoder lessons)
-
-These are the design decisions that make the dark banners feel premium instead
-of generic. The prompts already encode them; keep them when iterating.
-
-1. **Layered elevation, not flat panels.** The canvas is pure OLED black (`#000000`)
-   and every raised element climbs a surface ladder (`#0A0A0A` → `#121212` →
-   `#1A1A1A`) with subtle inner shadows — the OLED elevation trick. Depth
-   comes from elevation, never from noise.
-2. **Aurora ambient glow.** Two soft radial glows (cyan and violet, 5–8%
-   opacity) at opposing corners — the Dreamcoder `active_rgba` treatment
-   (rgba(124,179,217,0.24)). This is what separates "lit" from "backlit".
-3. **Micro-grain + blueprint grid.** A 2–3% white grid AND a faint 1% film
-   grain kill gradient banding on large dark fields.
-4. **Soft focus ring.** The hero element carries a low-opacity accent halo
-   (cyan/violet at ~12%) — the Dreamcoder `focus` discipline (accent as
-   outline, not as flood).
-5. **Curved geometry.** Hard rectangles become orbital arcs, concentric rings,
-   and sweeping Bézier curves. Corners respect the 0.5rem radius language.
-6. **Spark accents.** Tiny luminous dots ("sparks of verified truth") sit at
-   arc intersections and curve endpoints — the only pure-bright elements in
-   the composition.
-7. **Contrast discipline.** Text hierarchy `#EDEFF2` → `#A8B0BC` → `#6B7480`
-   (WCAG AAA on the canvas); accents never carry text.
-8. **Dusk cooldown (visual health).** For long-form docs, a warmer variant of
-   the banner (light theme) is available — Dreamcoder's eye-health guardrail
-   applied to brand imagery.
-
----
-
-## 1. Shared DNA — identical opening for EVERY product
-
-Keep this block byte-for-byte identical in all six prompts. It is what makes
-the ecosystem read as one family.
-
-```text
-Drenyra ecosystem brand banner — premium art direction (see
-docs/assets/brand/creative-brief.md): radical minimalism with obsessive
-maximalism. ONE hero element rendered with pathological fidelity; the deep
-pure OLED black canvas #000000 is CARVED ATMOSPHERE (subtle film grain,
-volumetric depth, soft light falloff), never empty space. Cinematic
-directional light: rim light tracing the hero's silhouette, gentle god
-rays, caustics on machined/optical surfaces. Accent colors allowed ONLY:
-cyan #3CE6D8 (lighter #6AEFE4, dimmer #1F8A80), violet #9B7FE8 (lighter
-#B8A2F0, dimmer #7B66C0), success green #4ADE94, muted blue-gray #A8B0BC,
-plus the surface ladder #0A0A0A, #121212, #1A1A1A. All gradients blend
-exclusively between these colors. Composition: one hero on the right third,
-deep negative space on the left, brutal precision meeting organic curves,
-and ONE intricate signature micro-detail that rewards close looking. NO
-cartoon, NO mascot, NO clip-art, NO flat fills — every surface reads as a
-real material under real light. NO TEXT of any kind — no letters, words,
-numbers, or logos; the product name lives in the README, never in the
-raster. Aspect ratio exactly 1400:460 (banner). Keep C2PA provenance
-metadata and the imperceptible watermark enabled.
-```
-
----
-
-## 2. Product prompts
-
-Append the product section to the Shared DNA block. Only the motif changes;
-composition, palette, and constraints stay identical.
-
-### Drenyra — Command Center (flagship)
-
-```text
-Subject: an abstract accounting command center. Focal point on the right
-third: three stacked translucent console panels (surfaces #0A0A0A, #121212,
-#1A1A1A) with rising ledger bars in cyan #3CE6D8, success green #4ADE94 and
-muted blue-gray #A8B0BC. Wrapped around the console: two concentric orbital
-rings — one cyan #3CE6D8, one violet #9B7FE8 — tilted in 3D, with small
-spark dots at the points where a sweeping Bézier curve crosses each ring. At
-the console center: a dual-approval seal (two interlocking arcs, cyan and
-violet) with a checkmark in success green #4ADE94, surrounded by a soft focus
-halo. Signature detail: the seal's engraving catches a rim light. Light variant (optional): canvas #FAFAF9, panels #FFFFFF/#F2F2F0, rings
-cyan #2ECFC2 and violet #6B54A8, checkmark #1A8F52, sparks #1F8A80.
-```
-
-### Drenyra AI — the verifiable core
-
-```text
-Subject: a verified receipt inside an orbital hash-chain. Focal point on the
-right third: a large receipt card (surface #0A0A0A, raised #121212 layer, cyan
-#3CE6D8 border) holding a circular verified seal with a checkmark in success
-green #4ADE94. Around the card: a tilted circular chain of small hash blocks
-(rounded squares in muted blue-gray #A8B0BC and violet #9B7FE8) orbiting like
-a ring, with tiny sparks at the link points and a thin luminous arc sweeping
-behind the card. Composition: the receipt as the calm center, sparks as the
-only bright points, deep negative space on the left for the README title. Signature detail: the hash-circlet's light path is the one intricate element. Light
-variant (optional): canvas #FAFAF9, card #FFFFFF with #F2F2F0 layer and cyan
-#2ECFC2 border, ring violet #6B54A8, checkmark #1A8F52.
-```
-
-### Drenyra Pi — pinned package-local runtime
-
-```text
-Subject: a pinned deterministic runtime node. Focal point on the right third:
-a single central cube (surface #121212 with cyan #3CE6D8 edges, soft inner
-shadow) held by a vertical pin of violet #9B7FE8. Around it: three concentric
-arcs of muted blue-gray #A8B0BC — two full rings and one partial — with small
-satellite nodes at the arc intersections and a spark dot where the pin meets
-the top ring. A tiny padlock in success green #4ADE94 marks the deterministic
-core. Composition: the pinned node as the still center, everything else in
-curved orbit around it. Signature detail: the padlock is a single engraved facet. Light variant (optional): canvas #FAFAF9, cube #F2F2F0
-with cyan #2ECFC2 edges, pin #6B54A8, padlock #1A8F52, arcs #D4D4D0.
-```
-
-### Drenyra Engram — institutional fiscal memory
-
-```text
-Subject: an institutional memory lattice shaped as a curved canopy. Focal
-point on the right third: a knowledge-graph whose connections are sweeping
-Bézier curves (not straight lines) in cyan #3CE6D8, violet #9B7FE8 and muted
-blue-gray #A8B0BC, with node dots at every curve intersection and sparks
-scattered along the arcs like fireflies. Beneath the canopy: a fiscal-scope
-document silhouette (surface #0A0A0A, cyan #3CE6D8 outline) with a small
-verified checkmark in success green #4ADE94. Composition: the lattice curves
-like a wave over the document; deep negative space on the left. Signature detail: one node casts a tiny caustic onto the document. Light variant
-(optional): canvas #FAFAF9, document #FFFFFF with cyan #2ECFC2 outline,
-checkmark #1A8F52, nodes #6B54A8.
-```
-
-### Drenyra Skills — versioned accounting/tax knowledge (planned)
-
-```text
-Subject: layered knowledge folios with a curved spine. Focal point on the
-right third: three overlapping folio sheets (surfaces #0A0A0A, #121212,
-#1A1A1A) whose spines curve outward like an open book, edges in cyan #3CE6D8
-and violet #9B7FE8. Each sheet carries a small abstract rule-glyph (a §-mark
-formed by a simple curve in muted blue-gray #A8B0BC) and a tiny spark sits at
-each glyph's curve tip. A version tag in success green #4ADE94 floats on the
-top folio with a soft halo. Composition: the folio stack as a calm hero, a
-single sweeping arc crossing behind it. Signature detail: the sigil's curve tip holds a point of light. Light variant (optional): sheets
-#FAFAF9/#FFFFFF/#F2F2F0, spines #2ECFC2 and #6B54A8, tag #1A8F52.
-```
-
-### Drenyra Guardian Angel — independent adversarial verification (planned)
-
-```text
-Subject: a guardian shield with twin review lenses and a watchful beacon. Focal
-point on the right third: a shield formed by two mirrored curved halves — the
-left cyan #3CE6D8, the right violet #9B7FE8 — separated by a luminous seam
-with a checkmark in success green #4ADE94 at its center. Above the shield: a
-single lens-shaped beacon (muted blue-gray #A8B0BC with a cyan #6AEFE4 core)
-sending two faint concentric ripple arcs downward over the shield, with sparks
-where the ripples meet the shield's edge. Composition: the shield as the calm
-center, ripples as the only motion. Signature detail: the ripple edges resolve into fine engraving. Light variant (optional): halves #2ECFC2
-and #6B54A8, checkmark #1A8F52, beacon core #1F8A80.
-```
-
----
-
-## 3. README swap
+## 14. README swap
 
 | Repo | File | README line |
 | --- | --- | --- |
@@ -193,28 +350,7 @@ and #6B54A8, checkmark #1A8F52, beacon core #1F8A80.
 | drenyra-ai | `docs/assets/brand/drenyra-ai-banner.png` (create) | replace `src="docs/assets/brand/drenyra-ai-banner.svg"` with the PNG |
 | drenyra-pi | `assets/branding/drenyra-pi-banner.png` (create) | add banner `<img>` at top |
 | drenyra-engram | `assets/branding/drenyra-engram-banner.png` (rename) | replace `drenyra-engram-banner-1.png`; delete banner-1/2/3 |
-| drenyra-guardian-angel | `assets/branding/drenyra-guardian-angel-banner.png` (create) | add banner `<img>` at top |
 | drenyra-skills | `assets/branding/drenyra-skills-banner.png` (create) | add banner `<img>` at top |
+| drenyra-guardian-angel | `assets/branding/drenyra-guardian-angel-banner.png` (create) | add banner `<img>` at top |
 
-The vector SVG in drenyra-ai stays in the repo as the **vector reference**
-(the contract requires vectors for identity primitives); READMEs display the
-generated PNG.
-
----
-
-## 4. Dreamcoder palette path (optional evolution)
-
-The prompts above are **validation-clean against the current contract** (apps/web
-DTCG palette). If you want the Dreamcoder hues themselves, the dark surfaces are
-already near-identical (contract `#000000` ≈ Dreamcoder `#070A13`), but three
-deliberate swaps would bring the banners closer to the Dreamcoder soul:
-
-| Role | Current (contract) | Dreamcoder option |
-| --- | --- | --- |
-| Accent calmness | cyan `#3CE6D8` (bright) | lean on `cyan.dim #1F8A80` + violet `#7B66C0` for glows |
-| Success | `#4ADE94` | sage `#55C080` (softer) |
-| Light theme | neutral `#FAFAF9` | warm cream `#F3EADC` (cocoa/lúcuma) |
-
-Adopting the warm cream light theme (and sage success) means updating
-`tokens.json` → v0.3 and aligning apps/web — a brand-identity decision, not a
-prompt tweak.
+The vector SVG in drenyra-ai stays in the repo as the **vector reference** (the contract requires vectors for identity primitives); READMEs display the generated PNG.

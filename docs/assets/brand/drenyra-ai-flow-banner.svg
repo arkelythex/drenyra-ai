@@ -50,15 +50,15 @@
     .g-card2 { stop-color: var(--n2); }
     @media (prefers-color-scheme: light) {
       :root {
-        --bg1: #FAFAF9; --bg2: #FFFFFF; --bg3: #F2F2F0;
+        --bg1: #F3EADC; --bg2: #FAF6EF; --bg3: #F0E8DA;
         --grid: #000000;
         --glow-c: #2ECFC2; --glow-v: #6B54A8;
         --c: #2ECFC2; --c-bright: #1F8A80;
         --v: #6B54A8; --v-bright: #7B66C0;
         --ok: #1A8F52;
-        --n1: #FFFFFF; --n2: #F2F2F0; --n3: #FFFFFF;
-        --border: #D4D4D0; --border-subtle: #E5E5E2;
-        --muted: #52565D; --muted-dim: #7A7F87;
+        --n1: #FAF6EF; --n2: #F0E8DA; --n3: #FCF9F3;
+        --border: #D8CDB8; --border-subtle: #E8DFCE;
+        --muted: #5C5347; --muted-dim: #84786A;
         --pending: #2E5FB8;
         --spark: #1F8A80;
       }

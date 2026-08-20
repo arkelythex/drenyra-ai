@@ -188,7 +188,7 @@ describe("brand-system conformance (v0.2 DRAFT)", () => {
 			`<svg xmlns="http://www.w3.org/2000/svg">
          <style>
            :root { --bg: #000000; }
-           @media (prefers-color-scheme: light) { :root { --bg: #FAFAF9; --bad: #22d3ee; } }
+           @media (prefers-color-scheme: light) { :root { --bg: #F3EADC; --bad: #22d3ee; } }
          </style>
          <rect width="10" height="10" fill="var(--bg)"/>
        </svg>`,

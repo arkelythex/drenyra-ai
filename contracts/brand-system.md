@@ -68,16 +68,16 @@ source.
 
 | Token | Hex | Role |
 | --- | --- | --- |
-| `canvas` | `#FAFAF9` | App background |
-| `surface` | `#FFFFFF` | Cards |
-| `surface-2` | `#F2F2F0` | Raised cards |
-| `overlay` | `#FFFFFF` | Overlays |
-| `border-subtle` | `#E5E5E2` | Subtle dividers |
-| `border-default` | `#D4D4D0` | Strokes |
-| `text-primary` | `#16181B` | Primary text |
-| `text-secondary` | `#52565D` | Secondary text |
-| `text-tertiary` | `#7A7F87` | Captions |
-| `text-disabled` | `#B0B4BA` | Disabled |
+| `canvas` | `#F3EADC` | App background — warm ivory (Dreamcoder Light) |
+| `surface` | `#FAF6EF` | Cards — mineral cream |
+| `surface-2` | `#F0E8DA` | Raised cards — warm mineral |
+| `overlay` | `#FCF9F3` | Overlays |
+| `border-subtle` | `#E8DFCE` | Subtle dividers |
+| `border-default` | `#D8CDB8` | Strokes |
+| `text-primary` | `#2A2420` | Primary text — cocoa charcoal |
+| `text-secondary` | `#5C5347` | Secondary text |
+| `text-tertiary` | `#84786A` | Captions |
+| `text-disabled` | `#B3A794` | Disabled |
 | `state-success` | `#1A8F52` | Verified |
 | `state-warning` | `#A86A0A` | Attention |
 | `state-error` | `#C23B33` | Errors |

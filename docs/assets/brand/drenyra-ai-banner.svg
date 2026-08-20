@@ -47,20 +47,20 @@
     .g-card2 { stop-color: var(--card-mid); }
     @media (prefers-color-scheme: light) {
       :root {
-        --bg1: #FAFAF9; --bg2: #FFFFFF; --bg3: #F2F2F0;
+        --bg1: #F3EADC; --bg2: #FAF6EF; --bg3: #F0E8DA;
         --grid: #000000;
         --glow-cyan: #2ECFC2; --glow-violet: #6B54A8;
         --title1: #2ECFC2; --title2: #6B54A8;
-        --subtitle: #16181B;
+        --subtitle: #2A2420;
         --chip1: #2ECFC2; --chip2: #1A8F52; --chip3: #6B54A8; --chip4: #2E5FB8;
         --chip-text1: #1F8A80; --chip-text2: #1A8F52; --chip-text3: #6B54A8; --chip-text4: #2E5FB8;
-        --subline: #52565D;
-        --card-back: #FAFAF9; --card-back-border: #E5E5E2;
-        --card-mid: #FFFFFF; --card-mid-border: #D4D4D0;
-        --card-front: #F2F2F0; --card-front-stroke: #2ECFC2;
-        --bar: #D4D4D0; --bar-top: #2ECFC2; --bar-accent: #A86A0A;
+        --subline: #5C5347;
+        --card-back: #F3EADC; --card-back-border: #E8DFCE;
+        --card-mid: #FAF6EF; --card-mid-border: #D8CDB8;
+        --card-front: #F0E8DA; --card-front-stroke: #2ECFC2;
+        --bar: #D8CDB8; --bar-top: #2ECFC2; --bar-accent: #A86A0A;
         --check: #1A8F52;
-        --label: #16181B; --label-sub: #52565D;
+        --label: #2A2420; --label-sub: #5C5347;
       }
     }
   </style>
