@@ -97,7 +97,6 @@ Rows 3 and 4 are now `satisfied`:
 SDD-020 may now start (R10). Its own record moves from `lifecycle:planned` to
 `lifecycle:in-progress` when its change formally begins.
 
-
 Boundary pointer: this record relates to — but does not duplicate —
 `ecosystem-coherence` (program record
 `openspec/programs/drenyra-dominion/ecosystem-coherence.md`; change

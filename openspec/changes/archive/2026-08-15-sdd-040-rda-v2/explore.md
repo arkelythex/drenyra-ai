@@ -131,6 +131,7 @@ change**. It should:
 - Close the SDD record (check off the Progress checklist) and archive the change.
 
 **Size estimate:** docs-only; ~4–8 files (proposal/spec/design/tasks/apply-progress/verify/archive
+
 - README progress update). Well under the 400-line review budget; single PR, `single-pr`
 delivery strategy, no chained PRs. No runtime artifact touched; suite expected to stay green
 unchanged.

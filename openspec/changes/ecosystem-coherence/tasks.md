@@ -29,6 +29,7 @@ Chain strategy: pending
 > Repository: `drenyra-ai` (path: `openspec/programs/drenyra-dominion/`). Budget: keep under 300 authored lines; split into two commits if W1 approaches 300.
 
 ### W1.1 — Create the ecosystem coherence program-master record
+
 - [x] Create `openspec/programs/drenyra-dominion/ecosystem-coherence.md` containing the four required sections (record metadata, issue inventory, decision register, propagation/readback log). <!-- sdd-owner: implementation -->
   - **Allowed paths:** `openspec/programs/drenyra-dominion/ecosystem-coherence.md` (new file only).
   - **Evidence:** the audit inconsistencies enumerated in the proposal; `openspec/programs/drenyra-dominion/capability-matrix.yaml` for per-repo status; `openspec/programs/drenyra-dominion/gate-0.md` for program state. Treat all existing Dominion prose as claims to reconcile, not approval.
@@ -38,6 +39,7 @@ Chain strategy: pending
   - **Expected authored lines:** 150–240.
 
 ### W1.2 — Add the four blocked decision-register entries
+
 - [x] In the same `ecosystem-coherence.md` decision register, add four independent entries — FEOS relationship, ledger boundary model, canonical membership, canonical maturity — each with `question` (no proposed answer), `owner`, `state: unresolved`, `next_decision_point`, blank `candidate_declaration`, blank `approval_ref`. <!-- sdd-owner: implementation -->
   - **Allowed paths:** same file as W1.1 only.
   - **Evidence:** design "Blocked-decision workflow"; the four questions start `unresolved`/`blocked_owner_decision` unless a verified approval reference already exists.
@@ -46,6 +48,7 @@ Chain strategy: pending
   - **Note:** these entries are records of blocked decisions. They are NOT ready-to-propagate; no declaration is authored.
 
 ### W1.3 — Link the record from the Dominion index
+
 - [x] Add one index link row/entry to `openspec/programs/drenyra-dominion/README.md` pointing to `ecosystem-coherence.md`. <!-- sdd-owner: implementation -->
   - **Allowed paths:** `openspec/programs/drenyra-dominion/README.md` (index link only; do not rewrite program prose).
   - **Evidence:** design "Planned documentation surface" — record linked from Dominion index.
@@ -53,6 +56,7 @@ Chain strategy: pending
   - **Expected authored lines:** 2–5.
 
 ### W1.4 — W1 verification (structural readback)
+
 - [x] Verify the W1 record contains every audited inconsistency and all required inventory/decision fields; confirm FEOS, ledger, membership, and maturity are independent blocked entries; confirm no row is `complete` and no unresolved matter is presented as settled. Confirm only the two allowed `drenyra-ai` paths changed. <!-- sdd-owner: implementation -->
   - **Evidence:** re-read the created file and README index row; `git diff --name-only` shows only the two allowed paths; authored additions + deletions < 300.
   - **Rollback boundary:** revert W1.1–W1.3 together (single work unit).
@@ -65,6 +69,7 @@ Chain strategy: pending
 > Each is a separate repository PR, independent and rollback-isolated. No unit touches license/legal files, product code, runtime contracts, schemas, migrations, archived changes, or the unrelated `fiscal-authority-kernel` verification report.
 
 ### W2 — Command Center license + Engram publication wording (repo: `drenyra-command-center`)
+
 - [ ] Correct documentation that claims MIT or misstates Engram as private, so stated license matches the repository's authoritative `LICENSE` and Engram is described per its Apache-2.0/open declarations, keeping software openness and data privacy as distinct claims and preserving any separately documented data-privacy guarantees. <!-- sdd-owner: implementation -->
   - **Allowed paths:** README and policy/architecture docs only; narrow discovery target `README.md`, `docs/` (confirm exact policy doc that describes Engram before editing; do not broaden scope). Never touch `LICENSE`.
   - **Evidence:** the repo's authoritative `LICENSE` file; Engram's license and the consistent Apache-2.0/open declarations in `drenyra-engram`, `drenyra-ai` README, and `capability-matrix.yaml`.
@@ -72,6 +77,7 @@ Chain strategy: pending
   - **Expected authored lines:** 20–80.
 
 ### W3a — Drenyra AI 0.2.1 release metadata narrative (repo: `drenyra-ai`, budget < 300)
+
 - [ ] Reconcile 0.2.1 package metadata, changelog, README, and capability-matrix entry so they agree with the released artifact, citing it as evidence; do not rewrite historical changelog entries. <!-- sdd-owner: implementation -->
   - **Allowed paths:** `package.json` (version/metadata fields only), `CHANGELOG.md` (current 0.2.1 section narrative only, historical entries intact), `README.md` (release facts only), `openspec/programs/drenyra-dominion/capability-matrix.yaml` (drenyra-ai version/entry only).
   - **Evidence:** the released 0.2.1 artifact (packed/installed artifact or registry record) is authoritative.
@@ -80,6 +86,7 @@ Chain strategy: pending
   - **Note:** distinct PR from W1 (same repo, different allowlist and budget pool); do not combine with W1.
 
 ### W3b — Pi roadmap publication marker (repo: `drenyra-pi`)
+
 - [ ] Update the stale roadmap publication checkbox only where verifiable release/publication evidence exists; leave unverifiable items unchecked and unresolved. <!-- sdd-owner: implementation -->
   - **Allowed paths:** `ROADMAP.md` (publication marker only).
   - **Evidence:** verifiable release/publication record; if none exists, do not mark published.
@@ -87,6 +94,7 @@ Chain strategy: pending
   - **Expected authored lines:** 5–30.
 
 ### W3c — Engram roadmap publication marker (repo: `drenyra-engram`)
+
 - [ ] Update the stale roadmap publication checkbox only where verifiable release/publication evidence exists; leave unverifiable items unchecked and unresolved. <!-- sdd-owner: implementation -->
   - **Allowed paths:** `ROADMAP.md` (publication marker only).
   - **Evidence:** verifiable release/publication record; if none exists, do not mark published.
@@ -94,6 +102,7 @@ Chain strategy: pending
   - **Expected authored lines:** 5–30.
 
 ### W4 — Human fiscal-authority wording (one unit per owning repository)
+
 - [ ] In `drenyra-ai` (`README.md`, `docs/governance.md` or equivalent governance/authority docs), state consistently that humans retain fiscal and business decision authority while Drenyra AI executes deterministic, policy-constrained operations and records evidence; remove any implication of autonomous business or legal judgment; do not promote advisory AI or memory into fiscal evidence or authorization. <!-- sdd-owner: implementation -->
   - **Allowed paths:** README + governance/authority documentation only; narrow discovery target before editing.
   - **Evidence:** design "Authoritative-source precedence" (fiscal-authority wording domain) and proposal business rules.
@@ -101,6 +110,7 @@ Chain strategy: pending
   - **Expected authored lines:** 20–80 (in `drenyra-ai` keep under the 300 budget combined with W1/W3a if delivered separately).
 
 ### W4b — Human fiscal-authority wording in Command Center, Pi, Engram (conditional)
+
 - [ ] Apply the same human-decision/deterministic-execution boundary wording in each owning repository (`drenyra-command-center`, `drenyra-pi`, `drenyra-engram`) only where public wording currently conflates authority; one repository per work unit, narrow allowed paths, each under its effective budget. <!-- sdd-owner: implementation -->
   - **Allowed paths:** per-repository README/policy docs only; confirm each before editing.
   - **Evidence:** the same fiscal-authority domain source.

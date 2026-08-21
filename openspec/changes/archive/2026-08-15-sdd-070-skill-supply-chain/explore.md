@@ -175,6 +175,7 @@ signature MUST cover the **same canonical payload as the checksum** —
 
 **Verify surface:** `verifySkillPack(pack): { valid, checksumValid, signatureValid }`
 with tamper and vigencia checks. Every pack entering the registry verifies signature
+
 - checksum (fails closed).
 
 ### Pinning API (`skills/pinning.ts`, pure)
