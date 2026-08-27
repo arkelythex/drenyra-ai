@@ -2,11 +2,7 @@ schema: spec-driven
 
 context: |
   Stack: TypeScript 7.0 ESM (Node >= 22), Bun package manager (bun.lock, CI uses bun, bun 1.3), Vitest 4.1.
-  Architecture: Drenyra-AI is the AI advisory orchestration layer; Drenyra Core retains deterministic
-  authority over accounting decisions. Layered verifiable-accounting runtime — contracts/ (normative,
-  versioned) -> library modules (receipts, ledger [audit-only], missions, candidates, review, gates,
-  recovery; node:crypto only) -> agents/ (deterministic intent orchestration, staging only) -> cmd/
-  (thin CLI adapters). No reverse imports; never depends on Drenyra, Drenyra Pi, or Drenyra Engram.
+  Architecture: Drenyra AI compatibility is defined by frozen, transport-independent fiscal contracts under contracts/**, conformance evidence, and deterministic observable behavior—not TypeScript module layout or broad JavaScript export shape. The target is a deterministic native Go executable with a transport-independent fiscal core and explicit adapters. Contracts govern implementation; canonicalization remains shallow/top-level; exact bytes govern serialization, hashing, candidate identity, and receipts. Fiscal authority preserves exact integer cents, complete bound scope, receipt-before-material-action, fail-closed gates/approvals, and append-only audit evidence. TS 0.5.0 is a temporary oracle and compatibility surface only; production Go may not import or execute it or use PATH/global/ambient discovery. Existing testing/apply/verify commands are legacy TS-oracle commands; native Go verification remains unavailable until an approved Go-bearing work unit establishes it. Drenyra AI remains independent of Pi; exact verified package-local Pi consumption belongs only to GO-090.
   Target 16-program Peru v1 roadmap adds modules tenant/, evidence/, ingest/, policy/, and journal/ over
   phased slices; ledger/ remains audit-only. SUNAT-facing capabilities are in scope per slice.
   Testing: Vitest 4.1 — 647 tests across 52 files (3 pre-existing failures in cmd/__tests__/cli.test.ts as of this init; app code untouched); frozen conformance vectors under contracts/__tests__;
@@ -16,7 +12,7 @@ context: |
 
 session:
   execution_mode: automatic
-  delivery_strategy: auto-forecast
+  delivery_strategy: auto-chain
   review_budget_lines: 300
 
 strict_tdd: true
@@ -46,9 +42,9 @@ rules:
     - Use Given/When/Then scenarios and RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
     - Keep contract language transport-agnostic. Approved target (16-program Peru v1) adds tenant, evidence, journal, policy, and ingest capabilities plus SUNAT-facing flows over phased slices; integrations are deferred unless explicitly scoped in the change — they are not permanently prohibited
   design:
-    - Respect the layer model: contracts -> library modules -> agents -> cmd; no reverse imports; library modules stay node:crypto-only
-    - Money values are BigInt cents; version/sequence numbers are JSON integers; no floats
-    - Make fail-closed behavior explicit; document decisions with rationale
+    - Treat frozen contracts and deterministic observable behavior as the language-independent surface; target a native Go fiscal core with explicit adapters and use TS 0.5.0 only as a temporary oracle
+    - Preserve shallow exact bytes, integer cents, complete bound scope, receipt-before-material-action, fail-closed gates and approvals, and append-only audit evidence
+    - Keep harnesses and adapters non-authoritative; prohibit production TS/Node and ambient executable discovery; document explicit dependencies, evidence, and rollback
   tasks:
     - Group by phase with hierarchical numbering; keep tasks completable in one session
     - Stay inside the 300 changed-line review budget; forecast when chained PRs may be needed
