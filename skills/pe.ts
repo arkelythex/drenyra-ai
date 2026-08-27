@@ -166,6 +166,118 @@ export const CIERRE_RESULTADOS = make(
 	"R1",
 );
 
+/** Legacy system report normalizer (CONCAR, SISCONT, StarSoft). */
+export const LEGACY_INGEST = make(
+	"pe.legacy-ingest",
+	"1.0.0",
+	[
+		"PCGE — Plan Contable General Empresarial (R. CNC 002-2019-EF/30)",
+		"R.S. 234-2006/SUNAT — Formatos de Libros y Registros Vinculados a Asuntos Tributarios",
+	],
+	["source-format", "raw-payload", "scope"],
+	["normalized-journal-entries", "parsing-diagnostics"],
+	"R0",
+);
+
+/** Tax shield & causality validation against Art. 37/44 LIR. */
+export const TAX_SHIELD = make(
+	"pe.tax-shield",
+	"1.0.0",
+	[
+		"TUO LIR — D.S. 179-2004-EF, Art. 37 (Principio de Causalidad)",
+		"TUO LIR — D.S. 179-2004-EF, Art. 44 (Gastos No Deducibles)",
+	],
+	["journal-entry", "industry-context", "scope"],
+	["causality-disposition", "reparo-tax-target", "normative-justification"],
+	"R1",
+);
+
+/** SIRE adversarial reconciliation and action preparation. */
+export const SIRE_ADVERSARIAL = make(
+	"pe.sire-adversarial",
+	"1.0.0",
+	[
+		"SUNAT SIRE — R.S. 112-2021/SUNAT y R.S. 040-2022/SUNAT",
+		"TUO IGV — D.S. 055-99-EF, Arts. 18 y 19",
+	],
+	["sire-proposal", "ledger", "period"],
+	["discrepancies", "proposed-actions", "adversarial-payload"],
+	"R1",
+);
+
+/** ITF transactions monitoring and defense evidence compiling. */
+export const ITF_JUSTIFICATION = make(
+	"pe.itf-justification",
+	"1.0.0",
+	[
+		"Ley 28194 — Ley para la Lucha contra la Evasión y para la Formalización de la Economía (ITF)",
+		"TUO LIR — D.S. 179-2004-EF, Art. 52 (Incremento Patrimonial No Justificado)",
+		"Código Tributario — D.S. 133-2013-EF, Art. 62 (Facultad de Fiscalización)",
+	],
+	["bank-statement", "itf-movements", "legal-contracts", "scope"],
+	["justification-file", "unjustified-movements", "defense-evidence"],
+	"R1",
+);
+
+/** Bancarization gate for mandatory banking payment compliance. */
+export const BANCARIZACION_GATE = make(
+	"pe.bancarizacion-gate",
+	"1.0.0",
+	[
+		"Ley 28194 — Ley de Bancarización y D.L. 1529 (Uso de Medios de Pago)",
+		"TUO LIR — D.S. 179-2004-EF, Art. 44 inc. j (Gastos sin medio de pago)",
+		"TUO IGV — D.S. 055-99-EF, Art. 19 (Pérdida de Crédito Fiscal)",
+	],
+	["payment-entry", "payment-method", "amount", "scope"],
+	["bancarizacion-verdict", "compliance-exception"],
+	"R1",
+);
+
+/** Official SBS daily exchange rates and foreign currency revaluation. */
+export const SBS_EXCHANGE_RATES = make(
+	"pe.sbs-exchange-rates",
+	"1.0.0",
+	[
+		"SBS — Tipos de Cambio Oficiales (Superintendencia de Banca, Seguros y AFP)",
+		"TUO LIR — D.S. 179-2004-EF, Art. 61 (Tratamiento de Diferencia de Cambio)",
+		"PCGE — Cuentas 676 y 776 (Diferencia de Cambio)",
+		"NIC 21 — Efectos de las Variaciones en las Tasas de Cambio de la Moneda Extranjera",
+	],
+	["daily-sbs-rates", "foreign-currency-ledger", "scope"],
+	["revalued-ledger-entries", "exchange-difference-drafts"],
+	"R0",
+);
+
+/** Official SUNAT PLE flat-file export compiler. */
+export const PLE_EXPORT = make(
+	"pe.ple-export",
+	"1.0.0",
+	[
+		"R.S. 286-2009/SUNAT — Sistema de Libros Electrónicos (PLE)",
+		"R.S. 234-2006/SUNAT — Formatos de Libros y Registros Vinculados a Asuntos Tributarios",
+		"R.S. 379-2013/SUNAT — Sujetos Obligados a Llevar Libros de Manera Electrónica",
+	],
+	["ledger", "book-type", "period", "scope"],
+	["ple-txt-payload", "hash-validation-record", "export-diagnostics"],
+	"R1",
+);
+
+/** Monthly social benefits and payroll provisions for PDT PLAME. */
+export const PLAME_PROVISION = make(
+	"pe.plame-provision",
+	"1.0.0",
+	[
+		"D.S. 001-97-TR — TUO de la Ley de Compensación por Tiempo de Servicios (CTS)",
+		"Ley 27735 y D.S. 005-2002-TR — Ley y Reglamento de Gratificaciones Legales",
+		"D.L. 713 y D.S. 012-92-TR — Descansos Remunerados y Vacaciones",
+		"Ley 26790 — Ley de Modernización de la Seguridad Social en Salud (EsSalud 9%)",
+		"PCGE — Plan Contable General Empresarial (Cuentas 62 y 41)",
+	],
+	["payroll-contracts", "worked-period", "attendance-records", "scope"],
+	["social-benefit-provisions", "pcge-payroll-entries", "plame-import-draft"],
+	"R1",
+);
+
 /** All base Peruvian skills, ready to register. */
 export const BASE_PE_SKILLS: readonly SkillDefinition[] = [
 	IGV_VALIDATE,
@@ -179,4 +291,12 @@ export const BASE_PE_SKILLS: readonly SkillDefinition[] = [
 	PROVISION_CARTERA,
 	ISR_MENSUAL,
 	CIERRE_RESULTADOS,
+	LEGACY_INGEST,
+	TAX_SHIELD,
+	SIRE_ADVERSARIAL,
+	ITF_JUSTIFICATION,
+	BANCARIZACION_GATE,
+	SBS_EXCHANGE_RATES,
+	PLE_EXPORT,
+	PLAME_PROVISION,
 ];
