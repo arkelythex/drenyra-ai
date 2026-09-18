@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Drenyra AI — Authority and Proof Path",
+    "locale": "en",
+    "output": "drenyra-ai.architecture.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/arkelythex/drenyra-ai",
+      "provider": "github",
+      "revision": "87542f661203522c4fbf4a83040e7d4dc19e0d6e"
+    },
+    "views": [
+      {
+        "id": "authority-path",
+        "label": "Authority path",
+        "focus": ["cli", "agents", "runtime", "gates", "receipts", "ledger"],
+        "note": "A command is staged as a plan, gated, and only then proved and recorded."
+      },
+      {
+        "id": "proof-chain",
+        "label": "Proof chain",
+        "focus": ["gates", "receipts", "ledger"],
+        "note": "Nothing material happens without a receipt; the ledger keeps causal order."
+      },
+      {
+        "id": "contract-and-scope",
+        "label": "Contract and scope",
+        "focus": ["contracts", "tenant", "runtime"],
+        "note": "Frozen contracts and mandatory RUC scope constrain the core."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "cli",
+      "type": "backend",
+      "label": "Entry Adapters",
+      "sublabel": "CLI · MCP",
+      "tag": "transport-agnostic",
+      "sources": [
+        { "path": "cmd/cli.ts", "line": 12, "end_line": 25, "label": "dispatcher" },
+        { "path": "mcp/stdio.ts", "line": 1, "label": "MCP stdio" }
+      ],
+      "pos": [40, 40],
+      "size": [130, 70]
+    },
+    {
+      "id": "agents",
+      "type": "backend",
+      "label": "Intent Handlers",
+      "sublabel": "stage, never execute",
+      "sources": [
+        { "path": "agents/handlers.ts", "line": 6, "end_line": 16, "label": "staging contract" }
+      ],
+      "pos": [280, 40],
+      "size": [130, 70]
+    },
+    {
+      "id": "runtime",
+      "type": "backend",
+      "label": "MissionRuntime",
+      "sublabel": "lifecycle · idempotency",
+      "sources": [
+        { "path": "missions/runtime.ts", "line": 207, "label": "MissionRuntime" },
+        { "path": "missions/runtime.ts", "line": 76, "label": "canonicalHash" }
+      ],
+      "pos": [520, 40],
+      "size": [130, 70]
+    },
+    {
+      "id": "gates",
+      "type": "security",
+      "label": "Gates",
+      "sublabel": "authority · materiality",
+      "sources": [
+        { "path": "gates/authorization.ts", "line": 73, "label": "AuthorizationGate" },
+        { "path": "gates/approval.ts", "line": 30, "label": "R3 dual approval" }
+      ],
+      "pos": [760, 40],
+      "size": [130, 70]
+    },
+    {
+      "id": "receipts",
+      "type": "security",
+      "label": "Signed Receipts",
+      "sublabel": "Ed25519",
+      "sources": [
+        { "path": "receipts/verify.ts", "line": 100, "label": "verifySignedReceipt" }
+      ],
+      "pos": [1000, 40],
+      "size": [130, 70]
+    },
+    {
+      "id": "tenant",
+      "type": "security",
+      "label": "Tenant Scope",
+      "sublabel": "company · RUC · period",
+      "sources": [
+        { "path": "tenant-core/scope.ts", "line": 47, "label": "validateTenantScope" }
+      ],
+      "pos": [40, 270],
+      "size": [130, 70]
+    },
+    {
+      "id": "contracts",
+      "type": "backend",
+      "label": "Frozen Contracts",
+      "sublabel": "public surface",
+      "tag": "6 frozen at v0.1",
+      "sources": [
+        { "path": "contracts/README.md", "line": 2, "label": "freeze status" },
+        { "path": "contracts/receipt.md", "line": 1, "label": "receipt contract" }
+      ],
+      "pos": [520, 270],
+      "size": [130, 70]
+    },
+    {
+      "id": "authority",
+      "type": "external",
+      "label": "Human Authority",
+      "sublabel": "final fiscal decision",
+      "sources": [
+        { "path": "docs/architecture/authority-model.md", "line": 1, "label": "authority model" }
+      ],
+      "pos": [760, 270],
+      "size": [130, 70]
+    },
+    {
+      "id": "ledger",
+      "type": "database",
+      "label": "Audit Ledger",
+      "sublabel": "append-only",
+      "sources": [
+        { "path": "ledger/validate.ts", "line": 46, "label": "validateLedger" }
+      ],
+      "pos": [1000, 270],
+      "size": [130, 70]
+    }
+  ],
+  "connections": [
+    { "id": "command-in", "from": "cli", "to": "agents", "label": "command", "variant": "emphasis" },
+    { "id": "plan-staged", "from": "agents", "to": "runtime", "label": "staged plan" },
+    { "id": "gate-check", "from": "runtime", "to": "gates", "label": "gate check" },
+    { "id": "approval-to-receipt", "from": "gates", "to": "receipts", "label": "approval" },
+    { "id": "chained-entry", "from": "receipts", "to": "ledger", "label": "chained entry", "labelDy": 24 },
+    { "id": "contracts-govern", "from": "contracts", "to": "runtime", "label": "frozen surface", "labelDy": -18 },
+    { "id": "dual-approval", "from": "authority", "to": "gates", "label": "R3 dual approval", "variant": "security", "labelDy": -18 },
+    { "id": "tenant-scope", "from": "tenant", "to": "runtime", "label": "tenant scope", "variant": "security" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Deterministic core",
+      "items": [
+        "Mission lifecycle, idempotency, and gates are code, not agent judgment",
+        "Intent handlers stage work and never claim SUNAT, bank, or ERP execution"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Proof chain",
+      "items": [
+        "Every material action produces an Ed25519-signed receipt",
+        "The audit ledger is append-only and keeps causal order"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Candidates and money",
+      "items": [
+        "Candidates carry identity and materiality, and escalate risk tier R0–R3",
+        "Money is BigInt cents; no monetary amount is ever a JavaScript Number"
+      ]
+    }
+  ]
+}
