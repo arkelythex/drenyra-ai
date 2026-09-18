@@ -2,10 +2,19 @@
 # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 version: 2
 updates:
-  - package-ecosystem: npm
+  # The build and CI use bun (`bun install --frozen-lockfile`), so version updates must
+  # edit `bun.lock`. With `npm`, every dependency pull request failed at the install step
+  # with "lockfile had changes, but lockfile is frozen", because the update touched only
+  # `package-lock.json`.
+  - package-ecosystem: bun
     directory: /
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
     allow:
       - dependency-type: development
+
+# `package-lock.json` is retained deliberately even though nothing builds with npm: GitHub's
+# dependency graph does not support bun, so that file is the only source of Dependabot
+# security alerts for this repository. After any dependency change, refresh it with:
+#   npm install --package-lock-only --ignore-scripts
