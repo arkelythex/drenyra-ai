@@ -7,10 +7,10 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text"],
       // Global project-wide gate (vitest exits non-zero on any missed
-      // threshold; untested files count as 0% because Vitest 4 defaults to
-      // coverage.all=true). Thresholds sit below the measured baseline
-      // (statements 85.4 / branches 79.1 / functions 89 / lines 86.9 at
-      // commit 0066847) so CI holds the line and trends can only go up.
+      // threshold; untested files count as 0% because coverage.all defaults to
+      // true). Thresholds sit below the measured baseline (statements 85.5 /
+      // branches 79.1 / functions 89.2 / lines 87, measured under Vitest 5 at
+      // commit 9be3581) so CI holds the line and trends can only go up.
       thresholds: {
         statements: 80,
         branches: 75,
