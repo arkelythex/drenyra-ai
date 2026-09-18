@@ -1,6 +1,6 @@
 # Drenyra AI — Architecture
 
-> **Last updated:** 2026-08-01.
+> **Last updated:** 2026-09-18.
 
 ## Documentation index
 
