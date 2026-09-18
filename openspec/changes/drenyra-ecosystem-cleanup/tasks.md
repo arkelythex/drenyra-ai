@@ -36,7 +36,7 @@ Notes:
 
 ## Phase 0 — Preflight evidence capture (all repos)
 
-**Atomic unit: none (no commit — evidence only)**
+**Atomic unit: none.** No commit — evidence only.
 
 - [x] Capture `git status --porcelain` and `git diff --name-only` for each touched repo (drenyra-ai, drenyra-pi, drenyra-skills, drenyra-guardian-angel) BEFORE any edit, to serve as the integrity baseline. Verify the three protected drenyra-pi files are clean at baseline. <!-- sdd-owner: implementation -->
 - [x] Confirm `bun` is available and that `drenyra-ai/package.json` and `drenyra-pi/package.json` both run `bun run typecheck` and `bun run test`. <!-- sdd-owner: implementation -->
@@ -132,13 +132,13 @@ Preserves every per-site difference through parameters/labels — the helper doe
 
 - [x] In the `## Validate` block, replace the absolute path
 
-  ```
+  ```bash
   node /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/scripts/brand-conformance.mjs \
   ```
 
   with the sibling-relative
 
-  ```
+  ```bash
   node ../drenyra-ai/scripts/brand-conformance.mjs \
   ```
 
@@ -167,7 +167,7 @@ Preserves every per-site difference through parameters/labels — the helper doe
 
 ## Phase Z — Final integrity sweep (all repos)
 
-**Atomic unit: none (no commit — evidence only)**
+**Atomic unit: none.** No commit — evidence only.
 
 - [x] In every touched repo, run `git status --porcelain` and `git diff --name-only` again and compare against the Phase 0 baseline. Confirm: no path under `drenyra-command-center` appears in any commit set; the three protected drenyra-pi files remain untouched; the only diffs are the intended UNIT-A…UNIT-D changes. <!-- sdd-owner: implementation -->
 

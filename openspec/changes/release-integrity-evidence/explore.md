@@ -56,7 +56,7 @@
 
 ## First slice recommendation (bounded, ≤300 changed lines)
 
-**Slice — "Wire release-integrity evidence into package + CI, deterministic and verified."**
+**Slice** — "Wire release-integrity evidence into package + CI, deterministic and verified."
 
 Generate `dist/checksums.txt` and `dist/sbom.json` as part of the package build path, make both deterministic and root-independent, add a verify step that asserts manifest self-consistency + SBOM coverage, and wire a CI check into the existing `package` job — all behind strict TDD.
 
