@@ -56,3 +56,41 @@ Reference exemplars (READ THESE before writing; adapt structure, not copy):
 - Consistent ecosystem references: same statuses, same dependency direction, same authority model everywhere.
 - English for all artifacts (repo is public-facing); neutral professional register.
 - No AI attribution markers; Conventional Commits only.
+
+## 5. Diagrams
+
+**Convention (ecosystem-wide).** Every durable architecture, workflow, sequence, data-flow, or state diagram is an [Archify](https://github.com/tt-a1i/archify) artifact — a typed JSON source compiled into a self-contained HTML/SVG map — never a hand-drawn image or a pasted screenshot. The convention is adopted for the whole ecosystem; an artifact exists only where a work unit delivered it, so the roster grows deliberately rather than by habit.
+
+**Layout.**
+
+```text
+docs/diagrams/<subject>.<type>.json   authoritative source; the reviewable unit
+docs/diagrams/<subject>.<type>.html   deterministic output; regenerable, never hand-edited
+```
+
+`<type>` is one of `architecture`, `workflow`, `sequence`, `dataflow`, or `lifecycle`, chosen by the question the reader has — not by preference, and not by what is easiest to draw.
+
+**Inline view.** The CLI has no image export: `deliver` writes HTML only, and exporting a PNG or SVG is a viewer action (see below). GitHub renders images such as PNG and SVG, but it does not render HTML documents — a committed `.html` artifact appears as source, never as a page. So an artifact is not by itself readable in the repository: a map that a GitHub reader must see also carries a view GitHub renders inline, either a markdown fence (ASCII or mermaid, both rendered) or a committed exported image.
+
+**Exporting the inline image.** The CLI cannot export images; the viewer can. Open the delivered HTML in a browser and use **Export → Download SVG**. The result is one self-contained `.svg` — styles and font subsets inlined, with no external references — which GitHub renders inline; commit it as `<subject>.<type>.svg`. Verify it standalone before committing: it must open as a bare SVG document that keeps its own styling. An `<svg>` cut out of the artifact by hand does not, because the artifact carries its classes in the document stylesheet rather than inside the SVG.
+
+**Authoring rules.**
+
+1. **Evidence, not invention.** A map that describes real code sets `meta.repository` (URL plus a full 40-character commit revision) and cites real `sources[]` paths and line numbers, so every node is traceable to a revision. Never author a topology the repository does not have.
+2. **Prose stays authoritative.** A diagram is an orientation aid: it never introduces a claim the normative prose does not already make, and it never contradicts it. When they disagree, the prose is right and the diagram is a defect.
+3. **The non-negotiable rules apply to diagrams too.** A map must not depict money as a float, data access without RUC/period scope, or a material action without a receipt.
+4. **Never lose the inline view.** An artifact never silently replaces the fence that a GitHub reader depends on. Adding the artifact and exporting an inline image are separate, reviewable work units — never a drive-by deletion.
+
+**Acceptance.** Install the skill once with `npx skills add tt-a1i/archify -g`, then validate and deliver every artifact:
+
+```bash
+ARCHIFY="${ARCHIFY:-$HOME/.agents/skills/archify/bin/archify.mjs}"
+node "$ARCHIFY" validate architecture docs/diagrams/<subject>.architecture.json --quality showcase --repo-root . --json
+node "$ARCHIFY" deliver  architecture docs/diagrams/<subject>.architecture.json docs/diagrams/<subject>.architecture.html --quality showcase --repo-root . --json
+node "$ARCHIFY" visual-check docs/diagrams/<subject>.architecture.html --json
+```
+
+- A **showcase** pass reports all **9** artifact checks with **0** composition errors and **0** warnings. Fewer checks is basic validation, not acceptance.
+- `deliver` must exit **0** and report the SHA-256 of both the specification and the artifact. A non-zero exit is never described as success, and a failed delivery leaves the previous output untouched.
+- `visual-check` must pass containment with no overflow at 1440×900, 1600×1000, 1920×1080, and 2048×1320. These are machine measurements, not perceptual approval: real visual review still needs a human.
+- Commit the `.json` source, the `.html` artifact, the `.visual-check.json` receipt, and any exported inline image. Screenshot sidecars are regenerable evidence: keep them only for a canonical reference map, and delete them otherwise, so an ordinary diagram does not add binary weight to review.
