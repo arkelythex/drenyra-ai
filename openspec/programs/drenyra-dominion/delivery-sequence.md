@@ -24,9 +24,9 @@ that contains it. For the host (`drenyra-ai`) it records `programBaseCommit`
 (the commit that introduces the program tree); the SHA of the final lock
 commit is fixed by an external attestation / release manifest.
 
-    **Rule (external repos):** `repositories[].commitSha` always refers to the
-    other five repositories' committed SHAs — these exist independently of the
-    lock commit and are always verifiable.
+**Rule (external repos):** `repositories[].commitSha` always refers to the
+other five repositories' committed SHAs — these exist independently of the
+lock commit and are always verifiable.
 
 ## 1.1 Lock freshness, promotion, and readback (W2 reconciliation 2026-08-15)
 
@@ -49,7 +49,7 @@ commit is fixed by an external attestation / release manifest.
 
 ## 2. Two-phase federated release
 
-```
+```text
 Phase A — Documentary commits (per repo, independent)
   A1. drenyra-ai     : docs + openspec/programs/** (program-lock.json keeps baseline SHAs)
   A2. command-center : README + docs/00-INDEX + strategy

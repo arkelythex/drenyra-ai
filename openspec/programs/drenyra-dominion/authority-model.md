@@ -306,7 +306,7 @@ never shows simply "verified" when only a review exists.
 The organization configures an autonomy profile, but the effective permission
 is the intersection of limits:
 
-```
+```text
 A_effective = A_org ∩ A_jurisdiction ∩ A_skill ∩ A_connector ∩ A_materiality ∩ A_actor
 ```
 
