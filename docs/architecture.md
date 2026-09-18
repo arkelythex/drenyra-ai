@@ -49,7 +49,8 @@ Drenyra AI may integrate Drenyra Engram. It is consumed by Drenyra and Drenyra P
 
 > Both diagrams on this page are the inline views GitHub renders. The map below is generated from this repository's evidence; its [interactive artifact](diagrams/drenyra-ai.architecture.html) is the same composition with search, focus, and route tracing. The map does not replace either fence above: prose and pipelines stay authoritative, and the fences stay readable where an image cannot be.
 
-![Drenyra AI authority and proof path: entry adapters, intent handlers, MissionRuntime, gates, signed receipts, and the append-only audit ledger, with frozen contracts, tenant scope, and human authority](diagrams/drenyra-ai.architecture.svg)
+![Drenyra AI authority and proof path: entry adapters, intent handlers, MissionRuntime, gates, signed receipts, and the append-only audit ledger, with frozen contracts, tenant scope, and human authority](diagrams/drenyra-ai.architecture.light.svg#gh-light-mode-only)
+![Drenyra AI authority and proof path: entry adapters, intent handlers, MissionRuntime, gates, signed receipts, and the append-only audit ledger, with frozen contracts, tenant scope, and human authority](diagrams/drenyra-ai.architecture.dark.svg#gh-dark-mode-only)
 
 *Source: [drenyra-ai.architecture.json](diagrams/drenyra-ai.architecture.json), pinned to revision `87542f6`. Regeneration and acceptance rules: [Documentation Standard §5](documentation-standard.md#5-diagrams).*
 

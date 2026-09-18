@@ -64,15 +64,26 @@ Reference exemplars (READ THESE before writing; adapt structure, not copy):
 **Layout.**
 
 ```text
-docs/diagrams/<subject>.<type>.json   authoritative source; the reviewable unit
-docs/diagrams/<subject>.<type>.html   deterministic output; regenerable, never hand-edited
+docs/diagrams/<subject>.<type>.json         authoritative source; the reviewable unit
+docs/diagrams/<subject>.<type>.html         deterministic output; regenerable, never hand-edited
+docs/diagrams/<subject>.<type>.light.svg    inline view, pinned to light
+docs/diagrams/<subject>.<type>.dark.svg     inline view, pinned to dark
 ```
 
 `<type>` is one of `architecture`, `workflow`, `sequence`, `dataflow`, or `lifecycle`, chosen by the question the reader has — not by preference, and not by what is easiest to draw.
 
 **Inline view.** The CLI has no image export: `deliver` writes HTML only, and exporting a PNG or SVG is a viewer action (see below). GitHub renders images such as PNG and SVG, but it does not render HTML documents — a committed `.html` artifact appears as source, never as a page. So an artifact is not by itself readable in the repository: a map that a GitHub reader must see also carries a view GitHub renders inline, either a markdown fence (ASCII or mermaid, both rendered) or a committed exported image.
 
-**Exporting the inline image.** The CLI cannot export images; the viewer can. Open the delivered HTML in a browser and use **Export → Download SVG**. The result is one self-contained `.svg` — styles and font subsets inlined, with no external references — which GitHub renders inline; commit it as `<subject>.<type>.svg`. Verify it standalone before committing: it must open as a bare SVG document that keeps its own styling. An `<svg>` cut out of the artifact by hand does not, because the artifact carries its classes in the document stylesheet rather than inside the SVG.
+**Exporting the inline image.** The CLI cannot export images; the viewer can. Open the delivered HTML in a browser and use **Export → Download SVG**, which yields a self-contained `.svg` with its styles and font subsets inlined and no external references. One export is enough, because the file carries both palettes — but it leaves the choice to `prefers-color-scheme`, so as written it follows the reader's operating system rather than GitHub's theme. A reader whose GitHub is light while their desktop is dark gets a dark diagram on a white page.
+
+So write two files from that one export, each with `data-theme="light"` or `data-theme="dark"` on the root `<svg>` element. Those selectors win over the media query by specificity, which was checked in a real browser by forcing the operating-system preference: the pinned files kept their own palette while the unpinned file followed the system. Then embed the pair with the theme fragments GitHub supports:
+
+```markdown
+![…](docs/diagrams/<subject>.<type>.light.svg#gh-light-mode-only)
+![…](docs/diagrams/<subject>.<type>.dark.svg#gh-dark-mode-only)
+```
+
+Verify before committing: each file must open as a bare SVG document that keeps its own styling. An `<svg>` cut out of the artifact by hand does not, because the artifact carries its classes in the document stylesheet rather than inside the SVG.
 
 **Authoring rules.**
 
