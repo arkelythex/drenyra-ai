@@ -20,3 +20,17 @@ jobs:
           bun-version: "1.4.0"
       - name: Lint markdown
         run: bun x markdownlint-cli2@0.23.2
+
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      # lycheeverse/lychee-action v2.9.0
+      - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8
+        with:
+          args: >-
+            --offline --include-fragments --no-progress --extensions md
+            --exclude-path '(^|/)openspec/changes/archive/'
+            --exclude-path 'apply-progress\.md$' './**/*.md'

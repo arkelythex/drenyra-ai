@@ -6,7 +6,7 @@
 
 ## Lead
 
-`scripts/checksums.mjs` (SHA-256 manifest) and `scripts/sbom.mjs` (CycloneDX 1.5) are written and documented by [Design 05](docs/design/design-05-testing-releases-v1.md) as release-pipeline items, but **neither is invoked by `package.json`, `prepack`/`prepublishOnly`, or CI**. The gap-analysis row marks the capability done with the remaining dependency "**Signing wired into the release pipeline**". So the checksum/SBOM claim is aspirational today — nothing generates or verifies release integrity evidence automatically. This is an attributable, release-gate completeness gap, and the fix is **plumbing + verification + a small determinism correction**, not new machinery.
+`scripts/checksums.mjs` (SHA-256 manifest) and `scripts/sbom.mjs` (CycloneDX 1.5) are written and documented by [Design 05](../../../docs/design/design-05-testing-releases-v1.md) as release-pipeline items, but **neither is invoked by `package.json`, `prepack`/`prepublishOnly`, or CI**. The gap-analysis row marks the capability done with the remaining dependency "**Signing wired into the release pipeline**". So the checksum/SBOM claim is aspirational today — nothing generates or verifies release integrity evidence automatically. This is an attributable, release-gate completeness gap, and the fix is **plumbing + verification + a small determinism correction**, not new machinery.
 
 ## Evidence (root cause — G4)
 
