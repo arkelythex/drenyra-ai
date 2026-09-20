@@ -259,5 +259,5 @@ Drenyra v1 requires:
 
 The private stage continues while Drenyra validates product and generates
 revenue. Opening requires a formal decision based on conditions, not a
-promotional date — see [acceptance-matrix.md](acceptance-matrix.md#6-commercial-gate-private-open-core).
+promotional date — see [acceptance-matrix.md](acceptance-matrix.md#6-commercial-gate-private--open-core).
 This transition is registered as an **intention**, not a contractual promise.
