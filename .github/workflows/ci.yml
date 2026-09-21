@@ -17,7 +17,7 @@ jobs:
           persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: "1.4.0"
+          bun-version: "1.4.2"
       - run: bun install --frozen-lockfile
       - run: bun run typecheck
 
@@ -29,7 +29,7 @@ jobs:
           persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: "1.4.0"
+          bun-version: "1.4.2"
       - run: bun install --frozen-lockfile
       - run: bun run lint
 
@@ -41,7 +41,7 @@ jobs:
           persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: "1.4.0"
+          bun-version: "1.4.2"
       - run: bun install --frozen-lockfile
       - run: bun run test
 
@@ -53,7 +53,7 @@ jobs:
           persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: "1.4.0"
+          bun-version: "1.4.2"
       - run: bun install --frozen-lockfile
       # Global coverage gate: vitest exits non-zero when any threshold in
       # vitest.config.ts is missed (statements 80 / branches 75 /
@@ -68,7 +68,7 @@ jobs:
           persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: "1.4.0"
+          bun-version: "1.4.2"
       - run: bun install --frozen-lockfile
       # Pins contracts/brand-system.md: derivation byte-exact, banner SVG
       # zero-tolerance, raster coverage. Fails on any brand drift.
@@ -93,7 +93,7 @@ jobs:
           persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: "1.4.0"
+          bun-version: "1.4.2"
       - run: bun install --frozen-lockfile
       # Pins drenyra-skills/skills/registry.json (authoring source) to the
       # shipped BASE_PE_SKILLS. Fails on any registry drift.
@@ -109,7 +109,7 @@ jobs:
           persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: "1.4.0"
+          bun-version: "1.4.2"
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "22"
