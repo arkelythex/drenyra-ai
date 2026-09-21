@@ -3,7 +3,7 @@ import { BASE_PE_SKILLS, SkillRegistry } from "../index.js";
 
 describe("BASE_PE_SKILLS (Peru layer)", () => {
 	it("ships the full Peru skill set with checksums", () => {
-		expect(BASE_PE_SKILLS.length).toBe(19);
+		expect(BASE_PE_SKILLS.length).toBe(20);
 		expect(BASE_PE_SKILLS.every((s) => s.jurisdiction === "PE")).toBe(true);
 		expect(BASE_PE_SKILLS.every((s) => s.checksum.length === 64)).toBe(true);
 	});
@@ -36,6 +36,7 @@ describe("BASE_PE_SKILLS (Peru layer)", () => {
 			"pe.plame-provision",
 			"pe.ple-export",
 			"pe.provision-cartera",
+			"pe.renta-anual",
 			"pe.retention-check",
 			"pe.sbs-exchange-rates",
 			"pe.sire-adversarial",
@@ -131,5 +132,25 @@ describe("BASE_PE_SKILLS (Peru layer)", () => {
 		expect(skill.maxAutonomy).toBe("R1");
 		expect(skill.inputs).toEqual(["result-balances", "chart", "scope"]);
 		expect(skill.outputs).toEqual(["closing-entries"]);
+	});
+
+	it("registers pe.renta-anual with the annual settlement surface", () => {
+		const registry = new SkillRegistry();
+		for (const skill of BASE_PE_SKILLS) registry.register(skill);
+		const skill = registry.resolveAt("pe.renta-anual", "2026-07-15");
+		expect(skill.version).toBe("1.0.0");
+		expect(skill.maxAutonomy).toBe("R1");
+		expect(skill.inputs).toEqual([
+			"net-income-input",
+			"monthly-isr-cedulas",
+			"policy",
+			"scope",
+		]);
+		expect(skill.outputs).toEqual([
+			"annual-isr",
+			"settlement",
+			"closing-entries",
+			"declaration-payload",
+		]);
 	});
 });
