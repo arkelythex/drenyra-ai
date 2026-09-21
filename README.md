@@ -39,9 +39,11 @@
 
 Drenyra AI is **not** an ERP, a ledger of record, a UI, or the fiscal authority — and it is not "an agent that does accounting." It is the **infrastructure that makes AI participation in accounting processes provable**: a configurator, runtime, and control plane that lets any agent propose work over your ERP, ledger, and approval workflow without ever becoming the fiscal authority. It works **standalone** — no Drenyra dependency — so ERPs, accounting SaaS, and agent hosts (Codex, Claude Code, OpenCode) can adopt it directly.
 
+> **Humans retain fiscal and business decision authority.** Drenyra AI executes only deterministic, policy-constrained operations after the required evidence and approvals are present, then records the resulting evidence and receipts. Advisory AI output and Engram memory may provide context, but neither is fiscal evidence, authorization, or a substitute for human business or legal judgment.
+
 **Before**: "The agent suggested a journal correction and a monthly close. I don't know what was executed, by whom, whether anyone approved it, or whether the numbers were ever touched."
 
-**After**: Every proposal an agent makes becomes a first-class *candidate* with content-derived identity and materiality; every material action produces an immutable, Ed25519-signed *receipt*; every lifecycle transition runs a *gate*; review depth scales with risk instead of hope. Agents propose; the deterministic core decides; the ledger is an append-only hash chain you can validate with one command.
+**After**: Every proposal an agent makes becomes a first-class *candidate* with content-derived identity and materiality; every material action produces an immutable, Ed25519-signed *receipt*; every lifecycle transition runs a *gate*; review depth scales with risk instead of hope. Agents propose; human professionals decide; the deterministic core validates policy and enforces recorded approvals; the ledger is an append-only hash chain you can validate with one command.
 
 ### What it provides
 
@@ -258,7 +260,7 @@ RUC/company/period scope is enforced in every query and mutation — never acces
 
 ## Hybrid orchestration vs. Drenyra Core
 
-Drenyra AI orchestrates specialized accounting/fiscal agents through `agents/`: deterministic `IntentHandler` implementations for every mission intent stage work, request evidence, and pause at the evidence or approval gate. The deterministic Core — `missions/` (lifecycle, idempotency, rules), `gates/`, `receipts/`, and explicit human approval — remains the authority for what may actually change.
+Drenyra AI orchestrates specialized accounting/fiscal agents through `agents/`: deterministic `IntentHandler` implementations for every mission intent stage work, request evidence, and pause at the evidence or approval gate. The deterministic Core — `missions/` (lifecycle, idempotency, rules), `gates/`, and `receipts/` — enforces policy and recorded approvals for what may actually change; human professionals retain fiscal and business decision authority.
 
 > **Agents never claim SUNAT, bank, or ERP execution and never perform fiscal approval. They only propose and stage work.**
 
@@ -309,7 +311,7 @@ docs/               Architecture, trust-model, and dependency documentation
 
 ### Drenyra Dominion Program
 
-Drenyra AI is the **authority core** of the [Drenyra Dominion Program](openspec/programs/drenyra-dominion/README.md), the federated program master that fixes vision, authority, contracts, dependencies, gates, and sequencing across every Drenyra repository. A single master SDD is complemented by implementable vertical SDDs: each vertical delivers a complete capability that may traverse the repositories it needs (for example, the monthly close spans this repo, Drenyra Pi, and Drenyra Command Center) while every repository keeps its ownership and boundaries.
+Drenyra AI is the **deterministic enforcement core** of the [Drenyra Dominion Program](openspec/programs/drenyra-dominion/README.md), the federated program master that fixes vision, authority, contracts, dependencies, gates, and sequencing across every Drenyra repository. A single master SDD is complemented by implementable vertical SDDs: each vertical delivers a complete capability that may traverse the repositories it needs (for example, the monthly close spans this repo, Drenyra Pi, and Drenyra Command Center) while every repository keeps its ownership and boundaries.
 
 | SDD | Role in this repository |
 | --- | --- |
