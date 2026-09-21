@@ -12,6 +12,13 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+### Added — `igv/` IGV determination engine (Peru fiscal coverage gap)
+
+- **`igv/`**: deterministic monthly IGV (Impuesto General a las Ventas, TUO — D.S. 055-99-EF) determination engine — débito fiscal over taxable sales lines (exempt/inafecto lines excluded from the taxable base via an explicit `taxable` flag), crédito fiscal restricted to purchase lines passing the TUO IGV Arts. 18-19 formal (`validComprobante`) and substantial (`destinedToTaxedOperation`) checks (a failing line is excluded and reported as a typed exception, never silently dropped), and the net position (`payable` / `in-favor` / `zero`, mirroring `AnnualBalanceKind`). The rate is a validated policy input in basis points defaulting to the standard combined rate (18% = 1800 bp); tenant scope (RUC + YYYYMM period) is validated the same way as `close-calculations/`/`bank-reconciliation/`, with cross-RUC line access rejected fail-closed (`CROSS_RUC_ACCESS`). Files: `igv/types.ts`, `igv/debit.ts`, `igv/credit.ts`, `igv/engine.ts`, `igv/report.ts`, `igv/index.ts`. 40 tests.
+- **`package.json` `exports`**: adds `"./igv": "./dist/igv/index.js"`.
+- **`tsconfig.json` / `tsconfig.build.json`**: adds `igv` to `include` so the new module is typechecked and shipped to `dist/`.
+- **`skills/pe.ts`**: updates the `pe.igv-validate` skill card (previously metadata-only, `1.0.0` → `1.1.0`) so its declared `inputs`/`outputs` match the real engine surface (`sales-lines`/`purchase-lines`/`policy`/`scope` → `igv-determination`/`exceptions`); synced with the companion `arkelythex/drenyra-skills` registry entry.
+
 ## [0.6.0] - 2026-09-21
 
 ### Added — `agents/` public subpath (Phase 2c/3 roadmap item)

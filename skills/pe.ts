@@ -38,13 +38,17 @@ function make(
 	return skill;
 }
 
-/** IGV validation against the TUO (D.S. 055-99-EF). */
+/**
+ * IGV determination against the TUO (D.S. 055-99-EF), backing the
+ * `igv/` engine: débito fiscal (taxable sales), crédito fiscal (Arts. 18-19
+ * eligible purchases), and the net position.
+ */
 export const IGV_VALIDATE = make(
 	"pe.igv-validate",
-	"1.0.0",
+	"1.1.0",
 	["TUO IGV — D.S. 055-99-EF"],
-	["invoice", "tax-period"],
-	["igv-validation"],
+	["sales-lines", "purchase-lines", "policy", "scope"],
+	["igv-determination", "exceptions"],
 	"R1",
 );
 
