@@ -1,0 +1,397 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Drenyra AI — Runtime and Contract Surface",
+    "locale": "en",
+    "output": "drenyra-ai-runtime.architecture.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/arkelythex/drenyra-ai",
+      "provider": "github",
+      "revision": "0cf630ddb36982bf3fd1dc0ed3449ba22b0f51b8"
+    },
+    "views": [
+      {
+        "id": "runtime-path",
+        "label": "Runtime path",
+        "focus": [
+          "adapters",
+          "agents",
+          "missions",
+          "candidates",
+          "review",
+          "gates"
+        ],
+        "note": "A command enters through thin adapters, is staged as a plan, and the durable runtime decides what happens next."
+      },
+      {
+        "id": "authority-and-proof",
+        "label": "Authority and proof",
+        "focus": [
+          "gates",
+          "human-approval",
+          "receipts",
+          "ledger"
+        ],
+        "note": "Gates fail closed; a professional approves explicitly at R2/R3; every material action is signed and chained."
+      },
+      {
+        "id": "recovery-and-contracts",
+        "label": "Recovery and contracts",
+        "focus": [
+          "recovery",
+          "contracts",
+          "missions"
+        ],
+        "note": "Recovery reads persisted evidence, never transcripts; contracts are the frozen, versioned public surface."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "adapters",
+      "type": "backend",
+      "label": "Entry Adapters",
+      "sublabel": "CLI · MCP",
+      "sources": [
+        {
+          "path": "cmd/cli.ts",
+          "line": 157,
+          "label": "main dispatcher"
+        },
+        {
+          "path": "mcp/stdio.ts",
+          "line": 22,
+          "label": "stdio transport"
+        }
+      ],
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        200,
+        68
+      ]
+    },
+    {
+      "id": "agents",
+      "type": "backend",
+      "label": "Agents",
+      "sublabel": "stage, never execute",
+      "sources": [
+        {
+          "path": "agents/handlers.ts",
+          "line": 6,
+          "end_line": 16,
+          "label": "staging contract"
+        }
+      ],
+      "pos": [
+        320,
+        40
+      ],
+      "size": [
+        200,
+        68
+      ]
+    },
+    {
+      "id": "missions",
+      "type": "backend",
+      "label": "MissionRuntime",
+      "sublabel": "durable lifecycle",
+      "sources": [
+        {
+          "path": "missions/runtime.ts",
+          "line": 207,
+          "label": "MissionRuntime"
+        },
+        {
+          "path": "missions/runtime.ts",
+          "line": 76,
+          "label": "canonicalHash"
+        }
+      ],
+      "pos": [
+        600,
+        40
+      ],
+      "size": [
+        200,
+        68
+      ]
+    },
+    {
+      "id": "candidates",
+      "type": "backend",
+      "label": "Candidates",
+      "sublabel": "identity · materiality",
+      "sources": [
+        {
+          "path": "candidates/lifecycle.ts",
+          "line": 87,
+          "label": "propose"
+        },
+        {
+          "path": "candidates/materiality.ts",
+          "line": 29,
+          "label": "escalateMateriality"
+        }
+      ],
+      "pos": [
+        880,
+        40
+      ],
+      "size": [
+        200,
+        68
+      ]
+    },
+    {
+      "id": "review",
+      "type": "backend",
+      "label": "Review",
+      "sublabel": "proportional lenses",
+      "sources": [
+        {
+          "path": "review/lenses.ts",
+          "line": 140,
+          "label": "selectReviewLenses"
+        }
+      ],
+      "pos": [
+        880,
+        170
+      ],
+      "size": [
+        200,
+        68
+      ]
+    },
+    {
+      "id": "gates",
+      "type": "security",
+      "label": "Gates",
+      "sublabel": "fail closed",
+      "sources": [
+        {
+          "path": "gates/authorization.ts",
+          "line": 73,
+          "label": "AuthorizationGate"
+        },
+        {
+          "path": "gates/approval.ts",
+          "line": 66,
+          "label": "needs_input verdict"
+        }
+      ],
+      "pos": [
+        600,
+        170
+      ],
+      "size": [
+        200,
+        68
+      ]
+    },
+    {
+      "id": "human-approval",
+      "type": "security",
+      "label": "Human Approval",
+      "sublabel": "R2 single · R3 dual",
+      "sources": [
+        {
+          "path": "gates/approval.ts",
+          "line": 30,
+          "label": "DUAL_APPROVAL_TIER"
+        },
+        {
+          "path": "gates/approval.ts",
+          "line": 47,
+          "label": "ApprovalGate"
+        }
+      ],
+      "pos": [
+        320,
+        170
+      ],
+      "size": [
+        200,
+        68
+      ]
+    },
+    {
+      "id": "receipts",
+      "type": "security",
+      "label": "Receipts",
+      "sublabel": "Ed25519-signed",
+      "sources": [
+        {
+          "path": "receipts/sign.ts",
+          "line": 29,
+          "label": "generateKeyPairSync(ed25519)"
+        }
+      ],
+      "pos": [
+        40,
+        170
+      ],
+      "size": [
+        200,
+        68
+      ]
+    },
+    {
+      "id": "ledger",
+      "type": "database",
+      "label": "Ledger",
+      "sublabel": "append-only chain",
+      "sources": [
+        {
+          "path": "ledger/validate.ts",
+          "line": 23,
+          "label": "GENESIS_EMPTY_HASH"
+        },
+        {
+          "path": "ledger/validate.ts",
+          "line": 46,
+          "label": "validateLedger"
+        }
+      ],
+      "pos": [
+        40,
+        300
+      ],
+      "size": [
+        200,
+        68
+      ]
+    },
+    {
+      "id": "recovery",
+      "type": "backend",
+      "label": "Recovery",
+      "sublabel": "replays evidence",
+      "sources": [
+        {
+          "path": "recovery/replay.ts",
+          "line": 32,
+          "label": "replayMission"
+        }
+      ],
+      "pos": [
+        320,
+        300
+      ],
+      "size": [
+        200,
+        68
+      ]
+    },
+    {
+      "id": "contracts",
+      "type": "external",
+      "label": "Contracts",
+      "sublabel": "frozen public surface",
+      "sources": [
+        {
+          "path": "contracts/README.md",
+          "line": 13,
+          "label": "public surface"
+        }
+      ],
+      "pos": [
+        600,
+        300
+      ],
+      "size": [
+        200,
+        68
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "adapters-agents",
+      "from": "adapters",
+      "to": "agents",
+      "label": "dispatch"
+    },
+    {
+      "id": "agents-missions",
+      "from": "agents",
+      "to": "missions",
+      "label": "stage plan"
+    },
+    {
+      "id": "missions-candidates",
+      "from": "missions",
+      "to": "candidates",
+      "label": "propose"
+    },
+    {
+      "id": "candidates-review",
+      "from": "candidates",
+      "to": "review"
+    },
+    {
+      "id": "review-gates",
+      "from": "review",
+      "to": "gates",
+      "label": "lens depth"
+    },
+    {
+      "id": "gates-human",
+      "from": "gates",
+      "to": "human-approval",
+      "label": "R2/R3",
+      "variant": "emphasis"
+    },
+    {
+      "id": "human-receipts",
+      "from": "human-approval",
+      "to": "receipts",
+      "label": "approved"
+    },
+    {
+      "id": "receipts-ledger",
+      "from": "receipts",
+      "to": "ledger"
+    },
+    {
+      "id": "ledger-recovery",
+      "from": "ledger",
+      "to": "recovery",
+      "label": "resumes",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "The path is fixed",
+      "items": [
+        "A command enters through thin adapters (cmd/, mcp/, or the library)",
+        "agents/ stages a plan; missions/ — the durable runtime — decides what happens next"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Authority is derived, never asserted",
+      "items": [
+        "Materiality R0–R3 sets the review depth; gates/ fails closed with needs_input",
+        "A professional approves explicitly at R2 (single) and R3 (two distinct approvers)"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Nothing material happens without a receipt",
+      "items": [
+        "Every material action produces an Ed25519-signed receipt",
+        "The append-only ledger chains receipts so order survives any single tampering attempt"
+      ]
+    }
+  ]
+}
