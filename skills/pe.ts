@@ -166,6 +166,19 @@ export const CIERRE_RESULTADOS = make(
 	"R1",
 );
 
+/** Annual tax settlement: net income, annual ISR, settlement against provisional payments, and year-end closing (LIR + PCGE). */
+export const RENTA_ANUAL = make(
+	"pe.renta-anual",
+	"1.0.0",
+	[
+		"LIR — Ley del Impuesto a la Renta (D.S. 179-2004-EF)",
+		"PCGE — Plan Contable General Empresarial (R. SMV 043-2010-SMV/01)",
+	],
+	["net-income-input", "monthly-isr-cedulas", "policy", "scope"],
+	["annual-isr", "settlement", "closing-entries", "declaration-payload"],
+	"R1",
+);
+
 /** Legacy system report normalizer (CONCAR, SISCONT, StarSoft). */
 export const LEGACY_INGEST = make(
 	"pe.legacy-ingest",
@@ -291,6 +304,7 @@ export const BASE_PE_SKILLS: readonly SkillDefinition[] = [
 	PROVISION_CARTERA,
 	ISR_MENSUAL,
 	CIERRE_RESULTADOS,
+	RENTA_ANUAL,
 	LEGACY_INGEST,
 	TAX_SHIELD,
 	SIRE_ADVERSARIAL,
