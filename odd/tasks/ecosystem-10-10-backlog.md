@@ -95,6 +95,11 @@ remaining item has a named decision owner rather than being silently ignored.
 | DA-BUN-1.4.2 | drenyra-ai local branch `chore/pin-latest-ci-actions` | `.bun-version` (new), `package.json` (`packageManager` field) | `bun run typecheck`/`lint`/`test` green | `git revert ec19ca1` | Mechanical, local only (not pushed/merged) |
 | DA-MAIN-SYNC | drenyra-ai `main` | Fast-forward only (`0cf630d`→`b128990` after PR #103) | `git pull --ff-only`; no local commits lost | N/A (fast-forward) | Mechanical |
 | DA-DEP-103 | drenyra-ai PR #103 (`dependabot/bun/types/node-26.6.1`) | `bun.lock`, `package.json` (`@types/node` 26.5.1→26.6.1) | 9/9 CI checks green pre-merge; pure lockfile/manifest diff, no code touched | Revert merge on `main` | Mechanical, merged (squash, branch deleted) |
+| DA-PR-105 | drenyra-ai PR #105 (`chore/ecosystem-coherence-dominion-sync` → `main`) | Same surfaces as DA-SDD-STUB/DA-ECOH-CATALOG/DA-FISCAL-WORDING/DA-CI-BUNVER/DA-ODD-TRACKER | typecheck/lint/test green pre-push; CI running on PR | Close PR, delete remote branch | Owner review pending, not merged |
+| DA-PR-106 | drenyra-ai PR #106 (`chore/pin-latest-ci-actions` → `chore/ecosystem-coherence-dominion-sync`, stacked) | Same surfaces as DA-CI-ACTIONS-V7/DA-BUN-1.4.2 | typecheck/lint/test green pre-push; CI running on PR | Close PR, delete remote branch | Owner review pending, not merged |
+| DA-PR-107 | drenyra-ai PR #107 (`docs/archify-diagrams` → `main`, pre-existing branch) | `README.md` (architecture diagram swap) | `archify validate`/`visual-check` already green per commit; GitHub reports `MERGEABLE` | Close PR, delete remote branch (local branch/worktree untouched) | Documentation, owner review pending, not merged |
+| DA-WT-CLEANUP | drenyra-ai worktree `drenyra-ai-doc-link-integrity` + branch `ci/docs-link-integrity` | Worktree removal + local/remote branch deletion only | Verified 0 uncommitted changes; content already in `main` since squash-merge PR #102 | None needed (content already on `main`) | Cleanup, done |
+| DA-DEP-104-REBASE | drenyra-ai PR #104 (`dependabot/bun/biomejs/biome-2.5.14`) | None (comment only) | Posted `@dependabot rebase` after conflict with PR #103's `bun.lock` change | N/A | Diagnostic, awaiting Dependabot |
 
 Add later units only after their current evidence and allowed edit surfaces are known.
 
@@ -119,12 +124,18 @@ Add later units only after their current evidence and allowed edit surfaces are 
   Nothing was pushed and nothing was lost (recovered from reflog), but the branch was immediately
   reset with `git reset --hard fafa802` to restore the exact commit hashes this ledger already
   documents. No further action needed; recorded here for traceability.
-- **Discovered, not acted on:** `docs/archify-diagrams` (own worktree, tip `e682e3d`,
-  "docs(diagrams): replace legacy architecture map with runtime diagram") is unmerged, has no open
-  PR, and is dated today with evidence-backed `archify` validation in its commit message — real,
-  finished-looking content, not scaffolding. Left untouched pending an owner decision on whether to
-  publish it, since it lives in its own worktree and may be part of work already in progress there.
-- **Discovered, not acted on:** the `drenyra-ai-doc-link-integrity` worktree
-  (`ci/docs-link-integrity`, tip `eb534c3`) tracks a branch already merged to `main` via PR #102
-  (different commit hash from a squash merge). The worktree and local/remote branch are stale and
-  safe to remove, but removal was left for explicit confirmation rather than done autonomously.
+- **Owner-delegated ("tú decide") — resolved:** `docs/archify-diagrams` was real, finished,
+  evidence-backed content (see DA-PR-107). Pushed the existing branch ref only (never checked out
+  or modified its dedicated worktree) and opened PR #107. GitHub reports `MERGEABLE` despite two
+  intervening `README.md` changes on `main`.
+- **Owner-delegated ("tú decide") — resolved:** the stale `ci/docs-link-integrity` worktree and
+  branch (content already on `main` via squash-merged PR #102) were removed: `git worktree remove`,
+  local `git branch -d`, remote `git push origin --delete`. See DA-WT-CLEANUP.
+- **Explicit owner authorization — resolved:** pushed `chore/ecosystem-coherence-dominion-sync` and
+  `chore/pin-latest-ci-actions` and opened PR #105 (→ `main`) and PR #106 (→ #105's branch, stacked)
+  respectively. Neither was merged; both await owner review.
+- **"Haz lo que haría gentleman" for PR #104 — resolved:** posted `@dependabot rebase` rather than
+  hand-editing the generated `bun.lock` conflict, so Dependabot regenerates it correctly instead of
+  a manually reconstructed lockfile.
+- `docs/readme-visual-system` (already documented above as disposable) was left untouched — it was
+  not part of what the owner delegated a decision on.
