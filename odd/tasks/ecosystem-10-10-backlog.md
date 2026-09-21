@@ -32,7 +32,7 @@ remaining item has a named decision owner rather than being silently ignored.
 | 2 | Rank backlog by risk, value, and safe autonomy | done | Mechanical, diagnostic, and high-consequence lanes recorded below |
 | 3 | Repair green mechanical documentation and generated-index failures | in progress | Start with command-center PRs #171/#172/#177 |
 | 4 | Resolve dependency, CI, and version drift that has current evidence | in progress | Engram #29-34, Pi #71, command-center #194/#203/#209/#211/#213/#217/#234/#235 merged; command-center alerts reduced to 10; #195 blocked by #207; #197 requires Go 1.26 decision |
-| 5 | Audit retained branches and publish or remove only proven content | pending | — |
+| 5 | Audit retained branches and publish or remove only proven content | in progress | drenyra-ai: `main` synced; PR #103 merged; `docs/archify-diagrams` and stale `ci/docs-link-integrity` worktree flagged for owner decision |
 | 6 | Review and route fiscal, security, and constitutional decisions | pending | — |
 | 7 | Re-verify ecosystem state and close every remaining exception explicitly | pending | — |
 
@@ -40,7 +40,7 @@ remaining item has a named decision owner rather than being silently ignored.
 
 | Repository | Open PRs | Open alerts | Local risk |
 | --- | ---: | ---: | --- |
-| drenyra-ai | 1 | 0 | 0 foreign dirty entries (previously 21); committed locally to `chore/ecosystem-coherence-dominion-sync` (5 commits) and `chore/pin-latest-ci-actions` (2 commits, stacked on the former); neither pushed nor merged; PR #100 is constitutional and untouched |
+| drenyra-ai | 0 | 0 | 0 foreign dirty entries; `main` synced with origin; PR #103 merged, #104 open with rebase-pending conflict; work committed locally to `chore/ecosystem-coherence-dominion-sync` (6 commits) and `chore/pin-latest-ci-actions` (2 commits), neither pushed; PR #100 is constitutional and untouched; `docs/archify-diagrams` (own worktree) and stale `ci/docs-link-integrity` worktree await an owner decision |
 | drenyra-skills | 2 | 0 | Clean divergent docs branch |
 | drenyra-pi | 2 | 0 | One dirty entry; vendored runtime boundary requires care |
 | drenyra-engram | 11 | 0 | Active fiscal stack; two dirty entries |
@@ -93,6 +93,8 @@ remaining item has a named decision owner rather than being silently ignored.
 | DA-ODD-TRACKER | drenyra-ai local branch `chore/ecosystem-coherence-dominion-sync` | `odd/tasks/*.md` (new tracker files) | `bun run typecheck`/`lint`/`test` green; `markdownlint-cli2` 0 issues | `git revert 5a88848` | Tooling/process, local only (not pushed/merged) |
 | DA-CI-ACTIONS-V7 | drenyra-ai local branch `chore/pin-latest-ci-actions` (stacked on `chore/ecosystem-coherence-dominion-sync`) | `.github/workflows/ci.yml`, `.github/workflows/release.yml` (`actions/checkout` → v7.0.1 SHA, `actions/setup-node` → v7.0.0 SHA; zizmor ignore comment preserved) | `bun run typecheck`/`lint`/`test` green | `git revert 946ef9b` | Mechanical, local only (not pushed/merged) |
 | DA-BUN-1.4.2 | drenyra-ai local branch `chore/pin-latest-ci-actions` | `.bun-version` (new), `package.json` (`packageManager` field) | `bun run typecheck`/`lint`/`test` green | `git revert ec19ca1` | Mechanical, local only (not pushed/merged) |
+| DA-MAIN-SYNC | drenyra-ai `main` | Fast-forward only (`0cf630d`→`b128990` after PR #103) | `git pull --ff-only`; no local commits lost | N/A (fast-forward) | Mechanical |
+| DA-DEP-103 | drenyra-ai PR #103 (`dependabot/bun/types/node-26.6.1`) | `bun.lock`, `package.json` (`@types/node` 26.5.1→26.6.1) | 9/9 CI checks green pre-merge; pure lockfile/manifest diff, no code touched | Revert merge on `main` | Mechanical, merged (squash, branch deleted) |
 
 Add later units only after their current evidence and allowed edit surfaces are known.
 
@@ -106,3 +108,23 @@ Add later units only after their current evidence and allowed edit surfaces are 
   `prefers-color-scheme` SVG and need theme-pinning refresh before merge.
 - Ownership-boundary docs PRs (skills #5 and pi #76) are not presentation-only and remain in the
   human/strong-review lane.
+- PR #104 (`dependabot/bun/biomejs/biome-2.5.14`) developed merge conflicts against `main` after
+  PR #103 landed (both touch `bun.lock`); left open for Dependabot's automatic rebase rather than
+  resolved manually.
+- **Self-correction:** while trying to inspect the unrelated `docs/archify-diagrams` branch, a
+  `git checkout docs/archify-diagrams` failed (that branch is already checked out in its own
+  worktree at `arkelythex-worktrees/org-docs-archify/drenyra-ai`), but the following
+  `git rebase main` still ran against the branch actually checked out here
+  (`chore/ecosystem-coherence-dominion-sync`), rewriting its 6 commits onto the post-PR-103 `main`.
+  Nothing was pushed and nothing was lost (recovered from reflog), but the branch was immediately
+  reset with `git reset --hard fafa802` to restore the exact commit hashes this ledger already
+  documents. No further action needed; recorded here for traceability.
+- **Discovered, not acted on:** `docs/archify-diagrams` (own worktree, tip `e682e3d`,
+  "docs(diagrams): replace legacy architecture map with runtime diagram") is unmerged, has no open
+  PR, and is dated today with evidence-backed `archify` validation in its commit message — real,
+  finished-looking content, not scaffolding. Left untouched pending an owner decision on whether to
+  publish it, since it lives in its own worktree and may be part of work already in progress there.
+- **Discovered, not acted on:** the `drenyra-ai-doc-link-integrity` worktree
+  (`ci/docs-link-integrity`, tip `eb534c3`) tracks a branch already merged to `main` via PR #102
+  (different commit hash from a squash merge). The worktree and local/remote branch are stale and
+  safe to remove, but removal was left for explicit confirmation rather than done autonomously.
