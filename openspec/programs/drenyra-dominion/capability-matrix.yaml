@@ -9,8 +9,8 @@
 #   Sibling-repo facts: narrative claims from the 2026-08-12 checkpoint; unverifiable from this clone -> unknown/awaiting evidence.
 # SDD-010 promotion 2026-08-15 (release-train): fresh revision-bound host facts at d440203 (010E-001..005),
 #   public sibling SHAs/visibility fetched via gh api (010E-006/010E-007, corroborating E-010), host artifact
-#   digest matches the published v0.4.0 release asset (010E-008). The promoted lock (program-lock.json) is the
-#   authoritative current-facts record; this matrix's capability rows remain maturity claims, not SHAs.
+#   digest matches the published v0.4.0 release asset (010E-008). The promoted lock (program-lock.json) retains
+#   that historical checkpoint; W3a current-release evidence below supersedes only drenyra-ai release version facts.
 
 program:
   id: drenyra-dominion
@@ -23,12 +23,13 @@ program:
     register: status-and-evidence.md §3 (E-001…E-012)
     w2Supplement: apply-progress.md W2 section (W2E-001…W2E-004)
     sdd010Supplement: openspec/changes/sdd-010-release-train/apply-progress.md §SDD-010 evidence (010E-001…010E-008)
+    w3aCurrentRelease: npm drenyra-ai@0.5.0, latest 0.5.0, published 2026-08-19T00:21:20.382Z; immutable tarball https://registry.npmjs.org/drenyra-ai/-/drenyra-ai-0.5.0.tgz; integrity sha512-Kr90Ux6uorRC+YYkakDy3xc6rktl46DdmXEX6AGHsvF9o9e33vQ5oNEqijdrKczekGmxjylEr7M4sw//HP7tkQ==
 
 repositories:
   - name: drenyra-ai
     role: authority-core
     package: drenyra-ai
-    version: 0.4.0 # 010E-001 — verified from package.json at d440203 (0.2.1 at 549ed64 was the W2 reconciliation point)
+    version: 0.5.0 # W3a — npm current release; package.json, CHANGELOG, and README read back at 880eaf7 (0.4.0 at d440203 retained as history)
     license: proprietary # 010E-001 — verified from LICENSE at d440203
     status: pre-alpha
     github_visibility: public # 010E-005 + E-005 — direct gh repo view 2026-08-15T07:38:15Z, PUBLIC, default branch main = d440203

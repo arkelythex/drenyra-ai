@@ -24,7 +24,7 @@ The read-only ecosystem audit found these inconsistencies:
 - Command Center policy describes Engram as private while Engram, Drenyra AI, and the capability matrix describe it as Apache-2.0/open.
 - The program authority and FEOS relationship are undocumented.
 - Ecosystem membership and maturity labels differ across repositories.
-- Drenyra AI 0.2.1 package metadata drifts from its changelog, README, and capability matrix.
+- Drenyra AI has advanced to the verified npm `0.5.0` release: live package metadata, changelog, and README agree, while the capability matrix remains at the historical `0.4.0` checkpoint. The stale `0.2.1` reconciliation is superseded by the owner-authorized current-state replan.
 - Drenyra Pi and Engram roadmap publication checkboxes are stale.
 - Public wording can conflate Drenyra AI execution authority with human fiscal decision authority.
 - Command Center, Drenyra AI, and Engram do not share one approved declaration of ledger-of-record, audit-ledger, and memory boundaries.
@@ -39,7 +39,7 @@ These corrections may proceed independently when the repository's authoritative 
 
 1. **Command Center license correction** — align README and policy wording with the repository's proprietary `LICENSE`; do not alter license terms.
 2. **Engram publication correction** — align Command Center wording with Engram's authoritative license and the consistent Apache-2.0/open declarations; preserve any separately documented data-privacy guarantees.
-3. **Drenyra AI release metadata correction** — reconcile 0.2.1 metadata across package metadata, changelog, README, and capability matrix using the released artifact as evidence.
+3. **Drenyra AI release metadata correction** — reconcile current `0.5.0` metadata across package metadata, changelog, README, and capability matrix using the npm release artifact as evidence; preserve prior release history.
 4. **Roadmap publication correction** — update stale publication checkboxes in Drenyra Pi and Engram only where release/publication evidence is verifiable.
 5. **Fiscal-authority wording correction** — state consistently that humans retain fiscal decision authority while Drenyra AI executes deterministic, policy-constrained operations and records evidence; avoid implying autonomous business or legal judgment.
 
@@ -71,16 +71,28 @@ Drenyra Dominion will maintain the ecosystem remediation record containing:
 
 Dominion is the **program master**, not automatically the source of truth for every product fact. Product repositories remain authoritative for their own licenses, released artifacts, and implemented behavior; approved governance decisions determine cross-product authority boundaries.
 
+### D. Dominion capability catalog amendment
+
+The existing twelve-entry Dominion catalog will be extended, in the same program master, with four lifecycle-planned Peru v1 capabilities:
+
+1. **SDD-120 — Deterministic Fiscal Authority Kernel** — tenant scope, canonical evidence, accounting journal ownership, deterministic policy, and candidate ordering while the audit ledger remains audit-only.
+2. **SDD-130 — Evidence Ingestion and Provenance** — fail-closed capture and normalization of attributable external evidence; memory never substitutes for evidence.
+3. **SDD-140 — SUNAT Declaration and CDR Reconciliation** — declaration/submission candidates, explicit human authority, and UNKNOWN/CDR reconciliation without claiming live privileged access.
+4. **SDD-150 — Continuous Fiscal Audit and Assurance** — read-only, evidence-bound assurance over immutable candidates, receipts, declarations, and retained history.
+
+This is a catalog/governance amendment only. The four records MUST remain `lifecycle:planned`; catalog presence does not prove implementation, approve external execution, settle FEOS or ledger governance, or create a parallel master SDD.
+
 ## Reviewable work units
 
 | Work unit | Outcome | Dependency | Rollback boundary |
 | --- | --- | --- | --- |
 | W1 — Program inventory | Dominion records discrepancies, owners, evidence, and decision status | None | Remove the new program record only |
 | W2 — License and publication facts | Command Center license/Engram status wording matches authoritative repository evidence | W1 | Revert only affected documentation wording |
-| W3 — Release and roadmap facts | Drenyra AI 0.2.1 metadata and Pi/Engram publication markers agree with release evidence | W1 | Revert each repository correction independently |
+| W3 — Release and roadmap facts | Drenyra AI current `0.5.0` metadata and Pi/Engram publication markers agree with release evidence | W1 | Revert each repository correction independently |
 | W4 — Human authority wording | Public descriptions distinguish human fiscal decisions from deterministic execution | W1 | Revert wording without changing runtime behavior |
 | W5 — Governance decisions | Owners approve FEOS, ledger boundaries, membership, and maturity declarations | W1 | Withdraw or supersede the decision record; do not rewrite history |
 | W6 — Declaration propagation | Approved governance declarations are propagated and cross-checked | W5 | Revert propagation while retaining the decision record |
+| W7 — Dominion catalog amendment | Add SDD-120/130/140/150 as planned capabilities in the existing program master and reconcile catalog evidence | W1; explicit catalog authorization | Revert only the four catalog records and their master/dependency/evidence references |
 
 W2, W3, and W4 may proceed in parallel. W6 is blocked until W5 is explicitly approved. Every repository change should remain below the 400 authored-line review budget; split by repository or decision if necessary rather than combining unrelated corrections.
 
@@ -113,7 +125,7 @@ W2, W3, and W4 may proceed in parallel. W6 is blocked until W5 is explicitly app
 - No transfer of fiscal decision authority from humans to Drenyra AI, agents, or Engram.
 - No declaration that Dominion owns product-local facts already governed by legal files, releases, or implemented behavior.
 - No cleanup of unrelated documentation, historical artifacts, or repository-wide wording.
-- No implementation of a new business ledger, audit ledger, memory store, synchronization layer, or cross-repository automation.
+- No implementation of a new business ledger, audit ledger, memory store, synchronization layer, cross-repository automation, ingestion connector, SUNAT transport, or continuous-audit runtime.
 
 ## Acceptance outcomes
 
@@ -122,12 +134,13 @@ The remediation is complete when:
 - Dominion contains one reviewable program record covering every audited inconsistency, owner, status, evidence source, and affected repository.
 - Command Center no longer claims MIT when its proprietary license is authoritative.
 - Engram's publication/license wording agrees across Command Center, Engram, Drenyra AI, and the capability matrix without conflating software openness with data privacy.
-- Drenyra AI 0.2.1 metadata agrees with the released artifact, changelog, README, and capability matrix.
+- Drenyra AI current `0.5.0` metadata agrees with the npm release artifact, changelog, README, and capability matrix; prior changelog entries remain intact.
 - Drenyra Pi and Engram publication checkboxes match verifiable publication evidence.
 - Public wording consistently distinguishes human fiscal decisions from Drenyra AI's deterministic execution authority.
 - FEOS, ledger boundaries, ecosystem membership, and maturity are either explicitly owner-approved and consistently propagated or clearly marked unresolved everywhere they are mentioned.
 - No product/code diff, normative contract change, historical rewrite, or unapproved governance conclusion is included.
 - Each work unit has repository-specific readback evidence and an independent rollback boundary.
+- The existing Dominion master catalogs SDD-120/130/140/150 as four linked, lifecycle-planned records without claiming implementation or creating another master SDD.
 
 ## Risks and mitigations
 

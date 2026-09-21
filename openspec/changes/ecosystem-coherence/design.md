@@ -6,6 +6,8 @@ The remediation will use one documentation-only ecosystem coherence record under
 
 The record must keep evidence-backed corrections separate from four blocked governance decisions: FEOS relationship, ledger boundaries, ecosystem membership, and maturity. No downstream propagation may begin for one of those matters until its approval is recorded.
 
+The authorized catalog amendment extends this same Dominion master from twelve to sixteen records. It adds four compact, lifecycle-planned capability records rather than another master: SDD-120 Deterministic Fiscal Authority Kernel → SDD-130 Evidence Ingestion and Provenance → SDD-140 SUNAT Declaration and CDR Reconciliation → SDD-150 Continuous Fiscal Audit and Assurance. Their records define boundaries and dependency order only; implementation and maturity remain unclaimed.
+
 ## Scope and constraints
 
 This design covers governance and documentation remediation only. It introduces no product behavior, runtime automation, API, contract, license, schema, persistence, migration, ledger mutation, or authority transfer.
@@ -20,10 +22,11 @@ Related historical ecosystem cleanup is review context only. It must not be edit
 | --- | --- | --- |
 | Drenyra Dominion in `drenyra-ai` | Add one ecosystem coherence program-master record and link it from the Dominion index | Coordinates evidence and delivery; does not become authority for product-local facts |
 | Drenyra Command Center | Correct evidence-backed license and Engram publication wording; later propagate only approved governance declarations | Its `LICENSE` remains authoritative for license terms |
-| Drenyra AI | Reconcile 0.2.1 narrative metadata and human-fiscal-authority wording; later propagate only approved declarations | Released artifacts and implemented behavior remain product-local authority |
+| Drenyra AI | Reconcile current `0.5.0` release metadata and human-fiscal-authority wording; later propagate only approved declarations | The npm artifact and implemented behavior remain product-local authority; historical release records stay immutable |
 | Drenyra Pi | Correct publication markers where evidence exists; later propagate approved membership/maturity wording | Unverifiable publication or maturity claims remain unresolved |
 | Engram | Correct publication markers where evidence exists; later propagate approved memory-boundary wording | Software openness and data privacy remain separate claims |
 | Capability matrix and shared ecosystem documents | Reflect verified product facts and approved cross-product declarations | They are projections, never the originating authority |
+| Dominion capability catalog | Add compact SDD-120/130/140/150 records, master links, dependency edges, and superseding catalog evidence | Planning metadata only; no code, contract, external transport, or second master |
 
 The intended Dominion record path is `openspec/programs/drenyra-dominion/ecosystem-coherence.md`, linked from `openspec/programs/drenyra-dominion/README.md`. Tasks may refine a product-local documentation path only after confirming that repository's existing structure; they must not broaden the content scope.
 
@@ -179,14 +182,14 @@ A missing response, informal discussion, stale document, or majority of existing
 | --- | --- | --- | --- |
 | W1 — Program inventory | Dominion record plus index link in `drenyra-ai` | None | Remove the new record and its index link only |
 | W2 — License/publication facts | One Command Center documentation PR, split further if path review shows unrelated declarations | W1 | Revert only corrected wording; never touch legal artifacts |
-| W3a — Drenyra AI release facts | One Drenyra AI documentation PR | W1 | Revert current narrative correction without rewriting historical changelog entries |
+| W3a — Drenyra AI current release facts | One Drenyra AI documentation PR | W1 | Revert the current `0.5.0` matrix/evidence correction without rewriting historical changelog entries |
 | W3b — Pi publication fact | One Drenyra Pi documentation PR, only with verified evidence | W1 | Revert only the publication marker |
 | W3c — Engram publication fact | One Engram documentation PR, only with verified evidence | W1 | Revert only the publication marker |
 | W4 — Human fiscal-authority wording | One work unit per owning repository and coherent statement | W1 | Revert wording only; runtime and authority mechanisms remain untouched |
 | W5a–W5d — Owner decisions | Four independent Dominion decision entries: FEOS, ledger, membership, maturity | W1 | Supersede or withdraw by a retained later record; never rewrite history |
 | W6 — Declaration propagation | One approved decision × one repository per work unit | Matching W5 decision approved | Revert the repository projection while retaining the approved decision record |
 
-W2, W3a–W3c, and W4 may proceed independently when their local evidence is sufficient. W6 cannot start from draft, inferred, or partial approval.
+W2, W3a–W3c, and W4 may proceed independently when their local evidence is sufficient. For W3a, owner authorization supersedes the stale historical `0.2.1` target with the verified current `0.5.0` npm release; already-correct package, changelog, and README surfaces require readback, not rewriting. W6 cannot start from draft, inferred, or partial approval.
 
 ## Propagation and readback procedure
 
@@ -200,6 +203,14 @@ W2, W3a–W3c, and W4 may proceed independently when their local evidence is suf
 8. **Handle mismatch:** return the affected work unit to `in_progress` or `blocked`; do not weaken the source declaration or mark partial propagation complete.
 
 Readback is evidence, not automation. Links, exact statements, target paths, and delivery references provide reviewer-verifiable recognition rather than requiring reconstruction from memory.
+
+## Catalog amendment design
+
+- **SDD-120** groups the already-approved architecture boundaries for tenant scope, evidence, journal, policy, and candidate ordering; it does not promote the earlier implementation slices or redefine the audit ledger.
+- **SDD-130** owns later ingestion/provenance planning and depends on SDD-120 authority boundaries.
+- **SDD-140** owns declaration/submission candidate and CDR/UNKNOWN reconciliation planning and depends on SDD-130 evidence plus the existing monthly-close, skills, and production connector seams.
+- **SDD-150** owns read-only continuous assurance planning and depends on SDD-140 plus Guardian and Command Center projection capabilities.
+- The four records use compact catalog stubs under `openspec/programs/drenyra-dominion/sdds/`; the master README and dependency graph provide the only new index/sequence declarations. Existing E-008 twelve-record evidence is retained as historical and superseded by new readback evidence rather than rewritten.
 
 ## Verification strategy
 
@@ -223,7 +234,7 @@ No runtime test, build, typecheck, or migration is required for documentation-on
 | --- | ---: | --- | --- |
 | W1 program record and index | 180–280 | Low | One cohesive coordination unit; split supporting material if it approaches the effective limit |
 | W2 Command Center facts | 20–80 | Low | Keep legal/license and publication evidence together only if rollback remains coherent |
-| W3a release metadata narrative | 20–80 | Low | Preserve historical entries |
+| W3a current `0.5.0` release metadata | 20–80 | Low | Update only stale current-state projections/evidence; preserve historical entries |
 | W3b/W3c roadmap markers | 5–30 each | Low | Separate repository PRs |
 | W4 fiscal-authority wording | 20–80 per repository | Low | One repository per work unit |
 | W5 decision entries | 15–40 per decision | Low | Independent entries; no invented declaration |

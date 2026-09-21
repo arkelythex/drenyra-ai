@@ -17,15 +17,15 @@
 | `record_id` | `dominion-ecosystem-coherence` |
 | `scope` | Drenyra ecosystem repositories and audited documentation surfaces: `drenyra-ai`, `drenyra-command-center`, `drenyra-pi`, `drenyra-engram`, plus shared program documents (`capability-matrix.yaml`, Dominion docs). |
 | `record_owner` | Drenyra Dominion program maintainer (role) |
-| `last_reviewed` | 2026-08-14 |
+| `last_reviewed` | 2026-08-21 |
 | `status` | `open` — derived from item states below; this is not an independent claim of approval and must not be read as one. |
 | `non_goals` | No product code, runtime behavior, APIs, contracts, data schemas, persistence, migrations, ledger contents, licenses, historical artifacts, or new cross-repository automation is in scope. This record coordinates remediation workflow state only. |
 
 ## Issue inventory
 
-> One stable row per audited inconsistency. **Fail-closed:** no row is `complete` —
-> no remediation readback has been performed yet. Governance rows are
-> `blocked_owner_decision` until a named owner approves an exact declaration.
+> One stable row per audited inconsistency. **Fail-closed:** a row is `complete`
+> only after repository-specific remediation readback is recorded. Governance rows
+> remain `blocked_owner_decision` until a named owner approves an exact declaration.
 > Fields follow the ecosystem-coherence design ("Issue inventory fields").
 
 | `issue_id` | `claim_class` | `authoritative_domain` | `observed_conflict` | `affected_repositories` | `authoritative_source` | `evidence_refs` | `accountable_owner` | `status` | `decision_state` | `decision_ref` | `next_decision_point` | `dependency_ids` | `work_unit_ids` | `rollback_boundary` | `completion_evidence` |
@@ -36,7 +36,7 @@
 | EC-004 | governance_decision | ledger | Command Center, Drenyra AI, and Engram do not share one approved declaration of ledger-of-record, append-only audit ledger/receipts, and Engram memory boundaries | `drenyra-ai`, `drenyra-command-center`, `drenyra-engram` | pending — no approved declaration exists | proposal.md §Scope B.2; design.md §Blocked-decision workflow | Drenyra product owner (role) | blocked_owner_decision | unresolved |  | Owner approval of exact ledger boundary declaration (DEC-LEDGER) | DEC-LEDGER | W6-LEDGER propagation (blocked; not created until approval) | Supersede or withdraw via retained later record; no propagation started |  |
 | EC-005 | governance_decision | membership | Canonical ecosystem membership roster and labels differ across repositories | `drenyra-ai`, `drenyra-command-center`, `drenyra-pi`, `drenyra-engram`, `drenyra-skills`, `drenyra-guardian-angel` | pending — no approved declaration exists | proposal.md §Scope B.3; design.md §Blocked-decision workflow | Drenyra product owner (role) | blocked_owner_decision | unresolved |  | Owner approval of exact membership roster and labels (DEC-MEMBERSHIP) | DEC-MEMBERSHIP | W6-MEMBERSHIP propagation (blocked; not created until approval) | Supersede or withdraw via retained later record; no propagation started |  |
 | EC-006 | governance_decision | maturity | Canonical maturity vocabulary and current labels differ across repositories | all ecosystem repositories + capability matrix | pending — no approved declaration exists | proposal.md §Scope B.3; design.md §Blocked-decision workflow | Drenyra product owner (role) | blocked_owner_decision | unresolved |  | Owner approval of exact maturity vocabulary and labels (DEC-MATURITY) | DEC-MATURITY | W6-MATURITY propagation (blocked; not created until approval) | Supersede or withdraw via retained later record; no propagation started |  |
-| EC-007 | product_fact | release/publication | Drenyra AI 0.2.1 package metadata drifts from its changelog, README, and capability matrix | `drenyra-ai` (`package.json`, `CHANGELOG.md`, `README.md`, capability-matrix.yaml) | released 0.2.1 artifact (packed/installed artifact or registry record) | proposal.md §Scope A.3; capability-matrix.yaml (drenyra-ai entry) | Drenyra Dominion program maintainer | evidence_ready | not_required | N/A | Reconcile 0.2.1 metadata narrative against the released artifact and record readback | W1 | W3a | Revert W3a narrative correction; historical changelog entries intact |  |
+| EC-007 | product_fact | release/publication | The verified npm release is `0.5.0`; package metadata, changelog, and README already agree, while the capability matrix retained a historical `0.4.0` projection | `drenyra-ai` (`package.json`, `CHANGELOG.md`, `README.md`, capability-matrix.yaml) | npm `drenyra-ai@0.5.0` immutable tarball and integrity metadata | npm tarball `https://registry.npmjs.org/drenyra-ai/-/drenyra-ai-0.5.0.tgz`; capability-matrix.yaml W3a evidence; owner-authorized supersession of stale `0.2.1` target | Drenyra Dominion program maintainer | complete | not_required | N/A | Recheck on the next release; do not rewrite historical release entries | W1 | W3a | Revert only the W3a matrix/evidence projection and planning/readback updates | `package.json`=`0.5.0`; CHANGELOG current section=`0.5.0`; README stable release=`v0.5.0`; matrix=`0.5.0`; registry `latest`=`0.5.0` (read back 2026-08-21) |
 | EC-008 | product_fact | release/publication | Drenyra Pi and Engram roadmap publication checkboxes are stale; verifiable publication evidence not yet confirmed | `drenyra-pi` (`ROADMAP.md`), `drenyra-engram` (`ROADMAP.md`) | verifiable release/publication record per repository (to be confirmed) | proposal.md §Scope A.4; gate-0.md §4 | Drenyra Dominion program maintainer | identified | not_required | N/A | Verify publication evidence per repository; mark published only where evidence exists; record readback | W1 | W3b (pi), W3c (engram) | Revert only the publication markers, independently per repository |  |
 | EC-009 | product_fact | fiscal-authority wording | Public wording can conflate Drenyra AI execution authority with human fiscal decision authority | `drenyra-ai`, `drenyra-command-center`, `drenyra-pi`, `drenyra-engram` | business rule: humans retain fiscal and business decision authority; Drenyra AI executes deterministic, policy-constrained operations and records evidence | proposal.md §Business and governance rules; design.md §Authoritative-source precedence | Drenyra Dominion program maintainer | evidence_ready | not_required | N/A | Deliver W4/W4b wording corrections and record readback | W1 | W4 (drenyra-ai), W4b-cc, W4b-pi, W4b-engram (conditional) | Revert wording only; runtime and authority mechanisms untouched |  |
 
@@ -74,7 +74,7 @@ approval.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | W1 | `drenyra-ai` | Create this program record, its index link, and perform structural readback | — | readback_pending |  |  | Remove only this new record and its index link |
 | W2 | `drenyra-command-center` | Correct license wording (EC-001) and Engram publication wording (EC-002) | W1 | planned |  |  | Revert only corrected wording; never touch `LICENSE` or privacy guarantees |
-| W3a | `drenyra-ai` | Reconcile 0.2.1 release metadata narrative (EC-007) | W1 | planned |  |  | Revert current narrative correction; historical changelog entries intact |
+| W3a | `drenyra-ai` | Reconcile current `0.5.0` release metadata and supersede the stale `0.2.1` target (EC-007) | W1 | complete | candidate — parent owns delivery | 128 | Revert only the W3a matrix/evidence projection and planning/readback updates; historical release surfaces remain intact |
 | W3b | `drenyra-pi` | Update roadmap publication marker only where verifiable evidence exists (EC-008) | W1 | planned |  |  | Revert only the publication marker |
 | W3c | `drenyra-engram` | Update roadmap publication marker only where verifiable evidence exists (EC-008) | W1 | planned |  |  | Revert only the publication marker |
 | W4 | `drenyra-ai` | Human fiscal-authority wording boundary (EC-009) | W1 | planned |  |  | Revert wording only; runtime and authority mechanisms untouched |
@@ -87,5 +87,6 @@ approval.
 | Work unit | Status | Readback evidence | Delivery reference |
 | --- | --- | --- | --- |
 | W1 | readback in progress (W1.4) | Structural readback performed as part of W1.4: four sections present, all inventory/decision fields present, four independent blocked decisions, no `complete` row, diff restricted to the two allowed paths |  |
-| W2, W3a, W3b, W3c, W4, W4b | pending | No readback recorded yet; recorded here after each unit's delivery and local/cross-repository comparison |  |
+| W2, W3b, W3c, W4, W4b | pending | No readback recorded yet; recorded here after each unit's delivery and local/cross-repository comparison |  |
+| W3a | complete | npm registry reports `drenyra-ai@0.5.0`, `latest: 0.5.0`, published 2026-08-19, tarball `https://registry.npmjs.org/drenyra-ai/-/drenyra-ai-0.5.0.tgz`, integrity `sha512-Kr90Ux6uorRC+YYkakDy3xc6rktl46DdmXEX6AGHsvF9o9e33vQ5oNEqijdrKczekGmxjylEr7M4sw//HP7tkQ==`; local readback: package/changelog/README already `0.5.0` and unchanged, matrix corrected `0.4.0` → `0.5.0`; no historical changelog entry changed | candidate — parent owns delivery |
 | W5a–W5d, W6 | pending | No readback recorded yet; gated on owner approval |  |

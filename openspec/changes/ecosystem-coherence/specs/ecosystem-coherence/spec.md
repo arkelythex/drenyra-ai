@@ -56,19 +56,19 @@ Documentation describing Engram MUST agree with Engram's authoritative license a
 
 ### Requirement: Release Metadata Reconciliation
 
-Drenyra AI 0.2.1 package metadata, changelog, README, and capability matrix MUST agree with the released artifact, using the released artifact as the authoritative evidence; historical changelog entries MUST NOT be rewritten.
+Drenyra AI current `0.5.0` package metadata, changelog, README, and capability matrix MUST agree with the npm release artifact, using the immutable registry tarball and integrity metadata as authoritative evidence; historical changelog entries MUST NOT be rewritten. This current-state requirement supersedes the stale `0.2.1` reconciliation target.
 
-#### Scenario: Drifting 0.2.1 metadata reconciled
+#### Scenario: Current 0.5.0 metadata reconciled
 
-- GIVEN Drenyra AI 0.2.1 package metadata disagrees with its released artifact, changelog, README, and capability matrix
-- WHEN the release metadata correction is applied
-- THEN package metadata, changelog, README, and capability matrix all state the facts of the released artifact and link to it as evidence
+- GIVEN npm `latest`, the registry artifact, package metadata, changelog, and README identify `0.5.0`, while the capability matrix retains a `0.4.0` checkpoint
+- WHEN the current-release metadata correction is applied
+- THEN package metadata, changelog, README, and capability matrix all identify `0.5.0`, and the program evidence links to the immutable npm tarball and integrity metadata
 
 #### Scenario: History is preserved
 
-- GIVEN the correction touches the changelog for 0.2.1
-- WHEN the correction is applied
-- THEN the historical changelog entries for prior states remain intact and no past entry is rewritten
+- GIVEN the live changelog already records `0.5.0` and earlier releases
+- WHEN the current-release correction is applied
+- THEN earlier changelog entries remain intact and no historical entry is rewritten
 
 ### Requirement: Roadmap Publication Correction
 
@@ -149,6 +149,22 @@ Product repositories MUST remain authoritative for their own licenses, released 
 - GIVEN a product fact that is governed by a released artifact
 - WHEN the program record describes that fact
 - THEN the record cites the released artifact as authoritative and does not substitute its own determination
+
+### Requirement: Coherent Dominion Capability Catalog Extension
+
+The existing Dominion program master MUST catalog SDD-120 Deterministic Fiscal Authority Kernel, SDD-130 Evidence Ingestion and Provenance, SDD-140 SUNAT Declaration and CDR Reconciliation, and SDD-150 Continuous Fiscal Audit and Assurance as four separate `lifecycle:planned` records, MUST link their dependency order from the existing master catalog, and MUST NOT treat catalog presence as implementation evidence, external-execution approval, or a second program master.
+
+#### Scenario: Four planned capabilities extend the existing master
+
+- GIVEN the Dominion master currently catalogs SDD-000 through SDD-110
+- WHEN the authorized catalog amendment is applied
+- THEN SDD-120, SDD-130, SDD-140, and SDD-150 each have a resolvable catalog record, remain `lifecycle:planned`, and are linked from the same Dominion master
+
+#### Scenario: Catalog amendment creates no authority or implementation claim
+
+- GIVEN the four records describe deterministic authority, evidence ingestion, SUNAT reconciliation, and fiscal assurance boundaries
+- WHEN a reviewer inspects the catalog and dependency graph
+- THEN no record claims runtime implementation, privileged external access, autonomous fiscal judgment, or settlement of an unresolved FEOS, ledger, membership, or maturity decision
 
 ### Requirement: No Implementation, Code, or Contract Change
 

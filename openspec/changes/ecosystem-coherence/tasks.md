@@ -9,12 +9,12 @@
 | Chained PRs recommended | Yes |
 | Suggested split | PR 1 (Dominion record) → PR 2 (Command Center) → PR 3 (Drenyra AI release facts) → PR 4 (Pi roadmap) → PR 5 (Engram roadmap) → PR 6 (fiscal-authority wording) |
 | Delivery strategy | auto-chain |
-| Chain strategy | pending |
+| Chain strategy | stacked-to-main |
 
 ```text
-Decision needed before apply: Yes
+Decision needed before apply: No
 Chained PRs recommended: Yes
-Chain strategy: pending
+Chain strategy: stacked-to-main
 400-line budget risk: Low
 ```
 
@@ -64,6 +64,17 @@ Chain strategy: pending
 
 ---
 
+## Group 1B — Authorized Dominion catalog amendment (W7) in `drenyra-ai`
+
+> Repository: `drenyra-ai`. Delivery boundary: one documentation-only stacked work unit, maximum 300 changed lines. This amends the existing `ecosystem-coherence` change; it does not create another master SDD.
+
+- [x] Amend proposal, spec, and design to define SDD-120 Deterministic Fiscal Authority Kernel, SDD-130 Evidence Ingestion and Provenance, SDD-140 SUNAT Declaration and CDR Reconciliation, and SDD-150 Continuous Fiscal Audit and Assurance as lifecycle-planned catalog capabilities. <!-- sdd-owner: implementation -->
+- [x] Add four compact, resolvable catalog records under `openspec/programs/drenyra-dominion/sdds/`; link them from the master README and dependency graph without claiming implementation, external authority, or settled governance. <!-- sdd-owner: implementation -->
+- [x] Run RED/GREEN/TRIANGULATE structural checks: prove the four records/links are absent before the edit, then present and coherent afterward; confirm only documentation/OpenSpec paths changed and total authored additions plus deletions are at most 300. <!-- sdd-owner: implementation -->
+- [x] Merge W7 evidence into `apply-progress.md`, including exact changed paths, TDD cycle evidence, remaining unchecked implementation tasks, PR boundary, and SHA-256 evidence revision. <!-- sdd-owner: implementation -->
+
+---
+
 ## Group 2 — Evidence-backed documentation corrections (W2, W3a–W3c, W4)
 
 > Each is a separate repository PR, independent and rollback-isolated. No unit touches license/legal files, product code, runtime contracts, schemas, migrations, archived changes, or the unrelated `fiscal-authority-kernel` verification report.
@@ -76,14 +87,15 @@ Chain strategy: pending
   - **Rollback boundary:** revert only the corrected wording; `LICENSE` unchanged.
   - **Expected authored lines:** 20–80.
 
-### W3a — Drenyra AI 0.2.1 release metadata narrative (repo: `drenyra-ai`, budget < 300)
+### W3a — Drenyra AI current 0.5.0 release metadata (repo: `drenyra-ai`, budget < 300)
 
-- [ ] Reconcile 0.2.1 package metadata, changelog, README, and capability-matrix entry so they agree with the released artifact, citing it as evidence; do not rewrite historical changelog entries. <!-- sdd-owner: implementation -->
-  - **Allowed paths:** `package.json` (version/metadata fields only), `CHANGELOG.md` (current 0.2.1 section narrative only, historical entries intact), `README.md` (release facts only), `openspec/programs/drenyra-dominion/capability-matrix.yaml` (drenyra-ai version/entry only).
-  - **Evidence:** the released 0.2.1 artifact (packed/installed artifact or registry record) is authoritative.
-  - **Rollback boundary:** revert the metadata narrative changes independently of any other unit.
-  - **Expected authored lines:** 20–80.
-  - **Note:** distinct PR from W1 (same repo, different allowlist and budget pool); do not combine with W1.
+- [x] Reconcile current Drenyra AI 0.5.0 release metadata across package metadata, changelog, README, and the capability-matrix entry against the npm artifact; preserve historical changelog entries and supersede the stale 0.2.1 target. <!-- sdd-owner: implementation -->
+  - **Allowed paths:** `package.json`, `CHANGELOG.md`, and `README.md` for readback only when already correct; `openspec/programs/drenyra-dominion/capability-matrix.yaml` (drenyra-ai current version/evidence only); this change's proposal/spec/design/tasks/apply-progress; `openspec/programs/drenyra-dominion/ecosystem-coherence.md` (W3a status/readback only).
+  - **Evidence:** npm `drenyra-ai@0.5.0`, `latest: 0.5.0`, published 2026-08-19, immutable tarball `https://registry.npmjs.org/drenyra-ai/-/drenyra-ai-0.5.0.tgz`, integrity `sha512-Kr90Ux6uorRC+YYkakDy3xc6rktl46DdmXEX6AGHsvF9o9e33vQ5oNEqijdrKczekGmxjylEr7M4sw//HP7tkQ==`.
+  - **Readback:** `package.json`, `CHANGELOG.md`, and `README.md` already identify `0.5.0` and remain unchanged; update the stale `0.4.0` capability-matrix projection and record completion evidence.
+  - **Rollback boundary:** revert only the current `0.5.0` capability-matrix evidence/projection and W3a planning/readback updates; do not revert package metadata or release history.
+  - **Expected authored lines:** 30–100.
+  - **Note:** owner `dreamcoder` explicitly authorized the reset/replan from historical W3a `0.2.1` to verified current `0.5.0`; distinct PR from W1/W7.
 
 ### W3b — Pi roadmap publication marker (repo: `drenyra-pi`)
 
@@ -103,7 +115,7 @@ Chain strategy: pending
 
 ### W4 — Human fiscal-authority wording (one unit per owning repository)
 
-- [ ] In `drenyra-ai` (`README.md`, `docs/governance.md` or equivalent governance/authority docs), state consistently that humans retain fiscal and business decision authority while Drenyra AI executes deterministic, policy-constrained operations and records evidence; remove any implication of autonomous business or legal judgment; do not promote advisory AI or memory into fiscal evidence or authorization. <!-- sdd-owner: implementation -->
+- [x] In `drenyra-ai` (`README.md`, `docs/governance.md` or equivalent governance/authority docs), state consistently that humans retain fiscal and business decision authority while Drenyra AI executes deterministic, policy-constrained operations and records evidence; remove any implication of autonomous business or legal judgment; do not promote advisory AI or memory into fiscal evidence or authorization. <!-- sdd-owner: implementation -->
   - **Allowed paths:** README + governance/authority documentation only; narrow discovery target before editing.
   - **Evidence:** design "Authoritative-source precedence" (fiscal-authority wording domain) and proposal business rules.
   - **Rollback boundary:** revert wording only; runtime and authority mechanisms untouched.

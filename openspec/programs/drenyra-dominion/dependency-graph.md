@@ -27,6 +27,18 @@ flowchart TD
     P9 --> P10
 
     P10 --> P11["SDD-110<br/>Production + Commercial"]
+
+    P1 --> P12["SDD-120<br/>Fiscal Authority Kernel"]
+    P4 --> P12
+    P11 --> P13["SDD-130<br/>Evidence Ingestion"]
+    P12 --> P13
+    P5 --> P14["SDD-140<br/>SUNAT + CDR"]
+    P7 --> P14
+    P11 --> P14
+    P13 --> P14
+    P9 --> P15["SDD-150<br/>Fiscal Assurance"]
+    P10 --> P15
+    P14 --> P15
 ```
 
 ## 2. Federated source of truth
@@ -47,7 +59,11 @@ openspec/programs/drenyra-dominion/
     ├── sdd-000-dominion/
     ├── sdd-010-contracts/
     ├── ...
-    └── sdd-110-production/
+    ├── sdd-110-production/
+    ├── sdd-120-fiscal-authority-kernel/
+    ├── sdd-130-evidence-ingestion/
+    ├── sdd-140-sunat-declaration/
+    └── sdd-150-fiscal-assurance/
 ```
 
 Each participating repository holds ONLY its local change plus a reference to
@@ -100,6 +116,7 @@ from documentation or mocks alone.
 | 2 — Fiscal intelligence | 070–090 | Verifiable skills, bounded memory, independent Guardian |
 | 3 — Flagship product | 050–060–100 | Monthly close for firms and internal teams via Web UI |
 | 4 — Production | 110 | Real connectors, KMS, observability, pilots, commercial operation |
+| 5 — Peru v1 domain completion | 120–150 | Fiscal authority kernel, evidence ingestion, SUNAT/CDR reconciliation, read-only assurance |
 
 Wave 3 depends on wave 2 capabilities, but its UX exploration may advance
 earlier. Authoritative implementation may not.
