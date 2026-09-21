@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "Candidate Lifecycle — One Bounded Correction",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "identity-first",
+        "label": "Identity first",
+        "focus": [
+          "proposed",
+          "inspected",
+          "reviewing",
+          "accepted"
+        ],
+        "note": "Identity comes from the subject bytes and is revalidated before any review begins."
+      },
+      {
+        "id": "verdicts",
+        "label": "Three verdicts",
+        "focus": [
+          "reviewing",
+          "accepted",
+          "rejected",
+          "corrected"
+        ],
+        "note": "Review ends in accept, reject, or one bounded correction — nothing else."
+      },
+      {
+        "id": "correction-loop",
+        "label": "The correction loop",
+        "focus": [
+          "corrected",
+          "inspected",
+          "reviewing"
+        ],
+        "note": "A corrected subject must be inspected again, and the budget is already spent."
+      }
+    ],
+    "viewBox": [
+      980,
+      566
+    ]
+  },
+  "lanes": [
+    {
+      "id": "main",
+      "label": "Candidate lifecycle"
+    },
+    {
+      "id": "outcomes",
+      "label": "Outcomes"
+    }
+  ],
+  "states": [
+    {
+      "id": "proposed",
+      "type": "start",
+      "label": "Proposed",
+      "sublabel": "identity + materiality",
+      "lane": "main",
+      "col": 0,
+      "step": "01",
+      "tag": "proposed"
+    },
+    {
+      "id": "inspected",
+      "type": "active",
+      "label": "Inspected",
+      "sublabel": "subject bytes revalidated",
+      "lane": "main",
+      "col": 1,
+      "step": "02",
+      "tag": "fail-closed"
+    },
+    {
+      "id": "reviewing",
+      "type": "decision",
+      "label": "Reviewing",
+      "sublabel": "review depth by tier",
+      "lane": "main",
+      "col": 2,
+      "step": "03",
+      "tag": "R0–R3"
+    },
+    {
+      "id": "accepted",
+      "type": "success",
+      "label": "Accepted",
+      "sublabel": "review recorded",
+      "lane": "main",
+      "col": 3,
+      "step": "04",
+      "tag": "terminal"
+    },
+    {
+      "id": "corrected",
+      "type": "waiting",
+      "label": "Corrected",
+      "sublabel": "new subject hash",
+      "lane": "outcomes",
+      "col": 0,
+      "tag": "once only"
+    },
+    {
+      "id": "rejected",
+      "type": "failure",
+      "label": "Rejected",
+      "sublabel": "reason required",
+      "lane": "outcomes",
+      "col": 2,
+      "tag": "terminal"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "inspect-proposed",
+      "from": "proposed",
+      "to": "inspected"
+    },
+    {
+      "id": "submit-review",
+      "from": "inspected",
+      "to": "reviewing",
+      "fromSide": "right",
+      "toSide": "left",
+      "route": "straight"
+    },
+    {
+      "id": "accept",
+      "from": "reviewing",
+      "to": "accepted",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "correct",
+      "from": "reviewing",
+      "to": "corrected",
+      "route": "straight"
+    },
+    {
+      "id": "reject",
+      "from": "reviewing",
+      "to": "rejected",
+      "label": "reject",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "inspect-corrected",
+      "from": "corrected",
+      "to": "inspected",
+      "label": "inspect",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Identity is bytes",
+      "items": [
+        "subject_hash is computed over the exact reviewed bytes"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "One bounded correction",
+      "items": [
+        "A corrected subject is a new identity that must be inspected again"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Review depth follows materiality",
+      "items": [
+        "Materiality R0–R3 derives from BigInt cents, reversibility and jurisdiction"
+      ]
+    }
+  ]
+}

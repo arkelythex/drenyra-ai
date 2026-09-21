@@ -202,6 +202,35 @@ Recovery is explicit: in-flight `RUNNING` missions become `UNKNOWN` and resume b
 
 ---
 
+## Architecture Maps
+
+Two generated maps orient you in the runtime before the prose does. They are [Archify](https://github.com/tt-a1i/archify) artifacts built from this repository's own modules and contracts; the `.json` specification next to each artifact is the reviewable source, and the [Documentation Standard](docs/documentation-standard.md#5-diagrams) holds the diagram convention.
+
+### The runtime and contract surface
+
+![Drenyra AI runtime and contract surface: entry adapters, the agent staging layer, MissionRuntime, candidates, proportional review, gates, receipts, the append-only ledger, and recovery, with frozen contracts and the professional's explicit approval](docs/diagrams/drenyra-ai-runtime.architecture.light.svg#gh-light-mode-only)
+![Drenyra AI runtime and contract surface: entry adapters, the agent staging layer, MissionRuntime, candidates, proportional review, gates, receipts, the append-only ledger, and recovery, with frozen contracts and the professional's explicit approval](docs/diagrams/drenyra-ai-runtime.architecture.dark.svg#gh-dark-mode-only)
+
+*Open the [interactive version](https://arkelythex.github.io/drenyra-ai/drenyra-ai-runtime.architecture.html) for pan, zoom, guided views, and relationship tracing.*
+
+- **The path is fixed.** A command enters through thin adapters (`cmd/`, `mcp/`, or the library), `agents/` stages a plan, and `missions/` — the durable runtime — decides what happens next.
+- **Authority is derived, never asserted.** Agents propose candidates; materiality R0–R3 sets the review depth; `gates/` validates authority, scope and receipts and fails closed, returning a `needs_input` envelope instead of guessing; a professional approves explicitly at R2 (single) and R3 (dual distinct approvers).
+- **Nothing material happens without a receipt.** Every material action produces an immutable, Ed25519-signed receipt, and the append-only ledger chains those receipts so order and integrity survive any single tampering attempt.
+- **Recovery reads evidence, not transcripts.** `recovery/` resumes from the last persisted event, and `contracts/` is the normative, versioned public surface every module implements.
+
+### The candidate lifecycle
+
+![Candidate lifecycle: proposed, inspected, reviewing, then accepted, rejected, or one bounded correction that must be inspected again](docs/diagrams/drenyra-ai-candidate.lifecycle.light.svg#gh-light-mode-only)
+![Candidate lifecycle: proposed, inspected, reviewing, then accepted, rejected, or one bounded correction that must be inspected again](docs/diagrams/drenyra-ai-candidate.lifecycle.dark.svg#gh-dark-mode-only)
+
+*Open the [interactive version](https://arkelythex.github.io/drenyra-ai/drenyra-ai-candidate.lifecycle.html).*
+
+- **Identity is bytes.** `subject_hash` is computed over the exact reviewed bytes, so a mutated subject is rejected as `SUBJECT_MUTATED`, and different bytes are a different candidate.
+- **One bounded correction.** A correction yields a new subject hash that must pass inspection again; a second correction is `CORRECTION_BUDGET_EXCEEDED`, and later observations become follow-ups instead.
+- **Review depth follows materiality.** The tier R0–R3 derives from BigInt cents, reversibility and jurisdiction — never from an agent claim — and an unknown jurisdiction escalates one tier, fail-closed.
+
+---
+
 ## Contracts — the frozen public surface
 
 Contracts are the **public surface** of Drenyra AI: transport-agnostic, versioned, and consumed by Drenyra, Drenyra Pi, ERPs, other SaaS, and agent hosts. Each frozen contract is pinned by a conformance suite that runs in CI and fails on drift.

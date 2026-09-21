@@ -7,7 +7,7 @@
 | Doc | What it covers | Read when |
 | --- | --- | --- |
 | [Documentation Standard](documentation-standard.md) | Ecosystem documentation bar, and the diagram convention | Writing or reviewing docs and diagrams |
-| [Architecture Map](diagrams/drenyra-ai.architecture.html) | Generated map of the authority and proof path | Orienting in the runtime before reading prose |
+| [Architecture Map](diagrams/drenyra-ai-runtime.architecture.html) | Generated map of the runtime and contract surface | Orienting in the runtime before reading prose |
 | [Trust Model](architecture/trust-model.md) | What the runtime can prove and where authority lives | Starting out — read this first |
 | [Authority Model](architecture/authority-model.md) | Chain of authority, risk tiers R0–R3, gates, approvals | Understanding who may authorize what |
 | [Receipt vs. Ledger Entry](architecture/receipt-ledger-model.md) | Receipts as atomic proof vs. the ledger as chained order | Understanding the two audit artifacts |
@@ -47,12 +47,12 @@
 
 Drenyra AI may integrate Drenyra Engram. It is consumed by Drenyra and Drenyra Pi. It **never** depends on Drenyra or Drenyra Pi.
 
-> Both diagrams on this page are the inline views GitHub renders. The map below is generated from this repository's evidence; its [interactive artifact](diagrams/drenyra-ai.architecture.html) is the same composition with search, focus, and route tracing. The map does not replace either fence above: prose and pipelines stay authoritative, and the fences stay readable where an image cannot be.
+> Both diagrams on this page are the inline views GitHub renders. The map below is generated from this repository's evidence; its [interactive artifact](diagrams/drenyra-ai-runtime.architecture.html) is the same composition with search, focus, and route tracing. The map does not replace either fence above: prose and pipelines stay authoritative, and the fences stay readable where an image cannot be.
 
-![Drenyra AI authority and proof path: entry adapters, intent handlers, MissionRuntime, gates, signed receipts, and the append-only audit ledger, with frozen contracts, tenant scope, and human authority](diagrams/drenyra-ai.architecture.light.svg#gh-light-mode-only)
-![Drenyra AI authority and proof path: entry adapters, intent handlers, MissionRuntime, gates, signed receipts, and the append-only audit ledger, with frozen contracts, tenant scope, and human authority](diagrams/drenyra-ai.architecture.dark.svg#gh-dark-mode-only)
+![Drenyra AI runtime and contract surface: entry adapters, the agent staging layer, MissionRuntime, candidates, proportional review, gates, receipts, the append-only ledger, and recovery, with frozen contracts and the professional's explicit approval](diagrams/drenyra-ai-runtime.architecture.light.svg#gh-light-mode-only)
+![Drenyra AI runtime and contract surface: entry adapters, the agent staging layer, MissionRuntime, candidates, proportional review, gates, receipts, the append-only ledger, and recovery, with frozen contracts and the professional's explicit approval](diagrams/drenyra-ai-runtime.architecture.dark.svg#gh-dark-mode-only)
 
-*Source: [drenyra-ai.architecture.json](diagrams/drenyra-ai.architecture.json), pinned to revision `87542f6`. Regeneration and acceptance rules: [Documentation Standard §5](documentation-standard.md#5-diagrams).*
+*Source: [drenyra-ai-runtime.architecture.json](diagrams/drenyra-ai-runtime.architecture.json), pinned to revision `0cf630d`. Regeneration and acceptance rules: [Documentation Standard §5](documentation-standard.md#5-diagrams).*
 
 ## Core invariants
 
