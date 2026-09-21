@@ -40,6 +40,7 @@
     "./flow": "./dist/flow/index.js",
     "./gates": "./dist/gates/index.js",
     "./guardian": "./dist/guardian/index.js",
+    "./igv": "./dist/igv/index.js",
     "./journal": "./dist/journal/index.js",
     "./ledger": "./dist/ledger/index.js",
     "./mcp": "./dist/mcp/index.js",
