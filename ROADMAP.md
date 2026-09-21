@@ -1,7 +1,7 @@
 # Drenyra AI — Roadmap
 
 > [!NOTE]
-> **Last updated:** 2026-08-15. Status: released (all six contracts frozen).
+> **Last updated:** 2026-09-21 (Phase 2c/3 checklist reconciled against verified code state — see [0.6.0] in the CHANGELOG). Status: released (all six contracts frozen).
 > **GitHub repository visibility:** `public` — directly verified via `gh repo view arkelythex/drenyra-ai` → `{visibility: PUBLIC, isPrivate: false, defaultBranch: main}` (E-005, observed 2026-08-14T20:57:27Z; refreshed W2E-003, observed 2026-08-15T00:06:08Z). The prior "repository private" claim is stale and superseded by direct metadata — retained as history, not falsified (R7/R11). `license`, `productStage`, `sourceAvailability`, and `githubVisibility` remain independent fields; none is inferred from another.
 
 <!-- -->
@@ -85,7 +85,7 @@ The active `fiscal-authority-kernel` OpenSpec change seeds the SDD-040 (RDA v2) 
 - [x] Agent registry composition (`createAgentRegistry`) wired into `mission apply`; demo-only handler gate removed
 - [x] Focused tests for handlers, registry, and the CLI gated lifecycle
 - [ ] Expose `agents/` as a package subpath (next slice, version bump)
-- [ ] Multi-jurisdiction policy integration (Perú → LATAM)
+- [ ] Multi-jurisdiction policy integration (Perú → LATAM) — the hook exists (`AdapterRegistry.resolve(system, jurisdiction)`, `FISCAL_JURISDICTION` const, generic `PolicyEvaluator<TSubject>`, fail-closed `NON_PE_JURISDICTION` guard), but zero non-PE jurisdictions are implemented
 
 ## Phase 3 — Ecosystem maturity (current)
 
@@ -101,14 +101,14 @@ drenyra-ai receipt verify receipt.json
 drenyra-ai ledger validate ledger.json
 ```
 
-- [ ] **Adoption:** Drenyra consumes the first released version instead of its internal implementation
+- [ ] **Adoption:** Drenyra consumes the first released version instead of its internal implementation (state lives in the `Drenyra` repository, unverifiable from here)
 - [ ] **Public API:** expose `agents/` as a package subpath (moved from Phase 2c)
-- [ ] **MCP server** — agents reach missions, candidates, receipts, and gates over MCP
+- [ ] **MCP server** — `mcp/server.ts` is a real, spec-correct JSON-RPC 2.0 engine with tests (`mcp/__tests__/`), but only 3 tools are registered (`capabilities`, `ledger.validate`, `bank.reconcile`); mission/candidate/gate mutations are deliberately kept off MCP (`mcp/tools.ts`: "Mission/candidate mutations stay behind the Core gates and are not exposed as blind MCP tools"). Decide whether to add read-only mission/candidate/gate tools or narrow this line to match the intended surface.
 - [ ] **Agent integrations** — Codex, Claude Code, OpenCode
-- [ ] **Configurator experience** — `drenyra-ai install`, `doctor`, `sync`, `upgrade`, rollback
-- [ ] **Drenyra Skills** — versioned accounting, tax, and operational knowledge
+- [x] **Configurator experience** — `install`/`doctor`/`sync`/`upgrade`/`rollback` are real, dispatcher-wired commands with substantial test coverage
+- [x] **Drenyra Skills (in-repo wiring)** — `skills/{types,registry,pinning,signature,pe}.ts` (18 real PE skill constants) is tested and consumed by `cmd/commands/capabilities.ts`, `configurator/managed-config.ts`, and `flow/close.ts`. The separate, larger "external `drenyra-skills` catalog with >20 skills and independent consumers" goal stays deferred per the Frontier section below.
 - [ ] **Drenyra Guardian Angel** — independent, adversarial, continuous verification
-- [ ] Multi-jurisdiction policies (Perú → LATAM)
+- [ ] Multi-jurisdiction policies (Perú → LATAM) — see the Phase 2c note above; the hook exists, no second jurisdiction is implemented
 - [ ] External ERP/SaaS adoption documentation
 
 ## Phase 4 — v1.0
