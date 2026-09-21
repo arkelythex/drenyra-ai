@@ -12,6 +12,13 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-09-21
+
+### Added — `agents/` public subpath (Phase 2c/3 roadmap item)
+
+- **`package.json` `exports`**: adds `"./agents": "./dist/agents/index.js"`, exposing the deterministic `IntentHandler` orchestration layer (`AGENT_INTENTS`, `INTENT_PLANS`, `PlanIntentHandler`, per-intent handlers, `createAgentRegistry`) as public API. Backward-compatible addition — no existing export changed.
+- **`ROADMAP.md`**: corrected against verified code state — `skills/` in-repo wiring and the configurator experience (`install`/`doctor`/`sync`/`upgrade`/`rollback`) are done and now checked off; the MCP server line is narrowed to reflect its actual, deliberately-scoped 3-tool surface (`capabilities`, `ledger.validate`, `bank.reconcile` — mission/candidate/gate mutations intentionally stay off MCP); the multi-jurisdiction line now notes the existing `AdapterRegistry`/`PolicyEvaluator` hook with zero non-PE jurisdictions implemented.
+
 ## [0.5.0] - 2026-08-17
 
 ### Added — SDD-CON-001/002 engines + vertical wiring + authorization enforcement (PR #64)
