@@ -81,5 +81,5 @@ where conformance passes cleanly.
 
 ## PRs opened (neither merged — left for human fiscal review)
 
-- `drenyra-ai`: branch `feat/igv-determination-engine` (see PR link in final report)
+- `drenyra-ai`: <https://github.com/arkelythex/drenyra-ai/pull/112> (branch `feat/igv-determination-engine`)
 - `drenyra-skills`: <https://github.com/arkelythex/drenyra-skills/pull/9>
