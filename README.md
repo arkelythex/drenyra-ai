@@ -73,7 +73,8 @@ Drenyra AI occupies the accounting-domain position that Gentle-AI holds in softw
 | --- | --- |
 | Configures agent runtimes | Configures accounting/fiscal agent runtimes (`drenyra-ai install run`) |
 | Installer and TUI | Installer/configurator (`drenyra-ai install run`) |
-| SDD | Accounting missions and fiscal specifications |
+| ODD (Organic Driven Development) | Default workflow — organic engineering for everything except contracts and the fiscal lifecycle; see [CONTRIBUTING](CONTRIBUTING.md#development-workflow) |
+| SDD | Reserved for contract changes, the fiscal lifecycle, and cross-repo Dominion work — not the default |
 | RDD (Receipt-Driven Development) | RDA (Receipt-Driven Accounting) |
 | Code candidate | Posting, reconciliation, or declaration candidate |
 | Review receipt | Accounting/fiscal receipt (Ed25519, canonical vectors) |

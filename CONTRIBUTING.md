@@ -14,6 +14,7 @@ Before you dive in, read this guide fully. We have a structured workflow to keep
 - [Issue-First Workflow](#issue-first-workflow)
 - [Looking for Something to Work On](#looking-for-something-to-work-on)
 - [AI-Assisted Contributions](#ai-assisted-contributions)
+- [Development Workflow](#development-workflow)
 - [Ground Rules](#ground-rules)
 - [Label System](#label-system)
 - [Development Setup](#development-setup)
@@ -68,6 +69,22 @@ An issue **without** `status:approved` is usually still in discussion — implem
 - [ ] Disclose material AI assistance in the PR.
 
 For disclosure boundaries, required details, attribution rules, and reviewer expectations, see the canonical [AI-Assisted Contribution Policy](AI_POLICY.md).
+
+---
+
+## Development Workflow
+
+**Organic by default. SDD (OpenSpec) is reserved, not required.**
+
+Most contributions are organic: explore the affected code, make the change, add tests and docs in the same PR, and open it against an approved issue. No proposal, spec, design, or task-breakdown document is needed for this — that ceremony exists to protect specific high-consequence surfaces, not to gate routine engineering. Bug fixes, refactors, dependency and CI updates, new library-internal functionality, and most feature work all follow this path directly.
+
+Use the formal SDD process under `openspec/changes/` (proposal → spec → design → tasks) only when the change touches one of these:
+
+- **A frozen contract** (`contracts/**`) — see [Contract Changes](#contract-changes). The contract regime's version bump, migration path, and approval requirement apply regardless of workflow.
+- **The fiscal lifecycle order** (captura → clasificación → conciliación → cierre → declaración → auditoría) or any of the [Ground Rules](#ground-rules) invariants — receipts, tenant/RUC scope, ledger integrity, approval gates.
+- **A cross-repository or ecosystem-wide change** tracked under [`openspec/programs/drenyra-dominion/`](openspec/programs/drenyra-dominion/README.md), where multiple repositories must move in lockstep.
+
+If none of those apply, skip straight to code. This mirrors how the project already scopes contract and fiscal changes in [`AGENTS.md`](AGENTS.md#where-changes-belong) — this section just makes the boundary explicit and names it, so "does this need an OpenSpec change?" has a fast, obvious answer instead of defaulting to "safer to write one."
 
 ---
 
