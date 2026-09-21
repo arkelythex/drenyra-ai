@@ -40,7 +40,7 @@ remaining item has a named decision owner rather than being silently ignored.
 
 | Repository | Open PRs | Open alerts | Local risk |
 | --- | ---: | ---: | --- |
-| drenyra-ai | 1 | 0 | 21 foreign dirty entries; PR #100 is constitutional |
+| drenyra-ai | 1 | 0 | 0 foreign dirty entries (previously 21); committed locally to `chore/ecosystem-coherence-dominion-sync` (5 commits) and `chore/pin-latest-ci-actions` (2 commits, stacked on the former); neither pushed nor merged; PR #100 is constitutional and untouched |
 | drenyra-skills | 2 | 0 | Clean divergent docs branch |
 | drenyra-pi | 2 | 0 | One dirty entry; vendored runtime boundary requires care |
 | drenyra-engram | 11 | 0 | Active fiscal stack; two dirty entries |
@@ -85,6 +85,14 @@ remaining item has a named decision owner rather than being silently ignored.
 | CC-ANDINO-214 | drenyra-command-center issue #214 / PR #217 | Delete exactly tracked `products/andino/studio_html_backup/**` | complete deletion scope; zero refs; active tree unchanged; CI; secrets/PII scan; R3 review; alert closure | Revert merge `7c87151d2` | Two critical alerts closed; merged |
 | CC-ANDINO-215 | drenyra-command-center issue #215 / PR #234 | Active Studio npm/Node lock + Docker/CI reproducibility | exact npm lock; Node 20/22 lint/standalone build; digest-pinned Docker build/start/non-root/HTTP; actionlint; R3 | Revert merge `4867eb2bf` | Merged; reproducible deploy gate restored |
 | CC-ANDINO-216 | drenyra-command-center issue #216 / PR #235 | Active Studio Next + eslint-config 16.3.5 + npm lock | exact 2-spec diff; reproducible lock; Node 20/22; Docker smoke; npm audit 0; current CI; R3 | Revert merge `0ea07dff8` | Eight Studio lock alerts closed; merged |
+
+| DA-SDD-STUB | drenyra-ai local branch `chore/ecosystem-coherence-dominion-sync` | `openspec/programs/drenyra-dominion/sdds/sdd-1{20,30,40,50}-*/README.md` (new stub files only) | `bun run typecheck`/`lint`/`test` green; `markdownlint-cli2` 0 issues | `git revert 4f5397d` | Documentation, local only (not pushed/merged) |
+| DA-ECOH-CATALOG | drenyra-ai local branch `chore/ecosystem-coherence-dominion-sync` | `openspec/changes/ecosystem-coherence/{apply-progress,design,proposal,tasks}.md`, `openspec/changes/ecosystem-coherence/specs/ecosystem-coherence/spec.md`, `openspec/programs/drenyra-dominion/{README.md,capability-matrix.yaml,dependency-graph.md,ecosystem-coherence.md,status-and-evidence.md}` | `bun run typecheck`/`lint`/`test` green; `markdownlint-cli2` 0 issues | `git revert 68b7ca6` | Documentation/OpenSpec (W3a + W7 catalog amendment), local only (not pushed/merged) |
+| DA-FISCAL-WORDING | drenyra-ai local branch `chore/ecosystem-coherence-dominion-sync` | `README.md`, `docs/governance.md` | `bun run typecheck`/`lint`/`test` green; `markdownlint-cli2` 0 issues | `git revert 324ec74` | Documentation (W4 human fiscal-authority wording), local only (not pushed/merged) |
+| DA-CI-BUNVER | drenyra-ai local branch `chore/ecosystem-coherence-dominion-sync` | `.github/workflows/ci.yml`, `.github/workflows/release.yml` (`bun-version` 1.3.14 → 1.4.0) | `bun run typecheck`/`lint`/`test` green | `git revert 85a0564` | Mechanical, local only (not pushed/merged) |
+| DA-ODD-TRACKER | drenyra-ai local branch `chore/ecosystem-coherence-dominion-sync` | `odd/tasks/*.md` (new tracker files) | `bun run typecheck`/`lint`/`test` green; `markdownlint-cli2` 0 issues | `git revert 5a88848` | Tooling/process, local only (not pushed/merged) |
+| DA-CI-ACTIONS-V7 | drenyra-ai local branch `chore/pin-latest-ci-actions` (stacked on `chore/ecosystem-coherence-dominion-sync`) | `.github/workflows/ci.yml`, `.github/workflows/release.yml` (`actions/checkout` → v7.0.1 SHA, `actions/setup-node` → v7.0.0 SHA; zizmor ignore comment preserved) | `bun run typecheck`/`lint`/`test` green | `git revert 946ef9b` | Mechanical, local only (not pushed/merged) |
+| DA-BUN-1.4.2 | drenyra-ai local branch `chore/pin-latest-ci-actions` | `.bun-version` (new), `package.json` (`packageManager` field) | `bun run typecheck`/`lint`/`test` green | `git revert ec19ca1` | Mechanical, local only (not pushed/merged) |
 
 Add later units only after their current evidence and allowed edit surfaces are known.
 
