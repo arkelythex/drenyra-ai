@@ -52,7 +52,8 @@
     "authorization",
     "annual-declaration",
     "bank-reconciliation",
-    "close-calculations"
+    "close-calculations",
+    "igv"
   ],
   "exclude": [
     "node_modules",
