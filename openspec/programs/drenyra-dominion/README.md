@@ -68,6 +68,10 @@ for the per-SDD content contract.
 | [SDD-090 — Guardian Angel](sdds/sdd-090-guardian/README.md) | Independent, adversarial, strictly read-only verification | 2 |
 | [SDD-100 — Professional Command Center](sdds/sdd-100-command-center/README.md) | Web UI for missions, evidence, exceptions, decisions, receipts | 3 |
 | [SDD-110 — Production and Commercial Readiness](sdds/sdd-110-production/README.md) | Connectors, KMS, observability, pilots, security, open-core transition | 4 |
+| [SDD-120 — Deterministic Fiscal Authority Kernel](sdds/sdd-120-fiscal-authority-kernel/README.md) | Tenant scope, canonical evidence, journal ownership, deterministic policy, candidate ordering | 5 |
+| [SDD-130 — Evidence Ingestion and Provenance](sdds/sdd-130-evidence-ingestion/README.md) | Fail-closed fiscal input capture, normalization, provenance, and evidence identity | 5 |
+| [SDD-140 — SUNAT Declaration and CDR Reconciliation](sdds/sdd-140-sunat-declaration/README.md) | Human-authorized declaration candidates, restricted submission, UNKNOWN/CDR reconciliation | 5 |
+| [SDD-150 — Continuous Fiscal Audit and Assurance](sdds/sdd-150-fiscal-assurance/README.md) | Read-only assurance over immutable evidence, candidates, receipts, and declarations | 5 |
 
 ## Waves
 
@@ -78,6 +82,9 @@ for the per-SDD content contract.
 | 2 — Fiscal intelligence | 070–090 | Verifiable skills, bounded memory, independent Guardian |
 | 3 — Flagship product | 050–060–100 | Monthly close for firms and internal teams via Web UI |
 | 4 — Production | 110 | Real connectors, KMS, observability, pilots, commercial operation |
+| 5 — Peru v1 domain completion | 120–150 | Fiscal authority kernel, attributable ingestion, SUNAT reconciliation, continuous assurance |
+
+The SDD-120–150 entries are `lifecycle:planned` catalog capabilities. Their presence does not prove implementation, approve external execution, or create a second program master.
 
 Wave 3 depends on wave 2 capabilities, but its UX exploration may advance
 earlier. Authoritative implementation may not.

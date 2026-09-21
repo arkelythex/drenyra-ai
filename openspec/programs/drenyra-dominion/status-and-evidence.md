@@ -58,10 +58,12 @@ never authority to overwrite stronger evidence (R5).
 | E-012 | evidence — sibling README alignment | current-claim | github-metadata | sibling READMEs via `gh api .../readme` (drenyra-pi #36, drenyra-engram #25, drenyra-command-center #180 merged 2026-08-15) | arkelythex/* | merged | 2026-08-15T01:42Z | Stale "private ecosystem" claims corrected in pi/engram/command-center (app-web = redirect); skills/guardian-angel already correct | verified-current (merged) |
 | 010E-009 | evidence — engram sibling fact (refresh) | current-claim (observation-scoped) | github-metadata | `gh api repos/arkelythex/drenyra-engram` + `git/ref/heads/main` | arkelythex/drenyra-engram | 94417fd718069007e396b8d674df6ca87dbfd9fb | 2026-08-15T18:21:55Z | Direct API queries: visibility public, default branch main, immutable main SHA (post RelationsForScope to_id hardening commit) | verified-current (observation-scoped); corroborates E-010 |
 | 010E-010 | evidence — pi sibling fact (refresh) | current-claim (observation-scoped) | github-metadata | `gh api repos/arkelythex/drenyra-pi` + `git/ref/heads/main` | arkelythex/drenyra-pi | 340da3b2de7c73bcff007b9fa924d2dac7cd9e2c | 2026-08-15T18:21:55Z | Direct API queries: visibility public, default branch main, immutable main SHA | verified-current (observation-scoped); corroborates E-010 |
+| E-013 | lifecycle — authorized 16-SDD catalog | current-claim | repository readback | `README.md`, `dependency-graph.md`, `sdds/sdd-120-*`…`sdds/sdd-150-*` | arkelythex/drenyra-ai | candidate `sha256:441b7e55db12dcd054e8df5da2845169262d8873b9b7cb0d934a70d64458f64b` | 2026-08-21 | Directory/link enumeration: SDD-000…SDD-150 by tens (16); SDD-120/130/140/150 each `lifecycle:planned`; no implementation claim | verified-current (candidate-scoped); supersedes E-008 only for current catalog cardinality |
 
 Notes:
 
 - E-006 and E-007 are historical; they are never rewritten as current truth (R7).
+- E-008 remains immutable evidence of the twelve-entry catalog at revision `4975f4f`; E-013 supersedes only its current-cardinality claim after the authorized four-record amendment.
 - E-004 corroborates E-002 at the same revision; a promoted current claim may
   cite either, bound to revision `4975f4f` (R12).
 - E-005 proves only the queried repository at observation time; a public PR is
@@ -92,6 +94,7 @@ Notes:
 | Repository visibility PUBLIC | verified-current | Current for observation 2026-08-14T20:57:27Z (E-005) |
 | SDD-000 / SDD-010 lifecycle | current-claim | `lifecycle:active` — see SDD READMEs; Gate 0 rows 3–4 satisfied 2026-08-15 (E-009..E-012); SDD-000 content-contract phases and SDD-010 release-train remain (R3/R4) |
 | Gate 0 rows 3–4 | current-claim | `satisfied` 2026-08-15 (E-009..E-012); SDD-020 permitted (gate-0.md §4) |
+| Dominion SDD catalog | current-claim | 16 lifecycle records, SDD-000…SDD-150 by tens; SDD-120/130/140/150 remain `lifecycle:planned` (E-013). E-008 is retained as the prior twelve-entry checkpoint. |
 
 Related but non-duplicative: `ecosystem-coherence` exclusively owns its EC
 inconsistency inventory, governance-decision register, propagation units, and

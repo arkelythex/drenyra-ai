@@ -19,6 +19,12 @@ The program gates apply to every drenyra-ai change: conformance with the authori
 
 The open-core transition is registered as an **intention** in [charter.md §9](../openspec/programs/drenyra-dominion/charter.md#9-open-core-transition) — not a contractual promise. The private stage continues until a formal, conditions-based decision.
 
+## Fiscal decision authority
+
+**Humans retain fiscal and business decision authority.** Drenyra AI executes deterministic, policy-constrained operations only within recorded scope, evidence, and approvals; it records evidence and receipts but does not make autonomous business or legal judgments. Advisory AI output and Engram memory may inform a professional, but neither is fiscal evidence or authorization.
+
+Contributors must preserve this boundary in public wording and implementation: agents propose, professionals decide, and the deterministic core validates policy and enforces the recorded decision. Missing evidence, scope, or approval fails closed instead of being inferred from an agent response, a memory, or silence.
+
 ## Community development model
 
 | Mechanism | Purpose |
