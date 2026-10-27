@@ -27,7 +27,7 @@ import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 
 const SCRIPT = fileURLToPath(new URL("../checksum-lock.mjs", import.meta.url));
-const LOCK_REL = "openspec/programs/drenyra-dominion/program-lock.json";
+const LOCK_REL = "program/drenyra-dominion/program-lock.json";
 const REV = "d440203183e24b2a0ecf773915888bb6072fc015";
 const ENGRAM_SHA = "f997abc9cd97551cb0b9cae74623ec1fe002b9d2";
 const PI_SHA = "42607035c42901eebadc1bf2879cb09a1416f3b5";
@@ -119,7 +119,7 @@ function fixture(withSiblings = true): string {
 	const root = mkdtempSync(join(tmpdir(), "checksum-lock-"));
 	roots.push(root);
 	mkdirSync(join(root, "scripts"), { recursive: true });
-	mkdirSync(join(root, "openspec", "programs", "drenyra-dominion"), {
+	mkdirSync(join(root, "program", "drenyra-dominion"), {
 		recursive: true,
 	});
 	mkdirSync(join(root, "dist"), { recursive: true });
@@ -262,7 +262,7 @@ describe("checksum-lock fail-closed inputs", () => {
 					"--lock",
 					LOCK_REL,
 					"--artifact",
-					"drenyra-ai=openspec/./programs/drenyra-dominion/program-lock.json",
+					"drenyra-ai=program/./drenyra-dominion/program-lock.json",
 				],
 			],
 		];

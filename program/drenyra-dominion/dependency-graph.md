@@ -46,7 +46,7 @@ flowchart TD
 `drenyra-ai` maintains:
 
 ```text
-openspec/programs/drenyra-dominion/
+program/drenyra-dominion/
 ├── charter.md
 ├── authority-model.md
 ├── dependency-graph.md

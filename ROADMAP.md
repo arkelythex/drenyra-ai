@@ -15,9 +15,9 @@
 
 ## Program alignment
 
-The [Drenyra Dominion Program](openspec/programs/drenyra-dominion/README.md) fixes the ecosystem's vision, authority, contracts, waves, and gates; this roadmap tracks this repository's local delivery against it.
+The [Drenyra Dominion Program](program/drenyra-dominion/README.md) fixes the ecosystem's vision, authority, contracts, waves, and gates; this roadmap tracks this repository's local delivery against it.
 
-> Dominion checkpoint 2026-08-15 (W2): program status reconciled at `549ed64` — see [status-and-evidence.md](openspec/programs/drenyra-dominion/status-and-evidence.md) (evidence register E-001…E-009; W2 supplement W2E-001…W2E-004), [gate-0.md](openspec/programs/drenyra-dominion/gate-0.md), and [capability-matrix.yaml](openspec/programs/drenyra-dominion/capability-matrix.yaml). SDD-020 remains **blocked** pending Gate 0 rows 3–4.
+> Dominion checkpoint 2026-08-15 (W2): program status reconciled at `549ed64` — see [status-and-evidence.md](program/drenyra-dominion/status-and-evidence.md) (evidence register E-001…E-009; W2 supplement W2E-001…W2E-004), [gate-0.md](program/drenyra-dominion/gate-0.md), and [capability-matrix.yaml](program/drenyra-dominion/capability-matrix.yaml). SDD-020 remains **blocked** pending Gate 0 rows 3–4.
 
 | Roadmap work | Dominion wave | Related SDDs |
 | --- | --- | --- |

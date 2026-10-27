@@ -82,7 +82,7 @@ Use the formal SDD process under `openspec/changes/` (proposal → spec → desi
 
 - **A frozen contract** (`contracts/**`) — see [Contract Changes](#contract-changes). The contract regime's version bump, migration path, and approval requirement apply regardless of workflow.
 - **The fiscal lifecycle order** (captura → clasificación → conciliación → cierre → declaración → auditoría) or any of the [Ground Rules](#ground-rules) invariants — receipts, tenant/RUC scope, ledger integrity, approval gates.
-- **A cross-repository or ecosystem-wide change** tracked under [`openspec/programs/drenyra-dominion/`](openspec/programs/drenyra-dominion/README.md), where multiple repositories must move in lockstep.
+- **A cross-repository or ecosystem-wide change** tracked under [`openspec/programs/drenyra-dominion/`](program/drenyra-dominion/README.md), where multiple repositories must move in lockstep.
 
 If none of those apply, skip straight to code. This mirrors how the project already scopes contract and fiscal changes in [`AGENTS.md`](AGENTS.md#where-changes-belong) — this section just makes the boundary explicit and names it, so "does this need an OpenSpec change?" has a fast, obvious answer instead of defaulting to "safer to write one."
 

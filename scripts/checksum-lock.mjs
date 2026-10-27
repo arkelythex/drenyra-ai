@@ -36,8 +36,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const DEFAULT_LOCK = join(
 	ROOT,
-	"openspec",
-	"programs",
+	"program",
 	"drenyra-dominion",
 	"program-lock.json",
 );
