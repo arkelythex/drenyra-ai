@@ -262,13 +262,13 @@ writeFileSync(full, content);
 it("generates the manifest, covers it in checksums.txt, and requires it in verify-package-files.mjs", () => {
 const root = fixture();
 addPackageFiles(root);
-mkdirSync(join(root, "openspec", "programs", "drenyra-dominion"), {
+mkdirSync(join(root, "program", "drenyra-dominion"), {
 recursive: true,
 });
 writeFileSync(
 join(
 root,
-"openspec/programs/drenyra-dominion/program-lock.json",
+"program/drenyra-dominion/program-lock.json",
 ),
 `${JSON.stringify(promotedLock(), null, 2)}\n`,
 );

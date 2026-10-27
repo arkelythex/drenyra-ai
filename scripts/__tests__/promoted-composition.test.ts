@@ -35,7 +35,7 @@ const VERIFY_PACKED = fileURLToPath(new URL("../verify-packed-install.mjs", impo
 const REV = "d440203183e24b2a0ecf773915888bb6072fc015";
 const HOST_DIGEST = "2e3bd07241c250cf00653c346945108529d2fbba04a145bd9e38d938ae949a36";
 const CARRYING_SHA = "c".repeat(40);
-const LOCK_REL = "openspec/programs/drenyra-dominion/program-lock.json";
+const LOCK_REL = "program/drenyra-dominion/program-lock.json";
 const OUTPUT_REL = "dist/promoted-composition.json";
 const STAGING_REL = "dist/promoted-composition.json.staging";
 
@@ -85,7 +85,7 @@ function fixture(lock: Record<string, unknown> = promotedLockFixture()): string 
 	roots.push(root);
 	mkdirSync(join(root, "scripts"), { recursive: true });
 	mkdirSync(join(root, "dist"), { recursive: true });
-	mkdirSync(join(root, "openspec", "programs", "drenyra-dominion"), {
+	mkdirSync(join(root, "program", "drenyra-dominion"), {
 		recursive: true,
 	});
 	copyFileSync(SCRIPT, join(root, "scripts", "promoted-composition.mjs"));

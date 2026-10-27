@@ -32,5 +32,4 @@ jobs:
         with:
           args: >-
             --offline --include-fragments --no-progress --extensions md
-            --exclude-path '(^|/)openspec/changes/archive/'
             --exclude-path 'apply-progress\.md$' './**/*.md'

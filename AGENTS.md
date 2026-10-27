@@ -46,12 +46,30 @@ recovery/           Crash recovery and resumption
 tenant-core/        RUC/company/period scope primitives
 tenant-isolation/   Tenant isolation enforcement
 docs/               Architecture, trust-model, and dependency documentation
-openspec/           OpenSpec changes and the Drenyra Dominion program
+program/            The Drenyra Dominion program master (charter, program SDDs, program-lock)
+specs/              Requirements of record, one spec per capability
+odd/tasks/          ODD feature documents (specs, tasks, log per feature)
 ```
 
 - A **behavioral** change goes with its subsystem module, its tests, its conformance vectors (if crypto/contracts), and its docs — in the same PR (docs-as-code).
 - A **contract** change goes through the [contract regime](contracts/README.md) first.
-- A **mission or fiscal** change follows the [fiscal lifecycle](docs/fiscal-authority-kernel-chain.md) and may require an [OpenSpec change](openspec/changes/).
+- A **mission or fiscal** change follows the [fiscal lifecycle](docs/fiscal-authority-kernel-chain.md) and is tracked as an ODD feature document under [`odd/tasks/`](odd/tasks/).
+- A **cross-repository** change is recorded against the [Drenyra Dominion program](program/drenyra-dominion/README.md), and each repository tracks its own part in `odd/tasks/`.
+
+## Delivery Workflow — ODD
+
+Organic Driven Development is the only delivery workflow; it replaced SDD/OpenSpec ([`odd/tasks/sdd-to-odd-migration.md`](odd/tasks/sdd-to-odd-migration.md)).
+
+1. **Authorize.** Investigate, explain, review, and plan are read-only; only explicit change intent authorizes writes.
+2. **Explore** the code and the relevant [`specs/`](specs/) requirement first.
+3. **Size.** Small work (understood, contained risk, resumable from the diff) runs inline. Large work, or any change to a frozen contract, the fiscal lifecycle order, a Ground Rule invariant, or a cross-repository surface, creates `odd/tasks/<feature>.md` before the first source write.
+4. **Track.** A feature document has a header, `## Specs` (numbered `S#` quoting the request verbatim, with RFC 2119 keywords and Given/When/Then where behavior is specified), `## Tasks` (ID, linked `S#`, status, commit), and `## Log` (`L1` = the original request verbatim).
+5. **Implement strict TDD**, task by task: RED, GREEN, refactor. Stay inside the 300 changed-line review budget, and chain PRs when a forecast exceeds it.
+6. **Close** with the verified outcome, every failed or skipped check, and the next step.
+
+Design rules carried over from the former OpenSpec config: respect the layer model (contracts → library modules → agents → cmd; no reverse imports; library modules stay `node:crypto`-only); money is BigInt cents and version/sequence numbers are JSON integers; make fail-closed behavior explicit and document decisions with rationale; map product changes to the 16-program Peru v1 roadmap and the approved architecture sections (AI advisory vs deterministic authority; audit ledger vs accounting journal; evidence vs memory).
+
+Checks: `bun run typecheck`, `bun run lint`, `bun run test`, `bun run build`, and `bun x markdownlint-cli2 <changed-file>`.
 
 ## Skills
 
