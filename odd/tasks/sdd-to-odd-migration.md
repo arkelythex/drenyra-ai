@@ -18,11 +18,11 @@
 
 ## Tasks
 
-- [ ] **T1** — RED/GREEN: the release-integrity scripts default to `program/drenyra-dominion/program-lock.json`; tests updated first. *(S3)*
-- [ ] **T2** — `git mv` the program master to `program/drenyra-dominion/`; fix links in this repository. *(S2, S7)*
-- [ ] **T3** — Move the 6 active specs to `specs/`; open ODD documents for `ecosystem-coherence` and `monthly-close-core-integration`; delete `openspec/`. *(S1, S4, S5)*
-- [ ] **T4** — `AGENTS.md` (config conventions + ODD workflow), CONTRIBUTING, CODEBASE-GUIDE, README, ROADMAP, governance, CHANGELOG. *(S6, S7)*
-- [ ] **T5** — Gates, PR, and a note on PR #100. *(S8)*
+- [x] **T1** — RED/GREEN: the release-integrity scripts default to `program/drenyra-dominion/program-lock.json`; tests updated first. *(S3)* — `d2048f4`
+- [x] **T2** — `git mv` the program master to `program/drenyra-dominion/`; fix links in this repository. *(S2, S7)* — `d2048f4`
+- [x] **T3** — Move the 6 active specs to `specs/`; open ODD documents for `ecosystem-coherence` and `monthly-close-core-integration`; delete `openspec/`. *(S1, S4, S5)* — `a965688`
+- [x] **T4** — `AGENTS.md` (config conventions + ODD workflow), CONTRIBUTING, CODEBASE-GUIDE, README, ROADMAP, governance, CHANGELOG. *(S6, S7)* — `a965688`
+- [x] **T5** — Gates, PR, and a note on PR #100. *(S8)* — PR and #100 note
 
 ## Log
 
@@ -45,3 +45,14 @@
 
 - Ceremony, obsolete under ODD (bounded review, `sdd-verify`, `sdd-archive`, receipt or lifecycle gates owned by the SDD parent): `drenyra-ecosystem-cleanup` 2, `ecosystem-script-resilience` 2, `gentle-ai-quality-parity` 1, `release-integrity-evidence` 1, `reproducible-lint-gate` 3.
 - Real work: `ecosystem-coherence`, 15 items moved verbatim to `odd/tasks/ecosystem-coherence.md`. `monthly-close-core-integration` has only a proposal, moved verbatim to `odd/tasks/monthly-close-core-integration.md`.
+
+### L5 — 2026-10-27 — verification
+
+- T1 RED: the three release-integrity test files failed (default-path cases) after their fixtures moved to `program/drenyra-dominion/`. GREEN after `DEFAULT_LOCK` changed: 44/44, and 53/53 across `scripts/__tests__`.
+- The moved `program-lock.json` has the same SHA-256 as on `main` (`423c48d1…`). `node scripts/promoted-composition.mjs` writes the manifest from the new default path.
+- Full gates on `a965688`: `bun run typecheck`, `bun run lint`, and `bun run build` exit 0; `bun run test` 111 files / 1488 passed.
+- `bun x markdownlint-cli2@0.23.2` with the CI config: 0 issues in 95 files. A relative-link check over every tracked Markdown file found 0 broken targets.
+
+### L6 — 2026-10-27 — version drift found (for the sync step, not fixed here)
+
+`v0.5.0` is tagged and published on npm, with no GitHub Release object, while Drenyra Shell pins `0.4.1`. `CHANGELOG.md` has a `[0.6.0] - 2026-09-21` section with no tag and no npm version.
