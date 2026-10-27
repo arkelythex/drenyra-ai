@@ -13,7 +13,6 @@
     "!.atl/**",
     "!.pi/**",
     "!logs/**",
-    "!openspec/changes/archive/**",
     "!**/apply-progress.md"
   ]
 }

@@ -42,7 +42,9 @@ projection/  routing/  security/  adapters/
 scripts/            Build, conformance, and release tooling (build.mjs, sbom.mjs,
                     checksums.mjs, verify-*.mjs, brand-*.mjs, skills-conformance.mjs)
 docs/               Architecture series, design series, runbooks, sdds
-openspec/           OpenSpec changes + the Drenyra Dominion program (master SDD)
+program/            The Drenyra Dominion program master (charter, program SDDs, program-lock)
+specs/              Requirements of record, one spec per capability
+odd/tasks/          ODD feature documents
 ```
 
 Each library subsystem ships a `package.json` subpath export (`./missions`, `./receipts`, …) through `dist/` — the package is ESM, Node >= 22, `node:crypto` only in library modules.
@@ -88,7 +90,7 @@ Rules that matter every day:
 | Docs | `docs/` | the documentation index in README |
 | CI / release tooling | `.github/workflows/ci.yml`, `scripts/` | `RELEASING.md` if the release pipeline changed |
 
-Frozen `openspec/changes/*` paths are user-owned WIP — never edit them without explicit authorization.
+Open feature documents under `odd/tasks/` are owned by the feature that created them — update their task status and `## Log`, never rewrite another feature's specs without the owner's request.
 
 ---
 
@@ -121,7 +123,7 @@ node scripts/verify-packed-install.mjs   # prove the packed artifact works
 
 Markdown: `npx markdownlint-cli2 <changed-file>` (project config in `.markdownlint-cli2.jsonc`; line length, inline HTML, banners, and table-pipe style are project conventions, the rest of the rules are enforced).
 
-Known debt: the repository does not yet pass a full-repo markdownlint run (mostly `openspec/` historical files). Fix only the files you touch; keep the config minimal and honest.
+Fix markdownlint findings in the files you touch; keep the config minimal and honest.
 
 ---
 

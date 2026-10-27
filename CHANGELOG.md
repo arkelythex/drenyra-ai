@@ -12,6 +12,21 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+### Changed — SDD/OpenSpec retired, ODD is the only workflow
+
+- `openspec/` is removed. The Drenyra Dominion program master moves verbatim to
+  `program/drenyra-dominion/`, and `scripts/checksum-lock.mjs` and
+  `scripts/promoted-composition.mjs` default to its new `program-lock.json` path.
+  The file is byte-identical, so `release:generate` output is unchanged.
+- The six active change specs move verbatim to `specs/<capability>/spec.md`. Open
+  work becomes ODD feature documents: `odd/tasks/ecosystem-coherence.md` (15 open
+  items, including four owner-gated governance decisions) and
+  `odd/tasks/monthly-close-core-integration.md` (proposal, not started). The 202
+  archived change files remain in git history.
+- `AGENTS.md`, `CONTRIBUTING.md`, and `docs/CODEBASE-GUIDE.md` describe ODD and
+  carry the rules from the former `openspec/config.yaml`. See
+  `odd/tasks/sdd-to-odd-migration.md`.
+
 ## [0.6.0] - 2026-09-21
 
 ### Added — `agents/` public subpath (Phase 2c/3 roadmap item)

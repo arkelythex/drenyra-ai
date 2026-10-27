@@ -13,7 +13,7 @@
 
 ## Drenyra Dominion Program
 
-Drenyra AI participates in the [Drenyra Dominion Program](../program/drenyra-dominion/README.md), the federated program master that fixes vision, authority, contracts, dependencies, gates, and sequencing across every Drenyra repository. The program master lives in `openspec/programs/drenyra-dominion/`; each repository holds only its local changes plus a reference to it — full specs are never copied into participant repos.
+Drenyra AI participates in the [Drenyra Dominion Program](../program/drenyra-dominion/README.md), the federated program master that fixes vision, authority, contracts, dependencies, gates, and sequencing across every Drenyra repository. The program master lives in `program/drenyra-dominion/`; each repository holds only its local changes plus a reference to it — full specs are never copied into participant repos.
 
 The program gates apply to every drenyra-ai change: conformance with the authority model, no duplicated normative functions across repositories, explicit producer–consumer contracts, no moving branches, no monetary floats, no memory-as-evidence, UNKNOWN reconciliation for external execution, migration and rollback, and the review budget.
 

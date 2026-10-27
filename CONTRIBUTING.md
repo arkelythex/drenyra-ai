@@ -74,17 +74,17 @@ For disclosure boundaries, required details, attribution rules, and reviewer exp
 
 ## Development Workflow
 
-**Organic by default. SDD (OpenSpec) is reserved, not required.**
+**ODD — Organic Driven Development — is the only workflow.** SDD/OpenSpec was retired ([`odd/tasks/sdd-to-odd-migration.md`](odd/tasks/sdd-to-odd-migration.md)).
 
-Most contributions are organic: explore the affected code, make the change, add tests and docs in the same PR, and open it against an approved issue. No proposal, spec, design, or task-breakdown document is needed for this — that ceremony exists to protect specific high-consequence surfaces, not to gate routine engineering. Bug fixes, refactors, dependency and CI updates, new library-internal functionality, and most feature work all follow this path directly.
+Most contributions are small: explore the affected code, make the change, add tests and docs in the same PR, and open it against an approved issue. No tracking document is needed for that — bug fixes, refactors, dependency and CI updates, new library-internal functionality, and most feature work follow this path directly.
 
-Use the formal SDD process under `openspec/changes/` (proposal → spec → design → tasks) only when the change touches one of these:
+Create a feature document under [`odd/tasks/`](odd/tasks/) **before the first source write** when the change is large or touches one of these:
 
-- **A frozen contract** (`contracts/**`) — see [Contract Changes](#contract-changes). The contract regime's version bump, migration path, and approval requirement apply regardless of workflow.
+- **A frozen contract** (`contracts/**`) — see [Contract Changes](#contract-changes). The contract regime's version bump, migration path, and approval requirement apply regardless.
 - **The fiscal lifecycle order** (captura → clasificación → conciliación → cierre → declaración → auditoría) or any of the [Ground Rules](#ground-rules) invariants — receipts, tenant/RUC scope, ledger integrity, approval gates.
-- **A cross-repository or ecosystem-wide change** tracked under [`openspec/programs/drenyra-dominion/`](program/drenyra-dominion/README.md), where multiple repositories must move in lockstep.
+- **A cross-repository or ecosystem-wide change** recorded against the [Drenyra Dominion program](program/drenyra-dominion/README.md), where multiple repositories must move in lockstep.
 
-If none of those apply, skip straight to code. This mirrors how the project already scopes contract and fiscal changes in [`AGENTS.md`](AGENTS.md#where-changes-belong) — this section just makes the boundary explicit and names it, so "does this need an OpenSpec change?" has a fast, obvious answer instead of defaulting to "safer to write one."
+The document format and the strict TDD loop are described in [`AGENTS.md`](AGENTS.md#delivery-workflow--odd). Requirements of record live in [`specs/`](specs/).
 
 ---
 
