@@ -1,81 +1,116 @@
 # Drenyra AI — Quickstart
 
-Get Drenyra AI running in five minutes: install the package, verify a receipt, validate a ledger, start a mission.
+← [Back to README](../README.md)
 
-> [!IMPORTANT]
-> **Fiscal convention:** monetary values in the Drenyra ecosystem are BigInt cents (never floats); version/sequence numbers are JSON integers, never floats.
+Start with read-only inspection, then create one isolated draft mission. This
+path checks that the runtime works without posting entries, contacting SUNAT,
+or treating a configured agent as fiscal authority.
 
----
+## Quick path
+
+Requires **Node.js 22+** and npm. Install the binary globally if you want to run
+it directly from your shell:
+
+```bash
+npm install -g drenyra-ai
+drenyra-ai --help
+drenyra-ai capabilities show
+```
+
+Expected: help lists the command surface; capabilities returns JSON. Exit `0`
+means success. Neither command creates an accounting mission.
 
 ## Prerequisites
 
-- **Node.js >= 22** (the package declares `engines.node >= 22`)
-- **npm** (or **bun**) to install and run scripts
-- Git 2.38+ if you build from source
+- Node.js `>=22`, as declared by `package.json`.
+- npm for a package install; Bun for repository development scripts.
+- Git if building from source.
+- Your own evidence and approval context before attempting fiscal work.
+
+> [!IMPORTANT]
+> Money is BigInt cents, never floats. Company/RUC/period scope is mandatory.
+> Creating a draft does not approve, post, declare, or execute external work.
 
 ## Install
 
+For an application dependency rather than a global binary:
+
 ```bash
 npm install drenyra-ai
+npm exec -- drenyra-ai --help
 ```
 
-The package ships:
-
-- A prebuilt ESM artifact (`dist/`, Node >= 22) — library modules use `node:crypto` only; the CLI adds `ajv` for schema validation.
-- A `drenyra-ai` binary (the CLI).
-- Library subpaths for each subsystem: `drenyra-ai/missions`, `drenyra-ai/receipts`, `drenyra-ai/ledger`, `drenyra-ai/gates`, `drenyra-ai/candidates`, `drenyra-ai/recovery`, `drenyra-ai/tenant`, and more (see [SDK](sdk.md)).
+The package ships ESM output in `dist/`, a CLI binary, and typed subsystem
+subpaths. A local install does not create a globally available shell command.
+See the [SDK](sdk.md) for library integration.
 
 ## Verify the install
 
 ```bash
-drenyra-ai --help
-drenyra-ai capabilities show     # declared contracts, skills, jurisdictions, adapters
-drenyra-ai doctor run            # read-only ecosystem health check
+drenyra-ai capabilities show
+drenyra-ai doctor run
 ```
 
-Exit codes: `0` success, `1` business error (JSON error to stdout), `2` usage/IO. JSON goes to stdout; the human-readable one-line summary goes to stderr.
+Capabilities declares the available contracts, skills, jurisdictions, and
+adapters. Doctor diagnoses ecosystem configuration; a warning about an
+unconfigured host is not proof that receipt verification is unavailable.
+
+Core commands do not require configuring a host. To configure an existing host,
+use `drenyra-ai install run`, then run doctor again. Installation writes managed
+assets; it never installs an agent runtime for you.
 
 ## A minimal session
 
+Work in an empty test directory. Save this synthetic create-command example as
+`mission-create.json`:
+
+```json
+{
+  "companyId": "20123456789",
+  "fiscalPeriod": "202607",
+  "intent": "monthly-close",
+  "input": {
+    "instruction": "Prepare a reviewable monthly-close draft; do not submit externally."
+  }
+}
+```
+
+Then create a draft in an explicitly named store:
+
 ```bash
-# 1. Start a monthly-close mission
-drenyra-ai mission start mission-create.json
+drenyra-ai mission start mission-create.json --store ./example-missions.json
+```
 
-# 2. Apply an execute command — the intent handler stages work and pauses at the gate
-drenyra-ai mission apply mission-command.json
+Expected: exit `0`, a JSON snapshot with `status: "DRAFT"` on stdout, and a
+summary/audit diagnostics on stderr. Copy the returned `id`; replace `MISSION_ID`
+below with that value:
 
-# 3. Show where it stands (snapshot + event log)
-drenyra-ai mission status <missionId>
+```bash
+drenyra-ai mission status MISSION_ID --store ./example-missions.json
+drenyra-ai project MISSION_ID --store ./example-missions.json
+```
 
-# 4. Read-only projection of status, transitions, and next action
-drenyra-ai project <missionId>
+Both inspect persisted state. `mission apply` consumes a separate command JSON;
+it is not the next step to run blindly. Review the [command protocol](../contracts/mission-protocol.md)
+and [CLI reference](usage.md) before advancing a mission.
 
-# 5. Verify any receipt and validate the ledger
-drenyra-ai receipt verify receipt.json
+For your own prepared artifacts, receipt and ledger verification are read-only:
+
+```bash
+drenyra-ai receipt verify receipt.json --keys keys.json
 drenyra-ai ledger validate ledger.json
 ```
 
-Missions persist to a JSON store (default `./drenyra-missions.json`). Crash-safe recovery marks in-flight `RUNNING` missions `UNKNOWN` — idempotent, decide-by-evidence:
-
-```bash
-drenyra-ai mission recover
-```
+Those filenames stand for real inputs you provide, not files created by install.
+A valid signature also needs a trusted signer; a missing key is not permission
+to skip trust verification.
 
 ## The target experience
 
-After installation, a professional accountant should be able to say:
-
-> "I use Codex, Claude, or OpenCode — but Drenyra gives them accounting memory, skills, missions, materiality controls, approvals, and verifiable evidence."
-
-```bash
-drenyra-ai install            # configure the accounting/fiscal agent runtime
-drenyra-ai doctor             # read-only health check of the ecosystem
-drenyra-ai mission start monthly-close
-drenyra-ai candidate inspect correction.json
-drenyra-ai gate check posting.json
-drenyra-ai receipt verify receipt.json
-drenyra-ai ledger validate ledger.json
-```
+Professionals should ask for an accounting result through their interface, not
+operate agent orchestration. The commands above exercise the headless runtime;
+they are not a claim that the entire planned Desktop workflow is available.
+See [Intended Usage](intended-usage.md) for that boundary.
 
 ## Install from source
 
@@ -83,13 +118,13 @@ drenyra-ai ledger validate ledger.json
 git clone https://github.com/arkelythex/drenyra-ai.git
 cd drenyra-ai
 bun install --frozen-lockfile
-bun run build                # builds dist/ via scripts/build.mjs
+bun run build
 node dist/cmd/cli.js --help
 ```
 
 ## Next steps
 
-- Full CLI reference → [Usage](usage.md)
-- Integrate via the library surface → [SDK](sdk.md)
-- Understand the trust model → [Trust Model](architecture/trust-model.md)
-- Understand the frozen contracts → [Contracts](../contracts/README.md)
+- [Usage](usage.md) — every command, output channel, audit setting, and store option.
+- [SDK](sdk.md) — integrate the same core through typed ESM subpaths.
+- [Trust Model](architecture/trust-model.md) — distinguish evidence from authority.
+- [Recovery runbook](runbooks/04-recovery.md) — handle interrupted work without guessing.

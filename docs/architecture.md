@@ -1,6 +1,10 @@
 # Drenyra AI — Architecture
 
-> **Last updated:** 2026-09-18.
+← [Back to README](../README.md)
+
+The first architectural question is not which module to call, but which layer
+may decide. This index starts with trust and authority, then maps the runtime,
+consumer boundaries, and persistence responsibilities.
 
 ## Documentation index
 
@@ -14,7 +18,7 @@
 | [System Context](architecture/system-context.md) | Package scope, components, entry points, non-goals | Scoping what this repo contains |
 | [Trust Boundaries](architecture/trust-boundaries.md) | Where trust lives and fail-closed behavior per boundary | Reasoning about failure modes |
 | [Ecosystem Boundaries](architecture/ecosystem-boundaries.md) | In-scope vs. non-goals vs. long-term exclusions | Separating this repo from the ecosystem |
-| [Ecosystem Integration](architecture/ecosystem-integration.md) | Who consumes what, integration rules, contract stability | Integrating Drenyra, Drenyra Pi, or Engram |
+| [Ecosystem Integration](architecture/ecosystem-integration.md) | Who consumes what, integration rules, contract stability | Integrating Drenyra, Drenyra Shell, or Engram |
 | [Dependency Direction](architecture/dependency-direction.md) | Ecosystem MAY/NEVER dependency graph | Enforcing direction between repos |
 | [Dependency Rules](architecture/dependency-rules.md) | In-repo layer model and import rules | Reviewing imports and layering |
 | [Storage Model](architecture/storage-model.md) | Dev adapter vs. canonical storage requirements | Persistence and recovery questions |
@@ -27,27 +31,21 @@
 ## Position in the ecosystem
 
 ```text
-                    ┌───────────────────┐
-                    │ Drenyra-Engram    │
-                    │ Accounting Memory │
-                    └─────────▲─────────┘
-                              │
-                ┌─────────────┴─────────────┐
-                │                           │
-       ┌────────┴────────┐        ┌─────────┴─────────┐
-       │ Drenyra-AI      │        │ Drenyra-Pi       │
-       │ Agent Ecosystem │◄───────│ Pi-native Harness│
-       └────────▲────────┘        └───────────────────┘
-                │
-       ┌────────┴────────┐
-       │ Drenyra         │
-       │ Command Center  │
-       └─────────────────┘
+Drenyra Desktop ────► Drenyra AI ◄──── Drenyra Shell
+                          │                 │
+                          └───────┬─────────┘
+                                  ▼
+                           Drenyra Engram
+                     optional context, not authority
 ```
 
-Drenyra AI may integrate Drenyra Engram. It is consumed by Drenyra and Drenyra Pi. It **never** depends on Drenyra or Drenyra Pi.
+Drenyra AI may integrate Drenyra Engram. It is consumed by Drenyra and Drenyra Shell. It **never** depends on Drenyra or Drenyra Shell.
 
-> Both diagrams on this page are the inline views GitHub renders. The map below is generated from this repository's evidence; its [interactive artifact](diagrams/drenyra-ai-runtime.architecture.html) is the same composition with search, focus, and route tracing. The map does not replace either fence above: prose and pipelines stay authoritative, and the fences stay readable where an image cannot be.
+The map below is an inline Dreamcoder view generated from repository evidence.
+The [interactive artifact](https://arkelythex.github.io/drenyra-ai/drenyra-ai-runtime.architecture.html)
+adds search and relationship tracing; it retains the Archify viewer palette.
+The JSON source pins a historical revision; prose remains authoritative for
+current behavior.
 
 ![Drenyra AI runtime and contract surface: entry adapters, the agent staging layer, MissionRuntime, candidates, proportional review, gates, receipts, the append-only ledger, and recovery, with frozen contracts and the professional's explicit approval](diagrams/drenyra-ai-runtime.architecture.light.svg#gh-light-mode-only)
 ![Drenyra AI runtime and contract surface: entry adapters, the agent staging layer, MissionRuntime, candidates, proportional review, gates, receipts, the append-only ledger, and recovery, with frozen contracts and the professional's explicit approval](diagrams/drenyra-ai-runtime.architecture.dark.svg#gh-dark-mode-only)
@@ -56,11 +54,11 @@ Drenyra AI may integrate Drenyra Engram. It is consumed by Drenyra and Drenyra P
 
 ## Core invariants
 
-1. **RED (Receipt-Driven Accounting):** every material action produces an immutable receipt. Receipts are Ed25519-signed and verifiable from canonical vectors.
+1. **RDA (Receipt-Driven Accounting):** every material action produces an immutable receipt. Receipts are Ed25519-signed and verifiable from canonical vectors.
 2. **Risk-proportional review:** R0 (read, high autonomy) → R3 (irreversible, explicit dual approval). Review depth is derived from materiality, never chosen ad hoc.
 3. **Candidates are first-class artifacts:** agent proposals carry identity, scope, and materiality; they are inspected, reviewed, and either accepted or corrected within a bounded budget.
 4. **Ledger-as-Git:** commits = atomic accounting changes, diffs = explained differences, PRs = accounting review packages.
-5. **Gates, not faith:** lifecycle transitions validate authority, scope, and receipts before commit/push/PR/release.
+5. **Gates, not faith:** lifecycle transitions validate authority, scope, and receipts before posting, approving, declaring, or filing.
 
 ## Layer model
 
@@ -99,8 +97,14 @@ Materiality escalates the route; the route never demotes materiality.
 
 ## Consumer contract
 
-Drenyra and Drenyra Pi consume **released, versioned** artifacts — never a checkout of this repo. Drenyra Pi additionally pins an exact verified version package-locally.
+Drenyra and Drenyra Shell consume **released, versioned** artifacts — never a checkout of this repo. Drenyra Shell additionally pins an exact verified version package-locally.
 
 ## Repository scope
 
-This repo is the agent ecosystem. It does **not** contain the product UI, tenants, documents, accounts, or SUNAT flows (those live in `arkelythex/drenyra-command-center`), nor a Pi harness (that is `arkelythex/drenyra-pi`), nor a memory engine (that is `arkelythex/drenyra-engram`).
+This repo is the agent ecosystem. It does **not** contain the product UI, tenants, documents, accounts, or SUNAT flows (those live in `arkelythex/drenyra-desktop`), nor a Pi harness (that is `arkelythex/drenyra-shell`), nor a memory engine (that is `arkelythex/drenyra-engram`).
+
+## Read next
+
+- [Trust Model](architecture/trust-model.md) — begin with the enforcement boundary.
+- [Codebase Guide](CODEBASE-GUIDE.md) — locate the implementation for a change.
+- [SDK](sdk.md) — integrate a released surface.

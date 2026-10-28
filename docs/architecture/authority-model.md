@@ -1,11 +1,11 @@
 # Authority Model
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+A review result is not blanket permission. Use this page to identify the evidence, policy, and professional approval required before a material action can proceed.
+
 > [!IMPORTANT]
 > **Authority is chained: memory guides, policy restricts, evidence demonstrates, receipts certify, and a professional authorizes.** Agents propose; they never self-authorize.
-
-<!-- -->
-
-> **Last updated:** 2026-08-02. Status: pre-alpha. — Part of: [Architecture](../architecture.md)
 
 <!-- -->
 
@@ -38,7 +38,7 @@ Unknown jurisdictions escalate one tier (fail-closed) until a country-pack exist
 
 ## Gates
 
-Lifecycle gates validate authority, scope, and receipts before commit/push/PR/release. A gate that fails blocks the action; `needs_input` returns the complete decision envelope and the human answers — the gate never guesses.
+Lifecycle gates validate authority, scope, and receipts before posting, approving, declaring, or filing. A gate that fails blocks the action; `needs_input` returns the complete decision envelope and the human answers — the gate never guesses.
 
 ## Approvals
 

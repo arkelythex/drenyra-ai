@@ -1,7 +1,13 @@
 # Drenyra AI — SDK
 
+← [Back to README](../README.md)
+
+Integrators need the same validation and proof regardless of their interface.
+The SDK exposes the headless core as ESM subpaths so applications can use it
+without embedding CLI processes or treating agent output as authority.
+
 > [!IMPORTANT]
-> **The SDK is the public library surface of the headless core.** Drenyra Command Center, Drenyra Pi, ERPs, and third-party SaaS consume the same released contracts through these subpaths. Integrate via released, versioned artifacts — never a checkout.
+> **The SDK is the public library surface of the headless core.** Drenyra Desktop, Drenyra Shell, ERPs, and third-party SaaS consume the same released contracts through these subpaths. Integrate via released, versioned artifacts — never a checkout.
 
 <!-- -->
 
@@ -17,7 +23,7 @@
 npm install drenyra-ai
 ```
 
-The package ships a prebuilt ESM artifact (`dist/`, Node >= 22) and a `drenyra-ai` binary. Library modules use `node:crypto` only; the CLI adds `ajv` for schema validation.
+The package ships a prebuilt ESM artifact (`dist/`, Node >= 22) and a `drenyra-ai` binary. Verification uses `node:crypto`; the CLI uses `ajv` for schema validation. Infrastructure adapters such as PostgreSQL persistence have their own dependencies.
 
 ## Package subpaths
 
@@ -40,12 +46,15 @@ The package ships a prebuilt ESM artifact (`dist/`, Node >= 22) and a `drenyra-a
 | `drenyra-ai/adapters` | Evidence adapter framework |
 | `drenyra-ai/flow` | Deterministic monthly-close vertical |
 
+## Quick path
+
+Import a subsystem directly, keep money as BigInt cents, and bind every candidate
+to the exact subject bytes and fiscal scope. The first example below is runnable
+without any external adapter. It stages a candidate; it does not approve or post.
+
 ## Quick examples
 
 ```ts
-// Ledger validation (offline, from the frozen contract)
-import { validateLedger, GENESIS_EMPTY_HASH } from "drenyra-ai/ledger";
-
 // Candidate with BigInt-cents materiality (no floats for money)
 import { CandidateLifecycle } from "drenyra-ai/candidates";
 const lifecycle = new CandidateLifecycle();
@@ -65,13 +74,17 @@ const skills = new SkillRegistry();
 BASE_PE_SKILLS.forEach((skill) => skills.register(skill));
 const igv = skills.resolveAt("pe.igv-validate", "2026-07-15");
 
-// Mission runtime with fencing and reconciliation
-import { MissionRuntime, acquireFence, reconcileExternalCall } from "drenyra-ai/missions";
-
-// The deterministic monthly-close vertical
-import { runMonthlyClose } from "drenyra-ai/flow";
-const close = await runMonthlyClose({ /* scope, adapters, keyPair, ledger */ });
+// Revalidate against the same bytes before requesting review.
+const inspected = lifecycle.inspect(candidate, "reclassify supplier prepayment");
+console.log(inspected.status); // inspected
 ```
+
+For adapter-backed compositions, use `MissionRuntime` from `drenyra-ai/missions`
+and `runMonthlyClose` from `drenyra-ai/flow`. These need explicit stores, scope,
+evidence, and integration dependencies: see the [monthly-close design](design/design-02-monthly-close.md)
+and [`flow/close.ts`](../flow/close.ts) rather than passing a placeholder object.
+Guardian findings above are diagnostic, not approval; a synthetic RUC may fail
+its checksum check even when its shape passes candidate construction.
 
 ## Integration rules
 
@@ -82,6 +95,9 @@ const close = await runMonthlyClose({ /* scope, adapters, keyPair, ledger */ });
 5. **Verification is offline and from canonical vectors** — never from ambient state.
 
 ## Verification
+
+These commands run in this repository checkout, not in an application that only
+installed the package. Consumer applications run their own typecheck and tests.
 
 ```bash
 npm run typecheck   # tsc --noEmit

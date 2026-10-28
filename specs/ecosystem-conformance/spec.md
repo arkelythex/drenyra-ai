@@ -1,5 +1,11 @@
 # Ecosystem Conformance Specification
 
+← [Requirements index](../README.md) · [Contribution workflow](../../CONTRIBUTING.md)
+
+Use these requirements and scenarios when changing this capability or reviewing
+its observable behavior. Origin-change names and historical paths below retain
+their provenance; they do not reactivate the retired OpenSpec workflow.
+
 ## Purpose
 
 Define the observable behavior of the two cross-repository conformance scripts — `brand-ecosystem-status` and `skills-conformance` — when their required sibling repositories are absent, relocated, or overridden. The goal is truthful and actionable local diagnostics without weakening either integrity gate: every missing dependency or failed check remains a non-zero failure, and a missing sibling repository is never misreported as missing repository content.
@@ -171,3 +177,6 @@ The focused tests for these scripts MUST use temporary fixture roots and explici
 - No changes to `package.json`, lockfiles, `.github/workflows/ci.yml`, TypeScript/Biome configuration, contracts, product runtime modules, active blocked changes, or sibling repositories.
 - No redesign of brand or skills conformance semantics beyond truthful missing-dependency classification, sibling-root resolution, and actionable diagnostics.
 - No unrelated linting, formatting, cleanup, or normalization.
+
+**Read next:** [Frozen public contracts](../../contracts/README.md) for compatibility boundaries;
+[deterministic testing](../../docs/testing-deterministic.md) for verification practice.

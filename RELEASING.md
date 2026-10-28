@@ -1,6 +1,10 @@
 # Releasing — Drenyra AI
 
-> **Last updated:** 2026-08-01.
+← [Back to README](README.md)
+
+A successful source build is not enough: consumers need the same verified bytes from npm and the release assets. Use this checklist to prepare a candidate; publishing remains an explicit maintainer action.
+
+> Documentation tracks `main`; consult the tagged source for the exact release candidate.
 
 <!-- -->
 
@@ -16,8 +20,8 @@
 
 ## Version policy
 
-- Until the first contract is frozen, releases use **`0.0.1-prealpha.x`** (x increments per release).
-- The first release that freezes a contract (`mission-protocol`, `candidate`, `receipt`, `gate` — per the [ROADMAP](ROADMAP.md)'s Phase 1) is **`0.1.0`**.
+- Before the first frozen contract, releases used **`0.0.1-prealpha.x`** (x increments per release).
+- The first release that froze a contract (`mission-protocol`, `candidate`, `receipt`, `gate` — per the [ROADMAP](ROADMAP.md)'s Phase 1) was **`0.1.0`**.
 - After `0.1.0`, **Semantic Versioning** applies: MAJOR = breaking contract change, MINOR = backward-compatible addition, PATCH = backward-compatible fix. Contract changes are public surface changes.
 
 ## Release checklist
@@ -65,7 +69,7 @@ Trusted publishing also needs a setting that lives on npmjs.com, not in this rep
 - **Conventional Commits** (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`), with scope when useful.
 - **No AI attribution** in commit messages or release notes — no "Generated with" or "Co-Authored-By" AI markers.
 - Contracts are high-materiality: a release touching contracts gets proportional risk review before publish.
-- Consumers (Drenyra, Drenyra Pi) upgrade on their own cadence; a release never forces them.
+- Consumers (Drenyra, Drenyra Shell) upgrade on their own cadence; a release never forces them.
 
 ## Next steps
 

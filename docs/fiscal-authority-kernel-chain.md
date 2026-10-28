@@ -1,5 +1,12 @@
 # fiscal-authority/kernel — feature-branch chain tracker
 
+← [Architecture index](architecture.md) · [README](../README.md)
+
+> [!NOTE]
+> This is a historical integration-chain record, not a statement about the current
+> checked-out branch or a live PR queue. Current delivery is tracked in
+> [ODD feature documents](../odd/tasks/) and the [ROADMAP](../ROADMAP.md).
+
 This branch is the integration tracker for the fiscal-authority kernel program,
 following the feature-branch-chain strategy.
 
@@ -23,3 +30,8 @@ chain completes.
 
 - `cbcdc8e` docs(openspec) for `gentle-ai-quality-parity` — a separate change,
   not part of this kernel chain.
+
+## Read next
+
+- [Program delivery sequence](../program/drenyra-dominion/delivery-sequence.md) — ecosystem sequencing and gates.
+- [Architecture](architecture.md) — current subsystem ownership and boundaries.

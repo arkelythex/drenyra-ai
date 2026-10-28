@@ -1,5 +1,11 @@
 # Drenyra AI — Open-Core Governance
 
+← [Back to README](../README.md)
+
+Public source visibility does not transfer fiscal authority or change the license.
+Use this page to understand contribution ownership, contract approval, and the
+boundary between the intended open-core model and current legal terms.
+
 > [!IMPORTANT]
 > **Community development is governed, not ad-hoc.** The open surface (contracts, schemas, conformance vectors, SDK, MCP, base policies) evolves through approved issues, RFC review for contracts, ownership boundaries, and compatibility rules. The defensible advantage is trusted integrations and professional quality — not secrecy around receipt verification.
 
@@ -17,7 +23,7 @@ Drenyra AI participates in the [Drenyra Dominion Program](../program/drenyra-dom
 
 The program gates apply to every drenyra-ai change: conformance with the authority model, no duplicated normative functions across repositories, explicit producer–consumer contracts, no moving branches, no monetary floats, no memory-as-evidence, UNKNOWN reconciliation for external execution, migration and rollback, and the review budget.
 
-The open-core transition is registered as an **intention** in [charter.md §9](../program/drenyra-dominion/charter.md#9-open-core-transition) — not a contractual promise. The private stage continues until a formal, conditions-based decision.
+The open-core transition is registered as an **intention** in [charter.md §9](../program/drenyra-dominion/charter.md#9-open-core-transition) — not a contractual promise. The repository is publicly visible, but source use remains governed by the proprietary [LICENSE](../LICENSE) until a formal license decision changes it.
 
 ## Fiscal decision authority
 
@@ -61,9 +67,12 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full workflow.
 
 ## Open surface vs commercial surface
 
-The open core covers contracts, schemas, conformance suites, canonical vectors, mission protocol, candidates, baseline materiality, receipts, Ed25519 verification, ledger, gates, recovery, SDK, CLI, base MCP server, skills and adapter frameworks, auditable Peruvian base policies, and community connectors.
+This is a responsibility and product-direction split, not a permissive source
+license or a claim that every commercial service already exists.
 
-The commercial surface (Drenyra Command Center, managed cloud, SSO/SCIM, managed KMS/HSM, certified connectors with SLAs, certified policy packs, enterprise analytics, support) stays separate — it never weakens the open core's contracts or authority.
+The intended open-core scope covers contracts, schemas, conformance suites, canonical vectors, mission protocol, candidates, baseline materiality, receipts, Ed25519 verification, ledger, gates, recovery, SDK, CLI, base MCP server, skills and adapter frameworks, auditable Peruvian base policies, and community connectors.
+
+The commercial surface (Drenyra Desktop, managed cloud, SSO/SCIM, managed KMS/HSM, certified connectors with SLAs, certified policy packs, enterprise analytics, support) stays separate — it never weakens the open core's contracts or authority.
 
 ## Related
 

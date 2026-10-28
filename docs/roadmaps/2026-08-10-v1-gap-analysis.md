@@ -1,7 +1,13 @@
 # Drenyra AI — v1.0 Gap Analysis
 
+← [Roadmap](../../ROADMAP.md) · [Architecture](../architecture.md)
+
+This revision-bound gap analysis explains the distance between a contract-complete
+core and production acceptance at its inspected commit. Use it to understand
+that checkpoint, not to infer the current release status.
+
 > [!IMPORTANT]
-> **Status: live document.** This analysis separates what is already built (the contract-complete RDA core) from what remains to reach production-complete v1.0. It is tied to the inspected commit and the approved design series.
+> **Status: historical inspected snapshot.** This analysis separates what is already built (the contract-complete RDA core) from what remains to reach production-complete v1.0. It is tied to the inspected commit and the approved design series.
 
 <!-- -->
 

@@ -1,5 +1,10 @@
 ---
 
+← [Program index](../../README.md) · [Dependency map](../../dependency-graph.md)
+
+Read this capability record alongside its dependencies and recorded evidence.
+The status below is not a new implementation or gate-approval claim.
+
 # SDD-100 — Professional Command Center
 
 > Status: lifecycle:in-progress · Maturity: partial (drenyra-ai Core projection surface slice A implemented; Command Center UI product still pending) · Wave: 3 · Depends on: SDD-020, SDD-060, SDD-090 · Feeds: SDD-110

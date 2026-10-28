@@ -1,5 +1,10 @@
 # Authority Model — Drenyra Dominion Program
 
+← [Program index](README.md) · [Status vocabulary and evidence](status-and-evidence.md)
+
+Use this model to locate the boundary between professional decisions, deterministic permission, and adapter execution.
+Treat dates and inspected revisions as evidence boundaries; do not promote them to present readiness.
+
 > Status: DRAFT (v0.1) · Source: Designs 1, 2, and 4 of the program brief
 > This document is the authority backbone of the ecosystem. It defines who may
 > observe, who may decide, who may execute, and the transactional mechanics

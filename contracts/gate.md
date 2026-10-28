@@ -1,5 +1,9 @@
 # Contract: gate
 
+← [Contracts index](README.md) · [README](../README.md)
+
+Read this contract when implementing the checkpoint that allows or rejects a lifecycle action.
+
 > Version: 0.1 · Status: FROZEN · Transport-agnostic.
 >
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents

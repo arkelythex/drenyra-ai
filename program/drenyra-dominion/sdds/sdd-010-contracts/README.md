@@ -1,5 +1,10 @@
 ---
 
+← [Program index](../../README.md) · [Dependency map](../../dependency-graph.md)
+
+Read this capability record alongside its dependencies and recorded evidence.
+The status below is not a new implementation or gate-approval claim.
+
 # SDD-010 — Ecosystem Contracts and Release Train
 
 > Status: lifecycle:complete (contracts frozen + release-train executed) · Maturity: implemented · Wave: 0 · Depends on: SDD-000 · Feeds: SDD-020, SDD-030, SDD-070, SDD-080

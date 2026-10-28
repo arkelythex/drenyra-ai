@@ -1,5 +1,10 @@
 # SDD-150 — Continuous Fiscal Audit and Assurance
 
+← [Program index](../../README.md) · [Dependency map](../../dependency-graph.md)
+
+Read this capability record alongside its dependencies and recorded evidence.
+The status below is not a new implementation or gate-approval claim.
+
 > Status: lifecycle:planned · Wave: 5 · Depends on: SDD-090, SDD-100, SDD-140 · Feeds: —
 
 ## Capability boundary

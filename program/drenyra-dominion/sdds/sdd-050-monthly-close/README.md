@@ -1,5 +1,10 @@
 ---
 
+← [Program index](../../README.md) · [Dependency map](../../dependency-graph.md)
+
+Read this capability record alongside its dependencies and recorded evidence.
+The status below is not a new implementation or gate-approval claim.
+
 # SDD-050 — Peruvian Monthly Close
 
 > Status: lifecycle:complete (monthly-close core, closure 2026-08-15) · Maturity: implemented · Wave: 3 · Depends on: SDD-040, SDD-070, SDD-080 · Feeds: SDD-060

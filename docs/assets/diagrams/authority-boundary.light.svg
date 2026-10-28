@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 680" width="1240" height="680" role="img" aria-labelledby="authority-boundaryTitle authority-boundaryDesc" font-family="'Inter', ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title id="authority-boundaryTitle">Authority &#8212; context is not permission</title>
+  <desc id="authority-boundaryDesc">Keep advice, deterministic enforcement, and professional decisions separate. Propose and stage. Domain knowledge guides work; it cannot approve itself. Remember the context. Institutional memory informs; it never authorizes. Carry the exact scope. RUC, company, and fiscal period isolate every operation. Validate policy and evidence. Gates fail closed when required authority is missing. Retain fiscal authority. Business and legal judgment stays with the human. Require external evidence. ERP, bank, and SUNAT effects are not proved by a narrative.</desc>
+  <defs>
+    <radialGradient id="authority-boundaryAmbient" cx="12%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#824F16" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#824F16" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1240" height="680" rx="24" fill="#F3EADC"/>
+  <rect width="1240" height="680" rx="24" fill="url(#authority-boundaryAmbient)"/>
+<text x="40" y="58" font-size="27" font-weight="700" fill="#100C07">Authority &#8212; context is not permission</text>
+  <text x="41" y="88" font-size="14.5" fill="#725E4C">Keep advice, deterministic enforcement, and professional decisions separate.</text>
+  <rect x="970" y="38" width="230" height="34" rx="17" fill="#DECBB1" fill-opacity="0.6" stroke="#8A7358" stroke-opacity="0.35"/>
+  <text x="1085" y="60" font-size="12.5" text-anchor="middle" font-family="'Geist Mono', 'JetBrains Mono', ui-monospace, monospace" fill="#824F16">RUC &#183; company &#183; period</text>
+<rect x="40" y="126" width="1160" height="146" rx="20" fill="#FFF7EA" fill-opacity="0.6" stroke="#8A7358" stroke-opacity="0.35"/>
+  <text x="68" y="207" font-size="34" font-weight="700" fill="#824F16" opacity="0.22">01</text>
+  <text x="68" y="233" font-size="13" font-weight="700" letter-spacing="2" fill="#554638">INFORM</text>
+  <line x1="200" y1="154" x2="200" y2="244" stroke="#8A7358" stroke-opacity="0.35"/>
+<rect x="224" y="155" width="452" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="224" y="152" width="452" height="90" rx="14" fill="#FFF7EA" stroke="#0D4A68" stroke-opacity="0.55"/>
+  <rect x="224" y="152" width="452" height="90" rx="14" fill="#0D4A68" fill-opacity="0.07"/>
+  <text x="244" y="185" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#0D4A68" opacity="0.85">AGENTS + SKILLS</text>
+  <text x="244" y="210" font-size="17" font-weight="600" fill="#100C07">Propose and stage</text>
+  <text x="244" y="230" font-size="11.5" fill="#725E4C">Domain knowledge guides work; it cannot approve itself.</text>
+<rect x="700" y="155" width="452" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="700" y="152" width="452" height="90" rx="14" fill="#FFF7EA" stroke="#0D4A68" stroke-opacity="0.55"/>
+  <rect x="700" y="152" width="452" height="90" rx="14" fill="#0D4A68" fill-opacity="0.07"/>
+  <text x="720" y="185" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#0D4A68" opacity="0.85">ENGRAM</text>
+  <text x="720" y="210" font-size="17" font-weight="600" fill="#100C07">Remember the context</text>
+  <text x="720" y="230" font-size="11.5" fill="#725E4C">Institutional memory informs; it never authorizes.</text>
+<rect x="40" y="292" width="1160" height="146" rx="20" fill="#FFF7EA" fill-opacity="0.6" stroke="#8A7358" stroke-opacity="0.35"/>
+  <text x="68" y="373" font-size="34" font-weight="700" fill="#824F16" opacity="0.22">02</text>
+  <text x="68" y="399" font-size="13" font-weight="700" letter-spacing="2" fill="#554638">ENFORCE</text>
+  <line x1="200" y1="320" x2="200" y2="410" stroke="#8A7358" stroke-opacity="0.35"/>
+<rect x="224" y="321" width="452" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="224" y="318" width="452" height="90" rx="14" fill="#FFF7EA" stroke="#824F16" stroke-opacity="0.55"/>
+  <rect x="224" y="318" width="452" height="90" rx="14" fill="#824F16" fill-opacity="0.07"/>
+  <text x="244" y="351" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#824F16" opacity="0.85">TENANT BOUNDARY</text>
+  <text x="244" y="376" font-size="17" font-weight="600" fill="#100C07">Carry the exact scope</text>
+  <text x="244" y="396" font-size="11.5" fill="#725E4C">RUC, company, and fiscal period isolate every operation.</text>
+<rect x="700" y="321" width="452" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="700" y="318" width="452" height="90" rx="14" fill="#FFF7EA" stroke="#824F16" stroke-opacity="0.55"/>
+  <rect x="700" y="318" width="452" height="90" rx="14" fill="#824F16" fill-opacity="0.07"/>
+  <text x="720" y="351" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#824F16" opacity="0.85">DETERMINISTIC CORE</text>
+  <text x="720" y="376" font-size="17" font-weight="600" fill="#100C07">Validate policy and evidence</text>
+  <text x="720" y="396" font-size="11.5" fill="#725E4C">Gates fail closed when required authority is missing.</text>
+<rect x="40" y="458" width="1160" height="146" rx="20" fill="#FFF7EA" fill-opacity="0.6" stroke="#8A7358" stroke-opacity="0.35"/>
+  <text x="68" y="539" font-size="34" font-weight="700" fill="#824F16" opacity="0.22">03</text>
+  <text x="68" y="565" font-size="13" font-weight="700" letter-spacing="2" fill="#554638">DECIDE</text>
+  <line x1="200" y1="486" x2="200" y2="576" stroke="#8A7358" stroke-opacity="0.35"/>
+<rect x="224" y="487" width="452" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="224" y="484" width="452" height="90" rx="14" fill="#FFF7EA" stroke="#57478B" stroke-opacity="0.55"/>
+  <rect x="224" y="484" width="452" height="90" rx="14" fill="#57478B" fill-opacity="0.07"/>
+  <text x="244" y="517" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#57478B" opacity="0.85">PROFESSIONAL</text>
+  <text x="244" y="542" font-size="17" font-weight="600" fill="#100C07">Retain fiscal authority</text>
+  <text x="244" y="562" font-size="11.5" fill="#725E4C">Business and legal judgment stays with the human.</text>
+<rect x="700" y="487" width="452" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="700" y="484" width="452" height="90" rx="14" fill="#FFF7EA" stroke="#57478B" stroke-opacity="0.55"/>
+  <rect x="700" y="484" width="452" height="90" rx="14" fill="#57478B" fill-opacity="0.07"/>
+  <text x="720" y="517" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#57478B" opacity="0.85">EXTERNAL SYSTEMS</text>
+  <text x="720" y="542" font-size="17" font-weight="600" fill="#100C07">Require external evidence</text>
+  <text x="720" y="562" font-size="11.5" fill="#725E4C">ERP, bank, and SUNAT effects are not proved by a narrative.</text>
+<line x1="40" y1="638" x2="1200" y2="638" stroke="#8A7358" stroke-opacity="0.35"/>
+  <text x="620" y="658" font-size="12" text-anchor="middle" fill="#725E4C">An audit ledger is execution proof, not the accounting journal of record.</text>
+</svg>

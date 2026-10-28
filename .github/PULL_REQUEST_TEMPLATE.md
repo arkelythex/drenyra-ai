@@ -4,6 +4,8 @@ Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents; no
 
 ## Scope
 
+Closes #<!-- approved issue number -->
+
 _What does this PR change, and why? One short paragraph. Link the issue/mission if any._
 
 ## Files touched
@@ -32,6 +34,7 @@ _Where should review start, and in what order? What is the riskiest decision in 
 ## Tests
 
 - [ ] Typecheck passes
+- [ ] Lint passes
 - [ ] Tests pass
 - [ ] Conformance vectors updated and passing (if contracts/crypto changed)
 - [ ] Packed-install smoke test (if the package surface changed)

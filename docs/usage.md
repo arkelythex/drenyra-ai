@@ -1,11 +1,25 @@
 # Drenyra AI — Usage
 
+← [Back to README](../README.md)
+
 Full reference for the `drenyra-ai` CLI, the mission store, and the library subpaths. For a five-minute start, see [Quickstart](quickstart.md).
 
 > [!IMPORTANT]
 > **Fiscal convention:** monetary values in the Drenyra ecosystem are BigInt cents (never floats); version/sequence numbers are JSON integers, never floats.
 
 ---
+
+## Quick path
+
+```bash
+drenyra-ai --help
+drenyra-ai capabilities show
+```
+
+Use the [Quickstart](quickstart.md) to create an isolated draft with a complete
+JSON input example. In the reference below, filenames and `<missionId>` are
+placeholders for your inputs, not bundled samples. A bare intent name is not a
+create-command file.
 
 ## CLI reference
 
@@ -67,6 +81,8 @@ Missions persist to a JSON store (default `./drenyra-missions.json`), shaped as:
 { storeSchemaVersion, missions, events, idempotency }
 ```
 
+`--demo` is accepted for compatibility and has no effect.
+
 Real deterministic intent handlers are registered for every mission intent — `monthly-close`, `correction`, `reconciliation`, `invoice-review`, `compliance-check` — and stage work, request evidence, and pause at the evidence or approval gate. The deterministic Core (transitions, idempotency, rules) remains the authority for what may actually change.
 
 ## Library subpaths
@@ -89,10 +105,37 @@ drenyra-ai/mcp                  MCP server surface
 drenyra-ai/skills               versioned skills registry runtime
 …and the domain service modules (fiscal, journal, cdr, bank-reconciliation,
 close-calculations, annual-declaration, authorization, evidence, flow,
-guardian, policy, projection, routing, security, cdr)
+guardian, policy, projection, routing, security)
 ```
 
-Library modules use `node:crypto` only; the CLI adds `ajv` for schema validation. Integrate via the [SDK](sdk.md) for the typed API.
+The package declares its full export map in `package.json`. Verification uses
+`node:crypto`; the CLI uses `ajv` for schema validation, and PostgreSQL persistence
+is an infrastructure adapter. Integrate via the [SDK](sdk.md) for the typed API.
+
+## Audit diagnostics
+
+Operational audit events are JSONL. Mission events include `mission.started`,
+`mission.applied`, `mission.apply_failed`, `mission.status_read`, and
+`mission.status_not_found`. Every event carries `mission_id`, `ruc`, `period`,
+`user_id`, `level`, `event`, `message`, and `timestamp`; optional `details` supplies
+context. Missing boundary context is the literal `unknown`, not an omitted field.
+An operational audit line is not a substitute for a signed fiscal receipt.
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `DRENYRA_AUDIT_LOG` | unset | Append JSONL to this path; otherwise emit to stderr |
+| `DRENYRA_AUDIT_LEVEL` | `info` | Filter `debug`, `info`, `warn`, or `error` events by severity |
+
+Redirect audit events to a file if another tool needs to parse them separately
+from the human summaries on stderr:
+
+```bash
+DRENYRA_AUDIT_LOG=./audit.jsonl drenyra-ai mission status MISSION_ID --store ./example-missions.json
+jq 'select(.ruc == "20123456789" and .period == "202607")' audit.jsonl
+```
+
+Replace the ID and use your existing store. The environment-assignment syntax
+above is for POSIX shells; use your shell's environment syntax on Windows.
 
 ## Read next
 

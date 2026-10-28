@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Drenyra brand-system tokens",
-  "description": "Canonical token vectors for contracts/brand-system.md (v0.2 DRAFT). Mirrors the Drenyra apps/web DTCG token pipeline exactly: class-based .dark/.light themes with cyan/violet accents.",
+  "description": "Canonical token vectors for contracts/brand-system.md (v0.4 DRAFT). Mirrors the Dreamcoder Workbench tokens exactly: Dreamcoder Dark and Dreamcoder Light themes with cocoa/terracotta accents.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -16,7 +16,7 @@
     "aiImage"
   ],
   "properties": {
-    "version": { "type": "string", "const": "0.2" },
+    "version": { "type": "string", "const": "0.4" },
     "status": { "type": "string", "const": "DRAFT" },
     "source": { "type": "string" },
     "themes": {
@@ -31,10 +31,10 @@
     "accents": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["cyan", "violet"],
+      "required": ["cocoa", "terracotta"],
       "properties": {
-        "cyan": { "$ref": "#/definitions/accent" },
-        "violet": { "$ref": "#/definitions/accent" }
+        "cocoa": { "$ref": "#/definitions/accent" },
+        "terracotta": { "$ref": "#/definitions/accent" }
       }
     },
     "gradients": {

@@ -1,5 +1,10 @@
 # Acceptance Matrix — Drenyra Dominion Program
 
+← [Program index](README.md) · [Status vocabulary and evidence](status-and-evidence.md)
+
+Use this matrix to assess acceptance evidence, not to infer readiness from a feature count.
+Treat dates and inspected revisions as evidence boundaries; do not promote them to present readiness.
+
 > Status: DRAFT (v0.1) · Source: Design 6 of the program brief
 > Drenyra reaches v1 not by feature count or a demo, but when it can operate
 > real accounting processes without a compromised model, a crash, or a

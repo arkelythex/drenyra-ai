@@ -1,5 +1,10 @@
 # receipt-schema / v1
 
+← [Contracts index](../README.md) · [Receipt contract](../receipt.md)
+
+Use this reference to locate canonical schema fields and verification vectors.
+The source provenance below is historical; schemas and fixtures remain unchanged.
+
 > **Source: arkelythex/drenyra-command-center `contracts/receipt-schema/v1`** — copied verbatim.
 > These schemas and fixtures are the **frozen conformance source of truth** for
 > the `drenyra-ai` receipt surface.

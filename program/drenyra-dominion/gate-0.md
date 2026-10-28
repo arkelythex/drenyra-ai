@@ -1,5 +1,10 @@
 # Gate 0 — Inventory and Alignment
 
+← [Program index](README.md) · [Status vocabulary and evidence](status-and-evidence.md)
+
+Use this checkpoint to understand the recorded inventory and its decision prerequisites, not to bypass unresolved gates.
+Treat dates and inspected revisions as evidence boundaries; do not promote them to present readiness.
+
 > Status: gate: pending — SDD-020 blocked · Last updated: 2026-08-14 · Owner: Drenyra Dominion Program
 > Reconciled 2026-08-14 against repository evidence at inspected revision `4975f4f`
 > (evidence register: [status-and-evidence.md](status-and-evidence.md) §3).

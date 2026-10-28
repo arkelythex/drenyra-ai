@@ -1,5 +1,11 @@
 # Ecosystem Cleanup — Slice 1 Specification
 
+← [Requirements index](../README.md) · [Contribution workflow](../../CONTRIBUTING.md)
+
+Use these requirements and scenarios when changing this capability or reviewing
+its observable behavior. Origin-change names and historical paths below retain
+their provenance; they do not reactivate the retired OpenSpec workflow.
+
 > Change: `drenyra-ecosystem-cleanup` · Phase: spec · Store: openspec
 > Scope: **Slice 1 only** (safe internal deduplication and hygiene).
 > Slices 2 (checksummed RUC consolidation) and 3 (skills content migration) are
@@ -330,3 +336,6 @@ cd drenyra-command-center && git status --porcelain  # no paths from this change
 - Protected-file integrity depends on git state; the before/after
   `git status --porcelain` evidence is mandatory and must be captured in the
   apply phase.
+
+**Read next:** [Frozen public contracts](../../contracts/README.md) for compatibility boundaries;
+[deterministic testing](../../docs/testing-deterministic.md) for verification practice.

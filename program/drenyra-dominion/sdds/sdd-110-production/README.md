@@ -1,5 +1,10 @@
 ---
 
+← [Program index](../../README.md) · [Dependency map](../../dependency-graph.md)
+
+Read this capability record alongside its dependencies and recorded evidence.
+The status below is not a new implementation or gate-approval claim.
+
 # SDD-110 — Production and Commercial Readiness
 
 > Status: lifecycle:in-progress · Maturity: partial (drenyra-ai connector-adapter conformance contract DRAFT v0.1 shipped; production operations still pending) · Wave: 4 · Depends on: SDD-100 · Feeds: — (operational)

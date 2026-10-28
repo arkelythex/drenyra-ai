@@ -1,5 +1,7 @@
 # Deterministic Testing — Drenyra AI
 
+← [Back to README](../README.md)
+
 How this repository proves fiscal correctness without trusting narration. The rule behind everything here: **the deterministic core is tested byte-for-byte against frozen canonical vectors; agents are tested as orchestration, never as oracles.**
 
 > [!IMPORTANT]
@@ -7,13 +9,25 @@ How this repository proves fiscal correctness without trusting narration. The ru
 
 ---
 
+## Quick path
+
+```bash
+bun x vitest run contracts
+bun run typecheck
+bun run lint
+bun run test
+```
+
+For a focused change, run the affected subsystem first. A skipped integration
+suite is not a pass against a real database; report that limitation separately.
+
 ## Why deterministic
 
 Fiscal work is not a merge conflict. A wrong rounding, a cross-RUC read, or a receipt that verifies after tampering is a product defect, not a flaky test. The suite is built so that:
 
 - **The same input always produces the same output.** No ambient state, no clocks, no network, no randomness in the deterministic core.
 - **Contract drift fails the build.** Frozen contracts are pinned by conformance suites that run in CI and fail on any byte drift.
-- **A passing suite means the invariants held.** Receipts verify, the ledger chain is intact, gates fail closed, tenant isolation holds.
+- **A passing suite is bounded evidence.** Its cases prove the tested receipt, chain, gate, and isolation properties; they do not certify every deployment or every possible input.
 
 **The anti-pattern:** an E2E that asks a real (non-deterministic) model to "do accounting" and asserts on its prose. Models propose; the deterministic core decides. Tests assert on what the core decided, with the model's output stubbed or fixture-driven.
 
@@ -56,9 +70,9 @@ contracts/__tests__/                     # conformance suites that fail CI on dr
 
 ### How to add a vector
 
-1. Change the deterministic behavior and its implementation.
+1. Write the expected canonical behavior and observe the corresponding test fail before changing the implementation.
 2. Regenerate/extend the fixture (`contracts/receipt-schema/fixtures/...`) with the new canonical input/output pair.
-3. Run the conformance suite: `bun run test -- contracts`.
+3. Implement the authorized behavior, then run the conformance suite: `bun run test -- contracts`.
 4. The suite must pass byte-for-byte. If it does not, the implementation and the fixture disagree — fix the disagreement, never silence the test.
 5. If the change alters the normative contract shape, bump the contract version and follow the [contract regime](../contracts/README.md).
 
@@ -73,7 +87,11 @@ contracts/__tests__/                     # conformance suites that fail CI on dr
 
 ## Strict TDD in this repository
 
-When the project context detects testing capabilities (via `sdd-init`), apply Strict TDD Mode: **RED → GREEN → TRIANGULATE → REFACTOR**.
+ODD applies test-first development when the expected behavior has a meaningful,
+runnable test. Observe **RED before the implementation**, then GREEN and
+REFACTOR. Use a second case when the rule needs it; do not pad the suite with
+unrelated cases. Passive prose changes use structural and example checks rather
+than an invented RED.
 
 ```text
 RED         write the canonical-vector or unit test first; watch it fail

@@ -1,5 +1,9 @@
 # Security Policy
 
+← [Back to README](README.md)
+
+Report vulnerabilities privately so a safe fix can be coordinated before disclosure. This policy covers runtime integrity, tenant isolation, evidence, and package surfaces.
+
 ## At a glance
 
 - [Scope](#scope)

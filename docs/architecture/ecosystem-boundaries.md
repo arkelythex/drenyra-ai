@@ -1,11 +1,11 @@
 # Ecosystem Boundaries — Drenyra AI (Verifiable Accounting Agent Ecosystem)
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+A runtime can enforce a decision without becoming the interface, memory engine, or fiscal authority. Use these boundaries to assign ownership before adding a capability.
+
 > [!IMPORTANT]
 > **Drenyra AI is the agent runtime, standalone by design** — no Drenyra dependency — so ERPs, other accounting SaaS, and agent hosts (Codex, Claude Code, OpenCode) can adopt it.
-
-<!-- -->
-
-> **Last updated:** 2026-08-11 (Design 1 — boundary & authority contract). — Part of: [Architecture](../architecture.md)
 
 <!-- -->
 
@@ -24,7 +24,7 @@
 
 ## Role in the ecosystem
 
-Drenyra AI is the **agent runtime**: a standalone, verifiable, receipted execution core for fiscal work. It is the direct accounting-domain counterpart of `gentle-ai` — the framework, runtime, agents, skills, receipts, and accounting authority that Drenyra and Drenyra Pi consume.
+Drenyra AI is the **agent runtime**: a standalone, verifiable, receipted execution core for fiscal work. It is the direct accounting-domain counterpart of `gentle-ai` — the framework, runtime, agents, skills, receipts, and accounting authority that Drenyra and Drenyra Shell consume.
 
 Drenyra AI works **standalone** — no Drenyra dependency — so ERPs, other accounting SaaS, and agent hosts (Codex, Claude Code, OpenCode) can adopt it.
 
@@ -35,22 +35,22 @@ Drenyra AI works **standalone** — no Drenyra dependency — so ERPs, other acc
 - **Proportional review** — review depth scales with risk (R0 high autonomy → R3 explicit dual approval).
 - **Missions** — protocol-driven, resumable work units with lifecycle, commands, and events.
 - **Ledger** — append-only, verifiable, Ed25519-signed audit ledger core.
-- **Gates** — lifecycle gates validating authority, scope, and receipts before commit/push/PR/release.
+- **Gates** — lifecycle gates validating authority, scope, and receipts before posting, approving, declaring, or filing.
 - **Approvals** — human approval as an explicit, recorded event, never implied.
-- **CLI** — `drenyra-ai` command surface for mission, receipt, ledger, candidate, and gate operations. (MCP server is roadmap, not implemented.)
+- **CLI** — `drenyra-ai` command surface for mission, receipt, ledger, candidate, and gate operations. MCP is available through `drenyra-ai mcp serve` over stdio.
 
 ## Explicit non-goals
 
 Drenyra AI is **not**:
 
-- The product: no UI, tenants, documents, accounts, or SUNAT flows (that is `arkelythex/drenyra-command-center`).
-- A Pi harness: no extension registration, startup panels, or Pi-native commands (that is `arkelythex/drenyra-pi`).
+- The product: no UI, tenants, documents, accounts, or SUNAT flows (that is `arkelythex/drenyra-desktop`).
+- A Pi harness: no extension registration, startup panels, or Pi-native commands (that is `arkelythex/drenyra-shell`).
 - A memory engine: no observations, scope-first search, relations, or vigencia (that is `arkelythex/drenyra-engram`).
 
 ## What Drenyra AI must NOT contain long-term
 
 - **Drenyra product logic** — UI, fiscal app flows, country-pack product surfaces. Extracted and consumed, never re-implemented.
-- **Pi harness logic** — Drenyra AI must not even know `drenyra-pi` exists.
+- **Pi harness logic** — Drenyra AI must not even know `drenyra-shell` exists.
 - **Memory storage and search** — integrated from `drenyra-engram` when used; memory never authorizes here either.
 - **Skill marketplace / registry** — deferred to `arkelythex/drenyra-skills` when it outgrows this repo.
 
@@ -58,9 +58,9 @@ Drenyra AI is **not**:
 
 ```mermaid
 flowchart TD
-    P["Profesional contable"] --> D["Drenyra Command Center"]
+    P["Profesional contable"] --> D["Drenyra Desktop"]
     D --> AI["Drenyra-AI Core"]
-    PI["Drenyra Pi"] --> AI
+    PI["Drenyra Shell"] --> AI
     ERP["ERP · bancos · SUNAT"] --> AD["Adaptadores de evidencia"]
     AD --> AI
     EN["Drenyra Engram"] --> AI
@@ -74,7 +74,7 @@ flowchart TD
 | --- | --- | --- |
 | **Drenyra** | Interface, inboxes, visualization, review and approval | Re-implement gates or mutate authoritative states directly |
 | **Drenyra-AI** | Missions, candidates, materiality, authority, gates, receipts, ledger and recovery | Depend on the UI or trust agent narratives |
-| **Drenyra Pi** | Harness optimized to run specialized agents | Resolve versions from PATH or bypass the Core |
+| **Drenyra Shell** | Harness optimized to run specialized agents | Resolve versions from PATH or bypass the Core |
 | **Drenyra Engram** | Institutional memory and context retrieval | Authorize actions or treat memories as evidence |
 | **Drenyra Skills** | Versioned accounting, fiscal and jurisdictional knowledge | Silently change frozen policies |
 | **Adaptadores** | Gather evidence from ERP, banks, SUNAT and files | Claim success without a verifiable response |
@@ -94,7 +94,7 @@ flowchart TD
 
 ### Dependency rule
 
-- Drenyra and Drenyra Pi consume **published versions** of Drenyra-AI. Drenyra-AI never depends on them.
+- Drenyra and Drenyra Shell consume **published versions** of Drenyra-AI. Drenyra-AI never depends on them.
 - The UI may go down and rebuild from Core state; a transcript may be lost and the mission recovered from events and evidence.
 - **No consumer may convert a Core rejection into an approval.**
 
@@ -103,7 +103,7 @@ flowchart TD
 | Direction | Party | Relation |
 | --------- | ----- | -------- |
 | Consumed by | Drenyra | released, versioned runtime (fiscal workflows, reviews, approvals) |
-| Consumed by | Drenyra Pi | pinned, package-local, checksum-verified runtime (never `PATH`) |
+| Consumed by | Drenyra Shell | pinned, package-local, checksum-verified runtime (never `PATH`) |
 | Consumed by | CLI | direct `drenyra-ai` commands |
 | Consumed by | External ERPs | receipt verification, ledger validation |
 | Consumed by | Other SaaS / agent hosts | candidates and gates via contracts; Codex, Claude Code, OpenCode |
@@ -113,18 +113,18 @@ flowchart TD
 
 - All six contracts frozen and released; mission runtime, candidates/review, recovery, and gates implemented.
 - Hybrid orchestration added: `agents/` stages deterministic intent work; the Core lifecycle, gates, receipts, and human approval remain authoritative.
-- MCP server and external ERP/integration surfaces are roadmap, not implemented.
+- MCP is implemented over stdio JSON-RPC 2.0. External ERP deployment readiness is separate from the existence of the adapter framework; do not infer connector availability from the protocol.
 - Consumers must wait for released versions — a checkout is never a dependency.
 
 ## Ownership and accountability
 
 - Runtime contracts, receipts, ledger, gates, and review lenses: this repo.
-- Product behavior: Drenyra. Pi behavior: `drenyra-pi`. Memory: `drenyra-engram`.
+- Product behavior: Drenyra. Pi behavior: `drenyra-shell`. Memory: `drenyra-engram`.
 - A defect in a consumed memory surface is filed in `drenyra-engram`; a defect in a runtime contract belongs here.
 
 ## Boundary enforcement
 
-- Direction violations are caught in review: a PR that imports Drenyra or Drenyra Pi types into Drenyra AI is rejected.
+- Direction violations are caught in review: a PR that imports Drenyra or Drenyra Shell types into Drenyra AI is rejected.
 - Consumers use **released, versioned** artifacts — never a checkout of this repo (see [dependency-direction.md](dependency-direction.md) and [RELEASING.md](../../RELEASING.md)).
 - The approved per-component responsibilities and never-musts: [Design 01 — Ecosystem Frontier and Authority](../design/design-01-ecosystem-frontier-and-authority.md).
 

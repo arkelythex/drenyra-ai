@@ -1,5 +1,7 @@
 # Drenyra AI — Codebase Guide
 
+← [Back to README](../README.md)
+
 Maintainer-oriented map of this repository: where things live, how the layers relate, what is frozen, and how to verify a change. For the conceptual architecture, read [Architecture](architecture.md) and the [Trust Model](architecture/trust-model.md) first.
 
 > [!IMPORTANT]
@@ -7,10 +9,17 @@ Maintainer-oriented map of this repository: where things live, how the layers re
 
 ---
 
+## Quick path
+
+1. Use [Where a change goes](#where-a-change-goes) to locate the owner.
+2. Read the subsystem's contract and tests before editing it.
+3. Run its focused tests, then the [verification checklist](#testing-and-verification).
+4. Update docs beside behavior; keep public-contract changes explicit.
+
 ## Repository map
 
 ```text
-contracts/          Normative public surface — versioned, FROZEN, conformance-pinned
+contracts/          Normative public surface — versioned; six core contracts FROZEN and conformance-pinned
   ├─ *.md                    contract definitions (mission-protocol, candidate, receipt,
   │                          gate, ledger, recovery, brand-system, connector-adapter, projection)
   ├─ receipt-schema/         JSON schemas + canonical vectors for receipts
@@ -31,7 +40,7 @@ tenant-core/        RUC/company/period scope primitives
 tenant-isolation/   Tenant isolation enforcement for queries and mutations
 
 mcp/                MCP server surface (capabilities, tools)
-configurator/       Installer/configurator surface (drenyra-ai install / doctor / sync)
+configurator/       Installer/configurator surface (`install run` / `doctor run` / `sync run`)
 skills/             Runtime skills module: registry, pinning, signature, PE base skills
 
 fiscal/  journal/  ledger/  cdr/  bank-reconciliation/  close-calculations/
@@ -41,13 +50,13 @@ projection/  routing/  security/  adapters/
 
 scripts/            Build, conformance, and release tooling (build.mjs, sbom.mjs,
                     checksums.mjs, verify-*.mjs, brand-*.mjs, skills-conformance.mjs)
-docs/               Architecture series, design series, runbooks, sdds
+docs/               Architecture series, design series, runbooks, visual assets
 program/            The Drenyra Dominion program master (charter, program SDDs, program-lock)
 specs/              Requirements of record, one spec per capability
 odd/tasks/          ODD feature documents
 ```
 
-Each library subsystem ships a `package.json` subpath export (`./missions`, `./receipts`, …) through `dist/` — the package is ESM, Node >= 22, `node:crypto` only in library modules.
+Each library subsystem ships a `package.json` subpath export (`./missions`, `./receipts`, …) through `dist/` — the package is ESM, Node >= 22, cryptographic policy separated from infrastructure adapters.
 
 ---
 
@@ -69,12 +78,12 @@ cmd/                  thin adapters: parsing, output, file stores
 Rules that matter every day:
 
 1. **Contracts are normative.** Library modules implement `contracts/*.md` + schemas; frozen conformance vectors are the source of truth for correctness.
-2. **Library modules are dependency-free.** `receipts/`, `ledger/`, `missions/`, `candidates/`, `review/` use only `node:crypto`. No cross-module coupling beyond the documented re-exports (`ReceiptType`, `EvidenceItem` live in `receipts/`).
+2. **Keep core policy separate from infrastructure.** Cryptography uses `node:crypto`; the PostgreSQL store is an explicit adapter. See [Dependency Rules](architecture/dependency-rules.md) for the dependency boundary. Canonical types keep a single definition (`ReceiptType`, `EvidenceItem` live in `receipts/`).
 3. **`agents/` never becomes authority.** It imports `missions/` only; the Core never imports `agents/`.
 4. **`cmd/` is an adapter layer.** Business policy never lives in the CLI.
 5. **No reverse imports.** `cmd/` imports library modules; library modules never import `cmd/`.
 6. **`contracts/` is read-only at runtime.** Schemas load from the package root; nothing writes there.
-7. **Ecosystem direction.** This package never depends on Drenyra, Drenyra Pi, or Drenyra Engram. Memory informs; it never authorizes.
+7. **Ecosystem direction.** This package never depends on Drenyra, Drenyra Shell, or Drenyra Engram. Memory informs; it never authorizes.
 
 ---
 

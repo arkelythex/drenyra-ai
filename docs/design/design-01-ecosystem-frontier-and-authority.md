@@ -1,5 +1,10 @@
 # Design 01 — Ecosystem Frontier and Authority
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+Read this approved design to understand the intended boundary before changing the implementation.
+Approval of a design is not evidence that every described capability has shipped.
+
 > [!IMPORTANT]
 > **Status: APPROVED.** This design freezes the ecosystem frontier and the authority model — which component owns what, what each must never do, and how authority flows from a professional request to a signed receipt. It is the normative specification; existing architecture docs describe the current implementation and defer to this design for boundary decisions.
 
@@ -67,3 +72,5 @@ Every producer feeds the Core; only the Core issues receipts and writes the ledg
 ---
 
 **Read next:** [Design 02 — Monthly Close](../design/design-02-monthly-close.md) — the v1.0 flagship flow · [Architecture](../architecture.md) — back to the index
+
+**Design series:** [Next design](design-02-monthly-close.md) · [Implementation and current capabilities](../intended-usage.md)

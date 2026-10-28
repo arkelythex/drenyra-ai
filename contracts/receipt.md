@@ -1,5 +1,9 @@
 # Contract: receipt
 
+← [Contracts index](README.md) · [README](../README.md)
+
+Read this contract when producing or independently verifying the proof of a material accounting action.
+
 > Version: 0.1 · Status: FROZEN · Transport-agnostic.
 >
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents

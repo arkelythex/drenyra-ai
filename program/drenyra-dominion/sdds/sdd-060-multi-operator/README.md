@@ -1,5 +1,10 @@
 ---
 
+← [Program index](../../README.md) · [Dependency map](../../dependency-graph.md)
+
+Read this capability record alongside its dependencies and recorded evidence.
+The status below is not a new implementation or gate-approval claim.
+
 # SDD-060 — Multi-Operator Control Plane
 
 > Status: lifecycle:active · Maturity: partial (tenant model + RBAC/ABAC + SoD core implemented) · Wave: 3 · Depends on: SDD-050 · Feeds: SDD-100

@@ -1,5 +1,10 @@
 # Design 03 — Agents, Skills, and Integrations
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+Read this approved design to understand the intended boundary before changing the implementation.
+Approval of a design is not evidence that every described capability has shipped.
+
 > [!IMPORTANT]
 > **Status: APPROVED.** The architectural rule: **use AI to interpret, investigate, and propose; use deterministic code to compute, validate, authorize, and record.** Not every function becomes an "agent" — monetary calculations, states, materiality, isolation, gates, hashes, and receipts stay outside the model.
 
@@ -115,3 +120,5 @@ This allows a powerful model as coordinator and efficient models for extraction 
 ---
 
 **Read next:** [Design 04 — Persistence, Security, and Recovery](design-04-persistence-security-recovery.md) · [Architecture](../architecture.md) — back to the index · [Design 02](design-02-monthly-close.md) — the flagship flow
+
+**Design series:** [Previous design](design-02-monthly-close.md) · [Next design](design-04-persistence-security-recovery.md) · [Implementation and current capabilities](../intended-usage.md)

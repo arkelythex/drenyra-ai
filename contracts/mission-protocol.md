@@ -1,5 +1,9 @@
 # Contract: mission-protocol
 
+← [Contracts index](README.md) · [README](../README.md)
+
+Read this contract before producing mission commands or interpreting lifecycle state and event history.
+
 > Version: 0.1 · Status: FROZEN · Transport-agnostic.
 >
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents
