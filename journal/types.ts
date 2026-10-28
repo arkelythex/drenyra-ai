@@ -45,6 +45,8 @@ export const JOURNAL_ERROR = {
 	UNBALANCED: "unbalanced",
 	MISSING_EVIDENCE: "missing-evidence",
 	EVIDENCE_SCOPE_MISMATCH: "evidence-scope-mismatch",
+	INVALID_ACCOUNT: "invalid-account",
+	INVALID_ENTRY_ID: "invalid-entry-id",
 } as const;
 export type JournalErrorCode = (typeof JOURNAL_ERROR)[keyof typeof JOURNAL_ERROR];
 

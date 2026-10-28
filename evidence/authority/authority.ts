@@ -68,7 +68,10 @@ function validateScopeValue(scope: unknown): ValidatedTenantScope {
 	}
 }
 
-/** Fail-closed item gate: every item needs non-empty id, label, and type. */
+/**
+ * Fail-closed item gate: every item needs non-empty id, label, and type, and
+ * item ids are unique within an artifact (#123). An empty list stays valid.
+ */
 function validateItems(items: unknown): EvidenceItem[] {
 	if (!Array.isArray(items)) {
 		throw new EvidenceError(
@@ -76,6 +79,7 @@ function validateItems(items: unknown): EvidenceItem[] {
 			"items must be an array of EvidenceItem",
 		);
 	}
+	const seen = new Set<string>();
 	for (const item of items) {
 		if (
 			!isRecord(item) ||
@@ -88,6 +92,13 @@ function validateItems(items: unknown): EvidenceItem[] {
 				"each EvidenceItem needs non-empty id, label, and type strings",
 			);
 		}
+		if (seen.has(item.id)) {
+			throw new EvidenceError(
+				EvidenceErrorCode.INVALID_ITEM,
+				`duplicate EvidenceItem id "${item.id}"`,
+			);
+		}
+		seen.add(item.id);
 	}
 	return items as EvidenceItem[];
 }

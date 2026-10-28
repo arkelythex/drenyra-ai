@@ -25,13 +25,25 @@ function validatedScope(input: unknown): ValidatedTenantScope {
 	}
 }
 
-/** Rejects non-bigint/negative amounts and returns both totals. */
+/** Non-empty after trimming. */
+function isNonBlank(value: unknown): value is string {
+	return typeof value === "string" && value.trim().length > 0;
+}
+
+/**
+ * Rejects non-bigint and non-positive amounts and blank account codes, and
+ * returns both totals. A zero line has no accounting effect (#123), matching
+ * close-calculations' positive-amount rule.
+ */
 function lineTotals(lines: readonly JournalLine[]): { debits: bigint; credits: bigint } {
 	let debits = 0n;
 	let credits = 0n;
 	for (const line of lines) {
-		if (typeof line.amountCents !== "bigint" || line.amountCents < 0n) {
-			throw new JournalError(JOURNAL_ERROR.INVALID_AMOUNT, "amounts must be non-negative bigint cents");
+		if (typeof line.amountCents !== "bigint" || line.amountCents <= 0n) {
+			throw new JournalError(JOURNAL_ERROR.INVALID_AMOUNT, "amounts must be positive bigint cents");
+		}
+		if (!isNonBlank(line.accountCode)) {
+			throw new JournalError(JOURNAL_ERROR.INVALID_ACCOUNT, "every line needs a non-empty account code");
 		}
 		if (line.side === JOURNAL_SIDE.DEBIT) debits += line.amountCents;
 		else credits += line.amountCents;
@@ -39,12 +51,20 @@ function lineTotals(lines: readonly JournalLine[]): { debits: bigint; credits: b
 	return { debits, credits };
 }
 
-/** Entry binding: at least one accepted evidence artifact in the entry scope. */
+/**
+ * Entry binding: at least one accepted evidence artifact in the entry scope,
+ * and no artifact without items. The evidence registry may hold an empty
+ * artifact; an entry may not cite one as support (#123).
+ */
 function assertEvidenceBound(evidence: readonly AcceptedEvidence[], scope: ValidatedTenantScope): void {
 	if (evidence.length === 0) {
 		throw new JournalError(JOURNAL_ERROR.MISSING_EVIDENCE, "an entry requires at least one accepted evidence artifact");
 	}
 	for (const artifact of evidence) {
+		const items = (artifact as { items?: unknown }).items;
+		if (!Array.isArray(items) || items.length === 0) {
+			throw new JournalError(JOURNAL_ERROR.MISSING_EVIDENCE, "an evidence artifact without items cannot support an entry");
+		}
 		const artifactScope = (artifact as { scope?: unknown }).scope;
 		if (
 			typeof artifactScope !== "object" ||
@@ -59,6 +79,9 @@ function assertEvidenceBound(evidence: readonly AcceptedEvidence[], scope: Valid
 
 /** Full record validation; returns the validated scope for the entry. */
 export function validateRecord(input: JournalRecordInput): ValidatedTenantScope {
+	if (!isNonBlank(input.id)) {
+		throw new JournalError(JOURNAL_ERROR.INVALID_ENTRY_ID, "an entry requires a non-empty id");
+	}
 	if (input.lines.length === 0) {
 		throw new JournalError(JOURNAL_ERROR.EMPTY_LINES, "an entry requires at least one line");
 	}

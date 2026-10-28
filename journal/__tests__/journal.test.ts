@@ -73,9 +73,12 @@ describe("record — BigInt cents only (1C-1 RED/GREEN)", () => {
 
 describe("record — amount boundaries and multi-line sums (1C-1 TRIANGULATE)", () => {
 	it("rejects a negative amount (-1n)", () => expectRejected(entryInput({ lines: [line(-1n), line(-1n, JOURNAL_SIDE.CREDIT)] }), JOURNAL_ERROR.INVALID_AMOUNT));
-	it("accepts the non-negative zero boundary (0n)", () => {
-		const entry = record(entryInput({ lines: [line(0n), line(0n, JOURNAL_SIDE.CREDIT)] }));
-		expect(entry.lines).toHaveLength(2);
+	// Reversed from the 1C-1 "non-negative" boundary (#123): a zero line has no
+	// accounting effect, and close-calculations already rejects it.
+	it("rejects the zero boundary (0n): amounts must be positive", () => expectRejected(entryInput({ lines: [line(0n), line(0n, JOURNAL_SIDE.CREDIT)] }), JOURNAL_ERROR.INVALID_AMOUNT));
+	it("accepts the smallest positive amount (1n)", () => {
+		const entry = record(entryInput({ lines: [line(1n), line(1n, JOURNAL_SIDE.CREDIT)] }));
+		expect(entry.lines.map((l) => l.amountCents)).toEqual([1n, 1n]);
 	});
 	it("rejects decimal-string and integer-string amounts", () => {
 		for (const amount of ["1.50", "100"]) {
@@ -85,6 +88,20 @@ describe("record — amount boundaries and multi-line sums (1C-1 TRIANGULATE)", 
 	it("sums multi-line debits and credits in BigInt", () => {
 		const entry = record(entryInput({ lines: [line(300n), line(100n), line(100n), line(500n, JOURNAL_SIDE.CREDIT)] }));
 		expect(entry.lines).toHaveLength(4);
+	});
+});
+
+describe("record — proposal identity and support (#123)", () => {
+	it("rejects an empty account code", () => expectRejected(entryInput({ lines: [{ accountCode: "", side: JOURNAL_SIDE.DEBIT, amountCents: 500n }, line(500n, JOURNAL_SIDE.CREDIT)] }), JOURNAL_ERROR.INVALID_ACCOUNT));
+	it("rejects a whitespace-only account code", () => expectRejected(entryInput({ lines: [line(500n), { accountCode: "  ", side: JOURNAL_SIDE.CREDIT, amountCents: 500n }] }), JOURNAL_ERROR.INVALID_ACCOUNT));
+	it("rejects an empty entry id", () => expectRejected(entryInput({ id: "" }), JOURNAL_ERROR.INVALID_ENTRY_ID));
+	it("rejects a whitespace-only entry id", () => expectRejected(entryInput({ id: "   " }), JOURNAL_ERROR.INVALID_ENTRY_ID));
+	it("rejects an evidence artifact that carries no items as support", () => {
+		const empty = acceptEvidence({ scope: SCOPE, items: [], provenance: PROVENANCE });
+		expectRejected(entryInput({ evidence: [empty] }), JOURNAL_ERROR.MISSING_EVIDENCE);
+	});
+	it("records an entry backed by two non-empty artifacts", () => {
+		expect(record(entryInput({ evidence: [accept(), accept()] })).status).toBe(JOURNAL_STATUS.RECORDED);
 	});
 });
 
