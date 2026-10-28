@@ -143,6 +143,8 @@ node scripts/brand-conformance.mjs docs/diagrams/*.svg
 
 This step re-themes inline SVG views only; the interactive HTML retains the
 Archify viewer palette. Do not claim that the viewer has been re-themed.
+Repeated conversion must preserve identical bytes, including canonical amber
+used by Dark messagebus elements; do not remap a token that the converter emits.
 
 Verify before committing: each file must open as a bare SVG document that keeps its own styling. An `<svg>` cut out of the artifact by hand does not, because the artifact carries its classes in the document stylesheet rather than inside the SVG.
 
