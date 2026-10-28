@@ -260,12 +260,16 @@ Iterate with the checker's off-palette feedback until coverage ≥ 0.92, then `b
 
 | Repo | File | README |
 | --- | --- | --- |
-| drenyra-ai | `docs/assets/brand/drenyra-ai-hero-dreamcoder-light.svg` (+ `-rda-editorial`, `-control-plane-editorial`, `-mission-lifecycle-editorial` `.svg`/`.png`) | top hero + RDA + control-plane + mission-lifecycle (integrated) |
+| drenyra-ai | `docs/assets/brand/drenyra-ai-banner.{light,dark}.svg` and `docs/assets/diagrams/*.{light,dark}.svg` | current paired hero and feature diagrams, generated from code |
 | Drenyra Desktop | `assets/branding/drenyra-banner.png` (create) | add banner `<img>` at top |
 | drenyra-pi | `assets/branding/drenyra-pi-hero.png` (create, pending) | top hero |
 | drenyra-engram | `assets/branding/drenyra-engram-banner.png` (create) | replace banner-1/2/3 |
 | drenyra-skills | `assets/branding/drenyra-skills-banner.png` (create) | add banner `<img>` at top |
 | drenyra-guardian-angel | `assets/branding/drenyra-guardian-angel-banner.png` (create) | add banner `<img>` at top |
+
+The old Light-only editorial assets remain as source references; they are not
+embedded in the current README. Other repositories' rows are proposed art
+directions, not evidence of completed deployment or adoption.
 
 The vector SVGs stay in the repos as the **vector reference** (the contract requires vectors for identity primitives); READMEs display the generated PNG/SVG.
 

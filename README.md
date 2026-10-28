@@ -12,10 +12,10 @@
 <p><strong>The verifiable accounting runtime for the agents and systems you already use.</strong></p>
 
 <p>
-<a href="https://www.npmjs.com/package/drenyra-ai"><img src="https://img.shields.io/npm/v/drenyra-ai?style=for-the-badge&labelColor=17120D&color=824F16" alt="npm version"></a>
-<a href="https://github.com/arkelythex/drenyra-ai/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/arkelythex/drenyra-ai/ci.yml?style=for-the-badge&labelColor=17120D&color=315B31" alt="CI status"></a>
-<img src="https://img.shields.io/badge/Node-22%2B-0D4A68?style=for-the-badge&labelColor=17120D" alt="Requires Node 22 or later">
-<a href="LICENSE"><img src="https://img.shields.io/badge/License-Proprietary-A7471C?style=for-the-badge&labelColor=17120D" alt="Proprietary license"></a>
+<a href="https://www.npmjs.com/package/drenyra-ai"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/npm/v/drenyra-ai?style=for-the-badge&labelColor=1F1F1F&color=A5B4FC"><img src="https://img.shields.io/npm/v/drenyra-ai?style=for-the-badge&labelColor=17120D&color=824F16" alt="npm version"></picture></a>
+<a href="https://github.com/arkelythex/drenyra-ai/actions/workflows/ci.yml"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/github/actions/workflow/status/arkelythex/drenyra-ai/ci.yml?style=for-the-badge&labelColor=1F1F1F&color=34D399"><img src="https://img.shields.io/github/actions/workflow/status/arkelythex/drenyra-ai/ci.yml?style=for-the-badge&labelColor=17120D&color=315B31" alt="CI status"></picture></a>
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/Node-22%2B-7DD3FC?style=for-the-badge&labelColor=1F1F1F"><img src="https://img.shields.io/badge/Node-22%2B-0D4A68?style=for-the-badge&labelColor=17120D" alt="Requires Node 22 or later"></picture>
+<a href="LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/License-Proprietary-FB8585?style=for-the-badge&labelColor=1F1F1F"><img src="https://img.shields.io/badge/License-Proprietary-A7471C?style=for-the-badge&labelColor=17120D" alt="Proprietary license"></picture></a>
 </p>
 
 <p>
