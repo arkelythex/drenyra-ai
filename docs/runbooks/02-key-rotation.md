@@ -1,11 +1,26 @@
 # Runbook 02 — Key Rotation
 
+← [Runbooks index](README.md) · [Usage reference](../usage.md)
+
+Use this procedure with the affected mission, artifacts, and deployment owner identified.
+Preserve evidence first; a diagnostic command does not authorize corrective mutation.
+
 > [!IMPORTANT]
 > **Signer trust is checked at verification time.** Rotating or revoking a key must never break the verifiability of existing receipts: receipts preserve the original key versions for reproducibility, and revocation is a signed, explicit event.
 
 <!-- -->
 
 > **Part of:** [Runbooks](README.md) · **Last updated:** 2026-08-10
+
+## Before you start
+
+- Confirm the artifact paths and scope with the deployment owner.
+- Consult [CLI syntax](../usage.md) before running commands shown below. For example,
+  receipt verification needs an input file (`drenyra-ai receipt verify ./receipt.json`),
+  and ledger validation needs a JSON file (`drenyra-ai ledger validate ./ledger.json`).
+- Treat those paths as examples, not production defaults. Key rotation, migration,
+  replay, and fencing steps require the deployment's approved integration tooling;
+  the diagnostic CLI does not perform them automatically.
 
 ## When to use
 

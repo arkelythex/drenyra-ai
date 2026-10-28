@@ -1,5 +1,11 @@
 # Drenyra Ecosystem — README Banner Prompts v3
 
+← [Brand contract](../../../contracts/brand-system.md) · [README](../../../README.md)
+
+Use this direction for optional generated ecosystem artwork. The documentation
+SVGs are reproducible from code and follow the separate hybrid authoring path in
+the [documentation standard](../../documentation-standard.md).
+
 ## Dreamcoder Editorial Edition (Cocoa/Lúcuma Light)
 
 > **Normative source:** [`brand-system.md`](../../../contracts/brand-system.md) (v0.4 DRAFT) + [`tokens.json`](../../../contracts/brand-system/tokens.json)
@@ -102,7 +108,7 @@ This should feel like evidence you can trust — not a fintech card, not a crypt
 
 ---
 
-## 5.3 Drenyra Pi — Pinned Deterministic Runtime
+## 5.3 Drenyra Shell — Pinned Deterministic Runtime
 
 ```text
 Subject: a pinned deterministic runtime node as a sealed precision object. The hero on the right third is a compact central cube with warm ivory and tan faces and cocoa #824F16 structural edges, the corners traced with fine terracotta #A7471C edge light. A single vertical diagnostic teal #0D4A68 pin passes through the object from above, locking it into place with ritual precision — the runtime physically anchored.
@@ -255,10 +261,15 @@ Iterate with the checker's off-palette feedback until coverage ≥ 0.92, then `b
 | Repo | File | README |
 | --- | --- | --- |
 | drenyra-ai | `docs/assets/brand/drenyra-ai-hero-dreamcoder-light.svg` (+ `-rda-editorial`, `-control-plane-editorial`, `-mission-lifecycle-editorial` `.svg`/`.png`) | top hero + RDA + control-plane + mission-lifecycle (integrated) |
-| Drenyra Command Center | `assets/branding/drenyra-banner.png` (create) | add banner `<img>` at top |
+| Drenyra Desktop | `assets/branding/drenyra-banner.png` (create) | add banner `<img>` at top |
 | drenyra-pi | `assets/branding/drenyra-pi-hero.png` (create, pending) | top hero |
 | drenyra-engram | `assets/branding/drenyra-engram-banner.png` (create) | replace banner-1/2/3 |
 | drenyra-skills | `assets/branding/drenyra-skills-banner.png` (create) | add banner `<img>` at top |
 | drenyra-guardian-angel | `assets/branding/drenyra-guardian-angel-banner.png` (create) | add banner `<img>` at top |
 
 The vector SVGs stay in the repos as the **vector reference** (the contract requires vectors for identity primitives); READMEs display the generated PNG/SVG.
+
+## Read next
+
+* [Brand tokens](../../../contracts/brand-system/tokens.json) — exact palette and roles.
+* [Documentation standard](../../documentation-standard.md) — deterministic SVG generation and paired themes.

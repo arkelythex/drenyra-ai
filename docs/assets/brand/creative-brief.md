@@ -1,5 +1,11 @@
 # Drenyra Brand — Creative Brief (Art Direction)
 
+← [Brand contract](../../../contracts/brand-system.md) · [README](../../../README.md)
+
+Use this direction for optional generated ecosystem artwork. The documentation
+SVGs are reproducible from code and follow the separate hybrid authoring path in
+the [documentation standard](../../documentation-standard.md).
+
 > **Normative layer:** [`brand-system.md`](../../../contracts/brand-system.md) (v0.4)
 >
 > + [`tokens.json`](../../../contracts/brand-system/tokens.json) — the palette is
@@ -47,7 +53,7 @@ object photographed by a fashion campaign on a Syd Mead set.
 ## Composition rules
 
 + One focal hero, placed on the right third; deep negative space on the left
-  for the README title to breathe (GitHub renders title over the banner).
+  for the README title to breathe. GitHub renders the title separately; it does not overlay it.
 + Palette: ONLY the canonical tokens (dark theme primary). Gradients blend
   exclusively between tokens. The two aurora glows at 5-8% opacity are the
   only "atmosphere" allowed beyond surface/material.
@@ -58,16 +64,16 @@ object photographed by a fashion campaign on a Syd Mead set.
 
 ## Per-product art directions (narrative concepts)
 
-1. **Drenyra Command Center** — *the fiscal command deck.* A sculptural control
+1. **Drenyra Desktop** — *the fiscal command deck.* A sculptural control
    surface, machined like an instrument of state: layered translucent consoles
    (precise geometry) crowned by the dual-approval seal — two interlocking
-   arcs, one cocoa one teal, the checkmark as a single engraved point of
+   arcs, one primary and one secondary token from the selected theme, the checkmark as a single engraved point of
    light. Signature detail: the seal's engraving catches a rim light.
 2. **Drenyra AI** — *the verified relic.* The receipt card is treated as a
    museum monolith: minimal slab, luminous engraved border, the checkmark as a
    sacred seal. Around it, an orbital circlet of hash-glyph blocks (machined
    beads) — the signature detail is the circlet's light path.
-3. **Drenyra Pi** — *the pinned monolith.* One precision-machined cube, held by
+3. **Drenyra Shell** — *the pinned monolith.* One precision-machined cube, held by
    a slender pin, floating in carved space; three concentric machined tracks
    orbit it. Signature detail: the padlock rendered as a single engraved facet.
 4. **Drenyra Engram** — *the memory cathedral.* A curved canopy of light-nodes
@@ -110,3 +116,8 @@ Score each candidate 0-10; accept only 8+ on ALL:
    regenerate.
 4. Validate with `bun run brand:conformance` (coverage ≥ 0.92) and
    `bun run brand:ecosystem` for the freeze gate.
+
+## Read next
+
++ [Brand tokens](../../../contracts/brand-system/tokens.json) — exact palette and roles.
++ [Documentation standard](../../documentation-standard.md) — deterministic SVG generation and paired themes.

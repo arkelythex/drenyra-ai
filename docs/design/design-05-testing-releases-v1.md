@@ -1,5 +1,10 @@
 # Design 05 — Testing, Releases, and the v1.0 Definition
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+Read this approved design to understand the intended boundary before changing the implementation.
+Approval of a design is not evidence that every described capability has shipped.
+
 > [!IMPORTANT]
 > **Status: APPROVED.** Drenyra AI does not reach v1.0 because "it works in a demo." It reaches v1.0 when its authority, recovery, and integration are verifiable by independent consumers.
 
@@ -122,3 +127,5 @@ Changing a frozen contract requires a **major version and a migration path**. Up
 ---
 
 **Read next:** [Architecture](../architecture.md) — back to the index · [Design 04](design-04-persistence-security-recovery.md) — persistence, security, and recovery
+
+**Design series:** [Previous design](design-04-persistence-security-recovery.md) · [Implementation and current capabilities](../intended-usage.md)

@@ -1,5 +1,10 @@
 # Design 02 — Monthly Accounting and Tax Close
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+Read this approved design to understand the intended boundary before changing the implementation.
+Approval of a design is not evidence that every described capability has shipped.
+
 > [!IMPORTANT]
 > **Status: APPROVED — the v1.0 flagship flow.** The professional never runs an agent chain manually. Their primary interaction is: *"Prepare the July 2026 close for Company X."* Drenyra asks only for the RUC, period, and scope it cannot safely derive on its own.
 
@@ -141,3 +146,5 @@ This flow is the flagship instance of the [Design 01 chain of authority](design-
 ---
 
 **Read next:** [Design 03 — Agents, Skills, and Integrations](design-03-agents-skills-integrations.md) · [Architecture](../architecture.md) — back to the index · [Design 01](design-01-ecosystem-frontier-and-authority.md) — the frontier and authority model
+
+**Design series:** [Previous design](design-01-ecosystem-frontier-and-authority.md) · [Next design](design-03-agents-skills-integrations.md) · [Implementation and current capabilities](../intended-usage.md)

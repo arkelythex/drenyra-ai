@@ -1,5 +1,10 @@
 # Design 04 — Persistence, Security, and Recovery
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+Read this approved design to understand the intended boundary before changing the implementation.
+Approval of a design is not evidence that every described capability has shipped.
+
 > [!IMPORTANT]
 > **Status: APPROVED.** The central rule: **authoritative state lives in persisted events, evidence, and receipts — never in the conversation or the model's memory.**
 
@@ -149,3 +154,5 @@ There are **no silent errors and no states converted into success for interface 
 ---
 
 **Read next:** [Design 05 — Testing, Releases, and the v1.0 Definition](design-05-testing-releases-v1.md) · [Architecture](../architecture.md) — back to the index · [Design 03](design-03-agents-skills-integrations.md) — agents, skills, and integrations
+
+**Design series:** [Previous design](design-03-agents-skills-integrations.md) · [Next design](design-05-testing-releases-v1.md) · [Implementation and current capabilities](../intended-usage.md)
