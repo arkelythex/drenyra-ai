@@ -1,11 +1,11 @@
 # Trust Boundaries
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+Each boundary has a specific proof and a specific rejection path. Review those paths before treating an input, signer, state, or document as trusted.
+
 > [!IMPORTANT]
 > **Trust fails closed.** Unknown states, unknown signers, unknown schemas, and unverifiable artifacts are rejected — never assumed valid.
-
-<!-- -->
-
-> **Last updated:** 2026-08-11 (Design 4 — untrusted documents). Status: pre-alpha. — Part of: [Architecture](../architecture.md)
 
 <!-- -->
 
@@ -29,7 +29,7 @@
 1. **Fail closed.** Unknown states, unknown signers, unknown schemas, and unverifiable artifacts are rejected — never assumed valid.
 2. **Bytes are the source of truth.** Candidate identity and receipt integrity anchor to exact bytes, not to agent intent or transcripts.
 3. **Authority is derived, not asserted.** The runtime validates; gates + human approval authorize. Drenyra Engram never authorizes operations.
-4. **Local development adapters are never trusted storage.** The JSON mission store is a development adapter; canonical persistence is a later concern (see [storage-model.md](storage-model.md)).
+4. **Local development adapters are never trusted storage.** The JSON mission store is a development adapter; deployment readiness must be verified for the selected persistence adapter (see [storage-model.md](storage-model.md)).
 
 ---
 

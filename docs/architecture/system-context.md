@@ -1,11 +1,11 @@
 # System Context
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+Start here to locate the package inside an accounting integration. The core supplies deterministic enforcement; consumers supply interfaces and external-system adapters.
+
 > [!IMPORTANT]
-> **`drenyra-ai` is the standalone Verifiable Accounting Agent Ecosystem runtime** — the executable core that Drenyra, Drenyra Pi, ERPs, and other SaaS consume for receipt-driven accounting, mission lifecycle, candidate review, and proportional review. It is the direct accounting-domain counterpart of `gentle-ai`.
-
-<!-- -->
-
-> **Last updated:** 2026-08-02. Status: pre-alpha (0.0.1-prealpha.1). — Part of: [Architecture](../architecture.md)
+> **`drenyra-ai` is the standalone Verifiable Accounting Agent Ecosystem runtime** — the executable core that Drenyra, Drenyra Shell, ERPs, and other SaaS consume for receipt-driven accounting, mission lifecycle, candidate review, and proportional review. It is the direct accounting-domain counterpart of `gentle-ai`.
 
 <!-- -->
 
@@ -13,7 +13,7 @@
 
 ## What this package is
 
-`drenyra-ai` is the standalone **Verifiable Accounting Agent Ecosystem** runtime: the executable core that Drenyra, Drenyra Pi, ERPs, and other SaaS consume for receipt-driven accounting, mission lifecycle, candidate review, and proportional review planning. It is the direct counterpart of `gentle-ai` for the accounting domain.
+`drenyra-ai` is the standalone **Verifiable Accounting Agent Ecosystem** runtime: the executable core that Drenyra, Drenyra Shell, ERPs, and other SaaS consume for receipt-driven accounting, mission lifecycle, candidate review, and proportional review planning. It is the direct counterpart of `gentle-ai` for the accounting domain.
 
 ## Components
 
@@ -32,12 +32,13 @@
 
 - **CLI** (`drenyra-ai ...`) — the operational surface; thin adapters over the library.
 - **Library** (`drenyra-ai/receipts`, `/missions`, ...) — programmatic consumers.
+- **MCP** (`drenyra-ai mcp serve`) — stdio JSON-RPC 2.0 access to the same core.
 - **Contracts** (`contracts/`) — the public surface for ERPs, auditors, and other SaaS.
 
 ## What this package is NOT
 
-- Not the product UI/tenants/documents (that is `arkelythex/drenyra-command-center`).
-- Not a Pi harness (that is `arkelythex/drenyra-pi`).
+- Not the product UI/tenants/documents (that is `arkelythex/drenyra-desktop`).
+- Not a Pi harness (that is `arkelythex/drenyra-shell`).
 - Not a memory engine (that is `arkelythex/drenyra-engram`).
 - Not an authorization system on its own: gates + human approval are where authority lives.
 

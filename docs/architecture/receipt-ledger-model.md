@@ -1,11 +1,11 @@
 # Receipt vs Ledger Entry
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+A valid receipt and a valid ledger answer different audit questions. Verify the action and the chain independently; neither artifact is the accounting journal of record.
+
 > [!IMPORTANT]
 > **Receipts and ledger entries are different artifacts.** A receipt proves that an action happened, by whom, in which scope, with which before/after state; the ledger proves the ORDER and INTEGRITY of a chain of receipted events. The ledger chains receipts — it does not replace them.
-
-<!-- -->
-
-> **Last updated:** 2026-08-02. Status: pre-alpha. — Part of: [Architecture](../architecture.md)
 
 <!-- -->
 
