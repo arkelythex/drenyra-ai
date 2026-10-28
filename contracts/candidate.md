@@ -1,5 +1,9 @@
 # Contract: candidate
 
+← [Contracts index](README.md) · [README](../README.md)
+
+Read this contract when binding a proposal to reviewable bytes, materiality, and a bounded correction budget.
+
 > Version: 0.1 · Status: FROZEN · Transport-agnostic.
 >
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents

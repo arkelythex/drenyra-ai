@@ -1,5 +1,9 @@
 # Contract: projection
 
+← [Contracts index](README.md) · [README](../README.md)
+
+Read this contract when presenting mission status and next-action guidance without creating a second authorization surface.
+
 > Version: 0.1 · Status: DRAFT · Transport-agnostic.
 >
 > The **read-only projection surface** for mission lifecycle observation: given a
