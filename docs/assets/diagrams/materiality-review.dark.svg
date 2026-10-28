@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 680" width="1240" height="680" role="img" aria-labelledby="materiality-reviewTitle materiality-reviewDesc" font-family="'Inter', ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title id="materiality-reviewTitle">Review &#8212; proportional, never optional by claim</title>
+  <desc id="materiality-reviewDesc">The tier comes from the candidate, not the confidence of the agent. Value, reversibility, jurisdiction. Money is BigInt cents; policy rules run in a fixed order. Unknown jurisdiction escalates. Increase one tier; R3 remains the ceiling. Controlled autonomy. Read-only queries and non-material drafts. Focused review. Standard entries remain subject to the applicable gates. One explicit approval. Review and approval are recorded, never inferred. Two distinct approvers. Irreversible operations require explicit dual approval.</desc>
+  <defs>
+    <radialGradient id="materiality-reviewAmbient" cx="12%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#A5B4FC" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#A5B4FC" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1240" height="680" rx="24" fill="#000000"/>
+  <rect width="1240" height="680" rx="24" fill="url(#materiality-reviewAmbient)"/>
+<text x="40" y="58" font-size="27" font-weight="700" fill="#F5F5F5">Review &#8212; proportional, never optional by claim</text>
+  <text x="41" y="88" font-size="14.5" fill="#A7A7A7">The tier comes from the candidate, not the confidence of the agent.</text>
+  <rect x="970" y="38" width="230" height="34" rx="17" fill="#2E2E2E" fill-opacity="0.6" stroke="#6B6B6B" stroke-opacity="0.4"/>
+  <text x="1085" y="60" font-size="12.5" text-anchor="middle" font-family="'Geist Mono', 'JetBrains Mono', ui-monospace, monospace" fill="#A5B4FC">deterministic materiality</text>
+<rect x="40" y="126" width="1160" height="146" rx="20" fill="#0B0B0B" fill-opacity="1" stroke="#6B6B6B" stroke-opacity="0.4"/>
+  <text x="68" y="207" font-size="34" font-weight="700" fill="#A5B4FC" opacity="0.22">01</text>
+  <text x="68" y="233" font-size="13" font-weight="700" letter-spacing="2" fill="#C7C7C7">DERIVE</text>
+  <line x1="200" y1="154" x2="200" y2="244" stroke="#6B6B6B" stroke-opacity="0.4"/>
+<rect x="224" y="155" width="452" height="90" rx="14" fill="#000000" fill-opacity="0.5"/>
+  <rect x="224" y="152" width="452" height="90" rx="14" fill="#1F1F1F" stroke="#A5B4FC" stroke-opacity="0.55"/>
+  <rect x="224" y="152" width="452" height="90" rx="14" fill="#A5B4FC" fill-opacity="0.07"/>
+  <text x="244" y="185" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#A5B4FC" opacity="0.85">INPUT</text>
+  <text x="244" y="210" font-size="17" font-weight="600" fill="#F5F5F5">Value, reversibility, jurisdiction</text>
+  <text x="244" y="230" font-size="11.5" fill="#A7A7A7">Money is BigInt cents; policy rules run in a fixed order.</text>
+<rect x="700" y="155" width="452" height="90" rx="14" fill="#000000" fill-opacity="0.5"/>
+  <rect x="700" y="152" width="452" height="90" rx="14" fill="#1F1F1F" stroke="#A5B4FC" stroke-opacity="0.55"/>
+  <rect x="700" y="152" width="452" height="90" rx="14" fill="#A5B4FC" fill-opacity="0.07"/>
+  <text x="720" y="185" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#A5B4FC" opacity="0.85">FAIL CLOSED</text>
+  <text x="720" y="210" font-size="17" font-weight="600" fill="#F5F5F5">Unknown jurisdiction escalates</text>
+  <text x="720" y="230" font-size="11.5" fill="#A7A7A7">Increase one tier; R3 remains the ceiling.</text>
+<rect x="40" y="292" width="1160" height="146" rx="20" fill="#0B0B0B" fill-opacity="1" stroke="#6B6B6B" stroke-opacity="0.4"/>
+  <text x="68" y="373" font-size="34" font-weight="700" fill="#A5B4FC" opacity="0.22">02</text>
+  <text x="68" y="399" font-size="13" font-weight="700" letter-spacing="2" fill="#C7C7C7">REVIEW</text>
+  <line x1="200" y1="320" x2="200" y2="410" stroke="#6B6B6B" stroke-opacity="0.4"/>
+<rect x="224" y="321" width="452" height="90" rx="14" fill="#000000" fill-opacity="0.5"/>
+  <rect x="224" y="318" width="452" height="90" rx="14" fill="#1F1F1F" stroke="#7DD3FC" stroke-opacity="0.55"/>
+  <rect x="224" y="318" width="452" height="90" rx="14" fill="#7DD3FC" fill-opacity="0.07"/>
+  <text x="244" y="351" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#7DD3FC" opacity="0.85">R0 &#183; NON-MATERIAL</text>
+  <text x="244" y="376" font-size="17" font-weight="600" fill="#F5F5F5">Controlled autonomy</text>
+  <text x="244" y="396" font-size="11.5" fill="#A7A7A7">Read-only queries and non-material drafts.</text>
+<rect x="700" y="321" width="452" height="90" rx="14" fill="#000000" fill-opacity="0.5"/>
+  <rect x="700" y="318" width="452" height="90" rx="14" fill="#1F1F1F" stroke="#7DD3FC" stroke-opacity="0.55"/>
+  <rect x="700" y="318" width="452" height="90" rx="14" fill="#7DD3FC" fill-opacity="0.07"/>
+  <text x="720" y="351" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#7DD3FC" opacity="0.85">R1 &#183; WITHIN LIMITS</text>
+  <text x="720" y="376" font-size="17" font-weight="600" fill="#F5F5F5">Focused review</text>
+  <text x="720" y="396" font-size="11.5" fill="#A7A7A7">Standard entries remain subject to the applicable gates.</text>
+<rect x="40" y="458" width="1160" height="146" rx="20" fill="#0B0B0B" fill-opacity="1" stroke="#6B6B6B" stroke-opacity="0.4"/>
+  <text x="68" y="539" font-size="34" font-weight="700" fill="#A5B4FC" opacity="0.22">03</text>
+  <text x="68" y="565" font-size="13" font-weight="700" letter-spacing="2" fill="#C7C7C7">APPROVE</text>
+  <line x1="200" y1="486" x2="200" y2="576" stroke="#6B6B6B" stroke-opacity="0.4"/>
+<rect x="224" y="487" width="452" height="90" rx="14" fill="#000000" fill-opacity="0.5"/>
+  <rect x="224" y="484" width="452" height="90" rx="14" fill="#1F1F1F" stroke="#D4B5FD" stroke-opacity="0.55"/>
+  <rect x="224" y="484" width="452" height="90" rx="14" fill="#D4B5FD" fill-opacity="0.07"/>
+  <text x="244" y="517" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#D4B5FD" opacity="0.85">R2 &#183; MATERIAL</text>
+  <text x="244" y="542" font-size="17" font-weight="600" fill="#F5F5F5">One explicit approval</text>
+  <text x="244" y="562" font-size="11.5" fill="#A7A7A7">Review and approval are recorded, never inferred.</text>
+<rect x="700" y="487" width="452" height="90" rx="14" fill="#000000" fill-opacity="0.5"/>
+  <rect x="700" y="484" width="452" height="90" rx="14" fill="#1F1F1F" stroke="#D4B5FD" stroke-opacity="0.55"/>
+  <rect x="700" y="484" width="452" height="90" rx="14" fill="#D4B5FD" fill-opacity="0.07"/>
+  <text x="720" y="517" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#D4B5FD" opacity="0.85">R3 &#183; CRITICAL</text>
+  <text x="720" y="542" font-size="17" font-weight="600" fill="#F5F5F5">Two distinct approvers</text>
+  <text x="720" y="562" font-size="11.5" fill="#A7A7A7">Irreversible operations require explicit dual approval.</text>
+<line x1="40" y1="638" x2="1200" y2="638" stroke="#6B6B6B" stroke-opacity="0.4"/>
+  <text x="620" y="658" font-size="12" text-anchor="middle" fill="#A7A7A7">One scoped correction per candidate. Different bytes require re-inspection.</text>
+</svg>

@@ -22,6 +22,7 @@ import { fileURLToPath } from "node:url";
 import { palettes } from "./palettes.mjs";
 import { banner } from "./visuals/banner.mjs";
 import { fiscalLifecycle } from "./visuals/fiscal-lifecycle.mjs";
+import { features } from "./visuals/features.mjs";
 import { mark } from "./visuals/mark.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -29,7 +30,7 @@ const TOKENS_PATH = join(ROOT, "contracts", "brand-system", "tokens.json");
 const HEX_RE = /^#[0-9a-f]{6}$/i;
 
 /** Visual definitions: { name, dir, render(palette) -> svg string }. */
-const VISUALS = [banner, mark, fiscalLifecycle];
+const VISUALS = [banner, mark, fiscalLifecycle, ...features];
 
 function canonicalHexes() {
 	const tokens = JSON.parse(readFileSync(TOKENS_PATH, "utf8"));
