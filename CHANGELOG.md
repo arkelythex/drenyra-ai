@@ -12,6 +12,22 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+### Fixed — journal proposals the kernel used to record (#123)
+
+- `journal.record` (and `supersede`) now reject five defective proposals:
+  - a zero amount → `invalid-amount`. Amounts must be positive; this reverses the
+    1C-1 "non-negative" boundary and matches `close-calculations`;
+  - a blank account code → new `invalid-account`;
+  - a blank entry id → new `invalid-entry-id`;
+  - an evidence artifact with no items cited as support → `missing-evidence`.
+- `registerEvidence` and `acceptEvidence` reject an artifact listing the same item
+  id twice → `INVALID_ITEM`. An empty item list stays valid for the registry.
+- Measured with Drenyra Shell's control mutation suite against this build: 18/25 →
+  23/25 defects rejected (7200 → 9200 bps), 0/3 false alarms.
+- Deferred, not fixed. Checksummed RUC is decision-gated by
+  `specs/drenyra-ecosystem-cleanup`. A future `capturedAt` needs an injected
+  reference instant, because the kernel reads no clock.
+
 ### Fixed — release confirmation races the registry
 
 - The `Confirm published artifact` step read the registry once, 0.5 s after

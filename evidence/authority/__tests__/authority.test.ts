@@ -127,6 +127,18 @@ describe("registerEvidence — fail-closed item rejection", () => {
 			EvidenceErrorCode.INVALID_ITEM,
 		);
 	});
+	it("rejects two items with the same id (#123)", () => {
+		expectEvidenceCode(
+			() => register({ items: [ITEMS[0], { ...ITEMS[1], id: ITEMS[0].id }] }),
+			EvidenceErrorCode.INVALID_ITEM,
+		);
+	});
+	it("rejects the same item listed twice (#123)", () => {
+		expectEvidenceCode(
+			() => register({ items: [ITEMS[0], ITEMS[0]] }),
+			EvidenceErrorCode.INVALID_ITEM,
+		);
+	});
 });
 
 describe("registerEvidence — provenance channel gates", () => {
