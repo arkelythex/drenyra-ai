@@ -2,8 +2,8 @@
 
 ## Dreamcoder Editorial Edition (Cocoa/Lúcuma Light)
 
-> **Normative source:** [`brand-system.md`](../../../contracts/brand-system.md) (v0.3 DRAFT) + [`tokens.json`](../../../contracts/brand-system/tokens.json)
-> **Creative direction:** Dreamcoder Workbench canonical (Cocoa/Lúcuma light, Anthracite Steel dark) × accounting institutional design × Dieter Rams restraint × technical publishing
+> **Normative source:** [`brand-system.md`](../../../contracts/brand-system.md) (v0.4 DRAFT) + [`tokens.json`](../../../contracts/brand-system/tokens.json)
+> **Creative direction:** Dreamcoder Workbench canonical (Dreamcoder Light Cocoa/Lúcuma, Dreamcoder Dark OLED-aware) × accounting institutional design × Dieter Rams restraint × technical publishing
 > **Goal:** README banners that feel like **trusted fiscal intelligence artifacts** — editorial, institutional, calm. Less "AI startup", more "precision engineering schematic printed on warm technical paper".
 
 ---
@@ -31,9 +31,9 @@ The light mode is the primary editorial surface:
 * accents: cocoa `#824F16`, terracotta `#A7471C`, sage `#315B31`, diagnostic teal `#0D4A68`, lavender `#57478B`
 * editorial restraint: generous negative space, precise rules and hairlines, ink-on-paper hierarchy
 
-### Anthracite Steel (optional dark variant)
+### Dreamcoder Dark (optional dark variant)
 
-Deep charcoal `#070A13`, steel surfaces `#0D121A`/`#151C25`, light text `#E6EDF3`, focus blue `#A5C7E8`. Same object identity, dark rendering.
+OLED canvas `#000000`, near-black surfaces `#0B0B0B`/`#1F1F1F`, light text `#E6E6E6`, indigo `#A5B4FC` and lavender `#D4B5FD` accents. Same object identity, dark rendering.
 
 ## 3. Anti-generic guardrails
 
@@ -160,12 +160,12 @@ Editorial emphasis: think precision technical publishing. Hairline rules, genero
 
 ---
 
-## 7. Anthracite Steel rider (dark variant)
+## 7. Dreamcoder Dark rider (dark variant)
 
 Use only when a dark variant is required.
 
 ```text
-Anthracite Steel variant: same object identity and composition, rendered on deep charcoal #070A13 with steel surfaces #0D121A/#151C25, light text #E6EDF3, and the dark accent set (focus blue #A5C7E8, sage #55C080, diagnostic #4DAED6). No neon, no glow-for-glow — dark editorial restraint.
+Dreamcoder Dark variant: same object identity and composition, rendered on a pure black OLED canvas #000000 with near-black surfaces #0B0B0B/#1F1F1F, light text #E6E6E6, and the dark accent set (indigo #A5B4FC, lavender #D4B5FD, emerald #34D399, sky #7DD3FC). No neon, no glow-for-glow — dark editorial restraint.
 ```
 
 ---
@@ -197,7 +197,7 @@ Avoid the visual language of a generic SaaS hero banner. Avoid random holographi
 * [ ] Warm ivory/ink hierarchy (Dreamcoder Light), no neon
 * [ ] Cocoa/terracotta accents restrained; sage only for verification
 * [ ] No text in non-hero images; hero text small and editorial
-* [ ] No legacy cyan `#3CE6D8` / violet `#9B7FE8` / OLED blacks
+* [ ] No legacy cyan `#3CE6D8` / violet `#9B7FE8` / v0.2 dark ladder / v0.3 Anthracite Steel
 * [ ] The object clearly suggests the product's meaning
 * [ ] The image feels like Drenyra, not a random AI brand
 
@@ -205,7 +205,7 @@ Avoid the visual language of a generic SaaS hero banner. Avoid random holographi
 
 **Drenyra banners should not look like "technology." They should look like trusted fiscal intelligence artifacts** — editorial, institutional, and calm. The technology feels advanced because the information is extraordinarily well organized.
 
-## 12. Palette reference (tokens v0.3 DRAFT)
+## 12. Palette reference (tokens v0.4 DRAFT)
 
 The conformance checker validates against `contracts/brand-system/tokens.json`. The **law**:
 
@@ -224,29 +224,31 @@ The conformance checker validates against `contracts/brand-system/tokens.json`. 
 | diagnostic teal | `#0D4A68` | Scope / control / pending |
 | lavender | `#57478B` | Companion accent |
 
-### Dark — Dreamcoder Anthracite Steel
+### Dark — Dreamcoder Dark (OLED-aware)
 
 | Token | Hex | Role |
 | --- | --- | --- |
-| canvas | `#070A13` | Deep charcoal |
-| surface | `#0D121A` | Steel surface |
-| text-primary | `#E6EDF3` | Light text |
-| focus/accent | `#A5C7E8` | Focus blue |
-| sage | `#55C080` | Success |
-| diagnostic | `#4DAED6` | Info/pending |
+| canvas | `#000000` | OLED black (canvas only) |
+| surface | `#0B0B0B` | Near-black surface |
+| surface-2 | `#1F1F1F` | Raised surface |
+| text-primary | `#E6E6E6` | Light text |
+| accent | `#A5B4FC` | Indigo — primary dark accent |
+| accent-2 | `#D4B5FD` | Lavender — secondary dark accent |
+| sage | `#34D399` | Verification / success |
+| diagnostic | `#7DD3FC` | Info / pending |
 
-### Banned (v0.2 legacy)
+### Banned (superseded identities)
 
-Old cyan `#3CE6D8` family, old violet `#9B7FE8` family, OLED ladder `#000000`/`#0A0A0A`/`#121212`/`#1A1A1A`, legacy blue `#1a73e8`, off-system cyan `#22d3ee`, royal blue `#041c78`.
+Old cyan `#3CE6D8` family, old violet `#9B7FE8` family, the v0.2 dark ladder `#0A0A0A`/`#121212`/`#1A1A1A`, the v0.3 Anthracite Steel ladder (`#070A13` family), legacy blue `#1a73e8`, off-system cyan `#22d3ee`, royal blue `#041c78`.
 
 ## 13. Conformance gate (non-negotiable)
 
 ```bash
-node /home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/scripts/brand-conformance.mjs <path-to-banner.png>
+node scripts/brand-conformance.mjs <path-to-banner.png>   # from the drenyra-ai root
 # expect: ✓ <file> (coverage >= 0.92) ... PASS
 ```
 
-Iterate with the checker's off-palette feedback until coverage ≥ 0.92, then `bun run brand:ecosystem` in drenyra-ai must report every repo `PASS` before `brand-system` can freeze to v0.3 FROZEN.
+Iterate with the checker's off-palette feedback until coverage ≥ 0.92, then `bun run brand:ecosystem` in drenyra-ai must report every repo `PASS` before `brand-system` can freeze to v0.4 FROZEN.
 
 ## 14. README swap
 

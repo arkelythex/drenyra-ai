@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * brand-system conformance checker (contracts/brand-system.md, v0.3 DRAFT).
+ * brand-system conformance checker (contracts/brand-system.md, v0.4 DRAFT).
  *
  * Zero-dependency verifier for the Drenyra ecosystem brand system. The
- * canonical palette mirrors the Drenyra apps/web DTCG token pipeline
- * (tokens.dtcg.json -> generated tokens): class-based .dark/.light themes
- * plus the cyan/violet accent system. No derived tokens are invented — every
- * variant (hover/active/dim, text tiers, states) comes from the source.
+ * canonical palette mirrors the Dreamcoder Workbench tokens: Dreamcoder Dark
+ * and Dreamcoder Light themes plus the cocoa/terracotta accent system. No
+ * derived tokens are invented — every variant (hover/active/dim, text tiers,
+ * states) comes from the source.
  *
  *   1. PALETTE — both themes (dark + light) and both accents must be present
  *      in contracts/brand-system/tokens.json with valid hex values; the
@@ -91,8 +91,8 @@ function loadTokens() {
 		process.exit(1);
 	}
 	const problems = [];
-	if (raw.version !== "0.3")
-		problems.push(`version must be 0.3, got ${raw.version}`);
+	if (raw.version !== "0.4")
+		problems.push(`version must be 0.4, got ${raw.version}`);
 	for (const theme of REQUIRED_THEMES) {
 		if (!raw.themes?.[theme]) {
 			problems.push(`missing theme: ${theme}`);
@@ -128,8 +128,7 @@ function loadTokens() {
 	};
 	collect(raw.themes?.dark ?? {});
 	collect(raw.themes?.light ?? {});
-	collect(raw.accents?.cyan ?? {});
-	collect(raw.accents?.violet ?? {});
+	for (const accent of REQUIRED_ACCENTS) collect(raw.accents?.[accent] ?? {});
 	canonical.add("#ffffff");
 	canonical.add("#000000");
 	return {
@@ -394,7 +393,7 @@ export function runConformance(extraPaths = [], { json = false } = {}) {
 		);
 		process.stdout.write(
 			palettePass
-				? "✓ palette: dark + light themes, cyan + violet accents, all tokens hex-valid\n"
+				? "✓ palette: dark + light themes, cocoa + terracotta accents, all tokens hex-valid\n"
 				: `✗ palette: ${tokens.paletteProblems.join("; ")}\n`,
 		);
 		for (const r of results) {

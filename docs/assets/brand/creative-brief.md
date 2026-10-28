@@ -1,9 +1,9 @@
 # Drenyra Brand — Creative Brief (Art Direction)
 
-> **Normative layer:** [`brand-system.md`](../../../contracts/brand-system.md) (v0.2)
+> **Normative layer:** [`brand-system.md`](../../../contracts/brand-system.md) (v0.4)
 >
 > + [`tokens.json`](../../../contracts/brand-system/tokens.json) — the palette is
-> law (Dreamcoder canonical: Anthracite Steel dark `#070A13` / Cocoa-Lúcuma light `#F3EADC`; cocoa `#824F16` / terracotta `#A7471C` accents).
+> law (Dreamcoder canonical: Dreamcoder Dark `#000000` (indigo `#A5B4FC` / lavender `#D4B5FD` accents) / Cocoa-Lúcuma light `#F3EADC`; cocoa `#824F16` / terracotta `#A7471C` accents).
 > **This brief is the ART DIRECTION layer**: it decides what the banners SAY
 > and how they FEEL, within the law. Prompts in `gpt-image-prompts.md` encode it.
 
