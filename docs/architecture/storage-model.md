@@ -1,11 +1,11 @@
 # Storage Model
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+Persisted state is part of the trust model, not an implementation detail. Choose an adapter deliberately and verify durability, tenant isolation, and recovery before relying on it.
+
 > [!IMPORTANT]
 > **The JSON file mission store is a development adapter** — fine for demos and smoke tests, never canonical storage for a fiscal runtime.
-
-<!-- -->
-
-> **Last updated:** 2026-08-02. Status: pre-alpha. — Part of: [Architecture](../architecture.md)
 
 <!-- -->
 
@@ -13,7 +13,11 @@
 
 ## Development adapters vs canonical storage
 
-Today the only concrete store is the **JSON file mission store** used by the CLI (`cmd/adapters/file-mission-store.ts`). It is explicitly a **development adapter** — fine for demos and smoke tests, never canonical storage for a fiscal runtime.
+The CLI uses the **JSON file mission store** (`cmd/adapters/file-mission-store.ts`).
+It is a development adapter for demos and isolated smoke tests, not production
+fiscal storage. The repository also provides [PostgreSQL adapters](../../missions/store.postgres.ts)
+for missions, events, idempotency, fencing, and outbox storage. Their existence is
+not proof that a deployment satisfies every durability or isolation requirement.
 
 ## Development adapter contract
 
@@ -21,9 +25,11 @@ Today the only concrete store is the **JSON file mission store** used by the CLI
 - **Versioned shape:** the persisted document carries `storeSchemaVersion` (currently 1) so future migrations are explicit.
 - **Load tolerance:** legacy files without the schema version load leniently (migration path, not silent corruption).
 
-## Canonical storage (future)
+<a id="canonical-storage-future"></a>
 
-The runtime interfaces (`MissionStore`, `MissionEventStore`, `IdempotencyStore`) are persistence-agnostic. Canonical storage — when it lands — must satisfy:
+## Canonical storage requirements
+
+The runtime interfaces (`MissionStore`, `MissionEventStore`, `IdempotencyStore`) are persistence-agnostic. Every production storage composition must satisfy:
 
 1. **Append-only event log** with sequence ordering.
 2. **Crash-safe writes** (same atomicity discipline as the dev adapter, or a real journal).
@@ -31,7 +37,10 @@ The runtime interfaces (`MissionStore`, `MissionEventStore`, `IdempotencyStore`)
 4. **Scope enforcement on read** (company/RUC/period) — tenant isolation is structural.
 5. **Verifiable provenance** — every mutation traces to an actor and a receipt.
 
-Until then, the JSON store is the only implementation, and it is clearly labeled as non-canonical in both code and docs.
+The PostgreSQL adapter accepts an explicit pool. Real integration tests require
+`DATABASE_URL`; fake-pool unit tests verify SQL/parameter mapping but do not
+establish live database behavior. Operators must verify migrations, access
+control, transaction boundaries, backups, and recovery for their deployment.
 
 ---
 

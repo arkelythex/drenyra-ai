@@ -1,11 +1,11 @@
 # Trust Model — Drenyra AI (Verifiable Accounting Agent Ecosystem)
 
+← [Architecture index](../architecture.md) · [README](../../README.md)
+
+Trust comes from validated evidence and recorded authority, not the confidence of an agent. This page gives integrators the boundaries they must preserve.
+
 > [!IMPORTANT]
 > **Authority lives in gates and human approval.** Drenyra AI is the enforcement point of the ecosystem: nothing material happens without a receipt, and no lifecycle transition bypasses a gate.
-
-<!-- -->
-
-> **Last updated:** 2026-08-01. — Part of: [Architecture](../architecture.md)
 
 <!-- -->
 
@@ -22,7 +22,7 @@
 
 ### 1. Gates, not faith
 
-- Lifecycle gates validate **authority, scope, and receipts** before commit/push/PR/release.
+- Lifecycle gates validate **authority, scope, and receipts** before posting, approving, declaring, or filing.
 - A transition that cannot prove its authority does not happen. There is no "trust the agent" path.
 
 ### 2. Human approval is explicit and recorded
@@ -51,7 +51,7 @@ When authority, scope, or receipts cannot be validated, Drenyra AI **fails close
 
 ## Interaction with consumers
 
-Drenyra and Drenyra Pi rely on Drenyra AI's gates as their enforcement point. Drenyra AI never delegates authority decisions back to consumers, and consumers never override a gate outcome.
+Drenyra and Drenyra Shell rely on Drenyra AI's gates as their enforcement point. Drenyra AI never delegates authority decisions back to consumers, and consumers never override a gate outcome.
 
 ## Operational consequences
 

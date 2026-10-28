@@ -125,7 +125,7 @@ The monthly-close vertical composes deterministic reconciliation and close
 calculations with evidence and approval gates. This discipline does not imply
 that a configured agent can submit declarations or move money on its own.
 
-**[Docs →](docs/fiscal-authority-kernel-chain.md)** · **[Monthly-close design →](docs/design/design-02-monthly-close.md)**
+**[Docs →](docs/design/design-01-ecosystem-frontier-and-authority.md)** · **[Monthly-close design →](docs/design/design-02-monthly-close.md)**
 
 ### Also in the core
 
