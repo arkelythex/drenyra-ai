@@ -1,6 +1,6 @@
 # Feature — Publish Dreamcoder documentation in reviewable slices
 
-**Status:** in progress — authorized intermediate-slice repair · **Source branch:** `docs/gentleman-grade-docs` · **Target:** `github.com/arkelythex/drenyra-ai`
+**Status:** complete — scoped publication and authorized correction verified · **Source branch:** `docs/gentleman-grade-docs` · **Target:** `github.com/arkelythex/drenyra-ai`
 Publish the completed documentation work and fix the CSS palette-checker gap through a feature-branch chain, without merging or releasing.
 
 ## Specs
@@ -22,7 +22,7 @@ Publish the completed documentation work and fix the CSS palette-checker gap thr
 | U2 | S4, S6 | Reproduce and fix CSS palette declarations with tests and docs | done | bounded worker + parent checks | 636df67 |
 | U3 | S2, S6 | Build clean integration/child branches on verified main; preserve original history | done | parent + independent verifier | tracker and 23 bounded child commits |
 | U4 | S1, S2, S3, S6 | Verify slice boundaries and publish draft tracker plus child PRs | done | parent | 77794c7; PRs #134–#157 |
-| U5 | S6, S7 | Repair intermediate README cut, observe required CI, and close delivery evidence | in progress | inline repair + independent verifier (Risk item 5: published branch ancestry) | prior 47/48; authorized correction pending |
+| U5 | S6, S7 | Repair intermediate README cut, observe required CI, and close delivery evidence | done | inline repair + independent verifier (Risk item 5: published branch ancestry) | 1b10599; 48/48 current-head workflows; independent S7 PASS |
 
 ## Log
 
@@ -87,3 +87,26 @@ Boundary counts above describe initial publication; the final child may addition
 - **L19** — Owner: "yes te autorzo todo y avanza de forma autonoma". Resolves L18: authorize the #146 cut repair and dependent ancestry updates, without force-push or merges to main. Route: inline, one understood README heading movement; independent verifier for published-branch ancestry (Risk item5). Retain all original commits. Use normal three-way merge-tree results for downstream integration; require byte-identical downstream trees, then compare-and-set branch updates. Recheck the missing-anchor rule and exact-head CI; do not install tools or touch functional source.
 
 - **L20** — Authorized repair applied inline. Structural RED against slice12 exited1 (`Get started target missing`); GREEN passed for repaired slice12 and all11 descendants. Commit `1b10599` changes only `## Quick Start` to `## Get started`, moving the heading into the first slice. Downstream three-way merge-tree results were required to equal each original tree byte-for-byte; all original commits retained as first parents. Atomic compare-and-set updated12 local refs; each remains a fast-forward of its previously published head. All23 ancestry and Myers budgets passed (max393). No runtime change, install, source-branch edit, force-push or merge to main. RDD remains clone-local OFF. Remote push/CI and independent bounded verification pending.
+
+- **L21** — Atomic fast-forward push confirmed all12 corrected refs; authorized actor/admin/target/main/approved issues refreshed beforehand. Exact current-head CI+Docs now succeed for every PR:48success,0failure,0pending. Historical #146 failure remains in L18, not reused as a current verdict. Refreshed and exact-readback verified bodies/heads/bases/type labels/budgets for #146–#157; #146 now171lines, #147262lines; max393 unchanged. Independent bounded correction recheck pending; no additional functional source changes. Private temporary bodies cleaned.
+
+- **L22** — Independent bounded correction recheck: S7 PASS, S6 closure supported. Exact repaired #146 CI40763942590 and Docs40763942734 succeeded. All12 old heads remain ancestors, each corrected parent remains an ancestor of its child, all11 downstream integration trees equal their originals, and leaf6669092 changes only this passive record. Remote main7b18a6b and original source1caee52 preserved. All12 repaired remote PR heads/bases/budgets match; selected evidence contains48successful current-head workflow runs across24PRs, zero failed or pending (duplicate event runs exist and are not counted as extra required checks). Parent spot-check `gh pr checks 146` passed all9jobs. U5 complete.
+
+- **L23** — Closure limits: functional suites were not rerun locally for a passive README heading correction; full CI/Docs checked every affected head. No local Markdownlint install was attempted after the earlier missing executable; exact-head remote Docs provides the check. No scratch was created by the verifier; parent private bodies were cleaned. RDD remains disabled/unmanaged; no native review approval, main merge or release is claimed. Final passive-record commits may advance #157 without changing functional bytes; the tracker carries its latest exact head and CI evidence. Risk: item5 (published branch ancestry), independently verified. Next step belongs to human review/integration, not automatic merge.
+
+### Corrected boundaries (S7 evidence)
+
+| PR | Repaired head | Changed lines |
+| --- | --- | --- |
+| [#146](https://github.com/arkelythex/drenyra-ai/pull/146) | `1b10599` | 171 |
+| [#147](https://github.com/arkelythex/drenyra-ai/pull/147) | `7f75b1d` | 262 |
+| [#148](https://github.com/arkelythex/drenyra-ai/pull/148) | `6dd1a6f` | 105 |
+| [#149](https://github.com/arkelythex/drenyra-ai/pull/149) | `308d105` | 176 |
+| [#150](https://github.com/arkelythex/drenyra-ai/pull/150) | `5ceebfc` | 248 |
+| [#151](https://github.com/arkelythex/drenyra-ai/pull/151) | `f273889` | 339 |
+| [#152](https://github.com/arkelythex/drenyra-ai/pull/152) | `1be798c` | 103 |
+| [#153](https://github.com/arkelythex/drenyra-ai/pull/153) | `f977522` | 79 |
+| [#154](https://github.com/arkelythex/drenyra-ai/pull/154) | `2cfffd9` | 158 |
+| [#155](https://github.com/arkelythex/drenyra-ai/pull/155) | `cc8e19a` | 221 |
+| [#156](https://github.com/arkelythex/drenyra-ai/pull/156) | `6f806c0` | 53 |
+| [#157](https://github.com/arkelythex/drenyra-ai/pull/157) | `6669092` | 102 |
