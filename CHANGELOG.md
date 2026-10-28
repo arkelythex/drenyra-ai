@@ -14,6 +14,21 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-28
+
+### Migration and compatibility
+
+This pre-1.0 minor release tightens validation: callers must provide positive
+BigInt-cent amounts, non-blank entry ids and account codes, and non-empty evidence
+artifacts when supporting journal entries. Evidence item ids must be unique
+within an artifact. Handle the additive `invalid-account` and `invalid-entry-id`
+error codes. No frozen contract file or export is removed or renamed. RUC
+checksum consolidation and reference-clock design remain deferred.
+
+The brand system moves to v0.4 (DRAFT, Dreamcoder Dark): consuming repositories
+whose dark brand assets still use the v0.3 Anthracite Steel ladder report `FAIL`
+on `bun run brand:ecosystem` until they migrate.
+
 ### Fixed — journal proposals the kernel used to record (#123)
 
 - `journal.record` (and `supersede`) now reject five defective proposals:
