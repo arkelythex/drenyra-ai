@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 520" width="1240" height="520" role="img" aria-labelledby="lifeTitle lifeDesc" font-family="'Inter', ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title id="lifeTitle">The Drenyra fiscal lifecycle</title>
+  <desc id="lifeDesc">The fiscal lifecycle runs in one fixed order: capture, classification and reconciliation prepare the work, then close, declaration and audit conclude it. Every phase transition passes a gate, work stays inside a RUC and period, and nothing material happens without a receipt.</desc>
+  <defs>
+    <radialGradient id="lifeAmbient" cx="12%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#824F16" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#824F16" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+    <rect width="1240" height="520" rx="24" fill="#F3EADC"/>
+  <rect width="1240" height="520" rx="24" fill="url(#lifeAmbient)"/>
+  <text x="40" y="58" font-size="27" font-weight="700" fill="#100C07">Fiscal lifecycle &#8212; one order, every phase gated</text>
+  <text x="41" y="88" font-size="14.5" fill="#725E4C">From capture to audit, always inside a RUC and a period.</text>
+  <rect x="980" y="38" width="220" height="34" rx="17" fill="#DECBB1" fill-opacity="0.6" stroke="#8A7358" stroke-opacity="0.35"/>
+  <text x="1090" y="60" font-size="12.5" text-anchor="middle" font-family="'Geist Mono', 'JetBrains Mono', ui-monospace, monospace" fill="#824F16">fiscal lifecycle</text>
+  <rect x="40" y="126" width="1160" height="150" rx="20" fill="#FFF7EA" fill-opacity="0.6" stroke="#8A7358" stroke-opacity="0.35"/>
+  <text x="68" y="209" font-size="34" font-weight="700" fill="#824F16" opacity="0.22">01</text>
+  <text x="68" y="235" font-size="13" font-weight="700" letter-spacing="2" fill="#554638">PREPARE</text>
+  <line x1="200" y1="154" x2="200" y2="248" stroke="#8A7358" stroke-opacity="0.35"/>
+  <rect x="40" y="300" width="1160" height="150" rx="20" fill="#FFF7EA" fill-opacity="0.6" stroke="#8A7358" stroke-opacity="0.35"/>
+  <text x="68" y="383" font-size="34" font-weight="700" fill="#824F16" opacity="0.22">02</text>
+  <text x="68" y="409" font-size="13" font-weight="700" letter-spacing="2" fill="#554638">CONCLUDE</text>
+  <line x1="200" y1="328" x2="200" y2="422" stroke="#8A7358" stroke-opacity="0.35"/>
+  <rect x="224" y="163" width="292" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="224" y="160" width="292" height="90" rx="14" fill="#FFF7EA" stroke="#824F16" stroke-opacity="0.55"/>
+  <rect x="224" y="160" width="292" height="90" rx="14" fill="#824F16" fill-opacity="0.07"/>
+  <text x="244" y="193" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#824F16" opacity="0.85">01 &#183; CAPTURE</text>
+  <text x="244" y="218" font-size="17" font-weight="600" fill="#100C07">Capture</text>
+  <text x="244" y="238" font-size="11.5" fill="#725E4C">Evidence enters inside one RUC scope.</text>
+  <path d="M516 205 L554 205" fill="none" stroke="#824F16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M546 211 L554 205 L546 199" fill="none" stroke="#824F16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="554" y="163" width="292" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="554" y="160" width="292" height="90" rx="14" fill="#FFF7EA" stroke="#824F16" stroke-opacity="0.55"/>
+  <rect x="554" y="160" width="292" height="90" rx="14" fill="#824F16" fill-opacity="0.07"/>
+  <text x="574" y="193" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#824F16" opacity="0.85">02 &#183; CLASSIFICATION</text>
+  <text x="574" y="218" font-size="17" font-weight="600" fill="#100C07">Classification</text>
+  <text x="574" y="238" font-size="11.5" fill="#725E4C">Candidates are proposed, never run.</text>
+  <path d="M846 205 L884 205" fill="none" stroke="#824F16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M876 211 L884 205 L876 199" fill="none" stroke="#824F16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="884" y="163" width="292" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="884" y="160" width="292" height="90" rx="14" fill="#FFF7EA" stroke="#824F16" stroke-opacity="0.55"/>
+  <rect x="884" y="160" width="292" height="90" rx="14" fill="#824F16" fill-opacity="0.07"/>
+  <text x="904" y="193" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#824F16" opacity="0.85">03 &#183; RECONCILIATION</text>
+  <text x="904" y="218" font-size="17" font-weight="600" fill="#100C07">Reconciliation</text>
+  <text x="904" y="238" font-size="11.5" fill="#725E4C">Entries are matched to the evidence.</text>
+  <rect x="224" y="337" width="292" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="224" y="334" width="292" height="90" rx="14" fill="#FFF7EA" stroke="#824F16" stroke-opacity="0.55"/>
+  <rect x="224" y="334" width="292" height="90" rx="14" fill="#824F16" fill-opacity="0.07"/>
+  <text x="244" y="367" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#824F16" opacity="0.85">04 &#183; CLOSE</text>
+  <text x="244" y="392" font-size="17" font-weight="600" fill="#100C07">Close</text>
+  <text x="244" y="412" font-size="11.5" fill="#725E4C">The period closes behind a gate.</text>
+  <path d="M516 379 L554 379" fill="none" stroke="#824F16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M546 385 L554 379 L546 373" fill="none" stroke="#824F16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="554" y="337" width="292" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="554" y="334" width="292" height="90" rx="14" fill="#FFF7EA" stroke="#824F16" stroke-opacity="0.55"/>
+  <rect x="554" y="334" width="292" height="90" rx="14" fill="#824F16" fill-opacity="0.07"/>
+  <text x="574" y="367" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#824F16" opacity="0.85">05 &#183; DECLARATION</text>
+  <text x="574" y="392" font-size="17" font-weight="600" fill="#100C07">Declaration</text>
+  <text x="574" y="412" font-size="11.5" fill="#725E4C">Staged for professional decision.</text>
+  <path d="M846 379 L884 379" fill="none" stroke="#824F16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M876 385 L884 379 L876 373" fill="none" stroke="#824F16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="884" y="337" width="292" height="90" rx="14" fill="#100C07" fill-opacity="0.1"/>
+  <rect x="884" y="334" width="292" height="90" rx="14" fill="#FFF7EA" stroke="#824F16" stroke-opacity="0.55"/>
+  <rect x="884" y="334" width="292" height="90" rx="14" fill="#824F16" fill-opacity="0.07"/>
+  <text x="904" y="367" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#824F16" opacity="0.85">06 &#183; AUDIT</text>
+  <text x="904" y="392" font-size="17" font-weight="600" fill="#100C07">Audit</text>
+  <text x="904" y="412" font-size="11.5" fill="#725E4C">Every step is backed by a receipt.</text>
+  <path d="M1030 250 L1030 288 L370 288 L370 332" fill="none" stroke="#824F16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M364 324 L370 332 L376 324" fill="none" stroke="#824F16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="40" y1="480" x2="1200" y2="480" stroke="#8A7358" stroke-opacity="0.35"/>
+  <text x="620" y="500" font-size="12" text-anchor="middle" fill="#725E4C">Phase transitions pass a gate. No receipt, no mutation.</text>
+</svg>
