@@ -24,7 +24,7 @@
  * JavaScript Number; sequence/index/version fields are JSON integers, never floats.
  */
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -252,6 +252,28 @@ describe("brand-system conformance (v0.4 DRAFT)", () => {
 			Array.isArray(asset.detail) &&
 				asset.detail.some((d) => d.includes("#22d3ee")),
 		).toBe(true);
+	});
+
+	it("rejects an off-palette CSS fill declaration without changing the SVG", () => {
+		const source = '<svg xmlns="http://www.w3.org/2000/svg"><style>.bad { fill: #123456 }</style></svg>';
+		const svg = writeTmp("off-css.svg", source);
+		const result = spawnSync(RUNNER, [SCRIPT, "--json", svg], { encoding: "utf8" });
+		const report = JSON.parse(result.stdout) as ConformanceReport;
+		expect(result.status).toBe(1);
+		expect(result.stderr).toBe("");
+		expect(findAsset(report, "off-css.svg")).toEqual({ file: svg, pass: false, detail: ["#123456"] });
+		expect(report.pass).toBe(false);
+		expect(readFileSync(svg, "utf8")).toBe(source);
+	});
+
+	it("preserves canonical CSS declarations, attributes and variable references", () => {
+		const svg = writeTmp("canonical-css.svg", `<svg xmlns="http://www.w3.org/2000/svg"><style>:root { --bg: #000000; } .good { fill: #824F16; stroke: #000000; stop-color: #ffffff; color: #000000 }</style><rect fill="var(--bg)" stroke="none"/></svg>`);
+		const result = spawnSync(RUNNER, [SCRIPT, "--json", svg], { encoding: "utf8" });
+		const report = JSON.parse(result.stdout) as ConformanceReport;
+		expect(result.status).toBe(0);
+		expect(result.stderr).toBe("");
+		expect(findAsset(report, "canonical-css.svg")).toEqual({ file: svg, pass: true, detail: [] });
+		expect(report.pass).toBe(true);
 	});
 
 	it("accepts structural SVG values (none, url(#...), currentColor)", () => {

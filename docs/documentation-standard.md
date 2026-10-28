@@ -93,7 +93,9 @@ Outputs live in `docs/assets/brand/` (banner and divider mark) and
 `docs/assets/diagrams/` (feature illustrations). Every composition has a Light/Dark
 pair, descriptive alt text, and accessible SVG `title`/`desc` elements. Use the
 same layout in both themes, not two independently maintained copies. Only colors
-from `contracts/brand-system/tokens.json` are allowed; opacity may vary.
+from `contracts/brand-system/tokens.json` are allowed; opacity may vary. The
+brand checker also rejects off-palette hex colors in ordinary `fill`, `stroke`,
+`stop-color`, and `color` declarations in SVG `<style>` blocks.
 
 | Semantic role | Dreamcoder Light | Dreamcoder Dark |
 | --- | --- | --- |
