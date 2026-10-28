@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56" width="56" height="56" role="img" aria-labelledby="markTitle markDesc" font-family="'Inter', ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title id="markTitle">Drenyra receipt mark</title>
+  <desc id="markDesc">A receipt sheet with a verified seal: the Drenyra section divider.</desc>
+
+  <path d="M13 6 H37 Q40 6 40 9 V47 L36.5 44 L33 47 L29.5 44 L26 47 L22.5 44 L19 47 L16 44.5 L13 47 Z" fill="#FFF7EA" stroke="#824F16" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M18 18 H32" fill="none" stroke="#725E4C" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M18 25 H32" fill="none" stroke="#725E4C" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M18 32 H26" fill="none" stroke="#725E4C" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="40" cy="38" r="14" fill="#F3EADC"/>
+  <circle cx="40" cy="38" r="11" fill="#FFF7EA" stroke="#315B31" stroke-width="3"/>
+  <path d="M33.95 38.5 L38.35 42.9 L47.7 32.45" fill="none" stroke="#315B31" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
