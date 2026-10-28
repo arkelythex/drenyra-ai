@@ -19,10 +19,10 @@ SVGs, diagrams, and visuals drawn from the Dreamcoder Light and Dreamcoder Dark 
 | ID | Specs | Task | Status | Commit |
 | --- | --- | --- | --- | --- |
 | T0 | S3 | brand-system v0.4: Dreamcoder Dark tokens, checker accent fix, schema v0.4 | done | `5c3e7c2` |
-| T1 | S3, S4 | Dreamcoder docs palette and amended diagram rule in `documentation-standard.md` | done | (this commit) |
-| T2 | S1, S3, S5 | Brand kit: hero banner, divider mark, badge palette (Light/Dark) | pending | |
+| T1 | S3, S4 | Dreamcoder docs palette and amended diagram rule in `documentation-standard.md` | done | `9ba65c8` |
+| T2 | S1, S3, S5 | Brand kit: hero banner, divider mark, badge palette (Light/Dark) | done | `ba7eff1, 113c019, 46e1ce3` |
 | T3 | S1, S3, S5, S6 | README rewrite with feature diagrams (Light/Dark) | pending | |
-| T4 | S3, S4, S5 | Re-theme the Archify maps to Dreamcoder Light/Dark | pending | |
+| T4 | S3, S4, S5 | Re-theme the Archify maps to Dreamcoder Light/Dark | done | `663c57f` |
 | T5 | S2, S6 | Entry docs: quickstart, intended-usage, usage, sdk | pending | |
 | T6 | S2 | `docs/architecture.md` and `docs/architecture/*` | pending | |
 | T7 | S2 | CODEBASE-GUIDE, testing-deterministic, governance, fiscal-authority-kernel-chain | pending | |
@@ -61,3 +61,5 @@ SVGs, diagrams, and visuals drawn from the Dreamcoder Light and Dreamcoder Dark 
 - **L10** (owner): "te autorizo todo y continue de forma autonoma" — resume inline after the failed writer runtime; preserve the original scope and verification bar.
 
 - **L11**: T1 complete inline. Hybrid authoring paths, Dreamcoder palette, re-theme command and page anatomy documented. Markdownlint: 0 issues across 97 files.
+
+- **L12**: T2 complete with paired banners/mark, deterministic generation, XML parsing, raster inspection and public-script tests. T4 complete: static palette variables resolved for librsvg, four maps recolored with geometry unchanged; runtime Light and candidate Dark inspected. Slice boundaries: primitives (`ba7eff1`), brand kit (`113c019`), generation (`46e1ce3`), Archify portability (`663c57f`). Generated SVG output is reviewed with its source; the portability unit exceeds the nominal line budget because four exported views carry embedded styles. No PR or publishing was authorized by these commits.

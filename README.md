@@ -236,71 +236,68 @@ approval, a major contract version bump, and a migration path. See the
 
 ## Ecosystem
 
-| Project | Role | Status |
-| --- | --- | --- |
-| [Drenyra Desktop](https://github.com/arkelythex/drenyra-desktop) | Desktop — web application (consumes) | In development (public) |
-| [Drenyra Shell](https://github.com/arkelythex/drenyra-shell) | Pi-native harness (consumes, pinned) | Pre-alpha (public) |
-| [Drenyra Engram](https://github.com/arkelythex/drenyra-engram) | Institutional accounting memory (used — informs, never authorizes) | In development (public, Apache-2.0) |
-| [Drenyra Skills](https://github.com/arkelythex/drenyra-skills) | Versioned accounting, tax, and operational knowledge | In development (public) |
-| [Drenyra Guardian Angel](https://github.com/arkelythex/drenyra-guardian-angel) | Independent, adversarial, continuous verification | In development (public) |
+<a id="consumers"></a>
 
-**Direction rule:** Drenyra AI may integrate Drenyra Engram and is consumed by Drenyra and Drenyra Shell. It never depends on Drenyra or Drenyra Shell, and Drenyra Shell never leaks into Drenyra AI's contracts. External systems — ERP, SUNAT, banks — connect through adapters and evidence, never through privileged access.
+| Project | Responsibility |
+| --- | --- |
+| **Drenyra AI** | Deterministic enforcement core; usable standalone |
+| [Drenyra Desktop](https://github.com/arkelythex/drenyra-desktop) | Professional interface consuming the core |
+| [Drenyra Shell](https://github.com/arkelythex/drenyra-shell) | Pi-native harness consuming a pinned runtime |
+| [Drenyra Engram](https://github.com/arkelythex/drenyra-engram) | Institutional memory; informs, never authorizes |
+| [Drenyra Skills](https://github.com/arkelythex/drenyra-skills) | Versioned accounting, tax, and operational knowledge |
+| [Drenyra Guardian Angel](https://github.com/arkelythex/drenyra-guardian-angel) | Independent adversarial verification |
+
+These are responsibility boundaries, not a claim that every planned integration
+is production-ready. Consumers adopt released artifacts; the core does not
+import Desktop or Shell.
 
 ### Drenyra Dominion Program
 
-Drenyra AI is the **deterministic enforcement core** of the [Drenyra Dominion Program](program/drenyra-dominion/README.md), the federated program master that fixes vision, authority, contracts, dependencies, gates, and sequencing across every Drenyra repository. A single master SDD is complemented by implementable vertical SDDs: each vertical delivers a complete capability that may traverse the repositories it needs (for example, the monthly close spans this repo, Drenyra Shell, and Drenyra Desktop) while every repository keeps its ownership and boundaries.
+The [program master](program/drenyra-dominion/README.md) records the ecosystem's
+charter, authority, dependencies, sequencing, and gates. Program-level SDDs are
+requirements of record; **ODD is this repository's delivery workflow**. Read the
+master rather than copying its requirements into participant repositories.
 
-| SDD | Role in this repository |
-| --- | --- |
-| [SDD-000](program/drenyra-dominion/sdds/sdd-000-dominion/README.md) | North Star, frontiers, authority, taxonomy, and domain criteria |
-| [SDD-010](program/drenyra-dominion/sdds/sdd-010-contracts/README.md) | Ecosystem contracts and release train — multi-repo compatibility and coordinated releases |
-| [SDD-030](program/drenyra-dominion/sdds/sdd-030-routing/README.md) | Organic accounting work routing from evidence and risk |
-| [SDD-040](program/drenyra-dominion/sdds/sdd-040-rda-v2/README.md) | Receipt-Driven Accounting v2 — frozen candidates, proportional review, bounded correction |
-| [SDD-090](program/drenyra-dominion/sdds/sdd-090-guardian/README.md) | Independent, adversarial, strictly read-only verification |
+<div align="right"><a href="#top">Back to top</a></div>
 
-This repository holds only its local change plus a reference to the master program — full specs are never copied here, because they would diverge. The [program README](program/drenyra-dominion/README.md) is the source of truth.
-
----
+<div align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/drenyra-mark.dark.svg"><img src="docs/assets/brand/drenyra-mark.light.svg" width="28" alt=""></picture></div>
 
 ## Documentation
 
-| Your task | Start here |
+| Your next question | Start here |
 | --- | --- |
-| Get running in five minutes | [Quickstart](docs/quickstart.md) |
-| Full CLI reference and mission store | [Usage](docs/usage.md) |
-| Understand the intended usage and the frozen frontier | [Intended Usage](docs/intended-usage.md) |
-| Integrate via the public library surface | [SDK](docs/sdk.md) |
-| Navigate the codebase as a maintainer | [Codebase Guide](docs/CODEBASE-GUIDE.md) |
-| Understand how fiscal correctness is proven | [Deterministic Testing](docs/testing-deterministic.md) |
-| Understand open-core governance and contribution rules | [Governance](docs/governance.md), [CONTRIBUTING](CONTRIBUTING.md), [AI Policy](AI_POLICY.md) |
-| Read the frozen design series (frontier, monthly close, agents/skills, persistence, v1.0) | [Design 01](docs/design/design-01-ecosystem-frontier-and-authority.md) → [Design 05](docs/design/design-05-testing-releases-v1.md) |
-| Understand the trust model | [Trust Model](docs/architecture/trust-model.md) |
-| See the system and its boundaries | [System Context](docs/architecture/system-context.md), [Trust Boundaries](docs/architecture/trust-boundaries.md) |
-| Understand receipts vs. ledger entries | [Receipt vs. Ledger Entry](docs/architecture/receipt-ledger-model.md) |
-| Understand authority and approval | [Authority Model](docs/architecture/authority-model.md) |
-| Understand dependency direction | [Dependency Direction](docs/architecture/dependency-direction.md), [Dependency Rules](docs/architecture/dependency-rules.md) |
-| Integrate the ecosystem | [Ecosystem Integration](docs/architecture/ecosystem-integration.md), [Ecosystem Boundaries](docs/architecture/ecosystem-boundaries.md) |
-| Storage and persistence | [Storage Model](docs/architecture/storage-model.md) |
-| Change or extend a contract | [Contracts](contracts/README.md) — change policy, conformance suites, migration path |
-| Track the plan | [ROADMAP](ROADMAP.md) and [CHANGELOG](CHANGELOG.md) |
-| Read the ecosystem program (master SDD, waves, gates, program-lock) | [Drenyra Dominion Program](program/drenyra-dominion/README.md) — program source of truth |
-| Contribute | [CONTRIBUTING](CONTRIBUTING.md), [AI Policy](AI_POLICY.md), [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md), [SECURITY](SECURITY.md), [CONTRIBUTORS](CONTRIBUTORS.md) |
+| What is this, and what does it deliberately not do? | [Intended Usage](docs/intended-usage.md) |
+| How do I install and run it? | [Quickstart](docs/quickstart.md) · [CLI reference](docs/usage.md) |
+| How do I integrate the typed library? | [SDK](docs/sdk.md) · [Contracts](contracts/README.md) |
+| Where do trust and authority stop? | [Trust Model](docs/architecture/trust-model.md) · [Authority Model](docs/architecture/authority-model.md) |
+| How do the subsystems fit together? | [Architecture](docs/architecture.md) · [Codebase Guide](docs/CODEBASE-GUIDE.md) |
+| How is fiscal correctness tested? | [Deterministic Testing](docs/testing-deterministic.md) |
+| How do I operate or recover it? | [Runbooks](docs/runbooks/README.md) |
+| Which designs and requirements govern the work? | [Design series](docs/design/design-01-ecosystem-frontier-and-authority.md) · [Specs](specs/README.md) · [Program](program/drenyra-dominion/README.md) |
+| What changed, and what is planned? | [CHANGELOG](CHANGELOG.md) · [ROADMAP](ROADMAP.md) |
+| How should documentation and visuals be authored? | [Documentation standard](docs/documentation-standard.md) |
 
----
+## Contribute
 
-## Next Steps
+Read [CONTRIBUTING](CONTRIBUTING.md) before writing code. ODD keeps understood work
+small, makes substantial work recoverable, and keeps tests and documentation
+with the behavior they explain. Fiscal invariants and frozen contracts are not
+style preferences.
 
-- **New to the ecosystem?** Read the [Trust Model](docs/architecture/trust-model.md) first — it explains what the runtime can prove and what it cannot.
-- **Just installed?** Run the [Quickstart](docs/quickstart.md), then read the [Intended Usage](docs/intended-usage.md) for the mental model.
-- **Integrating an ERP or SaaS?** Start with the [Contracts](contracts/README.md) — they are the public, frozen surface.
-- **Building on the runtime?** Read the [Architecture](docs/architecture.md) and the [Layer Model](docs/architecture.md#layer-model), and the [Codebase Guide](docs/CODEBASE-GUIDE.md) for where changes belong.
-- **Maintaining Drenyra AI?** Use the [Codebase Guide](docs/CODEBASE-GUIDE.md) to find ownership, and [Deterministic Testing](docs/testing-deterministic.md) to verify a change.
-- **Contributing?** Read [CONTRIBUTING](CONTRIBUTING.md) and the [AI Policy](AI_POLICY.md), then pick up an item from the [ROADMAP](ROADMAP.md).
+[Agent Guide](AGENTS.md) · [AI Policy](AI_POLICY.md) · [Governance](docs/governance.md) ·
+[Security](SECURITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Contributors](CONTRIBUTORS.md)
+
+<a id="next-steps"></a>
+
+**New here?** Start with the [Quickstart](docs/quickstart.md). **Integrating?** Read
+the [Trust Model](docs/architecture/trust-model.md), then the [SDK](docs/sdk.md).
+
+<div align="right"><a href="#top">Back to top</a></div>
 
 ---
 
 <div align="center">
-<a href="LICENSE"><img src="https://img.shields.io/badge/License-Proprietary-red" alt="License: Proprietary"></a>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/drenyra-mark.dark.svg"><img src="docs/assets/brand/drenyra-mark.light.svg" width="56" alt=""></picture>
+<p><strong>Verifying beats trusting a narrative.</strong></p>
+<p>Proprietary. © 2026 Arkelythex. All rights reserved. <a href="LICENSE">License terms</a>.</p>
 </div>
-
-Proprietary. © 2026 Arkelythex. All rights reserved. See [LICENSE](LICENSE).
