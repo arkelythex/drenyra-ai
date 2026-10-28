@@ -12,6 +12,22 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+### Fixed — release hygiene (#126)
+
+- **Clean builds.** `scripts/build.mjs` removes `dist/` before compiling, so
+  `prepack` can never ship a stale file. The `0.5.0` tarball on npm carries
+  `dist/drenyra-ai-0.4.0.tgz` and an unexported `dist/tenant/` because it was packed
+  from a development tree. Covered by `scripts/__tests__/build-clean.test.ts`.
+- **Trusted publishing works.** The release workflow pins npm `11.21.1`. Node 22's
+  bundled npm 10 cannot exchange the OIDC token, so the `v0.5.0` runs failed with
+  `ENEEDAUTH`, then `E404`. The npm-side trusted publisher setting remains an owner
+  prerequisite (`RELEASING.md`).
+- **The GitHub Release is automated and matches npm.** A new `github-release` job
+  builds `checksums.txt` and `sbom.json` from the tarball npm serves for the tag,
+  verifies it against `dist.integrity`, refuses a nested tarball, and creates the
+  Release. `id-token: write` moves from the workflow level to the `publish` job
+  only.
+
 ### Changed — SDD/OpenSpec retired, ODD is the only workflow
 
 - `openspec/` is removed. The Drenyra Dominion program master moves verbatim to
