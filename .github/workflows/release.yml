@@ -71,12 +71,23 @@ jobs:
       # Sigstore attestation is generated automatically under trusted publishing.
       - name: Publish with Sigstore provenance
         run: npm publish --provenance
+      # The registry accepts the publish before the version is readable ("Your
+      # package is being processed and may take a few minutes"). v0.6.0's run
+      # queried 0.5 s after publish and failed although the publish succeeded,
+      # so poll with a bound instead of a single read.
       - name: Confirm published artifact
         run: |
           VERSION="$(node -p "require('./package.json').version")"
-          TARBALL="$(npm view "drenyra-ai@${VERSION}" dist.tarball)"
-          test -n "$TARBALL"
-          echo "published tarball: ${TARBALL}"
+          for attempt in $(seq 1 40); do
+            TARBALL="$(npm view "drenyra-ai@${VERSION}" dist.tarball 2>/dev/null || true)"
+            if [ -n "$TARBALL" ]; then
+              echo "published tarball: ${TARBALL} (attempt ${attempt})"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "drenyra-ai@${VERSION} is not readable on the registry after 10 minutes" >&2
+          exit 1
       # Exercise the consumer-side provenance check the README documents:
       # install the just-published artifact and verify its Sigstore signature.
       # `npm audit signatures` fails when any installed package lacks a valid
