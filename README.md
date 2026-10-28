@@ -87,7 +87,7 @@ Drenyra AI occupies the accounting-domain position that Gentle-AI holds in softw
 
 **What Drenyra AI is not:** the ERP, the UI, the ledger of record, or the fiscal authority. See [Intended Usage](docs/intended-usage.md) for the full frontier and the responsibility split.
 
-**Delivery (v1.0):** Drenyra AI ships as a **headless core** consumed by Drenyra Command Center via library, CLI, or MCP; the flagship flow is the **monthly accounting and tax close**. Gentle-AI disappears behind the developer's flow — Drenyra AI disappears behind the professional accountant's flow.
+**Delivery (v1.0):** Drenyra AI ships as a **headless core** consumed by Drenyra Desktop via library, CLI, or MCP; the flagship flow is the **monthly accounting and tax close**. Gentle-AI disappears behind the developer's flow — Drenyra AI disappears behind the professional accountant's flow.
 
 ---
 
@@ -186,7 +186,7 @@ drenyra-ai ledger validate ledger.json
 
 ## Core Workflow
 
-1. **Install.** Add the package, then use the CLI (or the Drenyra Pi harness) as the runtime.
+1. **Install.** Add the package, then use the CLI (or the Drenyra Shell harness) as the runtime.
 2. **Start a mission.** A mission is a protocol-driven work unit — `monthly-close`, `correction`, `reconciliation`, `invoice-review`, `compliance-check` — with a frozen lifecycle of 15 canonical states.
 3. **Agents stage work; the core decides.** Deterministic `IntentHandler`s stage work and request evidence. Agents never claim SUNAT, bank, or ERP execution and never perform fiscal approval.
 4. **Review the candidate.** Review depth is derived from materiality — R0/R1 run autonomously, R2 needs single human approval, R3 needs two distinct approvers. One correction budget, then it is what it is.
@@ -236,17 +236,17 @@ Two generated maps orient you in the runtime before the prose does. They are [Ar
 
 ## Contracts — the frozen public surface
 
-Contracts are the **public surface** of Drenyra AI: transport-agnostic, versioned, and consumed by Drenyra, Drenyra Pi, ERPs, other SaaS, and agent hosts. Each frozen contract is pinned by a conformance suite that runs in CI and fails on drift.
+Contracts are the **public surface** of Drenyra AI: transport-agnostic, versioned, and consumed by Drenyra, Drenyra Shell, ERPs, other SaaS, and agent hosts. Each frozen contract is pinned by a conformance suite that runs in CI and fails on drift.
 
 | Contract | Version | Status | Consumed by |
 | --- | --- | --- | --- |
-| [mission-protocol](contracts/mission-protocol.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, CLI |
-| [candidate](contracts/candidate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, review tooling |
+| [mission-protocol](contracts/mission-protocol.md) | 0.1 | FROZEN | Drenyra, Drenyra Shell, CLI |
+| [candidate](contracts/candidate.md) | 0.1 | FROZEN | Drenyra, Drenyra Shell, review tooling |
 | [receipt](contracts/receipt.md) | 0.1 | FROZEN | All consumers, ERPs, auditors |
-| [gate](contracts/gate.md) | 0.1 | FROZEN | Drenyra, Drenyra Pi, CI/CD |
-| [ledger](contracts/ledger.md) | 0.1 | FROZEN | Auditors, ERPs, Drenyra Pi |
-| [recovery](contracts/recovery.md) | 0.1 | FROZEN | Drenyra Pi, CLI |
-| [brand-system](contracts/brand-system.md) | 0.3 | DRAFT | Drenyra, Drenyra Pi, Drenyra Engram, Guardian Angel, docs |
+| [gate](contracts/gate.md) | 0.1 | FROZEN | Drenyra, Drenyra Shell, CI/CD |
+| [ledger](contracts/ledger.md) | 0.1 | FROZEN | Auditors, ERPs, Drenyra Shell |
+| [recovery](contracts/recovery.md) | 0.1 | FROZEN | Drenyra Shell, CLI |
+| [brand-system](contracts/brand-system.md) | 0.3 | DRAFT | Drenyra, Drenyra Shell, Drenyra Engram, Guardian Angel, docs |
 
 **Contract requirements:** versioned · verifiable (canonical vectors + conformance suite) · scope-safe (RUC/company/period where fiscal context applies) · transport-agnostic (no HTTP/CLI/framework bindings) · backward-compatible by default (breaking changes require a major bump and a migration path).
 
@@ -321,7 +321,7 @@ docs/               Architecture, trust-model, and dependency documentation
 | Consumer | How it uses Drenyra AI |
 | --- | --- |
 | Drenyra | Fiscal workflows, reviews, approvals |
-| Drenyra Pi | Pinned package-local runtime (never `PATH`) |
+| Drenyra Shell | Pinned package-local runtime (never `PATH`) |
 | CLI | Direct `drenyra-ai` commands |
 | External ERPs | Receipt verification, ledger validation |
 | Other SaaS | Candidates and gates via contracts |
@@ -331,17 +331,17 @@ docs/               Architecture, trust-model, and dependency documentation
 
 | Project | Role | Status |
 | --- | --- | --- |
-| [Drenyra Command Center](https://github.com/arkelythex/drenyra-command-center) | Command Center — web application (consumes) | In development (public) |
-| [Drenyra Pi](https://github.com/arkelythex/drenyra-pi) | Pi-native harness (consumes, pinned) | Pre-alpha (public) |
+| [Drenyra Desktop](https://github.com/arkelythex/drenyra-desktop) | Desktop — web application (consumes) | In development (public) |
+| [Drenyra Shell](https://github.com/arkelythex/drenyra-shell) | Pi-native harness (consumes, pinned) | Pre-alpha (public) |
 | [Drenyra Engram](https://github.com/arkelythex/drenyra-engram) | Institutional accounting memory (used — informs, never authorizes) | In development (public, Apache-2.0) |
 | [Drenyra Skills](https://github.com/arkelythex/drenyra-skills) | Versioned accounting, tax, and operational knowledge | In development (public) |
 | [Drenyra Guardian Angel](https://github.com/arkelythex/drenyra-guardian-angel) | Independent, adversarial, continuous verification | In development (public) |
 
-**Direction rule:** Drenyra AI may integrate Drenyra Engram and is consumed by Drenyra and Drenyra Pi. It never depends on Drenyra or Drenyra Pi, and Drenyra Pi never leaks into Drenyra AI's contracts. External systems — ERP, SUNAT, banks — connect through adapters and evidence, never through privileged access.
+**Direction rule:** Drenyra AI may integrate Drenyra Engram and is consumed by Drenyra and Drenyra Shell. It never depends on Drenyra or Drenyra Shell, and Drenyra Shell never leaks into Drenyra AI's contracts. External systems — ERP, SUNAT, banks — connect through adapters and evidence, never through privileged access.
 
 ### Drenyra Dominion Program
 
-Drenyra AI is the **deterministic enforcement core** of the [Drenyra Dominion Program](program/drenyra-dominion/README.md), the federated program master that fixes vision, authority, contracts, dependencies, gates, and sequencing across every Drenyra repository. A single master SDD is complemented by implementable vertical SDDs: each vertical delivers a complete capability that may traverse the repositories it needs (for example, the monthly close spans this repo, Drenyra Pi, and Drenyra Command Center) while every repository keeps its ownership and boundaries.
+Drenyra AI is the **deterministic enforcement core** of the [Drenyra Dominion Program](program/drenyra-dominion/README.md), the federated program master that fixes vision, authority, contracts, dependencies, gates, and sequencing across every Drenyra repository. A single master SDD is complemented by implementable vertical SDDs: each vertical delivers a complete capability that may traverse the repositories it needs (for example, the monthly close spans this repo, Drenyra Shell, and Drenyra Desktop) while every repository keeps its ownership and boundaries.
 
 | SDD | Role in this repository |
 | --- | --- |
