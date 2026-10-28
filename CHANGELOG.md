@@ -12,6 +12,19 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+### Fixed — release confirmation races the registry
+
+- The `Confirm published artifact` step read the registry once, 0.5 s after
+  `npm publish`. On `v0.6.0` the publish and its Sigstore provenance succeeded
+  (`+ drenyra-ai@0.6.0`, transparency log index 3544266769), but npm was still
+  processing the package, so the step failed and the `github-release` job was
+  skipped. The step now polls for up to 10 minutes. The `v0.6.0` GitHub Release was
+  created by hand with the same procedure the job runs.
+- The Release `checksums.txt` no longer lists the package's own
+  `dist/checksums.txt`. Both files have the same name, so `sha256sum -c` in the
+  download directory reported a false `FAILED` for that line. The `v0.6.0` Release
+  asset was regenerated without it, and the artifacts themselves were unaffected.
+
 ## [0.6.0] - 2026-10-28
 
 First published release since `0.5.0`, and the first published by the release

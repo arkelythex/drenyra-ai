@@ -71,12 +71,23 @@ jobs:
       # Sigstore attestation is generated automatically under trusted publishing.
       - name: Publish with Sigstore provenance
         run: npm publish --provenance
+      # The registry accepts the publish before the version is readable ("Your
+      # package is being processed and may take a few minutes"). v0.6.0's run
+      # queried 0.5 s after publish and failed although the publish succeeded,
+      # so poll with a bound instead of a single read.
       - name: Confirm published artifact
         run: |
           VERSION="$(node -p "require('./package.json').version")"
-          TARBALL="$(npm view "drenyra-ai@${VERSION}" dist.tarball)"
-          test -n "$TARBALL"
-          echo "published tarball: ${TARBALL}"
+          for attempt in $(seq 1 40); do
+            TARBALL="$(npm view "drenyra-ai@${VERSION}" dist.tarball 2>/dev/null || true)"
+            if [ -n "$TARBALL" ]; then
+              echo "published tarball: ${TARBALL} (attempt ${attempt})"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "drenyra-ai@${VERSION} is not readable on the registry after 10 minutes" >&2
+          exit 1
       # Exercise the consumer-side provenance check the README documents:
       # install the just-published artifact and verify its Sigstore signature.
       # `npm audit signatures` fails when any installed package lacks a valid
@@ -128,7 +139,10 @@ jobs:
           test "sha512-$(openssl dgst -sha512 -binary "${TGZ}" | base64 -w0)" = "$(npm view "drenyra-ai@${VERSION}" dist.integrity)"
           tar -xzf "${TGZ}" -C extract
           cp extract/package/dist/sbom.json sbom.json
-          (cd extract/package/dist && find . -type f | sed 's|^\./||' | LC_ALL=C sort | xargs -d '\n' sha256sum) > checksums.txt
+          # dist/ ships its own checksums.txt; listing it would collide with this
+          # Release's checksums.txt, so `sha256sum -c` in the download directory
+          # would report a false FAILED. It is a manifest, not an artifact.
+          (cd extract/package/dist && find . -type f ! -path ./checksums.txt | sed 's|^\./||' | LC_ALL=C sort | xargs -d '\n' sha256sum) > checksums.txt
           sha256sum "${TGZ}" sbom.json >> checksums.txt
           if find extract/package/dist -name '*.tgz' | grep -q .; then
             echo "a tarball is nested inside dist/ — refusing to release" >&2
