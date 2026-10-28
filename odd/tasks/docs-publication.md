@@ -1,6 +1,6 @@
 # Feature — Publish Dreamcoder documentation in reviewable slices
 
-**Status:** in progress — authorized verification repair · **Source branch:** `docs/gentleman-grade-docs` · **Target:** `github.com/arkelythex/drenyra-ai`
+**Status:** needs owner decision — publication verified; one intermediate Docs failure · **Source branch:** `docs/gentleman-grade-docs` · **Target:** `github.com/arkelythex/drenyra-ai`
 Publish the completed documentation work and fix the CSS palette-checker gap through a feature-branch chain, without merging or releasing.
 
 ## Specs
@@ -19,8 +19,8 @@ Publish the completed documentation work and fix the CSS palette-checker gap thr
 | U1 | S2, S3, S5 | Verify issue forms, publish approved issues, and make one cohesive slicing plan | done | parent + read-only planner | publication planning record |
 | U2 | S4, S6 | Reproduce and fix CSS palette declarations with tests and docs | done | bounded worker + parent checks | 636df67 |
 | U3 | S2, S6 | Build clean integration/child branches on verified main; preserve original history | done | parent + independent verifier | tracker and 23 bounded child commits |
-| U4 | S1, S2, S3, S6 | Verify slice boundaries and publish draft tracker plus child PRs | in progress | parent | pending |
-| U5 | S6 | Observe required CI, record outcomes, and close delivery evidence | pending | parent + independent verifier | pending |
+| U4 | S1, S2, S3, S6 | Verify slice boundaries and publish draft tracker plus child PRs | done | parent | 77794c7; PRs #134–#157 |
+| U5 | S6 | Observe required CI, record outcomes, and close delivery evidence | needs decision | parent + independent verifier | 47/48 workflow runs successful; #146 Docs failed |
 
 ## Log
 
@@ -44,3 +44,40 @@ Publish the completed documentation work and fix the CSS palette-checker gap thr
 - **L14** — Authorized repair complete: worktree moved to .tmp/drenyra-docs-delivery with HEAD30f44e5 preserved. An initial setup assertion found existing generated .vite/.vite-temp caches; preserved them at .tmp/delivery-vitest-cache before linking installed project dependencies. No install/version changes. Lint recheck exit0,188files, two pre-existing Biome informational notices. Independent verifier mvsixovn-c-s6q9 ran the explicit installed Vitest command exactly once: exit0,19tests/2files; canonical CSS and rejected-input immutability observed. Bounded S4/S6 PASS; no tracked mutations, only the intentional untracked node_modules symlink. Prior full-suite1510tests, structural23branch and other verifier evidence remain separate. U3 complete; U4 publication begins under the existing authorization.
 
 - **L15** — Owner: "te autorizo todo y continue". Authorized using available `gpt-6-luna` after configured `gpt-6.1-luna` was unavailable. Read-only mapper completed with publication manifest/template/workflow evidence; do not rerun the obsolete chain builder. Refreshed GitHub evidence: authorized actor `Dreamcoder08`, ADMIN, target `arkelythex/drenyra-ai`, unchanged main `7b18a6bc1408fa8a99d299879bb8108eda5c158b`, issues #132/#133 OPEN with `status:approved`; no existing publication-chain PRs. U4 continues; no merge or releases.
+
+- **L16** — U4 publication complete: atomic HTTPS push confirmed all 24 scoped refs. Draft/no-merge tracker #134 targets main; children #135–#157 target their immediate parent and have exactly one `type:*` label. Each creation was followed by exact title/body/head SHA/base/draft/label/count readback. Root cause of two fail-closed metadata checks: stale local main (tracker must compare against verified remote main SHA), and local default histogram vs GitHub Myers diff counts. No duplicate creation or history rewrite; corrected bodies #134/#136 were read back. All Myers slice budgets remain 37–393 lines (final child 57 lines after passive evidence synchronization). Private temporary bodies cleaned. RDD remains clone-local OFF, disabled/unmanaged. No merge or release.
+
+- **L17** — Independent publication verifier confirmed S1/S2/S3, observable S5 cleanup, retained historical S4 proof and S6 disclosure. All 24 PRs remain OPEN, tracker draft, exact bases/SHAs/type labels/approved-issue links and budgets match. Main remains `7b18a6b`. Local original source resolves to `1caee52` (historical L9 `9429fc5` advanced only by a passive publication-record commit); source was not part of the 24-ref push. Published functional snapshot `30f44e5` and `77794c7` differ only in this passive feature document. No functional suites were rerun for publication metadata; no scratch/install/merge/release.
+
+- **L18** — Exact-head observation reached 48 terminal CI/Docs runs: 47 success, one failure, zero pending. PR #146 (slice12, `08155ef`) Docs run <https://github.com/arkelythex/drenyra-ai/actions/runs/40761406767> failed only the offline link job: README line22 introduces `href="#get-started"` before slice13/#147 (`c38873c`) introduces the heading. Parent and independent immutable README reads confirm the intermediate dependency defect. Later green PRs do not clear this failure. No CI rerun, history rewrite, force-push or repair was attempted. **Needs your decision:** authorize repairing the #146 intermediate cut and propagating compatible ancestry/evidence through downstream branches, or retain the published chain as explicitly not merge-ready. U5 remains open for that decision, not for more verification.
+
+### Published boundaries (U4 evidence)
+
+| PR | Base | Published boundary | Changed lines |
+| --- | --- | --- | --- |
+| [#134](https://github.com/arkelythex/drenyra-ai/pull/134) | `main` | `5edf5e1` | 36 |
+| [#135](https://github.com/arkelythex/drenyra-ai/pull/135) | `docs/dreamcoder-review-tracker` | `3cf2d96` | 359 |
+| [#136](https://github.com/arkelythex/drenyra-ai/pull/136) | `docs/dreamcoder-01-brand-contract` | `7ed8d48` | 159 |
+| [#137](https://github.com/arkelythex/drenyra-ai/pull/137) | `docs/dreamcoder-02-documentation-standard` | `59e3fbf` | 310 |
+| [#138](https://github.com/arkelythex/drenyra-ai/pull/138) | `docs/dreamcoder-03-drawing-primitives` | `17ef204` | 348 |
+| [#139](https://github.com/arkelythex/drenyra-ai/pull/139) | `docs/dreamcoder-04-brand-kit` | `ec4050a` | 385 |
+| [#140](https://github.com/arkelythex/drenyra-ai/pull/140) | `docs/dreamcoder-05-visual-generation` | `24e1575` | 393 |
+| [#141](https://github.com/arkelythex/drenyra-ai/pull/141) | `docs/dreamcoder-06-palette-conversion` | `2cbd90f` | 37 |
+| [#142](https://github.com/arkelythex/drenyra-ai/pull/142) | `docs/dreamcoder-07-portable-conversion` | `cf3810e` | 382 |
+| [#143](https://github.com/arkelythex/drenyra-ai/pull/143) | `docs/dreamcoder-08-candidate-lifecycle` | `31a5132` | 382 |
+| [#144](https://github.com/arkelythex/drenyra-ai/pull/144) | `docs/dreamcoder-09-runtime-architecture` | `f06feb2` | 384 |
+| [#145](https://github.com/arkelythex/drenyra-ai/pull/145) | `docs/dreamcoder-10-proof-review-visuals` | `a6d969f` | 264 |
+| [#146](https://github.com/arkelythex/drenyra-ai/pull/146) | `docs/dreamcoder-11-recovery-authority-visuals` | `08155ef` | 169 |
+| [#147](https://github.com/arkelythex/drenyra-ai/pull/147) | `docs/dreamcoder-12-readme-overview` | `c38873c` | 264 |
+| [#148](https://github.com/arkelythex/drenyra-ai/pull/148) | `docs/dreamcoder-13-readme-workflows` | `48652fd` | 105 |
+| [#149](https://github.com/arkelythex/drenyra-ai/pull/149) | `docs/dreamcoder-14-readme-navigation` | `14f9050` | 176 |
+| [#150](https://github.com/arkelythex/drenyra-ai/pull/150) | `docs/dreamcoder-15-cli-reference` | `da18bb9` | 248 |
+| [#151](https://github.com/arkelythex/drenyra-ai/pull/151) | `docs/dreamcoder-16-sdk-entry` | `a14e5ea` | 339 |
+| [#152](https://github.com/arkelythex/drenyra-ai/pull/152) | `docs/dreamcoder-17-architecture-guides` | `ff6becd` | 103 |
+| [#153](https://github.com/arkelythex/drenyra-ai/pull/153) | `docs/dreamcoder-18-contributor-paths` | `4e50c1f` | 79 |
+| [#154](https://github.com/arkelythex/drenyra-ai/pull/154) | `docs/dreamcoder-19-contract-navigation` | `17d462b` | 158 |
+| [#155](https://github.com/arkelythex/drenyra-ai/pull/155) | `docs/dreamcoder-20-operator-paths` | `673a8a8` | 221 |
+| [#156](https://github.com/arkelythex/drenyra-ai/pull/156) | `docs/dreamcoder-21-requirement-navigation` | `9dfabe2` | 53 |
+| [#157](https://github.com/arkelythex/drenyra-ai/pull/157) | `docs/dreamcoder-22-visual-closeout` | `77794c7` | 57 |
+
+Boundary counts above describe initial publication; the final child may additionally contain passive publication-evidence updates. Its exact current SHA/count is available in PR #157. The original code snapshot remains unchanged.
