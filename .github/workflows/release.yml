@@ -13,14 +13,16 @@ on:
 
 permissions:
   contents: read
-  # Required for npm provenance: the publish step exchanges the OIDC token for
-  # a Sigstore attestation binding the published artifact to this workflow and
-  # commit. Consumers verify with `npm audit signatures` after installing.
-  id-token: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Required for npm provenance: the publish step exchanges the OIDC token for
+    # a Sigstore attestation binding the published artifact to this workflow and
+    # commit. Consumers verify with `npm audit signatures` after installing.
+    permissions:
+      contents: read
+      id-token: write
     # Tag pushes publish the tagged version; manual dispatch is only allowed
     # from main with an explicit confirmation input — never from an arbitrary
     # branch state.
@@ -51,6 +53,15 @@ jobs:
           # `cache` input names a package manager; declare intent so
           # the publish path never consumes a poisoned dependency cache.
           cache: ""
+      # npm trusted publishing (OIDC) needs npm >= 11.5.1; Node 22 bundles
+      # npm 10, which cannot exchange the OIDC token (the v0.5.0 runs failed
+      # with ENEEDAUTH, then E404 on PUT). Pinned exactly for a hermetic publish.
+      - name: Pin npm for trusted publishing
+        # zizmor: ignore[adhoc-packages] — intentional: the npm CLI itself, pinned
+        # to an exact version, is the publisher; no project dependency is added.
+        run: |
+          npm install -g npm@11.21.1
+          npm --version
       - run: bun install --frozen-lockfile
       # Trusted Publishing (OIDC): npm exchanges the runner's identity token
       # for a short-lived publish credential bound to this exact workflow run —
@@ -82,3 +93,53 @@ jobs:
           npm init -y > /dev/null 2>&1
           npm install "drenyra-ai@${VERSION}" --ignore-scripts --no-audit --no-fund > /dev/null 2>&1
           npm audit signatures
+
+  # Attach the GitHub Release consumers verify against (Drenyra Shell's
+  # runtime-dependency contract downloads the tarball from here). Built from
+  # the tarball npm now serves for the tag, so the Release, its checksums.txt,
+  # and the registry artifact are the same bytes. Tag pushes only: a manual
+  # dispatch publishes main and has no tag to attach a Release to.
+  github-release:
+    needs: publish
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0 # zizmor: ignore[cache-poisoning]
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+          cache: ""
+      - name: Build release assets from the npm-served tarball
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          test "$(node -p "require('./package.json').version")" = "${VERSION}"
+          awk -v h="## [${VERSION}]" 'index($0, h) == 1 {f=1; print; next} f && /^## \[/ {exit} f' CHANGELOG.md > "${RUNNER_TEMP}/notes.md"
+          test "$(wc -l < "${RUNNER_TEMP}/notes.md")" -gt 1
+          OUT="${RUNNER_TEMP}/assets"
+          mkdir -p "${OUT}/extract"
+          cd "${OUT}"
+          npm pack "drenyra-ai@${VERSION}" --silent > /dev/null
+          TGZ="drenyra-ai-${VERSION}.tgz"
+          test "sha512-$(openssl dgst -sha512 -binary "${TGZ}" | base64 -w0)" = "$(npm view "drenyra-ai@${VERSION}" dist.integrity)"
+          tar -xzf "${TGZ}" -C extract
+          cp extract/package/dist/sbom.json sbom.json
+          (cd extract/package/dist && find . -type f | sed 's|^\./||' | LC_ALL=C sort | xargs -d '\n' sha256sum) > checksums.txt
+          sha256sum "${TGZ}" sbom.json >> checksums.txt
+          if find extract/package/dist -name '*.tgz' | grep -q .; then
+            echo "a tarball is nested inside dist/ — refusing to release" >&2
+            exit 1
+          fi
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          cd "${RUNNER_TEMP}/assets"
+          gh release create "${GITHUB_REF_NAME}" -R "${GITHUB_REPOSITORY}" --verify-tag \
+            --title "drenyra-ai ${GITHUB_REF_NAME}" --notes-file "${RUNNER_TEMP}/notes.md" \
+            "drenyra-ai-${VERSION}.tgz" sbom.json checksums.txt
