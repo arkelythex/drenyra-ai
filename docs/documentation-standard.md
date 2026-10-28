@@ -1,22 +1,24 @@
 # Drenyra Ecosystem — Documentation Quality Bar
 
-Reference exemplars (READ THESE before writing; adapt structure, not copy):
+← [Back to README](../README.md)
 
-- `/home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/README.md` (408 lines, already at the bar)
-- `/home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/AGENTS.md`
-- `/home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/AI_POLICY.md`
-- `/home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/CONTRIBUTING.md`
-- `/home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/CHANGELOG.md`
-- `/home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/docs/intended-usage.md`
-- `/home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/docs/CODEBASE-GUIDE.md`
-- `/home/dreamcoder08/Documents/PROYECTOS/drenyra-ai/docs/architecture.md`
-- Reference README style: `/home/dreamcoder08/Documents/PROYECTOS/gentle-ai/README.md`
+A good page lets its reader take the next safe step without reconstructing the
+project. This is the editorial and visual standard for documentation in this
+repository: explain the outcome, expose the evidence, and keep deeper reference
+one link away.
+
+Reference exemplars — adapt the structure, never copy another project's claims:
+
+- [Gentle-AI README](https://github.com/Gentleman-Programming/gentle-ai) — benefit-led features, visual explanations, and progressive disclosure.
+- [Project README](../README.md) — positioning and entry paths.
+- [Agent Guide](../AGENTS.md) — compact rules and ownership.
+- [Intended Usage](intended-usage.md) — authority and non-goals.
 
 ## 1. README bar (positioning-first)
 
 1. One-sentence positioning + one-line value proposition at the top (what/why, who it's for).
 2. Current-release callout with version policy up top (badge/version + release cadence or stage).
-3. **Quick Start** immediately after positioning (concrete, copy-pasteable).
+3. A visible **Get started** entry link near the positioning, followed by a concise, copy-pasteable installation section. Features may explain the mental model first.
 4. What It Does / Key Features — short, benefit-led, details blocks (`<details>`) for secondary content.
 5. Live badges where the project has real status (npm/release/CI if they exist; do not invent badges).
 6. Explicit "Documentation" section linking `docs/` (intended-usage, CODEBASE-GUIDE, architecture).
@@ -35,18 +37,29 @@ Reference exemplars (READ THESE before writing; adapt structure, not copy):
 | `docs/CODEBASE-GUIDE.md` | Repository map / Layering (who may import whom) / Where a change goes / invariants / Testing / Conventions / Read next |
 | `docs/architecture.md` | Documentation index / Position in the ecosystem / Core invariants / Layer model / Consumer contract / Repository scope |
 
-## 3. Ecosystem CURRENT FACTS (must be consistent everywhere — verified 2026-08-19)
+## 3. Verify facts before publishing
 
-- All **six** Drenyra repos are **public**. Only Elvyra is private (do not mention Elvyra in docs).
-- Dependency direction: satellites (`drenyra-command-center`, `drenyra-pi`, `drenyra-engram`, `drenyra-skills`, `drenyra-guardian-angel`) consume the published `drenyra-ai` contracts — never the reverse; `drenyra-ai` never depends on them.
-- `drenyra-ai`: **Alpha, v0.5.0** (npm 0.5.0; tags v0.5.0/v0.4.x; contracts frozen; receipts Ed25519-signed).
-- `drenyra-pi`: **Pre-alpha** (v0.0.1-prealpha.1; runtime pin 0.3.0 in flight; fiscal harness extracted).
-- `drenyra-engram`: **Alpha, v0.2.1** (GitHub releases v0.2.x; Apache-2.0; informs, never authorizes).
-- `drenyra-command-center`: **In development** (public).
-- `drenyra-skills`: **In development** (content layer: versioned accounting/tax/operational knowledge, PE jurisdiction).
-- `drenyra-guardian-angel`: **In development** (independent adversarial verification, consumes frozen contracts).
-- Authority model: Drenyra accounting database (PostgreSQL, tenant-isolated) → transactional truth; Engram → institutional memory (informs, never authorizes); AI receipts+ledger → execution proof (Ed25519-signed, append-only); Guardian Angel → independent verification; human accountant → final authority.
-- Fiscal conventions (apply when mentioned): money is BigInt cents, never floats; RUC/period scope is mandatory; every material action produces a receipt.
+Facts are not a palette: do not copy a dated snapshot into every page.
+
+| Claim | Source to check |
+| --- | --- |
+| Current package version | `package.json`, the release tag, npm `latest`, and [CHANGELOG](../CHANGELOG.md) |
+| Contract version and status | The header of each file under [contracts/](../contracts/README.md) |
+| CLI syntax and output | `cmd/` and the built CLI's `--help` |
+| Library exports | `package.json` and each subsystem's `index.ts` |
+| Ecosystem names and boundaries | [Ecosystem Integration](architecture/ecosystem-integration.md) and the [program](../program/drenyra-dominion/README.md) |
+| Visual tokens | [brand-system v0.4](../contracts/brand-system.md) and its [tokens](../contracts/brand-system/tokens.json) |
+
+The current release verified for this documentation pass is **v0.6.0**. Current
+product names are **Drenyra Desktop** and **Drenyra Shell**. Historical release
+entries and dated program/spec evidence retain the names and versions that were
+true when recorded. Satellite release status is not inferred from this repository.
+
+The authority model stays constant: the accounting database holds transactional
+truth; Engram informs but never authorizes; receipts and the append-only audit
+ledger prove execution; Guardian provides independent verification; the human
+professional retains fiscal and business decision authority. Money is BigInt cents,
+RUC/company/period isolation is mandatory, and material actions require receipts.
 
 ## 4. Quality principles
 
@@ -59,7 +72,45 @@ Reference exemplars (READ THESE before writing; adapt structure, not copy):
 
 ## 5. Diagrams
 
-**Convention (ecosystem-wide).** Every durable architecture, workflow, sequence, data-flow, or state diagram is an [Archify](https://github.com/tt-a1i/archify) artifact — a typed JSON source compiled into a self-contained HTML/SVG map — never a hand-drawn image or a pasted screenshot. The convention is adopted for the whole ecosystem; an artifact exists only where a work unit delivered it, so the roster grows deliberately rather than by habit.
+**Convention: two visual jobs, two authoring paths.** README brand and feature
+illustrations are hand-authored SVG compositions generated from a single template
+for both themes. Durable technical maps remain [Archify](https://github.com/tt-a1i/archify)
+artifacts: typed JSON sources with traceable repository evidence and exported
+HTML/SVG views. A feature illustration explains one concept; a technical map
+explains the real topology. Neither is a screenshot of text.
+
+### README visuals
+
+Sources live in `scripts/docs-visuals/`. Regenerate, never hand-edit the SVGs:
+
+```bash
+bun run docs:visuals
+bun run brand:conformance
+node scripts/brand-conformance.mjs docs/assets/diagrams
+```
+
+Outputs live in `docs/assets/brand/` (banner and divider mark) and
+`docs/assets/diagrams/` (feature illustrations). Every composition has a Light/Dark
+pair, descriptive alt text, and accessible SVG `title`/`desc` elements. Use the
+same layout in both themes, not two independently maintained copies. Only colors
+from `contracts/brand-system/tokens.json` are allowed; opacity may vary.
+
+| Semantic role | Dreamcoder Light | Dreamcoder Dark |
+| --- | --- | --- |
+| Canvas | `#F3EADC` | `#000000` |
+| Surface | `#FFF7EA` | `#0B0B0B` |
+| Heading | `#100C07` | `#F5F5F5` |
+| Main path | `#824F16` | `#A5B4FC` |
+| Verified | `#315B31` | `#34D399` |
+| Scope / information | `#0D4A68` | `#7DD3FC` |
+| Human authority | `#57478B` | `#D4B5FD` |
+| Error | `#842F24` | `#FB8585` |
+
+Black is the Dark canvas, not the functional surface ladder. Keep readable text,
+restrained accents, and enough negative space to explain the concept. Do not
+reproduce Gentle-AI's rose, identity, product claims, or screenshots.
+
+### Technical maps
 
 **Layout.**
 
@@ -83,6 +134,16 @@ So write two files from that one export, each with `data-theme="light"` or `data
 ![…](docs/diagrams/<subject>.<type>.dark.svg#gh-dark-mode-only)
 ```
 
+After an Archify export, apply the deterministic Dreamcoder post-processor:
+
+```bash
+node scripts/archify-dreamcoder.mjs docs/diagrams/*.svg
+node scripts/brand-conformance.mjs docs/diagrams/*.svg
+```
+
+This step re-themes inline SVG views only; the interactive HTML retains the
+Archify viewer palette. Do not claim that the viewer has been re-themed.
+
 Verify before committing: each file must open as a bare SVG document that keeps its own styling. An `<svg>` cut out of the artifact by hand does not, because the artifact carries its classes in the document stylesheet rather than inside the SVG.
 
 **Authoring rules.**
@@ -105,3 +166,26 @@ node "$ARCHIFY" visual-check docs/diagrams/<subject>.architecture.html --json
 - `deliver` must exit **0** and report the SHA-256 of both the specification and the artifact. A non-zero exit is never described as success, and a failed delivery leaves the previous output untouched.
 - `visual-check` must pass containment with no overflow at 1440×900, 1600×1000, 1920×1080, and 2048×1320. These are machine measurements, not perceptual approval: real visual review still needs a human.
 - Commit the `.json` source, the `.html` artifact, the `.visual-check.json` receipt, and any exported inline image. Screenshot sidecars are regenerable evidence: keep them only for a canonical reference map, and delete them otherwise, so an ordinary diagram does not add binary weight to review.
+
+## 6. Page anatomy
+
+1. Start with an H1 and a return link to the nearest index.
+2. Explain the reader's problem in two or three sentences.
+3. Use a status callout only when there is a real boundary, version, or warning.
+4. Put a **Quick path** near the top of procedural pages. Examples must work with
+   the inputs they name; label fragments and placeholders instead of pretending
+   they are complete sessions.
+5. Group details by reader task. Use tables for choices and `<details>` for long,
+   secondary reference material. Preserve published heading anchors.
+6. End with two to four **Read next** links that explain why each page matters.
+
+Normative contracts, requirements, dated plans, and historical ODD task records
+are not marketing copy. Improve their framing and navigation without rewriting
+requirements, dates, identifiers, or evidence. The same quality bar does not mean
+an identical template forced onto a changelog, policy, or frozen contract.
+
+## Read next
+
+- [Quickstart](quickstart.md) — check whether a new reader can execute the happy path.
+- [Contracts](../contracts/README.md) — respect the public change regime.
+- [Deterministic Testing](testing-deterministic.md) — connect documentation claims to evidence.
