@@ -12,6 +12,13 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-28
+
+First published release since `0.5.0`, and the first published by the release
+workflow with Sigstore provenance. The version was bumped on 2026-09-21 but never
+tagged or published, so this section also carries the changes merged after that
+date.
+
 ### Fixed — release hygiene (#126)
 
 - **Clean release builds.** `verify:package` (run by `prepack`) now builds with
@@ -44,8 +51,6 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 - `AGENTS.md`, `CONTRIBUTING.md`, and `docs/CODEBASE-GUIDE.md` describe ODD and
   carry the rules from the former `openspec/config.yaml`. See
   `odd/tasks/sdd-to-odd-migration.md`.
-
-## [0.6.0] - 2026-09-21
 
 ### Added — `agents/` public subpath (Phase 2c/3 roadmap item)
 
