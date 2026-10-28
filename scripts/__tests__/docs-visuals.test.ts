@@ -68,6 +68,32 @@ describe("documentation visuals through their public scripts", () => {
 		expect(readFileSync(file, "utf8")).toBe(transformed);
 	});
 
+	it("resolves palette variables for SVG renderers without CSS custom-property support", () => {
+		const file = fixture("portable.svg", '<rect fill="var(--bg)"/><text style="fill: var(--text)">Readable</text>', "light");
+		const result = run("scripts/archify-dreamcoder.mjs", [file]);
+		expect(result.status).toBe(0);
+		expect(result.stderr).toBe("");
+		const svg = readFileSync(file, "utf8");
+		expect(svg).toContain('<rect fill="#f3eadc"/>');
+		expect(svg).toContain('style="fill: #17120d"');
+		expect(svg).not.toContain("var(--");
+	});
+
+	it("preserves canonical dark messagebus amber across repeated conversions", () => {
+		const file = fixture("amber.svg", '<rect fill="var(--messagebus-fill)"/><path stroke="#fb923c"/>');
+		const first = run("scripts/archify-dreamcoder.mjs", [file]);
+		expect(first.status).toBe(0);
+		expect(first.stderr).toBe("");
+		expect(first.stdout).toBe(`~ ${file} (Dreamcoder Dark)\n`);
+		const converted = readFileSync(file, "utf8");
+		expect(converted).toContain('<rect fill="#fbbf24"/><path stroke="#fbbf24"/>');
+		const second = run("scripts/archify-dreamcoder.mjs", [file]);
+		expect(second.status).toBe(0);
+		expect(second.stderr).toBe("");
+		expect(second.stdout).toBe(`= ${file} (Dreamcoder Dark)\n`);
+		expect(readFileSync(file, "utf8")).toBe(converted);
+	});
+
 	it("rejects an unknown color without overwriting the source file", () => {
 		const file = fixture("invalid.svg", '<rect fill="#123456"/>');
 		const before = readFileSync(file, "utf8");

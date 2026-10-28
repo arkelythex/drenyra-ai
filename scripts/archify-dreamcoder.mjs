@@ -175,7 +175,9 @@ const PALETTE = {
 			"#22d3ee": "#7dd3fc",
 			"#34d399": "#34d399",
 			"#a78bfa": "#d4b5fd",
-			"#fbbf24": "#a5b4fc",
+			// Amber is already canonical and is also emitted by --messagebus-fill.
+			// Re-mapping it would change the second run's output.
+			"#fbbf24": "#fbbf24",
 			"#fb7185": "#fb8585",
 			"#fb923c": "#fbbf24",
 		},
@@ -280,6 +282,11 @@ function transformLine(theme, line) {
 	out = out.replace(HEX_COLOR_RE, (hex) => {
 		const lower = hex.toLowerCase();
 		return PALETTE[theme].legacy[lower] ?? hex;
+	});
+	// Resolve colors in the pinned view as well as declaring the palette.
+	// librsvg and other static renderers do not support CSS custom properties.
+	out = out.replace(/var\(--([a-z-]+)\)/g, (reference, role) => {
+		return PALETTE[theme].vars[role] ?? reference;
 	});
 	return out;
 }
