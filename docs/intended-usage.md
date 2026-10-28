@@ -1,174 +1,136 @@
 # Intended Usage — Drenyra AI
 
+← [Back to README](../README.md)
+
+An accounting proposal is useful only if a professional can inspect its evidence,
+understand its risk, and verify what happened. Drenyra AI supplies that control
+plane without making the agent the fiscal authority.
+
 > [!IMPORTANT]
-> **The frontier:** Drenyra AI is not "an agent that does accounting." It is the infrastructure that lets any agent participate in accounting processes without becoming the fiscal authority.
+> **AI proposes. The system validates. The professional decides. Evidence remains.**
+> Neither a model response nor institutional memory is approval or fiscal proof.
 
-<!-- -->
+## Quick path
 
-> **The institutional thesis:** The AI proposes. The system validates. The professional decides. The evidence remains.
+1. [Run the Quickstart](quickstart.md) — inspect the core and create a draft in an isolated store.
+2. [Read the Trust Model](architecture/trust-model.md) — separate execution proof from fiscal authority.
+3. [Choose an integration](sdk.md) — consume a released library, CLI, or MCP surface.
 
 ## Definition
 
-**Drenyra AI is the configurator and runtime ecosystem that equips AI agents with memory, knowledge, workflows, controls, and evidence to perform verifiable accounting and fiscal work.**
+Drenyra AI is a **configurator, runtime, and deterministic control plane** for
+accounting and fiscal agents. It can be consumed standalone by ERPs, SaaS,
+professional interfaces, and agent hosts.
 
-It is a **configurator, runtime, and control plane** for accounting and fiscal agents:
-
-- **Configurator** — `drenyra-ai install` / `doctor` / `sync` / `upgrade` equip the agent host(s) you already use (Codex, Claude Code, OpenCode, Pi) with accounting memory, skills, missions, materiality controls, approvals, and verifiable evidence.
-- **Runtime** — missions with a frozen 15-state lifecycle, deterministic intent handlers that stage work, crash-safe recovery.
-- **Control plane** — candidates, proportional review (R0–R3), gates, Ed25519 receipts, and an append-only audit ledger. The Core determines what may happen; agents never self-authorize.
+| Surface | Responsibility |
+| --- | --- |
+| Configurator | Configure existing hosts with managed assets using `install run`, `doctor run`, `sync run`, `upgrade run`, and `rollback run` |
+| Runtime | Run scoped missions with a frozen 15-state lifecycle, deterministic intent handlers, idempotency, and recovery |
+| Control plane | Identify candidates, derive review depth, enforce gates, verify signed receipts, and maintain the append-only audit ledger |
 
 ## The philosophy, translated
 
-Drenyra AI follows Gentle-AI's philosophy — it is not a sectorial copy of its code:
+Gentle-AI is the engineering reference, not a codebase to copy into a fiscal
+system. The shared principle is **verify the work rather than trust a narrative**.
+The accounting translation imposes stricter authority and evidence boundaries.
 
-| Gentle-AI philosophy | Drenyra AI translation |
+| Principle | Accounting translation |
 | --- | --- |
-| Adapts existing agents | Adapts Pi and other hosts |
-| The user asks for results, not phases | The professional asks for closes, reconciliations, or reviews |
-| Small work stays direct | R0/R1 operations run with controlled autonomy |
-| Complex work gets structured | Material fiscal operations become missions |
-| SDD is optional and organic | Formal planning appears when complexity requires it |
-| RDD converges on a frozen candidate | RDA converges on an identified accounting candidate |
-| Engram keeps context | Drenyra Engram keeps institutional memory |
-| Skills specialize the agent | Drenyra Skills provides accounting and jurisdictional knowledge |
-| Receipts authorize delivery | Receipts prove what was proposed, approved, and executed |
-| The system derives authority | Gates and approvals determine authority |
-| doctor, sync, update, recovery | The ecosystem maintains itself automatically |
-| After install it "disappears" | The accountant works normally; Drenyra controls underneath |
+| Adapt the tools people already use | Agent hosts, professional interfaces, and external ERPs consume the same core |
+| Keep small work direct | R0/R1 work follows its controls without pretending every query is a fiscal close |
+| Make material work recoverable | Missions preserve scope, decisions, events, and explicit waits |
+| Bind review to the exact candidate | Subject bytes determine identity; a correction requires re-inspection |
+| Retain useful context | Engram informs; memory never supplies authority |
+| Separate proof from delivery decisions | A receipt proves its recorded action; it does not invent the next approval |
 
 ## The golden rule
 
-> [!IMPORTANT]
-> **The professional should never have to learn to operate an agent orchestration.** They ask for an accounting result and receive reviewable candidates, evidence, explicit decisions, and verifiable receipts.
+The professional should not need to learn agent orchestration to obtain an
+accounting result. The intended experience is reviewable candidates, evidence,
+explicit decisions, and verifiable receipts behind their normal interface.
+That target is not a claim that every planned integration is released.
 
 ## Stricter than Gentle-AI — the additional controls
 
-Fiscal risk demands guarantees that software engineering does not:
-
-1. **Memory never authorizes.** No observation is approval, permission, or authorization.
-2. **Agents never approve themselves.** Approval is explicit, recorded, human.
-3. **A signed XML is not an accepted CPE.** Acceptance by SUNAT is proven by external evidence, never by the document's own signature.
-4. **No agent narration proves execution.** A story about SUNAT, a bank, or an ERP executing something proves nothing; only external evidence does.
-5. **Autonomy derives from materiality, reversibility, and jurisdiction** — never from agent claims.
-6. **Critical actions require external evidence and professional approval.**
-7. **Mission recovery depends on persisted state, not transcript.** The event log is replayed from the last event; narration is never trusted.
-8. **Without receipt, scope, or provable authority, the system fails closed.** Ambiguity is surfaced, never guessed through.
+- **Memory never authorizes.** A remembered observation is not permission.
+- **Agents never approve themselves.** Human approval is explicit and recorded.
+- **External effects require external evidence.** Signed XML is not proof of an accepted CPE; a story about SUNAT, an ERP, or a bank is not execution proof.
+- **Review depth is derived.** Value in BigInt cents, reversibility, and jurisdiction determine materiality.
+- **Recovery reads persisted events.** Neither a transcript nor process memory proves completion.
+- **Missing authority fails closed.** Surface the missing input instead of guessing.
 
 ## The conceptual architecture
 
-```mermaid
-flowchart TD
-    U["Professional requests a result"] --> H["AI host"]
-    H --> A["Drenyra AI"]
-    A --> C["Accounting candidate"]
-    C --> G{"Materiality and gates"}
-    G -->|"R0–R1"| X["Controlled execution"]
-    G -->|"R2–R3"| P["Professional approval"]
-    P --> X
-    X --> R["Signed receipt"]
-    R --> L["Verifiable ledger"]
-```
+![Advice and memory inform; tenant-scoped deterministic gates enforce; professionals retain authority and external systems provide evidence.](assets/diagrams/authority-boundary.light.svg#gh-light-mode-only)
+![Advice and memory inform; tenant-scoped deterministic gates enforce; professionals retain authority and external systems provide evidence.](assets/diagrams/authority-boundary.dark.svg#gh-dark-mode-only)
+
+The [runtime map](../README.md#architecture-maps) shows the technical modules.
+Concept illustrations explain responsibilities; contracts remain normative.
 
 ## The delivery architecture (frozen for v1.0)
 
-**The flagship flow for v1.0 is the monthly accounting and tax close.**
+The v1.0 design chooses a **headless independent core**, consumed by Drenyra
+Desktop through a released library, CLI, or MCP interface. The flagship vertical
+is the monthly accounting and tax close. Drenyra AI does not ship its own UI.
 
-**Decision:** Drenyra AI ships as a **headless, independent core**, consumed by Drenyra Command Center as the professional's interface — through library, CLI, or MCP. Drenyra AI never ships its own UI.
-
-```mermaid
-flowchart TD
-    P["Professional"] --> D["Drenyra Command Center"]
-    D --> AI["Drenyra AI"]
-    AI --> E["Agents and connectors"]
-    AI --> G["Gates · Receipts · Ledger"]
-```
-
-| Model | Verdict | Why |
+| Option | Design decision | Reason |
 | --- | --- | --- |
-| **1. Headless core + Command Center as interface** | ✅ Chosen | Best experience for accountants; Drenyra AI stays integrable by ERPs and other SaaS; Codex, Claude, OpenCode, or Drenyra Pi can run inside; one authority for gates, receipts, and missions |
-| 2. Agent configurator first | ❌ Rejected | Most literal resemblance to Gentle-AI and good for developers/early adopters, but most accountants will not operate agents, JSON files, or commands; relegates the Command Center |
-| 3. Everything inside Drenyra AI | ❌ Rejected | Fast demos and no cross-repo coordination, but couples UI, fiscal domain, and runtime; blocks external integrations; duplicates responsibilities and destroys the current architectural boundaries |
+| Headless core + professional interface | Chosen | Keeps the core integrable and hides orchestration from accountants |
+| Agent configurator as the primary experience | Not chosen | Useful to developers, but does not make accountants' normal workflow the center |
+| Put every layer inside Drenyra AI | Not chosen | Couples interface, fiscal domain, and runtime; duplicates responsibilities |
 
-> [!IMPORTANT]
-> **Gentle-AI disappears behind the developer's flow. Drenyra AI disappears behind the professional accountant's flow.** The accountant never operates agent orchestration, JSON files, or commands — they work in the Command Center, and Drenyra AI controls underneath.
-
-**Operational consequence:** Drenyra consumes released, versioned artifacts of Drenyra AI — never a checkout. Versions must be coordinated between the two repositories; the frozen contracts are the coordination surface.
+Consumers upgrade released artifacts on their own cadence. Frozen contracts are
+the compatibility surface, not a checkout or a dependency on Desktop/Shell.
 
 ## What Drenyra AI is not
 
-| Not this | Because |
+| Not this | Boundary |
 | --- | --- |
-| An agent that does accounting | The Core proposes nothing; it only stages and gates. Agents propose; humans and gates decide |
-| The ERP | Posting, invoicing, and books of record live in Drenyra and external systems |
-| The primary interface | Professionals work in the Accounting Command Center (Drenyra), not in Drenyra AI |
-| The ledger of record | Drenyra AI provides the verifiable audit trail, not the books |
-| A privileged gateway to SUNAT/banks/ERPs | External systems connect through adapters and evidence, never privileged access |
-| The fiscal authority | Approval is explicit, recorded, human — never implied by the runtime |
+| An autonomous accountant | Agents propose; the core enforces policy; professionals decide |
+| An ERP or journal of record | Transactional books and posting belong to accounting systems |
+| The primary professional interface | Desktop consumes the core; the core remains headless |
+| A privileged SUNAT/bank gateway | Adapters and external evidence preserve the boundary |
+| The fiscal authority | Human business and legal judgment is never delegated to a model |
 
 ## The responsibility split
 
 | Component | Role |
 | --- | --- |
-| **Drenyra AI** | Protocols, missions, agents, candidates, gates, receipts, ledger |
-| **Drenyra** | Accounting Command Center for professionals (consumes) |
-| **Drenyra Pi** | Specialized harness to run the ecosystem (consumes, pinned package-local) |
-| **Drenyra Engram** | Institutional memory — informs, never authorizes |
-| **Drenyra Skills** | Versioned accounting, tax, and operational knowledge |
-| **Drenyra Guardian Angel** | Independent, adversarial, continuous verification |
-| **ERP / SUNAT / banks** | External systems connected via adapters and evidence |
+| Drenyra AI | Missions, candidates, gates, receipts, audit ledger, and deterministic enforcement |
+| Drenyra Desktop | Professional interface consuming released artifacts |
+| Drenyra Shell | Pi-native harness consuming a pinned package-local runtime |
+| Drenyra Engram | Institutional memory; informs, never authorizes |
+| Drenyra Skills | Versioned accounting, tax, and operational knowledge |
+| Drenyra Guardian Angel | Independent read-only adversarial verification |
+| ERP / SUNAT / banks | External systems connected through adapters and evidence |
 
 ## The target experience
 
-After installation, a professional accountant should be able to say:
-
-> "I use Codex, Claude, or OpenCode — but Drenyra gives them accounting memory, skills, missions, materiality controls, approvals, and verifiable evidence."
-
-```bash
-drenyra-ai install            # configure the accounting/fiscal agent runtime
-drenyra-ai doctor             # read-only health check of the ecosystem
-drenyra-ai mission start monthly-close
-drenyra-ai candidate inspect correction.json
-drenyra-ai gate check posting.json
-drenyra-ai receipt verify receipt.json
-drenyra-ai ledger validate ledger.json
-```
+A professional asks for a close, reconciliation, or review and receives an
+inspectable outcome. The [design series](design/design-01-ecosystem-frontier-and-authority.md)
+describes that target. The [Quickstart](quickstart.md) shows what can be exercised
+through the current CLI, including actual JSON inputs rather than aspirational
+commands such as `mission start monthly-close`.
 
 ## Equivalence with Gentle-AI
 
-| Gentle-AI | Equivalent in Drenyra AI |
-| --- | --- |
-| Configures agent runtimes | Configures accounting/fiscal agent runtimes (`drenyra-ai install`) |
-| Installer and TUI | Installer/configurator (`drenyra-ai install`) |
-| SDD | Accounting missions and fiscal specifications |
-| RDD (Receipt-Driven Development) | RDA (Receipt-Driven Accounting) |
-| Code candidate | Posting, reconciliation, or declaration candidate |
-| Review receipt | Accounting/fiscal receipt (Ed25519, canonical vectors) |
-| Pre-commit/push/PR gates | Gates before posting, approving, declaring, or filing |
-| Engram memory | Drenyra Engram — informs, never authorizes |
-| gentle-pi harness | Drenyra Pi — pinned package-local runtime |
-| Skills registry | Drenyra Skills — versioned accounting/tax knowledge |
-| doctor / sync / upgrade / rollback | `drenyra-ai doctor` / `sync` / `upgrade` / rollback |
-
-The parallel is structural, not literal: every Gentle-AI control maps to an accounting control with **stricter guarantees** — receipts are signed, the ledger is append-only and canonical-vector-verified, review scales with materiality, and approval is always explicit and recorded.
+The parallel is structural: workflow, candidates, review, evidence, and durable
+context. Drenyra's RDA is not a renamed software-delivery gate. Fiscal receipts
+are signed, monetary values are BigInt cents, RUC/period scope is mandatory,
+and professional approval remains explicit.
 
 ## Frontier rules
 
-1. **Agents propose; the Core decides.** No agent claims SUNAT, bank, or ERP execution. No agent performs fiscal approval.
-2. **Nothing material happens without a receipt.** RDA is the unit of proof; verification is offline and from canonical vectors.
-3. **Gates, not faith.** Every lifecycle transition validates authority, scope, and receipts before posting, approving, declaring, or filing.
-4. **Memory informs; it never authorizes.** No observation is approval, permission, or authorization.
-5. **Risk-proportional review.** R0 high autonomy → R3 explicit dual approval, derived from materiality — never chosen ad hoc.
-6. **Fiscal discipline.** Money is whole-number cents (BigInt); tenant/RUC/period scope is mandatory; every mutation produces an immutable receipt.
-
-## Quick path
-
-1. Read the [Trust Model](architecture/trust-model.md) — what the runtime can prove and where authority lives.
-2. Read the [Contracts](../contracts/README.md) — the frozen public surface (start at the root `contracts/` index).
-3. Integrate via released, versioned artifacts — never a checkout. Consumers (Drenyra, Drenyra Pi) upgrade on their own cadence.
+1. Agents stage; they never claim fiscal approval or external execution.
+2. Nothing material happens without a receipt.
+3. Gates validate authority, scope, and evidence before a transition.
+4. Memory informs, never authorizes.
+5. Review follows materiality, not an agent claim.
+6. The fiscal lifecycle order is fixed; money is BigInt cents.
 
 ## Next steps
 
-- The architecture and layer model → [Architecture](architecture.md)
-- The frozen contracts → [Contracts](../contracts/README.md)
-- What is planned → [ROADMAP.md](../ROADMAP.md)
-- The project overview → [README.md](../README.md)
+- [Architecture](architecture.md) — understand ownership and dependency direction.
+- [Contracts](../contracts/README.md) — integrate the frozen surface.
+- [ROADMAP](../ROADMAP.md) — distinguish released capabilities from planned work.
+- [Usage](usage.md) — inspect the current CLI rather than infer commands from the target experience.
