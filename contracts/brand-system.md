@@ -1,10 +1,10 @@
 # Contract: brand-system
 
-> Version: 0.3 · Status: DRAFT · Transport-agnostic.
+> Version: 0.4 · Status: DRAFT · Transport-agnostic.
 >
 > The **visual authority of the ecosystem is the Dreamcoder Workbench** —
 > canonical tokens at `dreamcoder-dots/DreamcoderThemes/dreamcoder/tokens.json`
-> (Cocoa/Lúcuma light, Anthracite Steel dark, Dusk transition; readability
+> (Dreamcoder Light Cocoa/Lúcuma, Dreamcoder Dark OLED-aware, Dusk transition; readability
 > before decoration, WCAG/APCA). Every ecosystem surface — Drenyra AI, Drenyra
 > Pi, Drenyra Engram, Drenyra Skills, Command Center, Guardian Angel — mirrors
 > exactly this system, in **both themes**. No ecosystem product invents its own
@@ -13,9 +13,9 @@
 <!-- -->
 
 > [!IMPORTANT]
-> **Status: DRAFT at v0.3** — the normative surface is pinned by a conformance
+> **Status: DRAFT at v0.4** — the normative surface is pinned by a conformance
 > suite (`contracts/__tests__/brand-conformance.test.ts`) that runs in CI and
-> fails on drift. Freezing (v0.3 → FROZEN) requires ecosystem adoption: every
+> fails on drift. Freezing (v0.4 → FROZEN) requires ecosystem adoption: every
 > consuming repo's brand assets pass the conformance checker. See the
 > [freeze record](#freeze-record) below.
 
@@ -48,24 +48,31 @@ and mirrors the Dreamcoder Workbench tokens exactly. **No derived tokens are
 invented** — every variant (hover/active/dim, text tiers, states) already
 exists in the source.
 
-### Dark theme (default — class `.dark`) — Dreamcoder Anthracite Steel
+### Dark theme (default — class `.dark`) — Dreamcoder Dark
+
+Dreamcoder Dark is **OLED-aware**: pure black `#000000` is the canvas only;
+functional and scrollable surfaces sit on the near-black ladder above it.
 
 | Token | Hex | Role |
 | --- | --- | --- |
-| `canvas` | `#070A13` | App background, brand surface |
-| `surface` | `#0D121A` | Cards, raised surfaces |
-| `surface-2` | `#151C25` | Raised cards, banners |
-| `overlay` | `#202A35` | Overlays, popovers |
-| `border-subtle` | `#17202B` | Subtle dividers |
-| `border-default` | `#6A8497` | Strokes, card borders |
-| `text-primary` | `#E6EDF3` | Primary text |
-| `text-secondary` | `#A8B5C2` | Secondary text, sublines |
-| `text-tertiary` | `#8795A2` | Skeleton bars, captions |
-| `text-disabled` | `#8795A2` | Disabled |
-| `state-success` | `#76C7A1` | Verified, receipted, ledger-intact |
-| `state-warning` | `#E1C16D` | Attention, gates, pending review |
-| `state-error` | `#E38989` | Errors, destructive |
-| `state-pending` | `#7CB0E6` | In-flight, awaiting |
+| `canvas` | `#000000` | App background, brand surface (canvas only) |
+| `surface` | `#0B0B0B` | Cards, raised surfaces |
+| `surface-2` | `#1F1F1F` | Raised cards, banners |
+| `overlay` | `#2E2E2E` | Overlays, popovers |
+| `border-subtle` | `#1F1F1F` | Subtle dividers |
+| `border-default` | `#6B6B6B` | Strokes, card borders |
+| `text-primary` | `#E6E6E6` | Primary text |
+| `text-secondary` | `#C7C7C7` | Secondary text, sublines |
+| `text-tertiary` | `#A7A7A7` | Skeleton bars, captions |
+| `text-disabled` | `#A7A7A7` | Disabled |
+| `state-success` | `#34D399` | Verified, receipted, ledger-intact |
+| `state-warning` | `#FBBF24` | Attention, gates, pending review |
+| `state-error` | `#FB8585` | Errors, destructive |
+| `state-pending` | `#7DD3FC` | In-flight, awaiting |
+
+The dark accent voice is **indigo `#A5B4FC` → lavender `#D4B5FD`**, anchored by
+the brand indigo `#6366F1`; the full set (`accent`, `accent-2`, `brand`,
+`mauve`, `diagnostic`, `focus`) lives in `tokens.json`.
 
 ### Light theme (class `.light`) — Dreamcoder Light (Cocoa/Lúcuma)
 
@@ -93,8 +100,9 @@ exists in the source.
 | `cocoa` | `#824F16` | `#A7471C` | `#8A5520` | `#654300` |
 | `terracotta` | `#A7471C` | `#B87C40` | `#8A5520` | `#725E4C` |
 
-Cocoa is the **primary brand accent** (the editorial "ink on paper" voice);
-terracotta is the secondary accent. The full Dreamcoder Light accent family —
+Cocoa is the **primary brand accent** of Dreamcoder Light (the editorial "ink
+on paper" voice); terracotta is the secondary accent. Dreamcoder Dark speaks
+through its own indigo/lavender accent pair, listed in the dark theme above. The full Dreamcoder Light accent family —
 sage `#315B31`, lavender `#57478B`, diagnostic teal `#0D4A68`, mauve `#7D3E64` —
 lives in the theme tokens for support surfaces and semantics. The legacy
 cyan/violet "AI glow" identity (v0.2) is **banned**.
@@ -106,7 +114,7 @@ Gradients blend **only between canonical tokens**. Two per theme:
 | Gradient | Dark stops | Light stops | Use |
 | --- | --- | --- | --- |
 | `surface` | canvas → surface → surface-2 | canvas → surface | Banners, hero panels |
-| `brand` | cocoa.base → terracotta.base | cocoa.active → terracotta.active | Display/hero text, brand marks |
+| `brand` | accent → accent-2 (indigo → lavender) | cocoa.active → terracotta.active | Display/hero text, brand marks |
 
 ## Typography
 
@@ -127,12 +135,13 @@ typographic signature of verifiability.
 
 ## Themes in static assets
 
-- Static brand assets are **single-composition** (editorial Dreamcoder Light by
-  default for READMEs). The conformance checker resolves `var(--…)`
-  declarations and validates every declared hex; dual-theme `@media` switching
-  is supported by the checker but not required by assets.
-- Raster AI assets default to the **Dreamcoder Light** editorial surface; a dark
-  (Anthracite Steel) variant is optional but must follow the dark token set
+- README and documentation visuals ship as a **Light/Dark pair** — one file per
+  theme, embedded with `<picture>` or the `#gh-light-mode-only` /
+  `#gh-dark-mode-only` fragments — so each reader sees the composition drawn for
+  their theme. The conformance checker resolves `var(--…)` declarations and
+  validates every declared hex in either file.
+- Raster AI assets default to the **Dreamcoder Light** editorial surface; a
+  Dreamcoder Dark variant is optional but must follow the dark token set
   exactly.
 
 ## Vector assets — the non-negotiables
@@ -144,10 +153,11 @@ typographic signature of verifiability.
   union (both themes + accents + `#ffffff` + `#000000`). Opacity is the only
   free parameter.
 - **Banned hues** (the drift this contract kills — all v0.2 legacy identity):
-  old cyan `#3CE6D8` and family, old violet `#9B7FE8` and family, OLED black
-  `#000000`-family surfaces (the v0.2 dark ladder `#0A0A0A`/`#121212`/`#1A1A1A`),
-  legacy blue `#1a73e8`, off-system cyan `#22d3ee`, royal blue `#041c78`.
-  Warm cocoa/lúcuma tones are canonical, not banned.
+  old cyan `#3CE6D8` and family, old violet `#9B7FE8` and family, the v0.2
+  dark ladder `#0A0A0A`/`#121212`/`#1A1A1A`, the superseded v0.3 Anthracite
+  Steel ladder (`#070A13` and its steel-blue family), legacy blue `#1a73e8`,
+  off-system cyan `#22d3ee`, royal blue `#041c78`. Warm cocoa/lúcuma tones and
+  the Dreamcoder Dark OLED canvas `#000000` are canonical, not banned.
 
 ## AI-generated images — allowed, bounded
 
@@ -219,11 +229,19 @@ metadata.
 - v0.2 (DRAFT, superseded) — cyan/violet "AI glow" identity on dark
   anthracite; OLED-black dark ladder; Dreamcoder Light warm-ivory light theme;
   dual-theme CSS variables and fused gradient banners.
-- v0.3 (DRAFT) — rebuilt on the **Dreamcoder Workbench canonical tokens**:
-  Anthracite Steel dark, Cocoa/Lúcuma light, cocoa/terracotta accents, and the
-  editorial institutional direction (readability before decoration). The v0.2
-  cyan/violet/OLED identity is banned; legacy assets removed.
-- Freeze to v0.3 FROZEN requires: every consuming repo (App Web, Pi, Engram,
+- v0.3 (DRAFT, superseded) — rebuilt on the **Dreamcoder Workbench canonical
+  tokens**: Anthracite Steel dark, Cocoa/Lúcuma light, cocoa/terracotta
+  accents, and the editorial institutional direction (readability before
+  decoration). The v0.2 cyan/violet/OLED identity is banned; legacy assets
+  removed.
+- v0.4 (DRAFT) — re-synchronized with the current Dreamcoder Workbench: the
+  dark theme becomes **Dreamcoder Dark** (OLED-aware `#000000` canvas,
+  near-black surface ladder, indigo/lavender accent pair); Dreamcoder Light is
+  unchanged. Documentation visuals ship as Light/Dark pairs. The conformance
+  set now collects the cocoa/terracotta accents (v0.3 still collected the
+  banned cyan/violet keys), and `tokens.schema.json` moves from v0.2 to v0.4.
+  Approved by the owner on 2026-10-28.
+- Freeze to v0.4 FROZEN requires: every consuming repo (App Web, Pi, Engram,
   Skills, Command Center, Guardian Angel) passes the conformance checker on its
   brand assets in both themes. The freeze gate is `bun run brand:ecosystem` —
   it must report every repo `PASS` (exit 0).

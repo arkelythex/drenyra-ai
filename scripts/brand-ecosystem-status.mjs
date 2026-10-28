@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * brand-ecosystem status dashboard — the v0.3 freeze gate, one command.
+ * brand-ecosystem status dashboard — the v0.4 freeze gate, one command.
  *
  * For every Drenyra ecosystem repo, resolves its canonical README banner path
  * (per docs/assets/brand/gpt-image-prompts.md swap table) and runs the exact
@@ -166,7 +166,7 @@ if (process.argv.includes("--json")) {
 			"\n",
 	);
 } else {
-	process.stdout.write(`brand-system v0.3 freeze gate — ${ready}\n`);
+	process.stdout.write(`brand-system v0.4 freeze gate — ${ready}\n`);
 	process.stdout.write(`${"REPO".padEnd(24)} ${"STATUS".padEnd(9)} DETAIL\n`);
 	for (const r of results) {
 		let icon = "·";

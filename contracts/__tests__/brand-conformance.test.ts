@@ -1,11 +1,12 @@
 /**
- * brand-system contract conformance (v0.3 DRAFT).
+ * brand-system contract conformance (v0.4 DRAFT).
  *
  * Pins the normative surface of contracts/brand-system.md, which mirrors the
- * Drenyra apps/web DTCG token pipeline:
+ * Dreamcoder Workbench canonical tokens (Dreamcoder Dark + Dreamcoder Light):
  *
- *   1. PALETTE — both themes (dark + light) and both accents (cyan + violet)
- *      present and hex-valid in tokens.json; conformance set is the union.
+ *   1. PALETTE — both themes (dark + light) and both accents (cocoa +
+ *      terracotta) present and hex-valid in tokens.json; the conformance set
+ *      is the union of both themes and both accents.
  *   2. VECTORS — zero tolerance: the dual-theme banner SVG (CSS var() +
  *      @media prefers-color-scheme) only uses canonical colors; a banned
  *      legacy color fails closed; structural values (none, url(#...),
@@ -155,13 +156,53 @@ function asPngDetail(detail: AssetDetail): PngDetail {
 	return detail as PngDetail;
 }
 
-describe("brand-system conformance (v0.3 DRAFT)", () => {
-	it("palette mirrors Dreamcoder canonical: dark Anthracite Steel + light Cocoa/Lúcuma, cocoa + terracotta accents, hex-valid", () => {
+describe("brand-system conformance (v0.4 DRAFT)", () => {
+	it("palette mirrors Dreamcoder canonical: Dreamcoder Dark + Dreamcoder Light, cocoa + terracotta accents, hex-valid", () => {
 		const report = runCli();
 		expect(report.contract).toBe("brand-system");
-		expect(report.version).toBe("0.3");
+		expect(report.version).toBe("0.4");
 		expect(report.palette.pass).toBe(true);
 		expect(report.palette.problems).toEqual([]);
+	});
+
+	it("accepts the Dreamcoder Dark surface and accent family in an SVG", () => {
+		const svg = writeTmp(
+			"dreamcoder-dark.svg",
+			`<svg xmlns="http://www.w3.org/2000/svg">
+         <rect width="10" height="10" fill="#000000" stroke="#2E2E2E"/>
+         <rect width="8" height="8" fill="#0B0B0B" stroke="#A5B4FC"/>
+         <circle cx="5" cy="5" r="2" fill="#D4B5FD" stroke="#34D399"/>
+       </svg>`,
+		);
+		const report = runCli([svg]);
+		const asset = findAsset(report, "dreamcoder-dark.svg");
+		expect(asset.detail).toEqual([]);
+		expect(asset.pass).toBe(true);
+	});
+
+	it("includes every cocoa and terracotta accent tier in the conformance set", () => {
+		// #8A5520 is cocoa.active / terracotta.active and #B87C40 is
+		// terracotta.hover; neither is a theme token, so they pass only when the
+		// accents themselves are collected.
+		const svg = writeTmp(
+			"accent-tiers.svg",
+			`<svg xmlns="http://www.w3.org/2000/svg"><rect fill="#8A5520" stroke="#B87C40"/></svg>`,
+		);
+		const report = runCli([svg]);
+		const asset = findAsset(report, "accent-tiers.svg");
+		expect(asset.detail).toEqual([]);
+		expect(asset.pass).toBe(true);
+	});
+
+	it("fails closed on the superseded v0.3 Anthracite Steel dark canvas", () => {
+		const svg = writeTmp(
+			"anthracite.svg",
+			`<svg xmlns="http://www.w3.org/2000/svg"><rect fill="#070A13"/></svg>`,
+		);
+		const report = runCli([svg]);
+		const asset = findAsset(report, "anthracite.svg");
+		expect(asset.pass).toBe(false);
+		expect(asset.detail).toContain("#070A13");
 	});
 
     	it("passes the Dreamcoder Light editorial hero SVG with zero tolerance", () => {

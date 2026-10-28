@@ -28,6 +28,26 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
   `specs/drenyra-ecosystem-cleanup`. A future `capturedAt` needs an injected
   reference instant, because the kernel reads no clock.
 
+### Changed — brand-system v0.4: Dreamcoder Dark
+
+- `contracts/brand-system.md` moves from v0.3 to **v0.4 (DRAFT)**. The dark
+  theme is now **Dreamcoder Dark**, re-synchronized with the Dreamcoder
+  Workbench tokens: an OLED-aware `#000000` canvas, the near-black surface
+  ladder (`#0B0B0B`, `#1F1F1F`, `#2E2E2E`), and the indigo `#A5B4FC` /
+  lavender `#D4B5FD` accent pair. Dreamcoder Light is unchanged. The v0.3
+  Anthracite Steel ladder (`#070A13` family) is superseded and fails
+  conformance. Documentation visuals now ship as Light/Dark pairs.
+- Consuming repositories whose dark brand assets still use Anthracite Steel
+  report `FAIL` on `bun run brand:ecosystem` until they migrate.
+
+### Fixed — brand conformance ignored the canonical accents
+
+- `scripts/brand-conformance.mjs` collected the banned v0.2 `cyan`/`violet`
+  accent keys instead of `cocoa`/`terracotta`, so accent tiers that are not
+  also theme tokens (`#8A5520`, `#B87C40`) were rejected. The checker now
+  collects every required accent, and `tokens.schema.json` moves from v0.2 to
+  v0.4 so it validates the shipped `tokens.json` again.
+
 ### Fixed — release confirmation races the registry
 
 - The `Confirm published artifact` step read the registry once, 0.5 s after
