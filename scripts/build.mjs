@@ -1,9 +1,12 @@
 /**
  * drenyra-ai build script.
  *
- * 1. Removes dist/, so the build (and every `prepack`) starts from an empty
- *    output tree: `npm pack` ships whatever dist/ holds, and a stale file there
- *    is published (#126).
+ * 1. With `--clean`, removes dist/ first, so a release build starts from an
+ *    empty output tree: `npm pack` ships whatever dist/ holds, and a stale
+ *    file there is published (#126). `verify:package` (run by `prepack`)
+ *    passes `--clean`. The plain build used by `prepare` stays additive on
+ *    purpose: npm runs `prepare` AFTER `prepack`, and cleaning there would
+ *    delete the `release:generate` outputs `prepack` just wrote to dist/.
  * 2. Compiles the TypeScript sources to dist/ (ESM, NodeNext) with declarations.
  * 3. Patches the emitted CLI shebang from `bun` (dev) to `node` (distributed
  *    artifact), so the packaged bin runs on Node >= 22 without a loader.
@@ -22,8 +25,10 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const distPath = join(root, "dist");
 const cliPath = join(distPath, "cmd", "cli.js");
 
-rmSync(distPath, { recursive: true, force: true });
-console.log("build: removed dist/");
+if (process.argv.includes("--clean")) {
+  rmSync(distPath, { recursive: true, force: true });
+  console.log("build: removed dist/ (--clean)");
+}
 
 console.log("build: compiling with tsc -p tsconfig.build.json");
 execSync("bunx tsc -p tsconfig.build.json", { cwd: root, stdio: "inherit" });

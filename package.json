@@ -65,7 +65,7 @@
     "prepare": "node scripts/build.mjs",
     "release:generate": "node scripts/promoted-composition.mjs && node scripts/sbom.mjs && node scripts/checksums.mjs",
     "verify:release-integrity": "node scripts/verify-release-integrity.mjs",
-    "verify:package": "node scripts/build.mjs && bun run test && bun run release:generate && node scripts/verify-package-files.mjs && bun run verify:release-integrity",
+    "verify:package": "node scripts/build.mjs --clean && bun run test && bun run release:generate && node scripts/verify-package-files.mjs && bun run verify:release-integrity",
     "prepack": "bun run verify:package",
     "prepublishOnly": "bun run typecheck && bun run verify:package && node scripts/verify-packed-install.mjs"
   },

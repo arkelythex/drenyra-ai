@@ -6,7 +6,7 @@
 
 ## Specs
 
-- **S1 — "Published tarballs ship stale dist/ files" (#126).** `scripts/build.mjs` removes `dist/` before compiling, so a build — and therefore every `prepack` — starts from an empty output tree. Stale files planted in `dist/` (a nested `.tgz`, a directory with no source) are gone after a build.
+- **S1 — "Published tarballs ship stale dist/ files" (#126).** `scripts/build.mjs --clean` removes `dist/` before compiling, and `verify:package` (run by `prepack`) uses it, so every pack starts from an empty output tree. The plain build used by `prepare` stays additive, because npm runs `prepare` after `prepack`. Stale files planted in `dist/` (a nested `.tgz`, a directory with no source) are gone after a build.
 - **S2 — "v0.5.0 has no Sigstore provenance" (#126).** The release workflow publishes with an npm CLI that supports OIDC trusted publishing (npm ≥ 11.5.1), pinned exactly. Node 22's bundled npm 10 does not support it: the `v0.5.0` runs failed with `ENEEDAUTH`, then `E404` on the `PUT` after a signed provenance statement.
 - **S3 — "The Release `checksums.txt` covers the artifact of that same version" (#126).** On a tag push, after publish and `npm audit signatures`, the workflow downloads the tarball npm now serves for that version, computes SHA-256 for every file under its `package/dist` plus the tarball and `sbom.json`, and creates the GitHub Release `v<version>` with those three assets and the version's CHANGELOG section.
 - **S4 — Owner prerequisite, not code.** Trusted publishing also needs the npm package `drenyra-ai` to list `arkelythex/drenyra-ai` → `release.yml` as a trusted publisher on npmjs.com. That setting is not visible from the repository, and it is documented in `RELEASING.md` as a release prerequisite.
@@ -40,3 +40,10 @@ Previous turn: "El que más mueve la aguja es #126 en drenyra-ai: arreglar el em
 - T2: `actionlint` OK. `zizmor --offline` flagged workflow-level `id-token: write` once a second job existed; with the permission moved to `publish`, the result was "No findings". The asset step was run locally against the published `v0.5.0`. It computed the same `checksums.txt` that the manual v0.5.0 Release carries (678 lines; tarball `3188ea01…`, SBOM `d79d9b7a…`), then refused with "a tarball is nested inside dist/". Against `v0.4.1`, never published to npm, `npm pack` failed and the step stopped before creating anything.
 - Gates: typecheck, lint, and build exit 0 (`build: removed dist/`); `bun run test` 112 files / 1490 passed; `verify:package` OK, including release integrity; `npm pack --dry-run` 692 files with no nested tarball; markdownlint 0 issues in 96 files.
 - Not verifiable from the repository: the npm-side trusted publisher setting (S4, owner action).
+
+### L4 — 2026-10-27 — CI regression found and fixed
+
+- CI `package` on PR #128 failed: `verify-packed-install: FAILED — installed dist/promoted-composition.json is missing or invalid`. Locally I had run `verify:package` and `npm pack --dry-run`, but not `verify-packed-install`.
+- Cause: the npm pack lifecycle runs `prepack` → `prepare` → pack, and `prepare` is `node scripts/build.mjs`. With an unconditional clean, `prepare` deleted the `release:generate` outputs `prepack` had just written to `dist/`. Reproduced locally: a second "build: removed dist/" appears after release integrity verified.
+- Fix: cleaning is opt-in (`--clean`), used by `verify:package`. A new RED case ("keeps existing dist/ files without --clean, so prepare cannot erase prepack outputs") failed before the fix; 3/3 after.
+- End to end: with `dist/drenyra-ai-0.4.0.tgz` and `dist/tenant/` planted, `npm pack --dry-run` packed 695 files, and neither stale file was listed or remained on disk. `verify-packed-install` OK, with `promoted-composition.json` present and five-key.

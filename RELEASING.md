@@ -48,7 +48,7 @@ For a fiscal runtime, distribution provenance matters at least as much as the co
 
 A `v<version>` tag push runs `.github/workflows/release.yml`:
 
-1. **`publish`** — a clean build (`scripts/build.mjs` removes `dist/` first, so no stale file can be packed), the full `prepublishOnly` gates, then `npm publish --provenance` through **trusted publishing (OIDC)** with an exactly pinned npm 11, and `npm audit signatures` on the installed artifact.
+1. **`publish`** — a clean build (`verify:package` runs `scripts/build.mjs --clean`, which removes `dist/` first, so no stale file can be packed), the full `prepublishOnly` gates, then `npm publish --provenance` through **trusted publishing (OIDC)** with an exactly pinned npm 11, and `npm audit signatures` on the installed artifact.
 2. **`github-release`** — downloads the tarball npm now serves for that version, checks it against the registry `dist.integrity`, refuses to continue if a tarball is nested inside `dist/`, writes `checksums.txt` (SHA-256 of every `package/dist` file, the tarball, and `sbom.json`), and creates the GitHub Release with those three assets and the version's CHANGELOG section.
 
 The Release, its `checksums.txt`, and the npm artifact are therefore the same bytes. Consumers that pin the GitHub Release tarball (Drenyra Shell's `runtime-dependency` contract) and consumers that install from npm get the same artifact.

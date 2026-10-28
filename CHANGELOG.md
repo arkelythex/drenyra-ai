@@ -14,8 +14,10 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ### Fixed — release hygiene (#126)
 
-- **Clean builds.** `scripts/build.mjs` removes `dist/` before compiling, so
-  `prepack` can never ship a stale file. The `0.5.0` tarball on npm carries
+- **Clean release builds.** `verify:package` (run by `prepack`) now builds with
+  `scripts/build.mjs --clean`, which removes `dist/` before compiling, so a pack can
+  never ship a stale file. The plain build stays additive, because npm runs `prepare`
+  after `prepack` and a clean there would delete the `release:generate` outputs. The `0.5.0` tarball on npm carries
   `dist/drenyra-ai-0.4.0.tgz` and an unexported `dist/tenant/` because it was packed
   from a development tree. Covered by `scripts/__tests__/build-clean.test.ts`.
 - **Trusted publishing works.** The release workflow pins npm `11.21.1`. Node 22's
