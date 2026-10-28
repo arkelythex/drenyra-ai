@@ -1,5 +1,7 @@
 # Changelog
 
+← [Back to README](README.md)
+
 <!-- markdownlint-disable MD024 -->
 
 > [!NOTE]

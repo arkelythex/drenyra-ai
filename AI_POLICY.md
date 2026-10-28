@@ -1,9 +1,18 @@
 # AI-Assisted Contribution Policy
 
+← [Back to README](README.md)
+
 AI-assisted contributions are permitted. The human contributor must understand, review, validate, and take full responsibility for everything they submit — especially when it touches fiscal behavior.
 
 > [!IMPORTANT]
 > **Fiscal correctness is a product safety requirement.** A contribution that breaks receipts, ledger integrity, gates, or audit trails is a product defect regardless of who or what authored it. The contributor owns the submission; AI assistance does not transfer that ownership.
+
+## Quick path
+
+1. Read and understand every submitted change, including generated material.
+2. Verify its behavior and provenance with the relevant tests and evidence.
+3. Disclose material assistance in the PR as required below.
+4. Keep human responsibility and attribution separate from tool assistance.
 
 ## Human Responsibility
 
@@ -65,3 +74,8 @@ Unacceptable behavior includes:
 ## Enforcement
 
 For now, maintainers enforce this policy through reviewer judgment and documented review decisions only. The project does not use automated AI detection or an automated disclosure gate.
+
+## Read next
+
+- [Contributing](CONTRIBUTING.md#ai-assisted-contributions) — apply the submission checklist.
+- [Agent Guide](AGENTS.md) — preserve fiscal invariants during implementation.

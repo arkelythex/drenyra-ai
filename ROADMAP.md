@@ -1,5 +1,9 @@
 # Drenyra AI — Roadmap
 
+← [Back to README](README.md)
+
+Use this roadmap to distinguish shipped core capabilities from ecosystem and production-readiness goals. Dated checkpoints remain evidence of their own date, not live status for every satellite.
+
 > [!NOTE]
 > **Last updated:** 2026-09-21 (Phase 2c/3 checklist reconciled against verified code state — see [0.6.0] in the CHANGELOG). Status: released (all six contracts frozen).
 > **GitHub repository visibility:** `public` — directly verified via `gh repo view arkelythex/drenyra-ai` → `{visibility: PUBLIC, isPrivate: false, defaultBranch: main}` (E-005, observed 2026-08-14T20:57:27Z; refreshed W2E-003, observed 2026-08-15T00:06:08Z). The prior "repository private" claim is stale and superseded by direct metadata — retained as history, not falsified (R7/R11). `license`, `productStage`, `sourceAvailability`, and `githubVisibility` remain independent fields; none is inferred from another.
@@ -11,7 +15,7 @@
 
 <!-- -->
 
-> **Live gap analysis:** what is built vs. what remains for v1.0 → [2026-08-10 v1 Gap Analysis](docs/roadmaps/2026-08-10-v1-gap-analysis.md)
+> **Dated gap analysis:** historical design-stage gaps, not a live checklist → [2026-08-10 v1 Gap Analysis](docs/roadmaps/2026-08-10-v1-gap-analysis.md)
 
 ## Program alignment
 
@@ -24,10 +28,10 @@ The [Drenyra Dominion Program](program/drenyra-dominion/README.md) fixes the eco
 | Phase 0–1 — identity and frozen contracts | 0 — Constitution | SDD-000, SDD-010 |
 | Phase 2c–3 — hybrid orchestration, configurator, agent runtime | 1 — Universal runtime | SDD-020, SDD-030, SDD-040 |
 | Phase 3 — Drenyra Skills, Drenyra Guardian Angel | 2 — Fiscal intelligence | SDD-070, SDD-080, SDD-090 |
-| Phase 4 — flagship monthly close via Command Center | 3 — Flagship product | SDD-050, SDD-060, SDD-100 |
+| Phase 4 — flagship monthly close via Desktop | 3 — Flagship product | SDD-050, SDD-060, SDD-100 |
 | Phase 4 — v1.0 production and commercial readiness | 4 — Production | SDD-110 |
 
-The active `fiscal-authority-kernel` OpenSpec change seeds the SDD-040 (RDA v2) and SDD-050 (monthly close) capabilities; gateway and correction work maps to SDD-030 (organic routing) and SDD-040.
+The historical `fiscal-authority-kernel` chain maps to SDD-040 (RDA v2) and SDD-050 (monthly close). New implementation is tracked through [ODD feature documents](odd/tasks/); program SDDs remain requirements of record.
 
 ## At a glance
 
@@ -84,17 +88,17 @@ The active `fiscal-authority-kernel` OpenSpec change seeds the SDD-040 (RDA v2) 
 - [x] `agents/` orchestration: deterministic `IntentHandler` per mission intent (monthly-close, correction, reconciliation, invoice-review, compliance-check) — stages work only
 - [x] Agent registry composition (`createAgentRegistry`) wired into `mission apply`; demo-only handler gate removed
 - [x] Focused tests for handlers, registry, and the CLI gated lifecycle
-- [ ] Expose `agents/` as a package subpath (next slice, version bump)
+- [x] Expose `agents/` as a package subpath (`package.json` exports `./agents` in v0.6.0)
 - [ ] Multi-jurisdiction policy integration (Perú → LATAM) — the hook exists (`AdapterRegistry.resolve(system, jurisdiction)`, `FISCAL_JURISDICTION` const, generic `PolicyEvaluator<TSubject>`, fail-closed `NON_PE_JURISDICTION` guard), but zero non-PE jurisdictions are implemented
 
 ## Phase 3 — Ecosystem maturity (current)
 
-The gap between a released RDA core and a distributable ecosystem. Gentle-AI is distributable; Drenyra AI reaches the same position when a professional can run:
+The gap between a released RDA core and a professional product is broader than CLI availability. These commands show the current operational surface; filenames stand for prepared, validated inputs:
 
 ```bash
-drenyra-ai install
-drenyra-ai doctor
-drenyra-ai mission start monthly-close
+drenyra-ai install run
+drenyra-ai doctor run
+drenyra-ai mission start mission-create.json
 drenyra-ai candidate inspect correction.json
 drenyra-ai gate check posting.json
 drenyra-ai receipt verify receipt.json
@@ -102,7 +106,7 @@ drenyra-ai ledger validate ledger.json
 ```
 
 - [ ] **Adoption:** Drenyra consumes the first released version instead of its internal implementation (state lives in the `Drenyra` repository, unverifiable from here)
-- [ ] **Public API:** expose `agents/` as a package subpath (moved from Phase 2c)
+- [x] **Public API:** `./agents` is an exported package subpath in v0.6.0
 - [ ] **MCP server** — `mcp/server.ts` is a real, spec-correct JSON-RPC 2.0 engine with tests (`mcp/__tests__/`), but only 3 tools are registered (`capabilities`, `ledger.validate`, `bank.reconcile`); mission/candidate/gate mutations are deliberately kept off MCP (`mcp/tools.ts`: "Mission/candidate mutations stay behind the Core gates and are not exposed as blind MCP tools"). Decide whether to add read-only mission/candidate/gate tools or narrow this line to match the intended surface.
 - [ ] **Agent integrations** — Codex, Claude Code, OpenCode
 - [x] **Configurator experience** — `install`/`doctor`/`sync`/`upgrade`/`rollback` are real, dispatcher-wired commands with substantial test coverage
@@ -114,7 +118,7 @@ drenyra-ai ledger validate ledger.json
 ## Phase 4 — v1.0
 
 - [ ] **Flagship flow:** monthly accounting and tax close as the v1.0 headline workflow (mission → candidates → gates → receipts → ledger) — see [Design 02 — Monthly Close](docs/design/design-02-monthly-close.md)
-- [ ] **Delivery architecture:** headless core consumed by Drenyra Command Center (library / CLI / MCP) — see [Intended Usage](docs/intended-usage.md)
+- [ ] **Delivery architecture:** headless core consumed by Drenyra Desktop (library / CLI / MCP) — see [Intended Usage](docs/intended-usage.md)
 - [ ] v1.0 candidate when **three independent consumers** run on the released contracts — full gate: [Design 05 — Testing, Releases, v1.0](docs/design/design-05-testing-releases-v1.md)
 - [ ] Community and contributory roadmap
 
