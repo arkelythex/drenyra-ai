@@ -1,5 +1,10 @@
 # Runbook 03 — Schema Migration
 
+← [Runbooks index](README.md) · [Usage reference](../usage.md)
+
+Use this procedure with the affected mission, artifacts, and deployment owner identified.
+Preserve evidence first; a diagnostic command does not authorize corrective mutation.
+
 > [!IMPORTANT]
 > **Storage schemas are versioned migrations (Design 05 "Versioning"); a migration runs with active missions in flight.** Migration is backward-compatible by default and never loses evidence, receipts, or in-flight mission state.
 
@@ -7,10 +12,20 @@
 
 > **Part of:** [Runbooks](README.md) · **Last updated:** 2026-08-10
 
+## Before you start
+
+- Confirm the artifact paths and scope with the deployment owner.
+- Consult [CLI syntax](../usage.md) before running commands shown below. For example,
+  receipt verification needs an input file (`drenyra-ai receipt verify ./receipt.json`),
+  and ledger validation needs a JSON file (`drenyra-ai ledger validate ./ledger.json`).
+- Treat those paths as examples, not production defaults. Key rotation, migration,
+  replay, and fencing steps require the deployment's approved integration tooling;
+  the diagnostic CLI does not perform them automatically.
+
 ## When to use
 
 - A storage schema changes while missions are active.
-- The production PostgreSQL adapter's DDL evolves (see `POSTGRES_SCHEMA_DDL` in `missions/store.postgres.ts`).
+- The PostgreSQL adapter's DDL evolves (see `POSTGRES_SCHEMA_DDL` in `missions/store.postgres.ts`).
 
 ## Migration steps
 

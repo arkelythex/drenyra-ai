@@ -1,11 +1,26 @@
 # Runbook 04 — Recovery
 
+← [Runbooks index](README.md) · [Usage reference](../usage.md)
+
+Use this procedure with the affected mission, artifacts, and deployment owner identified.
+Preserve evidence first; a diagnostic command does not authorize corrective mutation.
+
 > [!IMPORTANT]
 > **Recovery consults persisted state, idempotency keys, and evidence — it never re-executes an operation because the agent transcript says an earlier attempt failed.** A mission is resumed from its event log, and an unknown external outcome is reconciled before any retry.
 
 <!-- -->
 
 > **Part of:** [Runbooks](README.md) · **Last updated:** 2026-08-10
+
+## Before you start
+
+- Confirm the artifact paths and scope with the deployment owner.
+- Consult [CLI syntax](../usage.md) before running commands shown below. For example,
+  receipt verification needs an input file (`drenyra-ai receipt verify ./receipt.json`),
+  and ledger validation needs a JSON file (`drenyra-ai ledger validate ./ledger.json`).
+- Treat those paths as examples, not production defaults. Key rotation, migration,
+  replay, and fencing steps require the deployment's approved integration tooling;
+  the diagnostic CLI does not perform them automatically.
 
 ## When to use
 
