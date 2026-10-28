@@ -1,97 +1,150 @@
+<a id="top"></a>
+
 <div align="center">
 
-<img width="1200" alt="Drenyra AI — verified artifact: the institutional receipt with candidate, materiality, approval and signature" src="docs/assets/brand/drenyra-ai-hero-dreamcoder-light.svg" />
-
-<p><code>request → policy/evidence verification → immutable receipt</code></p>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/drenyra-ai-banner.dark.svg">
+  <img width="100%" src="docs/assets/brand/drenyra-ai-banner.light.svg" alt="Drenyra AI: proposals become scoped candidates, explicit decisions, signed receipts, and an append-only evidence chain. The professional retains authority.">
+</picture>
 
 <h1>Drenyra AI</h1>
 
-<p><strong>Verifiable Accounting Agent Ecosystem</strong> — the runtime and CLI that make AI execution verifiable, receipted, and risk-proportional for fiscal work.</p>
+<p><strong>The verifiable accounting runtime for the agents and systems you already use.</strong></p>
 
 <p>
-<a href="https://www.npmjs.com/package/drenyra-ai"><img src="https://img.shields.io/npm/v/drenyra-ai" alt="npm version"></a>
-<a href="https://github.com/arkelythex/drenyra-ai/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/arkelythex/drenyra-ai/ci.yml" alt="CI"></a>
-<img src="https://img.shields.io/badge/License-Proprietary-red" alt="License: Proprietary">
-<img src="https://img.shields.io/badge/Node-22+-339933?logo=nodedotjs&logoColor=white" alt="Node 22+">
-<img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey" alt="Platform">
+<a href="https://www.npmjs.com/package/drenyra-ai"><img src="https://img.shields.io/npm/v/drenyra-ai?style=for-the-badge&labelColor=17120D&color=824F16" alt="npm version"></a>
+<a href="https://github.com/arkelythex/drenyra-ai/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/arkelythex/drenyra-ai/ci.yml?style=for-the-badge&labelColor=17120D&color=315B31" alt="CI status"></a>
+<img src="https://img.shields.io/badge/Node-22%2B-0D4A68?style=for-the-badge&labelColor=17120D" alt="Requires Node 22 or later">
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-Proprietary-A7471C?style=for-the-badge&labelColor=17120D" alt="Proprietary license"></a>
 </p>
+
+<p>
+<a href="#get-started"><strong>Get started</strong></a> &bull;
+<a href="docs/intended-usage.md"><strong>Why Drenyra AI</strong></a> &bull;
+<a href="docs/usage.md"><strong>CLI</strong></a> &bull;
+<a href="docs/sdk.md"><strong>SDK</strong></a> &bull;
+<a href="#documentation"><strong>Documentation</strong></a>
+</p>
+
+<p>
+An agent can suggest a journal correction or a monthly close. That does not tell
+you which bytes were reviewed, who approved them, or what actually happened.
+<strong>Drenyra AI gives that work an identity, deterministic controls, and evidence you can verify.</strong>
+</p>
+
+<sub>Agents propose · The system validates · The professional decides · Evidence remains</sub>
 
 </div>
 
----
-
 > [!IMPORTANT]
-> **Current stable release: [`v0.5.0`](https://www.npmjs.com/package/drenyra-ai) (npm `@latest`).** All six contracts are **FROZEN**: `mission-protocol`, `candidate`, `receipt`, `gate`, `ledger`, `recovery`. The frozen surface is normative — any breaking change to a frozen contract requires a major version bump and a migration path. `@latest` is the stable channel; use `@main` (or the repository) only for unreleased development. See the [CHANGELOG](CHANGELOG.md) and [RELEASING](RELEASING.md) for the version policy.
+> **Current release: [v0.6.0](https://www.npmjs.com/package/drenyra-ai).** The npm `latest` channel is the released artifact; these docs track `main` and may describe unreleased changes. Six core contracts are frozen. See the [CHANGELOG](CHANGELOG.md) and [version policy](RELEASING.md).
 
 <!-- -->
 
-> [!IMPORTANT]
-> **Public source repository (open-core intention)** — this repository is
-> **publicly visible** on GitHub as part of the Drenyra open-core transition
-> intention (charter §9: intention, not contractual promise); distribution of
-> artifacts (packages, releases) and commercial services is contractual, never
-> public. Use, copy, and distribution of source remain governed by the
-> [LICENSE](LICENSE) (proprietary, © Arkelythex).
+> [!NOTE]
+> Publicly visible source is not a permissive license. Source use, copying, and distribution remain governed by the proprietary [LICENSE](LICENSE). The open-core transition is an intention, not a contractual promise.
+
+<div align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/drenyra-mark.dark.svg"><img src="docs/assets/brand/drenyra-mark.light.svg" width="28" alt=""></picture></div>
+
+<a id="what-it-does"></a>
+<a id="key-features-you-should-know-about"></a>
+
+## Features
+
+### Receipt-Driven Accounting — replace a claim with proof
+
+![RDA separates agent staging and candidate identity, materiality and recorded approval, then signed receipts and the append-only audit ledger.](docs/assets/diagrams/rda-proof.light.svg#gh-light-mode-only)
+![RDA separates agent staging and candidate identity, materiality and recorded approval, then signed receipts and the append-only audit ledger.](docs/assets/diagrams/rda-proof.dark.svg#gh-dark-mode-only)
+
+An agent saying “done” is not an audit trail. Every material action requires an
+immutable receipt, bound to its subject and verifiable through a hash, an Ed25519
+signature, and trusted signer material. The append-only audit ledger preserves
+order and exposes divergence. **It proves execution; it is not the accounting
+journal of record.**
+
+**[Docs →](docs/architecture/receipt-ledger-model.md)** · **[Receipt contract →](contracts/receipt.md)**
 
 ---
 
-## What It Does
+### Candidates and review — spend attention where risk lives
 
-Drenyra AI is **not** an ERP, a ledger of record, a UI, or the fiscal authority — and it is not "an agent that does accounting." It is the **infrastructure that makes AI participation in accounting processes provable**: a configurator, runtime, and control plane that lets any agent propose work over your ERP, ledger, and approval workflow without ever becoming the fiscal authority. It works **standalone** — no Drenyra dependency — so ERPs, accounting SaaS, and agent hosts (Codex, Claude Code, OpenCode) can adopt it directly.
+![Materiality derives from BigInt cents, reversibility and jurisdiction. R0 permits controlled autonomy, R1 focused review, R2 explicit approval, and R3 two distinct approvers.](docs/assets/diagrams/materiality-review.light.svg#gh-light-mode-only)
+![Materiality derives from BigInt cents, reversibility and jurisdiction. R0 permits controlled autonomy, R1 focused review, R2 explicit approval, and R3 two distinct approvers.](docs/assets/diagrams/materiality-review.dark.svg#gh-dark-mode-only)
 
-> **Humans retain fiscal and business decision authority.** Drenyra AI executes only deterministic, policy-constrained operations after the required evidence and approvals are present, then records the resulting evidence and receipts. Advisory AI output and Engram memory may provide context, but neither is fiscal evidence, authorization, or a substitute for human business or legal judgment.
+Reviewing everything at the same depth wastes professional attention; trusting
+an agent's confidence is worse. A candidate gives each proposal content-derived
+identity and materiality. Policy derives R0–R3 from **BigInt cents, reversibility,
+and jurisdiction**. Unknown jurisdictions escalate, changed bytes need
+re-inspection, and a candidate gets at most one scoped correction.
 
-**Before**: "The agent suggested a journal correction and a monthly close. I don't know what was executed, by whom, whether anyone approved it, or whether the numbers were ever touched."
+**[Docs →](contracts/candidate.md)** · **[Authority and approval →](docs/architecture/authority-model.md)**
 
-**After**: Every proposal an agent makes becomes a first-class *candidate* with content-derived identity and materiality; every material action produces an immutable, Ed25519-signed *receipt*; every lifecycle transition runs a *gate*; review depth scales with risk instead of hope. Agents propose; human professionals decide; the deterministic core validates policy and enforces recorded approvals; the ledger is an append-only hash chain you can validate with one command.
+---
 
-### What it provides
+### Missions and recovery — a restart is not a new truth
 
-| Capability | What you get |
+![Recovery reconstructs missions from persisted events, treats in-flight work as uncertain, resolves UNKNOWN by evidence, and leaves human waits and terminal states alone.](docs/assets/diagrams/mission-recovery.light.svg#gh-light-mode-only)
+![Recovery reconstructs missions from persisted events, treats in-flight work as uncertain, resolves UNKNOWN by evidence, and leaves human waits and terminal states alone.](docs/assets/diagrams/mission-recovery.dark.svg#gh-dark-mode-only)
+
+A lost process must not turn an interrupted operation into an assumed success.
+Missions have a frozen 15-state lifecycle, idempotency replay, and explicit
+recovery semantics. **Persisted events, not a transcript, determine what can
+resume.** Evidence and approval waits stay paused until their own conditions
+are resolved. The CLI recovery sweep marks in-flight `RUNNING` missions
+`UNKNOWN`; evidence reconciliation is a separate step.
+
+**[Docs →](contracts/recovery.md)** · **[Operational recovery →](docs/runbooks/04-recovery.md)**
+
+---
+
+### Gates and tenant scope — context is not permission
+
+![Agents and memory inform; the deterministic core enforces RUC, company and period boundaries; professionals retain fiscal authority and external effects require evidence.](docs/assets/diagrams/authority-boundary.light.svg#gh-light-mode-only)
+![Agents and memory inform; the deterministic core enforces RUC, company and period boundaries; professionals retain fiscal authority and external effects require evidence.](docs/assets/diagrams/authority-boundary.dark.svg#gh-dark-mode-only)
+
+A convincing proposal is not approval, and a remembered decision is not current
+authority. Gates validate the transition, receipt, and required approval inside
+the exact RUC/company/period scope. Missing authority fails closed. Agents stage
+work; they never perform fiscal approval or claim SUNAT, bank, or ERP execution.
+**Memory informs; it never authorizes.**
+
+**[Docs →](docs/architecture/trust-model.md)** · **[Gate contract →](contracts/gate.md)**
+
+---
+
+<a id="core-workflow"></a>
+
+### Fiscal discipline — keep the order, not just the output
+
+![The fiscal lifecycle runs capture, classification, reconciliation, close, declaration and audit in that order, with gated transitions inside a RUC and period.](docs/assets/diagrams/fiscal-lifecycle.light.svg#gh-light-mode-only)
+![The fiscal lifecycle runs capture, classification, reconciliation, close, declaration and audit in that order, with gated transitions inside a RUC and period.](docs/assets/diagrams/fiscal-lifecycle.dark.svg#gh-dark-mode-only)
+
+A close is not a pile of independent calculations. The fiscal lifecycle follows
+**capture → classification → reconciliation → close → declaration → audit**.
+The monthly-close vertical composes deterministic reconciliation and close
+calculations with evidence and approval gates. This discipline does not imply
+that a configured agent can submit declarations or move money on its own.
+
+**[Docs →](docs/fiscal-authority-kernel-chain.md)** · **[Monthly-close design →](docs/design/design-02-monthly-close.md)**
+
+### Also in the core
+
+| Surface | What it gives you |
 | --- | --- |
-| **Receipt-Driven Accounting (RDA)** | Every material action produces an immutable receipt; nothing material happens without one |
-| **Accounting Candidates** | Agent proposals as first-class, reviewable artifacts with content-derived identity and materiality |
-| **Proportional review** | Review depth scales with risk — R0 high autonomy → R3 explicit dual approval |
-| **Missions** | Protocol-driven, resumable work units with 15 canonical states, commands, and events |
-| **Ledger** | Append-only, verifiable audit ledger core with an Ed25519-signed hash chain |
-| **Gates** | Lifecycle gates that validate authority, scope, and receipts before any mutation |
-| **Approvals** | Human approval as an explicit, recorded event — never implied |
-| **Recovery** | Crash-safe resumption of missions and candidates, decided by evidence, never transcript |
-| **Tenant isolation** | RUC/company/period scoping enforced in every query and mutation |
-| **CLI** | `drenyra-ai` command surface for mission, receipt, ledger, candidate, and gate operations |
-| **MCP server** | JSON-RPC 2.0 server (`drenyra-ai mcp serve`) so agent hosts consume the same surface |
+| **CLI** | Missions, candidate inspection, gates, receipt verification, and ledger validation |
+| **Typed SDK** | Released ESM subpaths for runtime, domain engines, and integration |
+| **MCP** | The same core over stdio JSON-RPC 2.0, through `drenyra-ai mcp serve` |
+| **Configurator** | `install run`, `doctor run`, `sync run`, `upgrade run`, and `rollback run` for existing hosts |
+| **Skills** | Versioned, jurisdiction-scoped knowledge; a skill is not approval or evidence |
+| **Guardian** | Read-only adversarial findings over candidates; never fiscal authority |
 
----
+<div align="right"><a href="#top">Back to top</a></div>
 
-## The Frontier
+<div align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/drenyra-mark.dark.svg"><img src="docs/assets/brand/drenyra-mark.light.svg" width="28" alt=""></picture></div>
 
-Drenyra AI occupies the accounting-domain position that Gentle-AI holds in software engineering — **equivalent discipline, stricter controls**. Gentle-AI turns generic coding agents into a disciplined engineering system; Drenyra AI turns generic agents into a verifiable accounting and fiscal system. The added strictness is deliberate: fiscal risk is not a merge conflict.
+<a id="quick-start"></a>
 
-> **The institutional thesis: the AI proposes, the system validates, the professional decides, the evidence remains.** The professional never learns to operate an agent orchestration — they ask for an accounting result and receive reviewable candidates, evidence, explicit decisions, and verifiable receipts. See [Intended Usage](docs/intended-usage.md) for the full philosophy.
-
-| Gentle-AI | Equivalent in Drenyra AI |
-| --- | --- |
-| Configures agent runtimes | Configures accounting/fiscal agent runtimes (`drenyra-ai install run`) |
-| Installer and TUI | Installer/configurator (`drenyra-ai install run`) |
-| ODD (Organic Driven Development) | Default workflow — organic engineering for everything except contracts and the fiscal lifecycle; see [CONTRIBUTING](CONTRIBUTING.md#development-workflow) |
-| SDD | Reserved for contract changes, the fiscal lifecycle, and cross-repo Dominion work — not the default |
-| RDD (Receipt-Driven Development) | RDA (Receipt-Driven Accounting) |
-| Code candidate | Posting, reconciliation, or declaration candidate |
-| Review receipt | Accounting/fiscal receipt (Ed25519, canonical vectors) |
-| Pre-commit/push/PR gates | Gates before posting, approving, declaring, or filing |
-| Engram memory | Drenyra Engram — informs, never authorizes |
-| Skills registry | Drenyra Skills — versioned accounting/tax knowledge |
-| doctor / sync / upgrade / rollback | `drenyra-ai doctor run` / `sync run` / `upgrade run` / `rollback run` |
-
-**What Drenyra AI is:** protocols, missions, agents, candidates, gates, receipts, and ledger.
-
-**What Drenyra AI is not:** the ERP, the UI, the ledger of record, or the fiscal authority. See [Intended Usage](docs/intended-usage.md) for the full frontier and the responsibility split.
-
-**Delivery (v1.0):** Drenyra AI ships as a **headless core** consumed by Drenyra Desktop via library, CLI, or MCP; the flagship flow is the **monthly accounting and tax close**. Gentle-AI disappears behind the developer's flow — Drenyra AI disappears behind the professional accountant's flow.
-
----
-
-## Quick Start
+## Get started
 
 > [!TIP]
 > For a five-minute start with prerequisites and install options, see the [Quickstart](docs/quickstart.md); for the full CLI reference, see [Usage](docs/usage.md).
