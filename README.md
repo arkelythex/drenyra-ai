@@ -144,7 +144,7 @@ that a configured agent can submit declarations or move money on its own.
 
 <a id="quick-start"></a>
 
-## Quick Start
+## Get started
 
 > [!TIP]
 > For a five-minute start with prerequisites and install options, see the [Quickstart](docs/quickstart.md); for the full CLI reference, see [Usage](docs/usage.md).
