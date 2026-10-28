@@ -1,8 +1,11 @@
 /**
  * drenyra-ai build script.
  *
- * 1. Compiles the TypeScript sources to dist/ (ESM, NodeNext) with declarations.
- * 2. Patches the emitted CLI shebang from `bun` (dev) to `node` (distributed
+ * 1. Removes dist/, so the build (and every `prepack`) starts from an empty
+ *    output tree: `npm pack` ships whatever dist/ holds, and a stale file there
+ *    is published (#126).
+ * 2. Compiles the TypeScript sources to dist/ (ESM, NodeNext) with declarations.
+ * 3. Patches the emitted CLI shebang from `bun` (dev) to `node` (distributed
  *    artifact), so the packaged bin runs on Node >= 22 without a loader.
  *
  * Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents;
@@ -11,12 +14,16 @@
  */
 
 import { execSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const cliPath = join(root, "dist", "cmd", "cli.js");
+const distPath = join(root, "dist");
+const cliPath = join(distPath, "cmd", "cli.js");
+
+rmSync(distPath, { recursive: true, force: true });
+console.log("build: removed dist/");
 
 console.log("build: compiling with tsc -p tsconfig.build.json");
 execSync("bunx tsc -p tsconfig.build.json", { cwd: root, stdio: "inherit" });
