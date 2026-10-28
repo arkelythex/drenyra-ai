@@ -1,6 +1,8 @@
 # Contributing to Drenyra AI
 
-Thank you for your interest in contributing to **Drenyra AI** — the verifiable accounting agent ecosystem (RDA core, frozen contracts, missions, gates, receipts, and ledger).
+← [Back to README](README.md)
+
+A useful contribution preserves a fiscal invariant and gives reviewers evidence they can check. Start from an approved issue, keep code, tests, and docs together, and make the review path explicit.
 
 > [!IMPORTANT]
 > **Fiscal correctness is a product safety requirement.** This repository processes fiscal operations. Never break receipts, ledger integrity, gates, or audit trails — and never use floats for money. Monetary values are whole-number cents (BigInt); version and sequence numbers are JSON integers, never floats.
@@ -8,6 +10,22 @@ Thank you for your interest in contributing to **Drenyra AI** — the verifiable
 Before you dive in, read this guide fully. We have a structured workflow to keep the project — and its fiscal guarantees — organized and maintainable.
 
 ---
+
+## Quick path
+
+1. Choose an issue with maintainer approval; claim it before implementing.
+2. Create a feature branch using the [branch convention](#branch-naming).
+3. Follow [ODD](#development-workflow), then run the local checks:
+
+   ```bash
+   bun install --frozen-lockfile
+   bun run typecheck
+   bun run lint
+   bun run test
+   bun run build
+   ```
+
+4. Self-review, update documentation, and open a linked PR using the [template](.github/PULL_REQUEST_TEMPLATE.md).
 
 ## Table of Contents
 
@@ -136,7 +154,7 @@ Maintainers apply triage and type labels during review; contributors do not need
 ### Prerequisites
 
 - **Node.js >= 22** (the package declares `engines.node >= 22`)
-- **Bun** (the CI and local scripts use `bun run`; CI pins `bun 1.3.14`)
+- **Bun** (the CI and local scripts use `bun run`; use the version pinned in `package.json` and CI)
 - **Git 2.38+**
 - A GitHub account with access to [arkelythex/drenyra-ai](https://github.com/arkelythex/drenyra-ai)
 
@@ -376,7 +394,7 @@ Resolves #42
 
 ## Contract Changes
 
-Any change to `contracts/` is a **public contract change** — the contracts are the frozen, versioned surface consumed by Drenyra, Drenyra Pi, ERPs, other SaaS, and agent hosts. The full regime lives in [contracts/README.md](contracts/README.md); in short:
+Any change to `contracts/` is a **public contract change** — the contracts are the frozen, versioned surface consumed by Drenyra, Drenyra Shell, ERPs, other SaaS, and agent hosts. The full regime lives in [contracts/README.md](contracts/README.md); in short:
 
 - Bump the affected contract version explicitly (major = breaking).
 - Document the migration path.

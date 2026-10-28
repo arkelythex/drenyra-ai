@@ -1,5 +1,9 @@
 # Contributor Covenant Code of Conduct
 
+← [Back to README](README.md)
+
+Professional review depends on people being able to disagree safely. The pledge, standards, and reporting responsibilities below apply throughout this community.
+
 > **Last updated:** 2026-08-01.
 
 <!-- -->

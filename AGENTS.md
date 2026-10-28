@@ -1,5 +1,7 @@
 # Drenyra AI — Agent Guide
 
+← [Back to README](README.md)
+
 This file is for AI agents and their humans working in this repository. It answers: *what are the non-negotiable rules, what should I read first, and where do changes belong?*
 
 > [!IMPORTANT]
@@ -53,7 +55,7 @@ odd/tasks/          ODD feature documents (specs, tasks, log per feature)
 
 - A **behavioral** change goes with its subsystem module, its tests, its conformance vectors (if crypto/contracts), and its docs — in the same PR (docs-as-code).
 - A **contract** change goes through the [contract regime](contracts/README.md) first.
-- A **mission or fiscal** change follows the [fiscal lifecycle](docs/fiscal-authority-kernel-chain.md) and is tracked as an ODD feature document under [`odd/tasks/`](odd/tasks/).
+- A **mission or fiscal** change follows the [fiscal lifecycle](docs/design/design-01-ecosystem-frontier-and-authority.md) and is tracked as an ODD feature document under [`odd/tasks/`](odd/tasks/).
 - A **cross-repository** change is recorded against the [Drenyra Dominion program](program/drenyra-dominion/README.md), and each repository tracks its own part in `odd/tasks/`.
 
 ## Delivery Workflow — ODD
@@ -76,3 +78,8 @@ Checks: `bun run typecheck`, `bun run lint`, `bun run test`, `bun run build`, an
 This project participates in the Drenyra Skills ecosystem: versioned, jurisdiction-scoped accounting and tax knowledge (PE). The runtime skills module lives in `skills/` (registry, pinning, signature, `pe.ts` base skills); the authoring source of truth is the [drenyra-skills](https://github.com/arkelythex/drenyra-skills) repository, pinned by the `skills:conformance` CI gate.
 
 When working in this repository, load the relevant skill **before** writing code. The Drenyra-specific skills (fiscal compliance, fiscal review lenses, RUC scope, evidence citation, chain operation) are published through the Drenyra ecosystem and indexed in the local skill registry (`.atl/skill-registry.md` — auto-generated, run `/skill-registry:refresh` to regenerate). A code agent should resolve matching skills by task context and read the exact `SKILL.md` paths before work.
+
+## Read next
+
+- [Documentation standard](docs/documentation-standard.md) — reader-first writing and paired Dreamcoder visuals.
+- [Codebase Guide](docs/CODEBASE-GUIDE.md) — subsystem ownership and verification.
