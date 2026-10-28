@@ -1,6 +1,6 @@
 # Feature — Publish Dreamcoder documentation in reviewable slices
 
-**Status:** needs owner decision — publication verified; one intermediate Docs failure · **Source branch:** `docs/gentleman-grade-docs` · **Target:** `github.com/arkelythex/drenyra-ai`
+**Status:** in progress — authorized intermediate-slice repair · **Source branch:** `docs/gentleman-grade-docs` · **Target:** `github.com/arkelythex/drenyra-ai`
 Publish the completed documentation work and fix the CSS palette-checker gap through a feature-branch chain, without merging or releasing.
 
 ## Specs
@@ -12,6 +12,8 @@ Publish the completed documentation work and fix the CSS palette-checker gap thr
 - **S5** — Temporary-path authorization: "Sí, autorizo esa ruta temporal" for `/tmp/drenyra-ai-docs-publication`. Restrict access to the current user; clean private issue body/readback files on every publication outcome. No other outside path is authorized.
 - **S6** — Preserve the completed documentation feature's normative-text, palette, accessibility, and deterministic-generation evidence. Report each published PR boundary, actual checks, and any failed or pending CI; never claim native review approval or ecosystem adoption.
 
+- **S7** — Owner: "yes te autorzo todo y avanza de forma autonoma". Authorizes the preceding requested #146 cut repair and dependent-branch updates, without force-push or merges to `main`. Move the missing heading into the first README slice; retain final integrated content and existing history.
+
 ## Tasks
 
 | ID | Specs | Task | Status | Route | Commit |
@@ -20,7 +22,7 @@ Publish the completed documentation work and fix the CSS palette-checker gap thr
 | U2 | S4, S6 | Reproduce and fix CSS palette declarations with tests and docs | done | bounded worker + parent checks | 636df67 |
 | U3 | S2, S6 | Build clean integration/child branches on verified main; preserve original history | done | parent + independent verifier | tracker and 23 bounded child commits |
 | U4 | S1, S2, S3, S6 | Verify slice boundaries and publish draft tracker plus child PRs | done | parent | 77794c7; PRs #134–#157 |
-| U5 | S6 | Observe required CI, record outcomes, and close delivery evidence | needs decision | parent + independent verifier | 47/48 workflow runs successful; #146 Docs failed |
+| U5 | S6, S7 | Repair intermediate README cut, observe required CI, and close delivery evidence | in progress | inline repair + independent verifier (Risk item 5: published branch ancestry) | prior 47/48; authorized correction pending |
 
 ## Log
 
@@ -81,3 +83,7 @@ Publish the completed documentation work and fix the CSS palette-checker gap thr
 | [#157](https://github.com/arkelythex/drenyra-ai/pull/157) | `docs/dreamcoder-22-visual-closeout` | `77794c7` | 57 |
 
 Boundary counts above describe initial publication; the final child may additionally contain passive publication-evidence updates. Its exact current SHA/count is available in PR #157. The original code snapshot remains unchanged.
+
+- **L19** — Owner: "yes te autorzo todo y avanza de forma autonoma". Resolves L18: authorize the #146 cut repair and dependent ancestry updates, without force-push or merges to main. Route: inline, one understood README heading movement; independent verifier for published-branch ancestry (Risk item5). Retain all original commits. Use normal three-way merge-tree results for downstream integration; require byte-identical downstream trees, then compare-and-set branch updates. Recheck the missing-anchor rule and exact-head CI; do not install tools or touch functional source.
+
+- **L20** — Authorized repair applied inline. Structural RED against slice12 exited1 (`Get started target missing`); GREEN passed for repaired slice12 and all11 descendants. Commit `1b10599` changes only `## Quick Start` to `## Get started`, moving the heading into the first slice. Downstream three-way merge-tree results were required to equal each original tree byte-for-byte; all original commits retained as first parents. Atomic compare-and-set updated12 local refs; each remains a fast-forward of its previously published head. All23 ancestry and Myers budgets passed (max393). No runtime change, install, source-branch edit, force-push or merge to main. RDD remains clone-local OFF. Remote push/CI and independent bounded verification pending.
