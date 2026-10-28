@@ -42,6 +42,11 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 - Consuming repositories whose dark brand assets still use Anthracite Steel
   report `FAIL` on `bun run brand:ecosystem` until they migrate.
 
+### Fixed — SVG CSS palette declarations
+
+- Brand conformance now rejects off-palette hex colors in ordinary SVG style
+  declarations for `fill`, `stroke`, `stop-color`, and `color` (#133).
+
 ### Fixed — brand conformance ignored the canonical accents
 
 - `scripts/brand-conformance.mjs` collected the banned v0.2 `cyan`/`violet`

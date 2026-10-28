@@ -146,6 +146,8 @@ const ATTR_RE =
 	/(?:fill|stroke|stop-color|color)\s*=\s*("([^"]*)"|'([^']*)')/gi;
 const CSS_VAR_RE = /--([a-zA-Z0-9-]+)\s*:\s*(#[0-9a-fA-F]{6})/g;
 const VAR_REF_RE = /^var\(--([a-zA-Z0-9-]+)\)$/;
+const STYLE_RE = /<style\b[^>]*>([\s\S]*?)<\/style\s*>/gi;
+const CSS_COLOR_RE = /(?:^|[;{])\s*(?:fill|stroke|stop-color|color)\s*:\s*(#[0-9a-f]{3,8})\s*(?=[;}])/gi;
 
 /**
  * Collect CSS custom-property declarations (hex values) from <style> blocks,
@@ -173,6 +175,12 @@ function checkSvg(file) {
 	for (const [name, declared] of cssVars) {
 		for (const hex of declared) {
 			if (!tokens.canonical.has(hex)) problems.push(`var(--${name}) -> ${hex}`);
+		}
+	}
+	for (const style of source.matchAll(STYLE_RE)) {
+		for (const declaration of style[1].matchAll(CSS_COLOR_RE)) {
+			const color = declaration[1];
+			if (!tokens.canonical.has(color.toLowerCase())) problems.push(color);
 		}
 	}
 	for (const m of source.matchAll(ATTR_RE)) {
