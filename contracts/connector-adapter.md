@@ -1,5 +1,9 @@
 # Contract: connector-adapter
 
+← [Contracts index](README.md) · [README](../README.md)
+
+Read this contract when designing a restricted connector. A conformant mock is not proof that a live connector exists.
+
 > Version: 0.1 · Status: DRAFT · Transport-agnostic.
 >
 > The **mutation boundary** for restricted ERP, SUNAT/SIRE, bank, e-invoicing, and

@@ -1,5 +1,9 @@
 # Contract: recovery
 
+← [Contracts index](README.md) · [README](../README.md)
+
+Read this contract before resuming interrupted work or deciding what persisted evidence permits.
+
 > Version: 0.1 · Status: FROZEN · Transport-agnostic.
 >
 > Fiscal convention: monetary values in the Drenyra ecosystem are BigInt cents;

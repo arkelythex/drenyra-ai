@@ -1,5 +1,9 @@
 # Contract: brand-system
 
+← [Contracts index](README.md) · [README](../README.md)
+
+Read this contract before authoring visual assets. The token file, not an image sampled by eye, defines the palette.
+
 > Version: 0.4 · Status: DRAFT · Transport-agnostic.
 >
 > The **visual authority of the ecosystem is the Dreamcoder Workbench** —
