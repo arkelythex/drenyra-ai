@@ -1,5 +1,10 @@
 ---
 
+← [Program index](../../README.md) · [Dependency map](../../dependency-graph.md)
+
+Read this capability record alongside its dependencies and recorded evidence.
+The status below is not a new implementation or gate-approval claim.
+
 # SDD-020 — Universal Agent Configurator
 
 > Status: lifecycle:complete (configurator core: install/doctor/sync/upgrade/rollback + per-host pinning + four-host integration + program-lock-aware install) · Maturity: implemented · Wave: 1 · Depends on: SDD-010 · Feeds: SDD-100

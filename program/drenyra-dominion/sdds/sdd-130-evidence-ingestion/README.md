@@ -1,5 +1,10 @@
 # SDD-130 — Evidence Ingestion and Provenance
 
+← [Program index](../../README.md) · [Dependency map](../../dependency-graph.md)
+
+Read this capability record alongside its dependencies and recorded evidence.
+The status below is not a new implementation or gate-approval claim.
+
 > Status: lifecycle:planned · Wave: 5 · Depends on: SDD-120, SDD-110 · Feeds: SDD-140, SDD-150
 
 ## Capability boundary

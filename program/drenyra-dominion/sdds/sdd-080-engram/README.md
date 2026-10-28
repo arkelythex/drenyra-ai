@@ -1,5 +1,10 @@
 ---
 
+← [Program index](../../README.md) · [Dependency map](../../dependency-graph.md)
+
+Read this capability record alongside its dependencies and recorded evidence.
+The status below is not a new implementation or gate-approval claim.
+
 # SDD-080 — Engram Institutional Memory
 
 > Status: lifecycle:active · Maturity: partial (non-authorization boundary implemented; sibling core verified 2026-08-15) · Wave: 2 · Depends on: SDD-010 · Feeds: SDD-050

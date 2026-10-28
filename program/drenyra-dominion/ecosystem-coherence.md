@@ -1,5 +1,10 @@
 # Ecosystem Coherence — Drenyra Dominion Program Record
 
+← [Program index](README.md) · [Status vocabulary and evidence](status-and-evidence.md)
+
+Use this record to trace inconsistency owners, evidence, and decisions across product repositories.
+Treat dates and inspected revisions as evidence boundaries; do not promote them to present readiness.
+
 > Program-master record for the Drenyra ecosystem coherence remediation. It
 > coordinates the cross-repository inconsistency inventory, evidence, owners,
 > blocked governance decisions, work units, propagation, and readback.

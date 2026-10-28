@@ -1,5 +1,11 @@
 # Ecosystem Coherence Specification
 
+← [Requirements index](../README.md) · [Contribution workflow](../../CONTRIBUTING.md)
+
+Use these requirements and scenarios when changing this capability or reviewing
+its observable behavior. Origin-change names and historical paths below retain
+their provenance; they do not reactivate the retired OpenSpec workflow.
+
 ## Purpose
 
 Restore a coherent, evidence-backed public and maintainer-facing description of the Drenyra ecosystem without changing product behavior, licenses, or fiscal authority. Drenyra Dominion acts as the ecosystem program master: it records the cross-repository inconsistency inventory, tracks accountable owners, decision status, evidence, and completion, and separates evidence-backed documentation corrections from governance decisions that require explicit owner approval. Product repositories remain authoritative for their own licenses, released artifacts, and implemented behavior; FEOS, ledger boundaries, membership, and maturity remain owner-approved decision gates, never inferred facts.
@@ -203,3 +209,6 @@ Each correction MUST be an independent, repository-scoped work unit with its own
 - GIVEN a work unit is delivered
 - WHEN its completion evidence is reviewed
 - THEN it includes evidence links and repository-specific readback evidence demonstrating the corrected state
+
+**Read next:** [Frozen public contracts](../../contracts/README.md) for compatibility boundaries;
+[deterministic testing](../../docs/testing-deterministic.md) for verification practice.

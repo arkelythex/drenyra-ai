@@ -1,5 +1,26 @@
 # Drenyra Dominion Program
 
+← [Back to README](../../README.md)
+
+Cross-repository work needs one dependency and evidence map without erasing product ownership.
+Start with the reading routes below, then inspect the dated records before making a current claim.
+
+## Choose a reading route
+
+| You need to… | Start here | Then read |
+| --- | --- | --- |
+| Understand scope and authority | [Charter](charter.md) | [Authority model](authority-model.md) |
+| Choose a delivery slice | [Dependencies](dependency-graph.md) | [Gate 0](gate-0.md) |
+| Evaluate readiness | [Status vocabulary and evidence](status-and-evidence.md) | [Acceptance matrix](acceptance-matrix.md) |
+| Coordinate a release | [Release train](release-train.md) | [Delivery sequence](delivery-sequence.md) |
+| Reconcile ecosystem claims | [Coherence record](ecosystem-coherence.md) | Product-local evidence cited there |
+
+Dates, inspected revisions, lifecycle labels, and gate decisions below belong to
+their recorded checkpoint. Presence of a design or SDD does not implement a
+capability, approve a gate, or authorize filing. For present product boundaries,
+see [intended usage](../../docs/intended-usage.md). Historical names and OpenSpec
+paths remain as evidence, not a recommendation to use the retired workflow.
+
 > **Program source of truth for the Drenyra ecosystem.** This directory is the
 > federated program master that fixes vision, authority, contracts,
 > dependencies, gates, and sequencing across every Drenyra repository. Each

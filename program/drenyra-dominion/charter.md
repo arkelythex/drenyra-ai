@@ -1,5 +1,10 @@
 # Charter — Drenyra Dominion Program
 
+← [Program index](README.md) · [Status vocabulary and evidence](status-and-evidence.md)
+
+Use this charter to understand the program direction and the boundaries every product must preserve.
+Treat dates and inspected revisions as evidence boundaries; do not promote them to present readiness.
+
 > Status: DRAFT (v0.1) · Stage: private · Last updated: 2026-08-11
 > This charter is the master SDD (SDD-000). It fixes vision, frontiers,
 > authority, taxonomy, and domain criteria for the entire Drenyra ecosystem.

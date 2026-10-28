@@ -1,5 +1,11 @@
 # Declared-Surface Specification
 
+← [Requirements index](../README.md) · [Contribution workflow](../../CONTRIBUTING.md)
+
+Use these requirements and scenarios when changing this capability or reviewing
+its observable behavior. Origin-change names and historical paths below retain
+their provenance; they do not reactivate the retired OpenSpec workflow.
+
 ## Purpose
 
 Make Drenyra AI's declared CLI and MCP surfaces operationally honest and resistant to drift: one package-backed runtime-version source, one shared declaration for the capability facts the two surfaces have in common, no hardcoded runtime MCP version, and `doctor` contract discovery that resolves from the installed package location regardless of the caller's working directory. The change removes parallel representations of existing truth; it does not add new states, flags, commands, or gates, and it does not force CLI and MCP payloads to become identical beyond their common declared facts.
@@ -91,3 +97,6 @@ The change MUST be verifiable with attributable evidence that distinguishes Slic
 - GIVEN the three pre-existing failures have independently cleared
 - WHEN the full suite runs after Slice A
 - THEN the full suite MUST pass in full and MUST NOT recreate any of the old failures
+
+**Read next:** [Frozen public contracts](../../contracts/README.md) for compatibility boundaries;
+[deterministic testing](../../docs/testing-deterministic.md) for verification practice.

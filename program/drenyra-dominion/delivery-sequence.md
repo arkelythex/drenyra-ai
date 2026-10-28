@@ -1,5 +1,10 @@
 # Delivery Sequence — Drenyra Dominion Program
 
+← [Program index](README.md) · [Status vocabulary and evidence](status-and-evidence.md)
+
+Use this sequence when preparing a federated checkpoint; repository commits alone do not settle the program lock.
+Treat dates and inspected revisions as evidence boundaries; do not promote them to present readiness.
+
 > Status: DRAFT (v0.1) · Owner: Drenyra Dominion Program
 > This document defines the EXACT commit/PR sequence for landing a federated
 > checkpoint. It exists because `program-lock.json` has a bootstrap problem:
