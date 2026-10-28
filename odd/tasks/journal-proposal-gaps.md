@@ -20,10 +20,10 @@ From #123 (verbatim): "Each proposal is rejected with a typed error code, as the
 
 ## Tasks
 
-- [ ] **T1** — RED: journal tests for S1–S4 through `record`; evidence tests for S5 through `acceptEvidence`/`registerEvidence`. *(S1–S5, S7)*
-- [ ] **T2** — GREEN in `journal/validate.ts`, `journal/types.ts`, and `evidence/authority/authority.ts`. *(S1–S5, S7)*
-- [ ] **T3** — CHANGELOG, plus a comment on #123 with what closed and what is deferred. *(S6)*
-- [ ] **T4** — Gates and PR. *(all)*
+- [x] **T1** — RED: journal tests for S1–S4 through `record`; evidence tests for S5 through `acceptEvidence`/`registerEvidence`. *(S1–S5, S7)* — `c8c89b6`
+- [x] **T2** — GREEN in `journal/validate.ts`, `journal/types.ts`, and `evidence/authority/authority.ts`. *(S1–S5, S7)* — `c8c89b6`
+- [x] **T3** — CHANGELOG, plus a comment on #123 with what closed and what is deferred. *(S6)* — `c8c89b6`
+- [x] **T4** — Gates and PR. *(all)* — `c8c89b6`
 
 ## Log
 
@@ -38,3 +38,9 @@ Previous turn: "Mi recomendación es arrancar por #123: es la que más mejora el
 - `journal/__tests__/journal.test.ts` asserted "accepts the non-negative zero boundary (0n)". The journal spec (archived `fiscal-authority-kernel/specs/journal/spec.md`) does not require it: it was an implementation boundary choice, recorded as "`0n` accepted" in that change's verify report. The sibling engine `close-calculations` already rejects non-positive amounts ("rejects a non-positive amount"). Decision: reverse the journal boundary to positive-only, for one rule across the kernel. The existing test is rewritten to assert the rejection.
 - `evidence/authority/__tests__/authority.test.ts` asserts "accepts an empty item list". That stays: an evidence registry may hold an empty artifact. The journal rejects binding one as an entry's support (S4).
 - No code in `arkelythex/drenyra-command-center` imports `drenyra-ai/journal` or `drenyra-ai/evidence`, or calls `acceptEvidence` (GitHub code search: 0, 0, 0). In this repository, the only non-test callers of `record` and `registerEvidence` are `journal/` and `evidence/` themselves.
+
+### L3 — 2026-10-28 — verification (`c8c89b6`)
+
+- RED: exactly the 8 new cases failed (zero boundary, blank account ×2, blank id ×2, empty artifact, duplicate ids ×2); the other 40 in the two files passed. GREEN: 48/48.
+- Full gates: typecheck and lint exit 0; `bun run test` 112 files / 1500 passed (no other module relied on the old behavior); `verify:package` OK including release integrity; `verify-packed-install` OK; markdownlint 0 issues.
+- End to end: Drenyra Shell's `bun run eval:controls`, run in a scratch directory with `drenyra-ai` linked to this build, reports `detection: 23/25 defects rejected (9200 bps)` and `false alarms: 0/3`. The survivors are exactly the two deferred cases (S6). The pinned 0.6.0 baseline is 18/25.
