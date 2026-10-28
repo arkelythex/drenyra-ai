@@ -1,5 +1,10 @@
 # Dependency Graph — Drenyra Dominion Program
 
+← [Program index](README.md) · [Status vocabulary and evidence](status-and-evidence.md)
+
+Use this map to identify prerequisite work before choosing a program slice.
+Treat dates and inspected revisions as evidence boundaries; do not promote them to present readiness.
+
 > Status: DRAFT (v0.1) · Source: Design 3 of the program brief
 > The program has one central source of truth in `drenyra-ai`; each
 > repository keeps its own implementation, versioning, and tests.

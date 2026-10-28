@@ -1,5 +1,10 @@
 ---
 
+← [Program index](../../README.md) · [Dependency map](../../dependency-graph.md)
+
+Read this capability record alongside its dependencies and recorded evidence.
+The status below is not a new implementation or gate-approval claim.
+
 # SDD-090 — Guardian Angel
 
 > Status: lifecycle:active · Maturity: partial (read-only verification core + refutation/resolution lenses implemented) · Wave: 2 · Depends on: SDD-040 · Feeds: SDD-100

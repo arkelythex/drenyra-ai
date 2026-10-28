@@ -1,5 +1,11 @@
 # Lint Gate Specification
 
+← [Requirements index](../README.md) · [Contribution workflow](../../CONTRIBUTING.md)
+
+Use these requirements and scenarios when changing this capability or reviewing
+its observable behavior. Origin-change names and historical paths below retain
+their provenance; they do not reactivate the retired OpenSpec workflow.
+
 ## Purpose
 
 Define the reproducible, lint-only quality gate for Slice A of `reproducible-lint-gate`: an exact-version-pinned Biome lint command that is deterministic locally and in CI, explicitly scoped to the repository's JavaScript/TypeScript source, test, configuration, and script surface, green against the current tree without modifying any source bytes, and free of formatter, write, or normalization behavior. Strict TypeScript typechecking remains the authoritative compiler gate and is untouched.
@@ -183,3 +189,6 @@ The gate MUST be removable as one bounded work unit: delete `biome.json`, remove
 - GIVEN the rollback unit is applied to a Slice A repository
 - WHEN the repository state is inspected
 - THEN `bun run lint` no longer exists, no lint step runs in CI, the lockfile contains no Biome entries, and typecheck and test behavior are unchanged from before the gate
+
+**Read next:** [Frozen public contracts](../../contracts/README.md) for compatibility boundaries;
+[deterministic testing](../../docs/testing-deterministic.md) for verification practice.

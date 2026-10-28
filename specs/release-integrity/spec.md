@@ -1,5 +1,11 @@
 # Release Integrity Specification
 
+← [Requirements index](../README.md) · [Contribution workflow](../../CONTRIBUTING.md)
+
+Use these requirements and scenarios when changing this capability or reviewing
+its observable behavior. Origin-change names and historical paths below retain
+their provenance; they do not reactivate the retired OpenSpec workflow.
+
 ## Purpose
 
 Release-integrity evidence is the set of artifacts that let a consumer prove that a packaged release is exactly the set of files its producer intended. For this change, that evidence is a checksum manifest (`dist/checksums.txt`) and a CycloneDX SBOM (`dist/sbom.json`) generated from the built package.
@@ -191,3 +197,6 @@ The system's release-integrity evidence behavior MUST be delivered under strict 
 - GIVEN pre-existing baseline failures exist outside this change's scope
 - WHEN the change's verification evidence is inspected
 - THEN those failures remain unchanged, are explicitly documented as pre-existing and unrelated, and were neither fixed nor hidden by this change
+
+**Read next:** [Frozen public contracts](../../contracts/README.md) for compatibility boundaries;
+[deterministic testing](../../docs/testing-deterministic.md) for verification practice.

@@ -1,5 +1,10 @@
 ---
 
+← [Program index](../../README.md) · [Dependency map](../../dependency-graph.md)
+
+Read this capability record alongside its dependencies and recorded evidence.
+The status below is not a new implementation or gate-approval claim.
+
 # SDD-040 — Receipt-Driven Accounting v2
 
 > Status: lifecycle:complete (RDA v2 core, closure 2026-08-15) · Maturity: implemented · Wave: 1 · Depends on: SDD-030 · Feeds: SDD-090, SDD-050 · Prerequisite authority: SDD-010

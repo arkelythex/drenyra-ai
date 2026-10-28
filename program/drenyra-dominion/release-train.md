@@ -1,5 +1,10 @@
 # Release Train — Drenyra Dominion Program
 
+← [Program index](README.md) · [Status vocabulary and evidence](status-and-evidence.md)
+
+Use this release model to understand how independently versioned repositories form one reproducible composition.
+Treat dates and inspected revisions as evidence boundaries; do not promote them to present readiness.
+
 > Status: DRAFT (v0.1) · Source: Design 3 of the program brief
 > The ecosystem releases as one reproducible composition, never as six
 > `main` branches taken at different moments.
