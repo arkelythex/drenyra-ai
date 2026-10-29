@@ -20,16 +20,23 @@
  *   come from reachability over declared edges: dependencies and required
  *   peers are required edges; optionalDependencies and optional peers are
  *   optional edges; resolution walks up the tree like Node does.
- * - Fail closed: a source the mirror cannot represent faithfully (git, file:,
- *   tarball URL, alias, custom registry, missing integrity), a required
- *   dependency bun.lock does not contain, or a package nothing reaches aborts
- *   with exit 2 before anything is written.
+ * - A local tarball dependency (`file:./path.tgz`, which bun records as
+ *   `["name@./path.tgz", meta, integrity]` with no version) is mirrored as
+ *   `resolved: "file:<path>"`. Its version is read from the archive's
+ *   `package/package.json`, and the file's SHA-512 must equal bun's integrity.
+ * - Fail closed: a source the mirror cannot represent faithfully (git, a
+ *   `file:` directory, tarball URL, alias, custom registry, missing integrity),
+ *   a local tarball that is missing or does not match its integrity, a
+ *   required dependency bun.lock does not contain, or a package nothing
+ *   reaches aborts with exit 2 before anything is written.
  * - Output is deterministic: the root entry first, then paths in code-point
  *   order, two-space JSON, trailing newline. `--check` never writes.
  */
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gunzipSync } from "node:zlib";
 
 const REGISTRY = "https://registry.npmjs.org";
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
@@ -107,11 +114,66 @@ function nonEmpty(record) {
 	return record && Object.keys(record).length > 0 ? { ...record } : undefined;
 }
 
+/** Reads `package/package.json` from a gzipped tar archive. */
+function manifestFromTarball(bytes, label) {
+	let tar;
+	try {
+		tar = gunzipSync(bytes);
+	} catch {
+		fail(`${label} is not a gzip archive`);
+	}
+	for (let offset = 0; offset + 512 <= tar.length; ) {
+		const header = tar.subarray(offset, offset + 512);
+		if (header.every((byte) => byte === 0)) break;
+		const field = (start, length) => header.subarray(start, start + length).toString("utf8").replace(/\0.*$/s, "");
+		const prefix = field(345, 155);
+		const path = prefix ? `${prefix}/${field(0, 100)}` : field(0, 100);
+		const size = Number.parseInt(field(124, 12).trim() || "0", 8);
+		const body = offset + 512;
+		if (/^[^/]+\/package\.json$/.test(path) && field(156, 1) !== "5") {
+			try {
+				return JSON.parse(tar.subarray(body, body + size).toString("utf8"));
+			} catch {
+				fail(`${label} has an unreadable package.json`);
+			}
+		}
+		offset = body + Math.ceil(size / 512) * 512;
+	}
+	fail(`${label} contains no package.json`);
+}
+
+/** A bun 3-tuple local tarball entry: `["name@./path.tgz", meta, integrity]`. */
+function readLocalTarball(key, entry, root) {
+	const [ident, meta = {}, integrity] = entry;
+	const at = ident.indexOf("@", 1);
+	const name = ident.slice(0, at);
+	const spec = ident.slice(at + 1).replace(/^file:/, "");
+	const names = namesOf(key);
+	if (at <= 0 || name !== names[names.length - 1]) fail(`${key} is an alias or unparseable local source (${ident})`);
+	if (!/\.(?:tgz|tar\.gz)$/.test(spec)) fail(`${key} is a local directory source (${ident}); only tarballs can be mirrored`);
+	if (typeof integrity !== "string" || integrity === "") fail(`${key} has no integrity`);
+	const file = resolve(root, spec);
+	const label = relative(root, file).split(sep).join("/");
+	if (!existsSync(file)) fail(`${key} points at ${label}, which does not exist`);
+	const bytes = readFileSync(file);
+	const actual = `sha512-${createHash("sha512").update(bytes).digest("base64")}`;
+	if (actual !== integrity) fail(`${label} does not match bun.lock's integrity for ${key}`);
+	const manifest = manifestFromTarball(bytes, label);
+	if (manifest.name !== name || typeof manifest.version !== "string" || !EXACT_VERSION.test(manifest.version)) {
+		fail(`${label} declares ${manifest.name}@${manifest.version}, not ${name} with an exact version`);
+	}
+	return { key, names, name, version: manifest.version, meta, integrity, resolved: `file:${label}` };
+}
+
 /** Reads and validates every bun.lock package entry. */
-function readPackages(lock) {
+function readPackages(lock, root) {
 	const packages = new Map();
 	for (const [key, entry] of Object.entries(lock.packages ?? {})) {
 		if (!Array.isArray(entry) || typeof entry[0] !== "string") fail(`entry ${key} is not a package tuple`);
+		if (entry.length === 3 && typeof entry[1] === "object" && entry[1] !== null) {
+			packages.set(key, readLocalTarball(key, entry, root));
+			continue;
+		}
 		const [ident, resolvedFrom, meta = {}, integrity] = entry;
 		const { name, version } = splitIdent(ident);
 		const names = namesOf(key);
@@ -181,7 +243,7 @@ function rootEntry(manifest) {
 
 function packageEntry(pkg, scope) {
 	const meta = pkg.meta;
-	const entry = { version: pkg.version, resolved: tarballUrl(pkg.name, pkg.version), integrity: pkg.integrity };
+	const entry = { version: pkg.version, resolved: pkg.resolved ?? tarballUrl(pkg.name, pkg.version), integrity: pkg.integrity };
 	Object.assign(entry, scope);
 	const dependencies = nonEmpty(meta.dependencies);
 	if (dependencies) entry.dependencies = dependencies;
@@ -206,13 +268,13 @@ function packageEntry(pkg, scope) {
 	return entry;
 }
 
-/** Builds the mirror text from the bun.lock and package.json texts. */
-export function buildMirror(bunLockText, manifestText) {
+/** Builds the mirror text from the bun.lock and package.json texts; `root` resolves local tarballs. */
+export function buildMirror(bunLockText, manifestText, root) {
 	const lock = parseBunLock(bunLockText);
 	const manifest = JSON.parse(manifestText);
 	const workspaces = Object.keys(lock.workspaces ?? {});
 	if (workspaces.length !== 1 || workspaces[0] !== "") fail("only a single root workspace is supported");
-	const packages = readPackages(lock);
+	const packages = readPackages(lock, root);
 
 	const prodRoots = { required: Object.keys(manifest.dependencies ?? {}), optional: Object.keys(manifest.optionalDependencies ?? {}) };
 	const allRoots = { required: [...prodRoots.required, ...Object.keys(manifest.devDependencies ?? {})], optional: prodRoots.optional };
@@ -246,7 +308,7 @@ function main(argv) {
 	const bunLockPath = join(root, "bun.lock");
 	if (!existsSync(bunLockPath)) fail(`${bunLockPath} does not exist`);
 	const mirrorPath = join(root, "package-lock.json");
-	const next = buildMirror(readFileSync(bunLockPath, "utf8"), readFileSync(join(root, "package.json"), "utf8"));
+	const next = buildMirror(readFileSync(bunLockPath, "utf8"), readFileSync(join(root, "package.json"), "utf8"), root);
 	const packageCount = Object.keys(JSON.parse(next).packages).length - 1;
 
 	if (check) {

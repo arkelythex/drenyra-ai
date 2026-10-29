@@ -22,7 +22,13 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
   versions, and integrity that CI installs, with npm's `dev`, `optional`, and
   `devOptional` flags derived from reachability. CI fails when the mirror is
   stale (`--check`). The script fails closed on any source it cannot
-  represent: git, `file:`, a tarball URL, an alias, or a custom registry.
+  represent: git, a `file:` directory, a tarball URL, an alias, or a custom
+  registry.
+- Local tarball dependencies (`file:./path.tgz`, as Drenyra Shell vendors this
+  runtime) are mirrored as `resolved: "file:<path>"`. Their version is read from
+  the archive's `package/package.json`, and the file's SHA-512 must match bun's
+  integrity, or the script fails closed. This makes a vendored runtime's
+  registry dependencies visible to alerts.
 - **Correction to 0.8.0.** The previous mirror came from
   `npm install --package-lock-only`, which resolves its own tree. It listed
   `vite@8.3.5` while bun installed `vite@8.2.1`, so six advisories on the
