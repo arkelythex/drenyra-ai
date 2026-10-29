@@ -14,6 +14,18 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-28
+
+### Migration and compatibility
+
+This pre-1.0 minor release breaks callers of `journal.record` and
+`journal.supersede`. They must pass `asOf`, an ISO-8601 reference instant,
+and handle the additive `invalid-as-of` and `future-evidence` error codes. No
+frozen contract file or export is removed or renamed. For inputs that carry a
+valid `asOf`, every existing journal error code and its order is unchanged.
+No published dependency range changes. The RUC checksum decision remains
+deferred.
+
 ### Changed — journal entries require a reference instant `asOf` (#123)
 
 - **Breaking for callers of `journal.record` and `journal.supersede`.**
