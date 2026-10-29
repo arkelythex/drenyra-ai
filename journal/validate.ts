@@ -31,6 +31,18 @@ function isNonBlank(value: unknown): value is string {
 }
 
 /**
+ * Parses the caller's reference instant fail-closed. The kernel never reads a
+ * clock: `asOf` is the only notion of "now", so verdicts stay deterministic.
+ */
+function referenceInstant(asOf: unknown): number {
+	const instant = isNonBlank(asOf) ? Date.parse(asOf) : Number.NaN;
+	if (Number.isNaN(instant)) {
+		throw new JournalError(JOURNAL_ERROR.INVALID_AS_OF, "an entry requires asOf, an ISO-8601 reference instant");
+	}
+	return instant;
+}
+
+/**
  * Rejects non-bigint and non-positive amounts and blank account codes, and
  * returns both totals. A zero line has no accounting effect (#123), matching
  * close-calculations' positive-amount rule.
@@ -53,10 +65,12 @@ function lineTotals(lines: readonly JournalLine[]): { debits: bigint; credits: b
 
 /**
  * Entry binding: at least one accepted evidence artifact in the entry scope,
- * and no artifact without items. The evidence registry may hold an empty
- * artifact; an entry may not cite one as support (#123).
+ * no artifact without items, and none captured after the reference instant.
+ * The evidence registry may hold an empty artifact; an entry may not cite one
+ * as support (#123). Evidence captured after the fiscal period ends stays
+ * valid: invoices arrive late.
  */
-function assertEvidenceBound(evidence: readonly AcceptedEvidence[], scope: ValidatedTenantScope): void {
+function assertEvidenceBound(evidence: readonly AcceptedEvidence[], scope: ValidatedTenantScope, asOf: number): void {
 	if (evidence.length === 0) {
 		throw new JournalError(JOURNAL_ERROR.MISSING_EVIDENCE, "an entry requires at least one accepted evidence artifact");
 	}
@@ -74,6 +88,10 @@ function assertEvidenceBound(evidence: readonly AcceptedEvidence[], scope: Valid
 		) {
 			throw new JournalError(JOURNAL_ERROR.EVIDENCE_SCOPE_MISMATCH, "evidence must be bound to the entry scope");
 		}
+		const capturedAt = Date.parse((artifact as { provenance?: { capturedAt?: unknown } }).provenance?.capturedAt as string);
+		if (Number.isNaN(capturedAt) || capturedAt > asOf) {
+			throw new JournalError(JOURNAL_ERROR.FUTURE_EVIDENCE, "evidence cannot be captured after the entry's asOf instant");
+		}
 	}
 }
 
@@ -82,6 +100,7 @@ export function validateRecord(input: JournalRecordInput): ValidatedTenantScope 
 	if (!isNonBlank(input.id)) {
 		throw new JournalError(JOURNAL_ERROR.INVALID_ENTRY_ID, "an entry requires a non-empty id");
 	}
+	const asOf = referenceInstant((input as { asOf?: unknown }).asOf);
 	if (input.lines.length === 0) {
 		throw new JournalError(JOURNAL_ERROR.EMPTY_LINES, "an entry requires at least one line");
 	}
@@ -90,6 +109,6 @@ export function validateRecord(input: JournalRecordInput): ValidatedTenantScope 
 	if (debits !== credits) {
 		throw new JournalError(JOURNAL_ERROR.UNBALANCED, "debit and credit totals must be equal");
 	}
-	assertEvidenceBound(input.evidence, scope);
+	assertEvidenceBound(input.evidence, scope, asOf);
 	return scope;
 }

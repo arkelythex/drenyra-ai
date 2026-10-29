@@ -37,6 +37,12 @@ export interface JournalRecordInput {
 	readonly scope: unknown;
 	readonly lines: readonly JournalLine[];
 	readonly evidence: readonly AcceptedEvidence[];
+	/**
+	 * Caller-supplied reference instant (ISO-8601). Evidence captured after it is
+	 * rejected. The kernel never reads a clock, so the same input always gets the
+	 * same verdict. Validated only; it is not stored on the entry.
+	 */
+	readonly asOf: string;
 }
 export const JOURNAL_ERROR = {
 	INVALID_SCOPE: "invalid-scope",
@@ -47,6 +53,8 @@ export const JOURNAL_ERROR = {
 	EVIDENCE_SCOPE_MISMATCH: "evidence-scope-mismatch",
 	INVALID_ACCOUNT: "invalid-account",
 	INVALID_ENTRY_ID: "invalid-entry-id",
+	INVALID_AS_OF: "invalid-as-of",
+	FUTURE_EVIDENCE: "future-evidence",
 } as const;
 export type JournalErrorCode = (typeof JOURNAL_ERROR)[keyof typeof JOURNAL_ERROR];
 

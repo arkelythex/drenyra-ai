@@ -14,6 +14,27 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+### Changed — journal entries require a reference instant `asOf` (#123)
+
+- **Breaking for callers of `journal.record` and `journal.supersede`.**
+  `JournalRecordInput` gains a required `asOf: string`, an ISO-8601 instant
+  that the caller supplies. A missing, non-string, blank, or unparseable value
+  is rejected with the new code `invalid-as-of`, before anything is recorded.
+- Evidence whose `provenance.capturedAt` is later than `asOf` cannot support an
+  entry and is rejected with the new code `future-evidence`. A capture exactly
+  at `asOf` is accepted. Evidence captured after the fiscal period ends stays
+  valid, because invoices arrive late. `supersede` rejects before it issues a
+  receipt.
+- The kernel still reads no clock in journal and evidence validation. `asOf`
+  is the only notion of "now", so the same input always gets the same verdict.
+  `asOf` is validated but not stored on the entry.
+- This closes the `future-capture-date` survivor of Drenyra Shell's control
+  mutation suite. The RUC check digit stays deferred.
+- **Migration:** pass your own clock, for example
+  `asOf: new Date().toISOString()`, or the instant the entry is being
+  proposed. For inputs that carry a valid `asOf`, every existing error code
+  and its order is unchanged.
+
 ### Security — dependency advisories
 
 - Closes the 13 open Dependabot alerts on `main`. `fast-uri` 3.1.8 → 3.1.9, through

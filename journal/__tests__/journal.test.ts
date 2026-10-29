@@ -32,6 +32,8 @@ const SCOPE = validateTenantScope({ companyId: "acme", ruc: "20123456789", perio
 const OTHER_SCOPE = validateTenantScope({ companyId: "zeta", ruc: "20601234567", period: "202607" });
 const ITEM = { id: "ev-1", label: "Bank reconciliation", type: "report" };
 const PROVENANCE = { channel: "report", source: "erp://reports/2026-07/rec-114", capturedAt: "2026-08-02T10:00:00.000Z", capturedBy: "ledger-import/v1" };
+/** Caller-supplied reference instant; after PROVENANCE.capturedAt. */
+const AS_OF = "2026-08-15T00:00:00.000Z";
 
 function accept(scope = SCOPE): AcceptedEvidence {
 	return acceptEvidence({ scope, items: [ITEM], provenance: PROVENANCE });
@@ -45,8 +47,12 @@ function entryInput(overrides: Partial<JournalRecordInput> = {}): JournalRecordI
 		scope: SCOPE,
 		lines: [line(500n), line(500n, JOURNAL_SIDE.CREDIT)],
 		evidence: [accept()],
+		asOf: AS_OF,
 		...overrides,
 	};
+}
+function acceptCapturedAt(capturedAt: string): AcceptedEvidence {
+	return acceptEvidence({ scope: SCOPE, items: [ITEM], provenance: { ...PROVENANCE, capturedAt } });
 }
 function expectRejected(input: JournalRecordInput, code: JournalErrorCode): void {
 	let thrown: unknown;
@@ -102,6 +108,54 @@ describe("record — proposal identity and support (#123)", () => {
 	});
 	it("records an entry backed by two non-empty artifacts", () => {
 		expect(record(entryInput({ evidence: [accept(), accept()] })).status).toBe(JOURNAL_STATUS.RECORDED);
+	});
+});
+
+describe("record — reference instant asOf (#123, future-capture-date)", () => {
+	it("rejects an entry without asOf", () => {
+		const { asOf: _omitted, ...withoutAsOf } = entryInput();
+		expectRejected(withoutAsOf as unknown as JournalRecordInput, JOURNAL_ERROR.INVALID_AS_OF);
+	});
+	it("rejects an unparseable or non-string asOf", () => {
+		for (const asOf of ["not-a-date", "", 1786492800000]) {
+			expectRejected(entryInput({ asOf } as unknown as Partial<JournalRecordInput>), JOURNAL_ERROR.INVALID_AS_OF);
+		}
+	});
+	it("rejects evidence captured after asOf", () => {
+		expectRejected(entryInput({ evidence: [accept(), acceptCapturedAt("2099-01-01T00:00:00.000Z")] }), JOURNAL_ERROR.FUTURE_EVIDENCE);
+	});
+	it("rejects evidence captured one millisecond after asOf", () => {
+		expectRejected(entryInput({ evidence: [acceptCapturedAt("2026-08-15T00:00:00.001Z")] }), JOURNAL_ERROR.FUTURE_EVIDENCE);
+	});
+	it("accepts evidence captured exactly at asOf", () => {
+		expect(record(entryInput({ evidence: [acceptCapturedAt(AS_OF)] })).status).toBe(JOURNAL_STATUS.RECORDED);
+	});
+	it("accepts evidence captured after the fiscal period ends (invoices arrive late)", () => {
+		// SCOPE.period is 202607; PROVENANCE was captured on 2026-08-02.
+		expect(record(entryInput()).status).toBe(JOURNAL_STATUS.RECORDED);
+	});
+	it("rejects future evidence in supersede before any receipt is issued", () => {
+		const prior = record(entryInput());
+		let issued = 0;
+		const issuer = { issue: () => { issued += 1; throw new Error("must not issue"); } } as unknown as JournalReceiptIssuer;
+		let thrown: unknown;
+		try {
+			supersede(prior, entryInput({ id: "JE-2", evidence: [acceptCapturedAt("2099-01-01T00:00:00.000Z")] }), issuer);
+		} catch (error) {
+			thrown = error;
+		}
+		expect(thrown).toBeInstanceOf(JournalError);
+		expect((thrown as JournalError).code).toBe(JOURNAL_ERROR.FUTURE_EVIDENCE);
+		expect(issued).toBe(0);
+	});
+	it("gives the same verdict for the same input, whatever the wall clock says", () => {
+		const input = entryInput({ evidence: [acceptCapturedAt("2026-08-15T00:00:00.001Z")] });
+		for (let i = 0; i < 3; i += 1) expectRejected(input, JOURNAL_ERROR.FUTURE_EVIDENCE);
+		const past = entryInput({ asOf: "2026-08-02T10:00:00.000Z" });
+		for (let i = 0; i < 3; i += 1) expect(record(past).status).toBe(JOURNAL_STATUS.RECORDED);
+	});
+	it("does not store asOf on the recorded entry", () => {
+		expect("asOf" in record(entryInput())).toBe(false);
 	});
 });
 
