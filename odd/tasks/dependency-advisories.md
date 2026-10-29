@@ -15,9 +15,9 @@
 
 ## Tasks
 
-- [x] **T1** — Update the vulnerable resolutions in `bun.lock` (vitest pair plus the transitive packages). *(S2, S3)*
-- [x] **T2** — Refresh the `package-lock.json` mirror; verify both lockfiles against S2. *(S2, S4)*
-- [ ] **T3** — CHANGELOG, gates, PR, merge, observe the alerts closed. *(S5, S6)*
+- [x] **T1** — Update the vulnerable resolutions in `bun.lock` (vitest pair plus the transitive packages). *(S2, S3)* — `ea52cd3`
+- [x] **T2** — Refresh the `package-lock.json` mirror; verify both lockfiles against S2. *(S2, S4)* — `ea52cd3`
+- [x] **T3** — CHANGELOG, gates, PR, merge, observe the alerts closed. *(S5, S6)* — `ea52cd3`, #160 merge `c195b3f`
 
 ## Log
 
@@ -40,3 +40,16 @@
 ### L4 — 2026-10-28 — gates
 
 One `set -euo pipefail` run exited 0. `bun install --frozen-lockfile`: no changes. Typecheck: clean. Lint: 188 files. `verify:package`: 113 files and 1510 tests passed under vitest 5.0.5, package files OK, release integrity OK (checksums and SBOM). `verify-packed-install`: OK. `git diff --check`: clean.
+
+### L5 — 2026-10-28 — merge authorization (verbatim)
+
+After PR #160 opened, the owner wrote:
+
+> perfecto , te autorizo , confirmo y avanza
+
+### L6 — 2026-10-28 — merged and observed
+
+- #160 passed CI and was merged with an ordinary merge commit, pinned to the reviewed head `ea52cd3`, as `c195b3f`. On `main`, CI and Docs succeeded.
+- Dependabot: 0 open alerts; alerts 10–22 (13) are `fixed`.
+- Dependabot #119 and #121 were closed as superseded by #160.
+- Not independently verified: no verifier subagent was run on this repository. The evidence is the PR and `main` CI, `npm audit --package-lock-only`, and GitHub's own alert state. Risk: item 5 (dependencies).
