@@ -166,6 +166,16 @@ cd drenyra-ai
 bun install --frozen-lockfile
 ```
 
+### Change a Dependency
+
+Bun installs from `bun.lock`. GitHub's dependency graph cannot read that file, so `package-lock.json` is kept as the Dependabot alert mirror, generated from `bun.lock`. After any dependency change, including on a Dependabot pull request, regenerate the mirror and commit it with the change:
+
+```bash
+bun run deps:mirror
+```
+
+CI runs `node scripts/sync-alert-mirror.mjs --check` and fails when the mirror is stale. Do not refresh it with `npm install --package-lock-only`: npm resolves its own tree, which drifts from bun's and hides advisories on the versions actually installed.
+
 ### Run the CLI Locally
 
 ```bash
