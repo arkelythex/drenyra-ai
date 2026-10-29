@@ -50,6 +50,6 @@ One `set -euo pipefail` run exited 0. Typecheck: clean. Lint: 188 files, no fixe
 
 ### L6 — 2026-10-28 — T3 merged; T4 version PR
 
-#162 passed CI and was merged with an ordinary merge commit, pinned to the reviewed head `d86cba1`, as `d504042`. T4 starts with `chore/release-0.8.0`: `npm version 0.8.0 --no-git-tag-version --ignore-scripts` updates `package.json` and the two root version fields of `package-lock.json`. The `[Unreleased]` entries (the `asOf` change and the dependency advisories) become `## [0.8.0] - 2026-10-28`, under a migration note.
+PR #162 passed CI and was merged with an ordinary merge commit, pinned to the reviewed head `d86cba1`, as `d504042`. T4 starts with `chore/release-0.8.0`: `npm version 0.8.0 --no-git-tag-version --ignore-scripts` updates `package.json` and the two root version fields of `package-lock.json`. The `[Unreleased]` entries (the `asOf` change and the dependency advisories) become `## [0.8.0] - 2026-10-28`, under a migration note.
 
 Release gates on the version tree: `bun install --frozen-lockfile`, typecheck, `verify:package` (1519 tests; release integrity: checksums and SBOM verified; 695 packaged files), and `verify-packed-install` all OK; `git diff --check` clean.
