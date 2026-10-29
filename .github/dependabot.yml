@@ -16,5 +16,9 @@ updates:
 
 # `package-lock.json` is retained deliberately even though nothing builds with npm: GitHub's
 # dependency graph does not support bun, so that file is the only source of Dependabot
-# security alerts for this repository. After any dependency change, refresh it with:
-#   npm install --package-lock-only --ignore-scripts
+# security alerts for this repository. It is generated from `bun.lock`, so it lists exactly
+# the versions CI installs; CI fails when it is stale. After any dependency change, including
+# a Dependabot pull request, refresh it with:
+#   bun run deps:mirror
+# Do not use `npm install --package-lock-only`: it resolves its own tree, which drifts from
+# bun's and hides advisories on the versions actually installed.
