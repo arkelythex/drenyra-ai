@@ -14,12 +14,16 @@
 - **S6** — CI runs `--check`. `bun run deps:mirror` is the documented refresh. `.github/dependabot.yml` and the contributor docs describe it, replacing the old `npm install --package-lock-only` instruction, which resolved its own tree.
 - **S7** — The real repository's mirror is regenerated. `npm ls --all --package-lock-only` accepts it, and the `name@version` sets of `bun.lock` and the mirror are identical.
 
+- **S8** — Drenyra Shell depends on `drenyra-ai` as `file:./vendored/drenyra-ai-<v>.tgz`; bun records it as a 3-tuple `["name@./path.tgz", meta, integrity]` with no version. The mirror represents it as `resolved: "file:<path>"`, with the version read from the tarball's `package/package.json` and the file's SHA-512 checked against bun's integrity (a mismatch fails closed), so the vendored runtime's registry dependencies (`ajv`, `pg`) are visible to alerts.
+
 ## Tasks
 
-- [x] **T1** — RED: `scripts/__tests__/sync-alert-mirror.test.ts` (fixture round-trip, nested scoped paths, flags, `--check` both ways, determinism, fail-closed sources). *(S2–S5)*
-- [x] **T2** — GREEN: `scripts/sync-alert-mirror.mjs` and the `deps:mirror` script. *(S2–S5)*
-- [x] **T3** — Regenerate the real mirror; validate it with npm; compare the sets. *(S7)*
-- [ ] **T4** — CI step, `dependabot.yml` comment, docs, CHANGELOG; gates; PR; merge. *(S6)*
+- [x] **T1** — RED: `scripts/__tests__/sync-alert-mirror.test.ts` (fixture round-trip, nested scoped paths, flags, `--check` both ways, determinism, fail-closed sources). *(S2–S5)* — `eea0f90`
+- [x] **T2** — GREEN: `scripts/sync-alert-mirror.mjs` and the `deps:mirror` script. *(S2–S5)* — `eea0f90`
+- [x] **T3** — Regenerate the real mirror; validate it with npm; compare the sets. *(S7)* — `eea0f90`, `ef10800`
+- [x] **T4** — CI step, `dependabot.yml` comment, docs, CHANGELOG; gates; PR; merge. *(S6)* — #165 merge `2b0396c`
+
+- [x] **T5** — Local tarball dependencies (`file:` .tgz), needed by Drenyra Shell's vendored runtime: read the version from the tarball and verify its integrity against bun.lock; directories stay refused. *(S2, S5, S8)*
 
 ## Log
 
@@ -45,3 +49,14 @@
 
 - `eea0f90` (the tool) is ~600 authored lines: a ~260-line script, ~250 lines of tests, and the rest CI, docs, and this document. That is past the ~400-line guide, but it stays one commit because it is one behavior unit; the script without its tests or its CI check is not reviewable alone. Its mirror is generated from `main`'s `bun.lock`, so the commit passes `--check` on its own. The dependency fix is its own commit: `vite` 8.3.5, the regenerated mirror, and the CHANGELOG correction.
 - Gates on the final tree: `bun install --frozen-lockfile`; typecheck clean; lint 189 files (the 2 Biome infos already existed); `--check` reports the mirror current (129 packages); `verify:package` 1535 tests (1519 + 16), release integrity OK; `verify-packed-install` OK; `git diff --check` clean.
+
+### L5 — 2026-10-29 — T4 merged; T5 opened for the Shell
+
+- PR #165 passed 9/9 checks and merged as `2b0396c`. On `main`, CI, Docs, and the Dependabot `bun` update run succeeded. Open alerts: 0, and that is now a true zero, because the mirror is the installed tree.
+- Drenyra Shell has no `package-lock.json`, so GitHub sees none of its transitive tree; its open-alert count of 0 means nothing. Its runtime dependency is `drenyra-ai@file:./vendored/drenyra-ai-0.8.0.tgz`, which bun records as a 3-tuple without a version. That opens S8/T5 here, before the script is carried to the Shell.
+
+### L6 — 2026-10-29 — T5 RED / GREEN
+
+- RED: two of the three new local-tarball cases failed: mirroring the vendored tarball, and refusing an integrity mismatch. The missing-tarball case already passed, because a local source was refused outright.
+- GREEN: 19/19. The fixture builds a real ustar `.tgz`. The version comes from the archive, `resolved` is `file:vendored/<name>.tgz`, a mismatched SHA-512 or a missing file fails closed with nothing written, and the registry dependency behind the tarball is mirrored with the right scope.
+- This repository's mirror is unchanged (129 packages, `--check` OK). Against Drenyra Shell's real tree (`--root ../drenyra-pi --check`), the script parsed `bun.lock`, verified the vendored `drenyra-ai-0.8.0.tgz` against bun's integrity, and found no orphans or unrepresentable sources. It exits 1 only because the Shell has no mirror yet.

@@ -6,6 +6,8 @@
  * neither misses an installed version nor reports one that is not installed.
  */
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -249,6 +251,98 @@ describe("sync-alert-mirror — fail closed (S5)", () => {
 		const result = run(root);
 		expect(result.status).not.toBe(0);
 		expect(result.stderr).toContain("orphan");
+	});
+});
+
+/** A minimal ustar archive holding `package/package.json`, gzipped. */
+function tarball(manifest: Record<string, unknown>): Buffer {
+	const body = Buffer.from(JSON.stringify(manifest));
+	const header = Buffer.alloc(512, 0);
+	header.write("package/package.json", 0, "utf8");
+	header.write("0000644\0", 100, "ascii");
+	header.write("0000000\0", 108, "ascii");
+	header.write("0000000\0", 116, "ascii");
+	header.write(`${body.length.toString(8).padStart(11, "0")}\0`, 124, "ascii");
+	header.write("00000000000\0", 136, "ascii");
+	header.write("0", 156, "ascii");
+	header.write("ustar\0", 257, "ascii");
+	header.write("00", 263, "ascii");
+	header.fill(" ", 148, 156);
+	let sum = 0;
+	for (const byte of header) sum += byte;
+	header.write(`${sum.toString(8).padStart(6, "0")}\0 `, 148, "ascii");
+	const padded = Buffer.alloc(Math.ceil(body.length / 512) * 512, 0);
+	body.copy(padded);
+	return gzipSync(Buffer.concat([header, padded, Buffer.alloc(1024, 0)]));
+}
+
+const integrityOf = (bytes: Buffer) => `sha512-${createHash("sha512").update(bytes).digest("base64")}`;
+
+/** Root depends on a vendored tarball whose own dependency comes from the registry. */
+function tarballFixture(options: { integrity?: string; writeTarball?: boolean } = {}): string {
+	const bytes = tarball({ name: "vendored-rt", version: "0.8.0", dependencies: { b: "^1.0.0" } });
+	const integrity = options.integrity ?? integrityOf(bytes);
+	const lock = `{
+  "lockfileVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "fixture-app",
+      "dependencies": {
+        "vendored-rt": "file:./vendored/vendored-rt-0.8.0.tgz",
+      },
+    },
+  },
+  "packages": {
+    "vendored-rt": ["vendored-rt@./vendored/vendored-rt-0.8.0.tgz", { "dependencies": { "b": "^1.0.0" }, "bin": { "vendored-rt": "./dist/cli.js" } }, "${integrity}"],
+
+    "b": ["b@1.0.0", "", {}, "${SHA("b")}"],
+  }
+}
+`;
+	const root = mkdtempSync(join(tmpdir(), "alert-mirror-tgz-"));
+	roots.push(root);
+	writeFileSync(
+		join(root, "package.json"),
+		`${JSON.stringify({ name: "fixture-app", version: "1.0.0", dependencies: { "vendored-rt": "file:./vendored/vendored-rt-0.8.0.tgz" } }, null, 2)}\n`,
+	);
+	writeFileSync(join(root, "bun.lock"), lock);
+	mkdirSync(join(root, "vendored"));
+	if (options.writeTarball !== false) writeFileSync(join(root, "vendored", "vendored-rt-0.8.0.tgz"), bytes);
+	return root;
+}
+
+describe("sync-alert-mirror — local tarball dependencies (S8)", () => {
+	it("mirrors a vendored tarball with its version read from the archive and a file: resolution", () => {
+		const root = tarballFixture();
+		const result = run(root);
+		expect(result.status, result.stderr).toBe(0);
+		const { packages } = readMirror(root);
+		const bytes = readFileSync(join(root, "vendored", "vendored-rt-0.8.0.tgz"));
+		expect(packages["node_modules/vendored-rt"]).toEqual({
+			version: "0.8.0",
+			resolved: "file:vendored/vendored-rt-0.8.0.tgz",
+			integrity: integrityOf(bytes),
+			dependencies: { b: "^1.0.0" },
+			bin: { "vendored-rt": "./dist/cli.js" },
+		});
+		expect(packages["node_modules/b"]).toMatchObject({ version: "1.0.0" });
+		expect(flags(packages["node_modules/b"])).toBe("-");
+	});
+
+	it("refuses a tarball whose bytes do not match bun.lock's integrity, and writes nothing", () => {
+		const root = tarballFixture({ integrity: SHA("z") });
+		writeFileSync(join(root, "package-lock.json"), "previous\n");
+		const result = run(root);
+		expect(result.status).not.toBe(0);
+		expect(result.stderr).toMatch(/cannot mirror.*integrity/i);
+		expect(readFileSync(join(root, "package-lock.json"), "utf8")).toBe("previous\n");
+	});
+
+	it("refuses a missing tarball", () => {
+		const root = tarballFixture({ writeTarball: false });
+		const result = run(root);
+		expect(result.status).not.toBe(0);
+		expect(result.stderr).toMatch(/cannot mirror.*vendored-rt-0\.8\.0\.tgz/i);
 	});
 });
 
