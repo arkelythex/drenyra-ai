@@ -14,6 +14,22 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+### Security — dependency advisories
+
+- Closes the 13 open Dependabot alerts on `main`. `fast-uri` 3.1.8 → 3.1.9, through
+  `ajv`. `source-map-js` 1.2.1 → 1.2.2. `@vitest/mocker` 5.0.1 → 5.0.5, with
+  `vitest` and `@vitest/coverage-v8` moving together as a lockstep pair to
+  `^5.0.5`. `vite` leaves the vulnerable `8.3.0`–`8.3.2` range. It was in that
+  range only in the alert mirror; the bun install was at 8.2.1.
+- `bun.lock`, which CI installs, and `package-lock.json`, the alert mirror
+  described in `.github/dependabot.yml`, now resolve the patched versions.
+  `npm audit --package-lock-only` reports 0 vulnerabilities. The mirror had not
+  been refreshed since 2026-09-18, so a Dependabot update to `bun.lock` alone
+  could never close an alert.
+- Consumers: no published dependency range changes. A fresh install of
+  `drenyra-ai` already resolves `ajv`'s `fast-uri ^3.0.1` to a patched release;
+  the vitest packages are development-only.
+
 ## [0.7.0] - 2026-10-28
 
 ### Migration and compatibility
