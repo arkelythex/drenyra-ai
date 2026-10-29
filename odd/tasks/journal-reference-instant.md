@@ -18,8 +18,8 @@
 - [x] **T1** — RED: journal tests for S2–S4 (missing, unparseable, future, equal, past period, supersede). *(S2, S3, S4)* — `d86cba1`
 - [x] **T2** — GREEN: `JournalRecordInput.asOf`, the `invalid-as-of` and `future-evidence` codes, and validation; update the existing test fixtures. *(S2, S3, S4)* — `d86cba1`
 - [x] **T3** — CHANGELOG and migration note; gates; PR; merge. *(S5)* — #162 merge `d504042`
-- [ ] **T4** — Release 0.8.0 (version PR, signed tag, release workflow). *(S5)*
-- [ ] **T5** — Shell propagation, tracked in the Shell. *(S6)*
+- [x] **T4** — Release 0.8.0 (version PR, signed tag, release workflow). *(S5)* — #163 merge `316daf6`, signed tag `v0.8.0`, release run 40817695589
+- [x] **T5** — Shell propagation, tracked in the Shell. *(S6)* — drenyra-shell#102
 
 ## Log
 
@@ -53,3 +53,8 @@ One `set -euo pipefail` run exited 0. Typecheck: clean. Lint: 188 files, no fixe
 PR #162 passed CI and was merged with an ordinary merge commit, pinned to the reviewed head `d86cba1`, as `d504042`. T4 starts with `chore/release-0.8.0`: `npm version 0.8.0 --no-git-tag-version --ignore-scripts` updates `package.json` and the two root version fields of `package-lock.json`. The `[Unreleased]` entries (the `asOf` change and the dependency advisories) become `## [0.8.0] - 2026-10-28`, under a migration note.
 
 Release gates on the version tree: `bun install --frozen-lockfile`, typecheck, `verify:package` (1519 tests; release integrity: checksums and SBOM verified; 695 packaged files), and `verify-packed-install` all OK; `git diff --check` clean.
+
+### L7 — 2026-10-28 — release and Shell propagation
+
+- T4: PR #163 first failed markdownlint MD018. A log paragraph began with `#162`, which markdownlint read as a heading; `c46ac6e` fixed it. The PR then passed CI and was merged as `316daf6`. A GPG-signed annotated tag `v0.8.0` on that commit (good signature) ran release run 40817695589, where `publish` and `github-release` succeeded. The npm `dist.integrity` matches the GitHub Release tarball, and npm reports SLSA v1 provenance. 663 `dist/` entries plus the tarball verified with 0 failures. `dist/cmd/cli.js` is unchanged.
+- T5: Drenyra Shell pinned 0.8.0 in arkelythex/drenyra-shell#102 (`odd/tasks/runtime-pin-0.8.0.md`). `propose_journal_entry` supplies `asOf` from the harness clock and ignores any agent-supplied value. The control mutation suite measured 24/25 rejected (9600 bps), with 0/3 false alarms. The only survivor is `ruc-wrong-check-digit`, so #123 stays open for that decision alone.
