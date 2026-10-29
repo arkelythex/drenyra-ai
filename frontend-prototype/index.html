@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Drenyra Command Center prototype for verifiable accounting operations"><meta name="theme-color" content="#f3eadc"><title>Drenyra Command Center</title><link rel="stylesheet" href="./styles.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Drenyra Console prototype for verifiable accounting operations"><meta name="theme-color" content="#f3eadc"><title>Drenyra Console</title><link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="app-shell">
 <aside class="sidebar" aria-label="Drenyra workspace navigation">
-<a class="brand" href="#home" aria-label="Drenyra Command Center home"><span class="brand-mark">D</span><span><strong>Drenyra</strong><small>Command Center</small></span></a>
+<a class="brand" href="#home" aria-label="Drenyra Console home"><span class="brand-mark">D</span><span><strong>Drenyra</strong><small>Drenyra Console</small></span></a>
 <div class="workspace-switcher"><span class="workspace-label">Active workspace</span><strong>ACME SAC</strong><small>RUC 20123456789</small><span class="scope-lock">⌾ Scope locked</span></div>
 <nav class="main-nav" aria-label="Primary navigation">
 <div class="nav-group"><span class="nav-group-label">Operations</span><a class="nav-link active" href="#home" data-section="home"><span>⌂</span> Home</a><a class="nav-link" href="#missions" data-section="missions"><span>◈</span> Missions</a><a class="nav-link" href="#review" data-section="review"><span>✓</span> Review <b class="nav-count">4</b></a><a class="nav-link" href="#automations" data-section="automations"><span>↻</span> Automations</a></div>
@@ -37,7 +37,7 @@
 <form class="operator-form" id="global-chat-form"><label class="sr-only" for="global-chat-input">Ask Drenyra to operate this workspace</label><input id="global-chat-input" name="operator-request" type="text" autocomplete="off" placeholder="Ask Drenyra to reconcile, review, explain, or find evidence…"><div class="operator-context"><span>ACME SAC</span><span>·</span><span>2026-07</span></div><div class="operator-tools"><button type="button" data-global-token="@" aria-label="Add context">@</button><button type="button" data-global-token="/" aria-label="Choose action">/</button><button type="button" data-global-token="+" aria-label="Add evidence">+</button><button class="operator-send" type="submit" aria-label="Send request">↑</button></div></form>
 <div class="operator-hints"><button type="button" data-global-action="/reconcile">/reconcile</button><button type="button" data-global-action="/review">/review</button><button type="button" data-global-action="/evidence">/evidence</button><button type="button" data-global-action="/guardian">/guardian</button><span class="operator-shortcut"><kbd>⌘</kbd><kbd>↵</kbd> operate</span></div>
 </div></section>
-<footer class="app-footer"><span>Drenyra Command Center · frontend prototype</span><span>Context: ACME SAC · July 2026 · Peru · Prototype mode</span></footer>
+<footer class="app-footer"><span>Drenyra Console · frontend prototype</span><span>Context: ACME SAC · July 2026 · Peru · Prototype mode</span></footer>
 </main></div>
 <dialog class="command-dialog" id="command-dialog" aria-labelledby="command-title"><form method="dialog" class="command-palette" id="command-form"><div class="command-search"><span>⌘K</span><input id="command-input" name="command" type="search" autocomplete="off" placeholder="What do you want to do?" aria-label="Search commands"><kbd>ESC</kbd></div><div class="command-body"><p id="command-title" class="eyebrow">Command palette</p><div class="command-list" id="command-list"></div></div><div class="command-footer"><span><kbd>↑↓</kbd> Navigate</span><span><kbd>↵</kbd> Run</span><span><kbd>ESC</kbd> Close</span></div></form></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

@@ -118,7 +118,7 @@ drenyra-ai ledger validate ledger.json
 ## Phase 4 — v1.0
 
 - [ ] **Flagship flow:** monthly accounting and tax close as the v1.0 headline workflow (mission → candidates → gates → receipts → ledger) — see [Design 02 — Monthly Close](docs/design/design-02-monthly-close.md)
-- [ ] **Delivery architecture:** headless core consumed by Drenyra Desktop (library / CLI / MCP) — see [Intended Usage](docs/intended-usage.md)
+- [ ] **Delivery architecture:** headless core consumed by Drenyra Console (library / CLI / MCP) — see [Intended Usage](docs/intended-usage.md)
 - [ ] v1.0 candidate when **three independent consumers** run on the released contracts — full gate: [Design 05 — Testing, Releases, v1.0](docs/design/design-05-testing-releases-v1.md)
 - [ ] Community and contributory roadmap
 

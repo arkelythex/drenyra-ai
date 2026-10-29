@@ -43,7 +43,7 @@ Drenyra AI works **standalone** — no Drenyra dependency — so ERPs, other acc
 
 Drenyra AI is **not**:
 
-- The product: no UI, tenants, documents, accounts, or SUNAT flows (that is `arkelythex/drenyra-desktop`).
+- The product: no UI, tenants, documents, accounts, or SUNAT flows (that is `arkelythex/drenyra-console`).
 - A Pi harness: no extension registration, startup panels, or Pi-native commands (that is `arkelythex/drenyra-shell`).
 - A memory engine: no observations, scope-first search, relations, or vigencia (that is `arkelythex/drenyra-engram`).
 
@@ -58,7 +58,7 @@ Drenyra AI is **not**:
 
 ```mermaid
 flowchart TD
-    P["Profesional contable"] --> D["Drenyra Desktop"]
+    P["Profesional contable"] --> D["Drenyra Console"]
     D --> AI["Drenyra-AI Core"]
     PI["Drenyra Shell"] --> AI
     ERP["ERP · bancos · SUNAT"] --> AD["Adaptadores de evidencia"]

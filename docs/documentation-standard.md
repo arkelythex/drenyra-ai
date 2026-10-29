@@ -51,7 +51,7 @@ Facts are not a palette: do not copy a dated snapshot into every page.
 | Visual tokens | [brand-system v0.4](../contracts/brand-system.md) and its [tokens](../contracts/brand-system/tokens.json) |
 
 The current release verified for this documentation pass is **v0.6.0**. Current
-product names are **Drenyra Desktop** and **Drenyra Shell**. Historical release
+product names are **Drenyra Console** and **Drenyra Shell**. Historical release
 entries and dated program/spec evidence retain the names and versions that were
 true when recorded. Satellite release status is not inferred from this repository.
 

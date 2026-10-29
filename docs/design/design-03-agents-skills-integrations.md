@@ -84,8 +84,8 @@ Each skill requires:
 
 ## v1.0 Integrations — recommended order
 
-1. **Drenyra SDK/API** — the Command Center's primary surface.
-2. **Drenyra Pi** — its own harness with an exact Drenyra AI version.
+1. **Drenyra SDK/API** — the Drenyra Console's primary surface.
+2. **Drenyra Shell** — its own harness with an exact Drenyra AI version.
 3. **MCP server** — uniform access for external hosts.
 4. **Codex, Claude Code, OpenCode** — first agent adapters.
 5. **ERP / SUNAT / banks** — evidence and confirmed-execution connectors.

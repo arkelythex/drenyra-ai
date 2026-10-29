@@ -84,10 +84,10 @@ Append **one** of the following product sections to the Shared DNA block.
 
 ---
 
-## 5.1 Drenyra — Command Center
+## 5.1 Drenyra Console
 
 ```text
-Subject: an accounting command center as a premium institutional control artifact, not a software dashboard. The hero on the right third is a circular command dais of layered warm-toned ceramic and paper surfaces, with three raised strata emerging like disciplined ledgers rather than floating interface cards. Inside the strata, only minimal abstract signals: elegant ledger pulses, an approval rhythm, a verification cadence — never a literal app screen.
+Subject: an accounting console as a premium institutional control artifact, not a software dashboard. The hero on the right third is a circular command dais of layered warm-toned ceramic and paper surfaces, with three raised strata emerging like disciplined ledgers rather than floating interface cards. Inside the strata, only minimal abstract signals: elegant ledger pulses, an approval rhythm, a verification cadence — never a literal app screen.
 
 Around the core, two fine orbital rings: one cocoa #824F16 for validation, one diagnostic teal #0D4A68 for control. At the center, a dual-approval seal of two interlocking arcs with a small sage #315B31 verification mark engraved into the surface, catching a soft warm light like a machined emblem. Tiny spark points only where orbital paths intersect — moments of verified truth.
 
@@ -261,8 +261,8 @@ Iterate with the checker's off-palette feedback until coverage ≥ 0.92, then `b
 | Repo | File | README |
 | --- | --- | --- |
 | drenyra-ai | `docs/assets/brand/drenyra-ai-banner.{light,dark}.svg` and `docs/assets/diagrams/*.{light,dark}.svg` | current paired hero and feature diagrams, generated from code |
-| Drenyra Desktop | `assets/branding/drenyra-banner.png` (create) | add banner `<img>` at top |
-| drenyra-pi | `assets/branding/drenyra-pi-hero.png` (create, pending) | top hero |
+| Drenyra Console | `assets/branding/drenyra-banner.png` (create) | add banner `<img>` at top |
+| drenyra-shell | `assets/branding/drenyra-shell-hero.png` (create, pending) | top hero |
 | drenyra-engram | `assets/branding/drenyra-engram-banner.png` (create) | replace banner-1/2/3 |
 | drenyra-skills | `assets/branding/drenyra-skills-banner.png` (create) | add banner `<img>` at top |
 | drenyra-guardian-angel | `assets/branding/drenyra-guardian-angel-banner.png` (create) | add banner `<img>` at top |

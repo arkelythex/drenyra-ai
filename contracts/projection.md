@@ -160,7 +160,7 @@ freeze, and a passing conformance suite does not constitute adoption.
 This DRAFT does not ship or claim: adoption or consumption of this surface by
 any consumer in production; a frozen or declared contract status; a second
 lifecycle authority, transition matrix, or state machine; MCP projection tooling
-or Command Center UI; any mutation, transition, gate, approval, reconciliation,
+or Drenyra Console UI; any mutation, transition, gate, approval, reconciliation,
 or receipt behavior; evidence, memory, ledger, journal, or integrity-verification
 authority; money fields, fiscal conclusions, accounting-journal behavior, or
 SUNAT-facing semantics.
