@@ -14,7 +14,7 @@ Consumers need one released enforcement surface, not copies of its internal rule
 ## Who consumes what
 
 ```text
-Drenyra Desktop ────► Drenyra AI ◄──── Drenyra Shell
+Drenyra Console ────► Drenyra AI ◄──── Drenyra Shell
                           │                 │
                           └───────┬─────────┘
                                   ▼

@@ -64,7 +64,7 @@ object photographed by a fashion campaign on a Syd Mead set.
 
 ## Per-product art directions (narrative concepts)
 
-1. **Drenyra Desktop** — *the fiscal command deck.* A sculptural control
+1. **Drenyra Console** — *the fiscal command deck.* A sculptural control
    surface, machined like an instrument of state: layered translucent consoles
    (precise geometry) crowned by the dual-approval seal — two interlocking
    arcs, one primary and one secondary token from the selected theme, the checkmark as a single engraved point of

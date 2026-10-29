@@ -43,7 +43,7 @@ body:
     id: ecosystem
     attributes:
       label: Ecosystem check
-      description: This repo is the runtime. Product features belong in Drenyra, the Pi harness in drenyra-pi, and memory in drenyra-engram.
+      description: This repo is the runtime. Product features belong in Drenyra Console, the Shell harness in drenyra-shell, and memory in drenyra-engram.
       options:
-        - label: I confirm this feature belongs in drenyra-ai, not Drenyra / drenyra-pi / drenyra-engram.
+        - label: I confirm this feature belongs in drenyra-ai, not Drenyra Console / drenyra-shell / drenyra-engram.
           required: true

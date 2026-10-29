@@ -194,7 +194,7 @@ the package. JSON results go to stdout; diagnostics go to stderr. Exit codes are
 Drenyra AI is a **headless core**: protocols, missions, candidates, gates,
 receipts, and an audit ledger. It is not the ERP, the professional interface,
 the accounting journal of record, or the fiscal authority. External ERPs, SaaS,
-and agent hosts can consume it without depending on Drenyra Desktop or Shell.
+and agent hosts can consume it without depending on Drenyra Console or Shell.
 
 <details>
 <summary><strong>Architecture maps and frozen contracts</strong></summary>
@@ -241,7 +241,7 @@ approval, a major contract version bump, and a migration path. See the
 | Project | Responsibility |
 | --- | --- |
 | **Drenyra AI** | Deterministic enforcement core; usable standalone |
-| [Drenyra Desktop](https://github.com/arkelythex/drenyra-desktop) | Professional interface consuming the core |
+| [Drenyra Console](https://github.com/arkelythex/drenyra-console) | Professional interface consuming the core |
 | [Drenyra Shell](https://github.com/arkelythex/drenyra-shell) | Pi-native harness consuming a pinned runtime |
 | [Drenyra Engram](https://github.com/arkelythex/drenyra-engram) | Institutional memory; informs, never authorizes |
 | [Drenyra Skills](https://github.com/arkelythex/drenyra-skills) | Versioned accounting, tax, and operational knowledge |

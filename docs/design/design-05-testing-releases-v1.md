@@ -65,7 +65,7 @@ Every version must pass:
 - Clean install and upgrade from the previous stable version.
 
 > [!NOTE]
-> The release promotes as an **immutable artifact**. Drenyra and Drenyra Pi consume exactly that artifact — never a checkout of `main`.
+> The release promotes as an **immutable artifact**. Drenyra Console and Drenyra Shell consume exactly that artifact — never a checkout of `main`.
 
 ## Versioning
 
@@ -92,7 +92,7 @@ Changing a frozen contract requires a **major version and a migration path**. Up
 ## Mandatory v1.0 criteria
 
 1. Drenyra consumes the published package and removes its duplicated implementation.
-2. Drenyra Pi uses an exact, verified version.
+2. Drenyra Shell uses an exact, verified version.
 3. At least one third independent consumer exists: ERP, SaaS, or pilot integration.
 4. An accountant completes a monthly close from Drenyra without technical commands.
 5. SIRE, reconciliation, vouchers, and candidates converge in the same mission.

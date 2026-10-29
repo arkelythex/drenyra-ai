@@ -31,7 +31,7 @@ consumer boundaries, and persistence responsibilities.
 ## Position in the ecosystem
 
 ```text
-Drenyra Desktop ────► Drenyra AI ◄──── Drenyra Shell
+Drenyra Console ────► Drenyra AI ◄──── Drenyra Shell
                           │                 │
                           └───────┬─────────┘
                                   ▼
@@ -101,7 +101,7 @@ Drenyra and Drenyra Shell consume **released, versioned** artifacts — never a 
 
 ## Repository scope
 
-This repo is the agent ecosystem. It does **not** contain the product UI, tenants, documents, accounts, or SUNAT flows (those live in `arkelythex/drenyra-desktop`), nor a Pi harness (that is `arkelythex/drenyra-shell`), nor a memory engine (that is `arkelythex/drenyra-engram`).
+This repo is the agent ecosystem. It does **not** contain the product UI, tenants, documents, accounts, or SUNAT flows (those live in `arkelythex/drenyra-console`), nor a Pi harness (that is `arkelythex/drenyra-shell`), nor a memory engine (that is `arkelythex/drenyra-engram`).
 
 ## Read next
 

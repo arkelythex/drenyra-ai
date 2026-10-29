@@ -42,9 +42,9 @@ or consumer adoption from a declaration.
 | [gate](gate.md) | 0.1 | FROZEN | Drenyra, Drenyra Shell, CI/CD |
 | [ledger](ledger.md) | 0.1 | FROZEN | Auditors, ERPs, Drenyra Shell |
 | [recovery](recovery.md) | 0.1 | FROZEN | Drenyra Shell, CLI |
-| [brand-system](brand-system.md) | 0.4 | DRAFT | Drenyra Desktop, Drenyra Shell, Drenyra Engram, Guardian Angel, docs |
+| [brand-system](brand-system.md) | 0.4 | DRAFT | Drenyra Console, Drenyra Shell, Drenyra Engram, Guardian Angel, docs |
 | [connector-adapter](connector-adapter.md) | 0.1 | DRAFT | Future restricted ERP, SUNAT/SIRE, bank, e-invoicing, and document connectors (no live connector yet) |
-| [projection](projection.md) | 0.1 | DRAFT | Drenyra Desktop, Drenyra Shell, CLI |
+| [projection](projection.md) | 0.1 | DRAFT | Drenyra Console, Drenyra Shell, CLI |
 
 The receipt contract's normative shape — the JSON schemas and the frozen conformance vectors — lives in [receipt-schema](receipt-schema/README.md).
 

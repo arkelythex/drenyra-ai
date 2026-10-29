@@ -1,4 +1,4 @@
-/* Drenyra Command Center prototype. Mock-only UI; native contracts own mutations. */
+/* Drenyra Console prototype. Mock-only UI; native contracts own mutations. */
 
 import { createState, repository } from './data.js';
 import { DOM } from './dom.js';

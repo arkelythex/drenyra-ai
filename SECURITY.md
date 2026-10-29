@@ -31,7 +31,7 @@ When reporting, include:
 ## Out of scope
 
 - Production credentials, tokens, or customer data — never attach these
-- Vulnerabilities in Drenyra, Drenyra Pi, or Drenyra Engram (report in their own repos)
+- Vulnerabilities in Drenyra Console, Drenyra Shell, or Drenyra Engram (report in their own repos)
 - Brute-force or spam abuse of public endpoints
 
 ## Handling

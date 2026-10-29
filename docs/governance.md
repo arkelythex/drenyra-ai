@@ -72,7 +72,7 @@ license or a claim that every commercial service already exists.
 
 The intended open-core scope covers contracts, schemas, conformance suites, canonical vectors, mission protocol, candidates, baseline materiality, receipts, Ed25519 verification, ledger, gates, recovery, SDK, CLI, base MCP server, skills and adapter frameworks, auditable Peruvian base policies, and community connectors.
 
-The commercial surface (Drenyra Desktop, managed cloud, SSO/SCIM, managed KMS/HSM, certified connectors with SLAs, certified policy packs, enterprise analytics, support) stays separate — it never weakens the open core's contracts or authority.
+The commercial surface (Drenyra Console, managed cloud, SSO/SCIM, managed KMS/HSM, certified connectors with SLAs, certified policy packs, enterprise analytics, support) stays separate — it never weakens the open core's contracts or authority.
 
 ## Related
 

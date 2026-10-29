@@ -97,7 +97,7 @@ the compatibility surface, not a checkout or a dependency on Desktop/Shell.
 | Component | Role |
 | --- | --- |
 | Drenyra AI | Missions, candidates, gates, receipts, audit ledger, and deterministic enforcement |
-| Drenyra Desktop | Professional interface consuming released artifacts |
+| Drenyra Console | Professional interface consuming released artifacts |
 | Drenyra Shell | Pi-native harness consuming a pinned package-local runtime |
 | Drenyra Engram | Institutional memory; informs, never authorizes |
 | Drenyra Skills | Versioned accounting, tax, and operational knowledge |

@@ -10,7 +10,7 @@ Read this contract before authoring visual assets. The token file, not an image 
 > canonical tokens at `dreamcoder-dots/DreamcoderThemes/dreamcoder/tokens.json`
 > (Dreamcoder Light Cocoa/Lúcuma, Dreamcoder Dark OLED-aware, Dusk transition; readability
 > before decoration, WCAG/APCA). Every ecosystem surface — Drenyra AI, Drenyra
-> Pi, Drenyra Engram, Drenyra Skills, Command Center, Guardian Angel — mirrors
+> Pi, Drenyra Engram, Drenyra Skills, Drenyra Console, Guardian Angel — mirrors
 > exactly this system, in **both themes**. No ecosystem product invents its own
 > palette.
 
@@ -246,6 +246,6 @@ metadata.
   banned cyan/violet keys), and `tokens.schema.json` moves from v0.2 to v0.4.
   Approved by the owner on 2026-10-28.
 - Freeze to v0.4 FROZEN requires: every consuming repo (App Web, Pi, Engram,
-  Skills, Command Center, Guardian Angel) passes the conformance checker on its
+  Skills, Drenyra Console, Guardian Angel) passes the conformance checker on its
   brand assets in both themes. The freeze gate is `bun run brand:ecosystem` —
   it must report every repo `PASS` (exit 0).

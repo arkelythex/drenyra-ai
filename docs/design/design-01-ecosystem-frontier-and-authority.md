@@ -20,9 +20,9 @@ Approval of a design is not evidence that every described capability has shipped
 
 ```mermaid
 flowchart TD
-    P["Professional accountant"] --> D["Drenyra Command Center"]
+    P["Professional accountant"] --> D["Drenyra Console"]
     D --> AI["Drenyra AI Core"]
-    PI["Drenyra Pi"] --> AI
+    PI["Drenyra Shell"] --> AI
     ERP["ERP · banks · SUNAT"] --> AD["Evidence adapters"]
     AD --> AI
     EN["Drenyra Engram"] --> AI
@@ -38,7 +38,7 @@ Every producer feeds the Core; only the Core issues receipts and writes the ledg
 | --- | --- | --- |
 | **Drenyra** | Interface, trays, visualization, review, and approval | Reimplement gates or modify states directly |
 | **Drenyra AI** | Missions, candidates, materiality, authority, gates, receipts, ledger, and recovery | Depend on the UI or trust agent narration |
-| **Drenyra Pi** | Optimized harness to run specialized agents | Resolve versions from `PATH` or bypass the Core |
+| **Drenyra Shell** | Optimized harness to run specialized agents | Resolve versions from `PATH` or bypass the Core |
 | **Drenyra Engram** | Institutional memory and context retrieval | Authorize actions or treat memories as evidence |
 | **Drenyra Skills** | Versioned accounting, fiscal, and jurisdictional knowledge | Silently change frozen policies |
 | **Adapters** | Obtain evidence from ERP, banks, SUNAT, and files | Declare success without a verifiable response |
@@ -57,7 +57,7 @@ Every producer feeds the Core; only the Core issues receipts and writes the ledg
 
 ## The dependency rule
 
-- **Drenyra and Drenyra Pi consume published versions of Drenyra AI. Drenyra AI never depends on them.**
+- **Drenyra Console and Drenyra Shell consume published versions of Drenyra AI. Drenyra AI never depends on them.**
 - The UI can go down and be rebuilt from Core state; a transcript can be lost and the mission recovered from events and evidence.
 - **No consumer can turn a Core rejection into an approval.**
 

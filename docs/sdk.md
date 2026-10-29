@@ -7,7 +7,7 @@ The SDK exposes the headless core as ESM subpaths so applications can use it
 without embedding CLI processes or treating agent output as authority.
 
 > [!IMPORTANT]
-> **The SDK is the public library surface of the headless core.** Drenyra Desktop, Drenyra Shell, ERPs, and third-party SaaS consume the same released contracts through these subpaths. Integrate via released, versioned artifacts — never a checkout.
+> **The SDK is the public library surface of the headless core.** Drenyra Console, Drenyra Shell, ERPs, and third-party SaaS consume the same released contracts through these subpaths. Integrate via released, versioned artifacts — never a checkout.
 
 <!-- -->
 

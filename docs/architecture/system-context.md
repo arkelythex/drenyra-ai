@@ -37,7 +37,7 @@ Start here to locate the package inside an accounting integration. The core supp
 
 ## What this package is NOT
 
-- Not the product UI/tenants/documents (that is `arkelythex/drenyra-desktop`).
+- Not the product UI/tenants/documents (that is `arkelythex/drenyra-console`).
 - Not a Pi harness (that is `arkelythex/drenyra-shell`).
 - Not a memory engine (that is `arkelythex/drenyra-engram`).
 - Not an authorization system on its own: gates + human approval are where authority lives.

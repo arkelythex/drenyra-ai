@@ -21,7 +21,7 @@ The core stays independently adoptable only if consumer-specific behavior stays 
 ## Ecosystem dependency graph
 
 ```text
-Drenyra Desktop ────► Drenyra AI ◄──── Drenyra Shell
+Drenyra Console ────► Drenyra AI ◄──── Drenyra Shell
                           │                 │
                           └───────┬─────────┘
                                   ▼
