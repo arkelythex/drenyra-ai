@@ -14,6 +14,25 @@ and this project adheres to the version policy in [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+### Security — the alert mirror is generated from `bun.lock`
+
+- `package-lock.json`, the only manifest GitHub's dependency graph reads here,
+  is now generated from `bun.lock` by `bun run deps:mirror`
+  (`scripts/sync-alert-mirror.mjs`). It lists the same package paths, exact
+  versions, and integrity that CI installs, with npm's `dev`, `optional`, and
+  `devOptional` flags derived from reachability. CI fails when the mirror is
+  stale (`--check`). The script fails closed on any source it cannot
+  represent: git, `file:`, a tarball URL, an alias, or a custom registry.
+- **Correction to 0.8.0.** The previous mirror came from
+  `npm install --package-lock-only`, which resolves its own tree. It listed
+  `vite@8.3.5` while bun installed `vite@8.2.1`, so six advisories on the
+  installed version (GHSA-587h-7wmj-h5pm high; GHSA-698v-4r3x-3vcv,
+  GHSA-r825-w8mm-5pxw, GHSA-rq7h-c2jc-7f22, GHSA-vfpm-58rq-9qcg moderate;
+  GHSA-9jrq-w75r-8gcw low; all `>=8.2.0 <=8.2.3`) never alerted. The 0.8.0 note
+  that `vite` was outside the vulnerable range was true only for alerts 11–16.
+  `vite` is now 8.3.5 in `bun.lock` (development-only, through `vitest`), and
+  `npm audit --package-lock-only` on the exact mirror reports 0 vulnerabilities.
+
 ## [0.8.0] - 2026-10-28
 
 ### Migration and compatibility
