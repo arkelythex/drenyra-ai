@@ -15,9 +15,9 @@
 
 ## Tasks
 
-- [x] **T1** — RED: journal tests for S2–S4 (missing, unparseable, future, equal, past period, supersede). *(S2, S3, S4)*
-- [x] **T2** — GREEN: `JournalRecordInput.asOf`, the `invalid-as-of` and `future-evidence` codes, and validation; update the existing test fixtures. *(S2, S3, S4)*
-- [ ] **T3** — CHANGELOG and migration note; gates; PR; merge. *(S5)*
+- [x] **T1** — RED: journal tests for S2–S4 (missing, unparseable, future, equal, past period, supersede). *(S2, S3, S4)* — `d86cba1`
+- [x] **T2** — GREEN: `JournalRecordInput.asOf`, the `invalid-as-of` and `future-evidence` codes, and validation; update the existing test fixtures. *(S2, S3, S4)* — `d86cba1`
+- [x] **T3** — CHANGELOG and migration note; gates; PR; merge. *(S5)* — #162 merge `d504042`
 - [ ] **T4** — Release 0.8.0 (version PR, signed tag, release workflow). *(S5)*
 - [ ] **T5** — Shell propagation, tracked in the Shell. *(S6)*
 
@@ -47,3 +47,9 @@ The question asked whether `asOf` is required or optional in `journal.record`. A
 ### L5 — 2026-10-28 — gates
 
 One `set -euo pipefail` run exited 0. Typecheck: clean. Lint: 188 files, no fixes; the 2 Biome infos already existed. `verify:package`: 113 files and 1519 tests passed (1510 + 9 new), package files OK, release integrity OK. `verify-packed-install`: OK. `git diff --check`: clean.
+
+### L6 — 2026-10-28 — T3 merged; T4 version PR
+
+#162 passed CI and was merged with an ordinary merge commit, pinned to the reviewed head `d86cba1`, as `d504042`. T4 starts with `chore/release-0.8.0`: `npm version 0.8.0 --no-git-tag-version --ignore-scripts` updates `package.json` and the two root version fields of `package-lock.json`. The `[Unreleased]` entries (the `asOf` change and the dependency advisories) become `## [0.8.0] - 2026-10-28`, under a migration note.
+
+Release gates on the version tree: `bun install --frozen-lockfile`, typecheck, `verify:package` (1519 tests; release integrity: checksums and SBOM verified; 695 packaged files), and `verify-packed-install` all OK; `git diff --check` clean.
