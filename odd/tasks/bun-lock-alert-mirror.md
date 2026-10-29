@@ -23,7 +23,7 @@
 - [x] **T3** — Regenerate the real mirror; validate it with npm; compare the sets. *(S7)* — `eea0f90`, `ef10800`
 - [x] **T4** — CI step, `dependabot.yml` comment, docs, CHANGELOG; gates; PR; merge. *(S6)* — #165 merge `2b0396c`
 
-- [x] **T5** — Local tarball dependencies (`file:` .tgz), needed by Drenyra Shell's vendored runtime: read the version from the tarball and verify its integrity against bun.lock; directories stay refused. *(S2, S5, S8)*
+- [x] **T5** — Local tarball dependencies (`file:` .tgz), needed by Drenyra Shell's vendored runtime: read the version from the tarball and verify its integrity against bun.lock; directories stay refused. *(S2, S5, S8)* — `47aae58`, PR #167 merge `7ebea0a`
 
 ## Log
 
@@ -60,3 +60,9 @@
 - RED: two of the three new local-tarball cases failed: mirroring the vendored tarball, and refusing an integrity mismatch. The missing-tarball case already passed, because a local source was refused outright.
 - GREEN: 19/19. The fixture builds a real ustar `.tgz`. The version comes from the archive, `resolved` is `file:vendored/<name>.tgz`, a mismatched SHA-512 or a missing file fails closed with nothing written, and the registry dependency behind the tarball is mirrored with the right scope.
 - This repository's mirror is unchanged (129 packages, `--check` OK). Against Drenyra Shell's real tree (`--root ../drenyra-pi --check`), the script parsed `bun.lock`, verified the vendored `drenyra-ai-0.8.0.tgz` against bun's integrity, and found no orphans or unrepresentable sources. It exits 1 only because the Shell has no mirror yet.
+
+### L7 — 2026-10-29 — T5 merged; adopted by Drenyra Shell
+
+- PR #167 passed CI and merged as `7ebea0a`.
+- arkelythex/drenyra-shell#103 (merge `89bed5b`) carries the script byte-for-byte, generates the Shell's first `package-lock.json` (106 packages, the vendored `drenyra-ai-0.8.0.tgz` included and integrity-verified), checks it in CI, and moves its Dependabot config from `npm` to `bun`. The exact mirror revealed and fixed advisories that had never alerted there: `fast-uri` 3.1.5 (10, 5 high), `vite` 8.3.0 (6, 1 high), `source-map-js` 1.2.1 (1 high), and `vitest`/`@vitest/mocker` 5.0.1 (2 moderate). After the merge, GitHub's dependency graph lists the Shell's `package-lock.json`, and open alerts are 0.
+- Risk: item 5 (CI and dependency pipeline). There was no separate independent verifier. The evidence is RED and GREEN, the full gates, the PR and `main` CI, `npm ls`, `npm audit`, and the dependency-graph manifest listing.
